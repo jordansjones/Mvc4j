@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 public final class HttpContext {
 
 	private final ServletContext servletContext;
-	private final HttpServletRequest request;
+	private final HttpRequest request;
 	private final HttpServletResponse response;
 
 	public HttpContext(final ServletContext servletContext, final HttpServletRequest request, final HttpServletResponse response) {
 		this.servletContext = servletContext;
-		this.request = request;
+		this.request = new HttpRequest(request, this);
 		this.response = response;
 	}
 
-	public HttpServletRequest getRequest() {
+	public HttpRequest getRequest() {
 		return request;
 	}
 

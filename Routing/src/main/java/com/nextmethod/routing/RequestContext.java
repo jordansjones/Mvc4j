@@ -41,4 +41,8 @@ public class RequestContext {
 	public void setRouteData(@Nullable final RouteData routeData) {
 		this.routeData = routeData;
 	}
+
+	public String getCharacterEncoding() {
+		return httpContext.getRequest().getCharacterEncoding();
+	}
 }
