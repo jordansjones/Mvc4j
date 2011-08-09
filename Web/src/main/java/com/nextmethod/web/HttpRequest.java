@@ -1,6 +1,9 @@
 package com.nextmethod.web;
 
+import com.google.common.base.Strings;
+
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,22 +21,35 @@ import java.util.Map;
  * Date: 8/7/11
  * Time: 10:05 PM
  */
-public final class HttpRequest implements HttpServletRequest {
+public class HttpRequest implements HttpServletRequest {
 
 	private final HttpServletRequest request;
-	private final HttpContext httpContext;
+	private final ServletContext servletContext;
 
-	public HttpRequest(final HttpServletRequest request, final HttpContext httpContext) {
+	public HttpRequest(final HttpServletRequest request, final ServletContext servletContext) {
 		this.request = request;
-		this.httpContext = httpContext;
+		this.servletContext = servletContext;
 	}
 
 	public String getAppRelativeCurrentExecutionFilePath() {
 		final StringBuilder builder = new StringBuilder("~");
 
-		builder.append(request.getServletPath());
+		String requestURI = request.getRequestURI();
+		final String contextPath = servletContext.getContextPath();
+		if (!Strings.isNullOrEmpty(contextPath) && requestURI.startsWith(contextPath)) {
+			requestURI = requestURI.substring(0, contextPath.length());
+		}
+		if (requestURI.charAt(0) != '/') {
+			builder.append('/');
+		}
+		builder.append(requestURI);
 
 		return builder.toString();
+	}
+
+	public String getApplicationPath() {
+		final String path = servletContext.getContextPath();
+		return Strings.isNullOrEmpty(path) ? "/" : path;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import org.junit.Test;
  * Date: 8/5/11
  * Time: 11:04 PM
  */
-public class VirtualPathDataTest {
+public class VirtualPathDataTest extends BaseTest {
 
 	@Test
 	public void testConstructorNull() {

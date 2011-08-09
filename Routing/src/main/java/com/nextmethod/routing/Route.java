@@ -1,11 +1,17 @@
 package com.nextmethod.routing;
 
 import com.google.common.base.Strings;
+import com.nextmethod.OutParam;
 import com.nextmethod.web.HttpContext;
+import com.nextmethod.web.InvalidOperationException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.nextmethod.TypeHelpers.typeAs;
 
 /**
  * User: Jordan
@@ -21,18 +27,18 @@ public class Route extends RouteBase {
 	private IRouteHandler routeHandler;
 
 	public Route(final String url, final IRouteHandler routeHandler) {
-		this(url, new RouteValueDictionary(), routeHandler);
+		this(url, null, routeHandler);
 	}
 
-	public Route(final String url, final RouteValueDictionary defaults, final IRouteHandler routeHandler) {
-		this(url, defaults, new RouteValueDictionary(), routeHandler);
+	public Route(final String url, @Nullable final RouteValueDictionary defaults, final IRouteHandler routeHandler) {
+		this(url, defaults, null, routeHandler);
 	}
 
-	public Route(final String url, final RouteValueDictionary defaults, final RouteValueDictionary constraints, final IRouteHandler routeHandler) {
-		this(url, defaults, constraints, new RouteValueDictionary(), routeHandler);
+	public Route(final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints, final IRouteHandler routeHandler) {
+		this(url, defaults, constraints, null, routeHandler);
 	}
 
-	public Route(final String url, final RouteValueDictionary defaults, final RouteValueDictionary constraints, final RouteValueDictionary dataTokens, final IRouteHandler routeHandler) {
+	public Route(final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints, @Nullable final RouteValueDictionary dataTokens, final IRouteHandler routeHandler) {
 		this.setUrl(url);
 		this.defaults = defaults;
 		this.constraints = constraints;
@@ -112,18 +118,88 @@ public class Route extends RouteBase {
 		checkNotNull(parameterName);
 		checkNotNull(values);
 
+		final OutParam<Boolean> invalidConstraint = OutParam.of(false);
+		final RequestContext requestContext = new RequestContext();
+		requestContext.setHttpContext(httpContext);
+		final boolean ret = processConstraintInternal(httpContext, this, constraint, parameterName, values, routeDirection, requestContext, invalidConstraint);
+
+		if (invalidConstraint.getValue()) {
+			throw new InvalidOperationException(String.format(
+				"Constraint parameter '%s' on the route with Url '%s' must have a string value type or be a type which implements IRouteConstraint",
+				parameterName,
+				url
+			));
+		}
+
+		return ret;
+	}
+
+	static boolean processConstraintInternal(final HttpContext httpContext, final Route route, final Object constraint, final String parameterName, final RouteValueDictionary values, final RouteDirection routeDirection, final RequestContext requestContext, final OutParam<Boolean> invalidConstraint) {
+		invalidConstraint.setValue(false);
+
+		final IRouteConstraint irc = typeAs(constraint, IRouteConstraint.class);
+		if (irc != null)
+			return irc.match(httpContext, route, parameterName, values, routeDirection);
+
+		try {
+			final String s = typeAs(constraint, String.class);
+			if (s != null) {
+				OutParam<Object> out = OutParam.of(null, Object.class);
+				String v;
+
+				if (values != null && values.tryGetValue(parameterName, out)) {
+					v = typeAs(out.getValue(), String.class);
+				} else {
+					v = null;
+				}
+
+				if (!Strings.isNullOrEmpty(v)) {
+					return matchConstraintRegex(v, s);
+				} else if (requestContext != null) {
+					final RouteData routeData = requestContext.getRouteData();
+					final RouteValueDictionary rdValues = routeData != null ? routeData.getValues() : null;
+
+					if (rdValues == null || rdValues.isEmpty())
+						return false;
+
+					if (!rdValues.tryGetValue(parameterName, out))
+						return false;
+
+					v = typeAs(out.getValue(), String.class);
+
+					return !Strings.isNullOrEmpty(v) && matchConstraintRegex(v, s);
+				}
+				return false;
+			}
+		} catch (PatternSyntaxException ignored) {
+		}
+		invalidConstraint.setValue(true);
 		return false;
 	}
 
-	static boolean processConstraintInternal(final HttpContext httpContext, final Route route, final Object constraint, final String parameterName, final RouteValueDictionary values, final RouteDirection routeDirection, final RequestContext requestContext) {
-		return false;
+	static boolean matchConstraintRegex(final String value, String constraint) {
+
+//		int len = constraint.length();
+//		if (len > 0) {
+//			// Regexp constraints must be treated as absolute expressions
+//			if (constraint.charAt(0) != '^') {
+//				constraint = "^" + constraint;
+//				len++;
+//			}
+//
+//			if (constraint.charAt(len - 1) != '$')
+//				constraint += "$";
+//		}
+
+		final Pattern compiledPattern = Pattern.compile(constraint);
+		return compiledPattern.matcher(value).matches();
 	}
 
 	public String getUrl() {
 		return url != null ? url.getUrl() : "";
 	}
 
-	public void setUrl(final String url) {
+	public void setUrl(@Nullable final String url) {
 		this.url = !Strings.isNullOrEmpty(url) ? new PatternParser(url) : new PatternParser("");
 	}
 

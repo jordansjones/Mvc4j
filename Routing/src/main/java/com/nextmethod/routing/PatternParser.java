@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.nextmethod.OutParam;
 import com.nextmethod.web.HttpContext;
 
 import java.io.UnsupportedEncodingException;
@@ -74,6 +75,9 @@ class PatternParser {
 			if (partLength == 0 && i < partsCount - 1)
 				throw new IllegalArgumentException("Consecutive Url segment separators '/' are not allowed");
 
+			if (part.contains("{}"))
+				throw new IllegalArgumentException("Empty Url parameter name is not allowed");
+
 			if (i > 0)
 				allTokens.add(null);
 
@@ -123,7 +127,7 @@ class PatternParser {
 				if (next == -1)
 					next = partLength;
 
-				String token = part.substring(start + 1, end - start - 1);
+				String token = part.substring(start + 1, end);
 				PatternTokenType type;
 				if (token.charAt(0) == '*') {
 					catchAlls++;
@@ -143,7 +147,7 @@ class PatternParser {
 				allLiteral = false;
 
 				if (end < (partLength - 1)) {
-					token = part.substring(end + 1, next - end - 1);
+					token = part.substring(end + 1, next);
 					tempToken = new PatternToken(PatternTokenType.Literal, token);
 					tokens.add(tempToken);
 					allTokens.add(tempToken);
@@ -215,9 +219,9 @@ class PatternParser {
 					return false;
 
 				scanIndex = startIndex - nameLen + 1;
-				if (!pathSegment.substring(scanIndex, nameLen).equalsIgnoreCase(tokenName.substring(0, nameLen)))
+				if (!pathSegment.substring(scanIndex, (scanIndex + nameLen)).equalsIgnoreCase(tokenName.substring(0, nameLen)))
 					return false;
-				startIndex = scanIndex = 1;
+				startIndex = scanIndex - 1;
 				continue;
 			}
 
@@ -239,13 +243,13 @@ class PatternParser {
 			// current token's value happens to be the same as preceding
 			// literal text, we'll save some time and complexity
 			scanIndex = startIndex - 1;
-			int lastIndex = pathSegment.lastIndexOf(tokenName, scanIndex);
+			int lastIndex = pathSegment.lastIndexOf(nextTokenName, scanIndex);
 			if (lastIndex == -1)
 				return false;
 
 			lastIndex += nextTokenName.length() - 1;
 
-			String sectionValue = pathSegment.substring(lastIndex + 1, startIndex - lastIndex);
+			String sectionValue = pathSegment.substring(lastIndex + 1, startIndex + (startIndex - lastIndex));
 			if (Strings.isNullOrEmpty(sectionValue))
 				return false;
 
@@ -277,7 +281,7 @@ class PatternParser {
 				argsCount--; // path ends with a trailing '/'
 		}
 
-		boolean haveDefaults = !defaults.isEmpty();
+		boolean haveDefaults = defaults != null && !defaults.isEmpty();
 
 		if (argsCount == 1 && Strings.isNullOrEmpty(argSegs[0]))
 			argsCount = 0;
@@ -395,11 +399,11 @@ class PatternParser {
 				if (parameterNames.containsKey(key))
 					continue;
 
-				Object parameterValue = null;
+				final OutParam<Object> outParam = OutParam.of(null, Object.class);
 				// Has the user specified value for this parameter and, if
 				// yes, is it the same as the one in defaults?
-				if (userValues != null && userValues.containsKey(key)) {
-					parameterValue = userValues.get(key);
+				if (userValues != null && userValues.tryGetValue(key, outParam)) {
+					final Object parameterValue = outParam.getValue();
 					Object defaultValue = entry.getValue();
 
 					if ((defaultValue instanceof String) && (parameterValue instanceof String)) {
@@ -420,10 +424,10 @@ class PatternParser {
 		final RouteValueDictionary constraints = route != null ? route.getConstraints() : null;
 		if (constraints != null && !constraints.isEmpty()) {
 			final HttpContext httpContext = requestContext.getHttpContext();
-//			boolean invalidConstraint;
+			final OutParam<Boolean> invalidConstraint = OutParam.of(false);
 
 			for (Map.Entry<String, Object> entry : constraints.entrySet()) {
-				if (!Route.processConstraintInternal(httpContext, route, entry.getValue(), entry.getKey(), userValues, RouteDirection.UrlGeneration, requestContext))
+				if (!Route.processConstraintInternal(httpContext, route, entry.getValue(), entry.getKey(), userValues, RouteDirection.UrlGeneration, requestContext, invalidConstraint))
 					return null; // constraint not met -> no match
 			}
 		}

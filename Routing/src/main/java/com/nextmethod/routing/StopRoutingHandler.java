@@ -1,6 +1,7 @@
 package com.nextmethod.routing;
 
 import com.nextmethod.web.IHttpHandler;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * User: Jordan
@@ -11,7 +12,7 @@ public class StopRoutingHandler implements IRouteHandler {
 
 	@Override
 	public IHttpHandler getHttpHandler(final RequestContext requestContext) {
-		return null;
+		throw new NotImplementedException();
 	}
 
 }

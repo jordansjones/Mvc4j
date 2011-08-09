@@ -1,10 +1,9 @@
 package com.nextmethod.routing;
 
 import com.nextmethod.web.HttpContext;
+import com.nextmethod.web.HttpRequest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +18,7 @@ import static org.mockito.Mockito.mock;
  * Date: 8/5/11
  * Time: 11:22 PM
  */
-@RunWith(MockitoJUnitRunner.class)
-public class RequestContextTest {
+public class RequestContextTest extends BaseTest {
 
 	@Mock
 	private ServletContext servletContext;
@@ -37,12 +35,14 @@ public class RequestContextTest {
 		assertNull(context.getRouteData());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@SuppressWarnings({"ConstantConditions"})
+	@Test(expected = Exception.class)
 	public void testConstructorWithNullContextThrowsNpe() {
 		new RequestContext(null, new RouteData(null, null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@SuppressWarnings({"ConstantConditions"})
+	@Test(expected = Exception.class)
 	public void testConstructorWithNullRouteDataThrowsNpe() {
 		new RequestContext(mockHttpContext(), null);
 	}
@@ -81,6 +81,7 @@ public class RequestContextTest {
 	}
 
 	private HttpContext mockHttpContext() {
-		return new HttpContext(servletContext, servletRequest, servletResponse);
+		final HttpRequest httpRequest = new HttpRequest(servletRequest, servletContext);
+		return new HttpContext(servletContext, httpRequest, servletResponse);
 	}
 }

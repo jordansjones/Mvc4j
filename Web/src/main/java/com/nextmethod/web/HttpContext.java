@@ -1,7 +1,6 @@
 package com.nextmethod.web;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -15,10 +14,14 @@ public final class HttpContext {
 	private final HttpRequest request;
 	private final HttpServletResponse response;
 
-	public HttpContext(final ServletContext servletContext, final HttpServletRequest request, final HttpServletResponse response) {
+	public HttpContext(final ServletContext servletContext, final HttpRequest request, final HttpServletResponse response) {
 		this.servletContext = servletContext;
-		this.request = new HttpRequest(request, this);
+		this.request = request;
 		this.response = response;
+	}
+
+	ServletContext getServletContext() {
+		return servletContext;
 	}
 
 	public HttpRequest getRequest() {
@@ -36,7 +39,7 @@ public final class HttpContext {
 	}
 
 	public String getApplicationPath() {
-		return servletContext.getContextPath();
+		return request.getApplicationPath();
 	}
 
 }

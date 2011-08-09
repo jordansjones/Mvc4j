@@ -1,6 +1,7 @@
 package com.nextmethod.routing;
 
 import com.google.common.collect.Maps;
+import com.nextmethod.OutParam;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -30,10 +31,12 @@ public class RouteValueDictionary implements Map<String, Object> {
 			this.routeValues.putAll(values);
 	}
 
-	public Object tryGetValue(final String key) {
+	public boolean tryGetValue(final String key, final OutParam<Object> outParam) {
 		if (!routeValues.containsKey(checkNotNull(key)))
-			return null;
-		return routeValues.get(key);
+			return false;
+
+		checkNotNull(outParam).setValue(routeValues.get(key));
+		return true;
 	}
 
 	@Override
