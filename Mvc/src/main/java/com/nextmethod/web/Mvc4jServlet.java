@@ -1,6 +1,8 @@
 package com.nextmethod.web;
 
 import com.google.inject.Injector;
+import com.nextmethod.TypeHelpers;
+import com.nextmethod.web.routing.RouteData;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,7 +21,11 @@ class Mvc4jServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		final IHttpContext instance = injector.getInstance(IHttpContext.class);
-		final Object attribute = req.getAttribute(HttpRequest.ROUTE_DATA_KEY);
-		int x = 1;
+		final RouteData data = TypeHelpers.typeAs(req.getAttribute(HttpRequest.ROUTE_DATA_KEY), RouteData.class);
+
+		if (data == null)
+			throw new HttpException("No route found"); // This should be a 404?
+
+
 	}
 }

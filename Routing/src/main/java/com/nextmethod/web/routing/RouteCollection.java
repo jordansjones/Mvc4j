@@ -1,15 +1,17 @@
 package com.nextmethod.web.routing;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import com.nextmethod.web.IHttpContext;
 import com.nextmethod.web.VirtualPathProvider;
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -37,7 +39,19 @@ public class RouteCollection implements Iterable<RouteBase> {
 	}
 
 	private RouteBase findRouteWithName(final String routeName) {
-		return null;
+		checkNotNull(routeName);
+		readLock.lock();
+		try {
+			if (routeItems.isEmpty())
+				return null;
+
+			if (!routeItems.containsKey(routeName))
+				return null;
+
+			return routeItems.get(routeName);
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	public boolean isRouteExistingFiles() {
@@ -50,38 +64,54 @@ public class RouteCollection implements Iterable<RouteBase> {
 
 	private final Map<String, RouteBase> routeItems = Maps.newHashMap();
 
+	public void add(final RouteBase item) {
+		checkNotNull(item);
+		final int hashCode = Objects.hashCode(item);
+		writeLock.lock();
+		try {
+			routeItems.put(String.valueOf(hashCode), item);
+		} finally {
+			writeLock.unlock();
+		}
+	}
+
 	public void add(final String name, final RouteBase item) {
+		checkNotNull(name);
 		checkNotNull(item);
 		writeLock.lock();
 		try {
-			super.add(item);
-			if (!Strings.isNullOrEmpty(name)) {
-				routeItems.put(name, item);
-			}
+			routeItems.put(name, item);
 		} finally {
 			writeLock.unlock();
 		}
 	}
 
-	@Override
 	public void clear() {
 		writeLock.lock();
 		try {
-			super.clear();
+			routeItems.clear();
 		} finally {
 			writeLock.unlock();
 		}
 	}
 
-	public Lock getReadLock() {
-		return readLock;
-	}
+//	public Lock getReadLock() {
+//		return readLock;
+//	}
 
 	public RouteData getRouteData(final IHttpContext httpContext) {
 		checkNotNull(httpContext);
 		checkNotNull(httpContext.getRequest());
 
-		if (size() == 0)
+		final ImmutableCollection<RouteBase> routes;
+		readLock.lock();
+		try {
+			routes = ImmutableList.copyOf(routeItems.values());
+		} finally {
+			readLock.unlock();
+		}
+
+		if (routes.isEmpty())
 			return null;
 
 		if (!routeExistingFiles) {
@@ -89,6 +119,11 @@ public class RouteCollection implements Iterable<RouteBase> {
 			// TODO: WTF?
 		}
 
+		for (RouteBase routeBase : routes) {
+			final RouteData rd = routeBase.getRouteData(httpContext);
+			if (rd != null)
+				return rd;
+		}
 
 		return null;
 	}
@@ -99,45 +134,55 @@ public class RouteCollection implements Iterable<RouteBase> {
 
 	public VirtualPathData getVirtualPath(final RequestContext requestContext, @Nullable final String name, final RouteValueDictionary values) {
 		checkNotNull(requestContext);
-		if (size() == 0)
-			return null;
+		readLock.lock();
+		try {
+			if (routeItems.isEmpty())
+				return null;
 
-		VirtualPathData pathData = null;
-		if (!Strings.isNullOrEmpty(name)) {
-			final RouteBase routeBase = findRouteWithName(name);
-			if (routeBase != null) {
-				pathData = routeBase.getVirtualPath(requestContext, values);
+			VirtualPathData pathData = null;
+			if (!Strings.isNullOrEmpty(name)) {
+				final RouteBase routeBase = findRouteWithName(name);
+				if (routeBase != null) {
+					pathData = routeBase.getVirtualPath(requestContext, values);
+				} else {
+					throw new IllegalArgumentException(String.format("Invalid route name: %s", name));
+				}
 			} else {
-				throw new IllegalArgumentException(String.format("Invalid route name: %s", name));
+				for (RouteBase routeBase : this) {
+					pathData = routeBase.getVirtualPath(requestContext, values);
+					if (pathData != null)
+						break;
+				}
 			}
-		} else {
-			for (RouteBase routeBase : this) {
-				pathData = routeBase.getVirtualPath(requestContext, values);
-				if (pathData != null)
-					break;
+
+			if (pathData != null) {
+				String appPath = requestContext.getHttpContext().getApplicationPath();
+				if (appPath != null && (appPath.length() == 0 || !appPath.endsWith("/")))
+					appPath += "/";
+
+				final String pathWithApp = String.format("%s%s", appPath, pathData.getVirtualPath());
+				pathData.setVirtualPath(requestContext.getHttpContext().applyApplicationPathModifier(pathWithApp));
+				return pathData;
 			}
+
+			return null;
+		} finally {
+			readLock.unlock();
 		}
-
-		if (pathData != null) {
-			String appPath = requestContext.getHttpContext().getApplicationPath();
-			if (appPath != null && (appPath.length() == 0 || !appPath.endsWith("/")))
-				appPath += "/";
-
-			final String pathWithApp = String.format("%s%s", appPath, pathData.getVirtualPath());
-			pathData.setVirtualPath(requestContext.getHttpContext().applyApplicationPathModifier(pathWithApp));
-			return pathData;
-		}
-
-		return null;
 	}
 
-	public Lock getWriteLock() {
-		return writeLock;
-	}
+//	public Lock getWriteLock() {
+//		return writeLock;
+//	}
 
 
 	@Override
 	public Iterator<RouteBase> iterator() {
-		return Iterators.
+		readLock.lock();
+		try {
+			return Iterators.unmodifiableIterator(routeItems.values().iterator());
+		} finally {
+			readLock.unlock();
+		}
 	}
 }
