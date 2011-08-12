@@ -1,20 +1,19 @@
 package com.nextmethod.web;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
+import com.google.inject.servlet.RequestScoped;
 
-/**
- * User: Jordan
- * Date: 8/5/11
- * Time: 9:57 PM
- */
-public final class HttpContext {
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+
+@RequestScoped
+class HttpContext implements IHttpContext {
 
 	private final ServletContext servletContext;
-	private final HttpRequest request;
-	private final HttpServletResponse response;
+	private final IHttpRequest request;
+	private final IHttpResponse response;
 
-	public HttpContext(final ServletContext servletContext, final HttpRequest request, final HttpServletResponse response) {
+	@Inject
+	public HttpContext(final ServletContext servletContext, final IHttpRequest request, final IHttpResponse response) {
 		this.servletContext = servletContext;
 		this.request = request;
 		this.response = response;
@@ -24,20 +23,24 @@ public final class HttpContext {
 		return servletContext;
 	}
 
-	public HttpRequest getRequest() {
+	@Override
+	public IHttpRequest getRequest() {
 		return request;
 	}
 
-	public HttpServletResponse getResponse() {
+	@Override
+	public IHttpResponse getResponse() {
 		return response;
 	}
 
+	@Override
 	public String applyApplicationPathModifier(final String virtualPath) {
 		// TODO: Implement this
 		// NOTE: Take SessionID into account.
 		return virtualPath;
 	}
 
+	@Override
 	public String getApplicationPath() {
 		return request.getApplicationPath();
 	}

@@ -7,7 +7,7 @@ package com.nextmethod.web;
  */
 public interface IHttpHandler {
 
-	void processRequest(HttpContext httpContext) throws HttpException;
+	void processRequest(IHttpContext httpContext) throws HttpException;
 
 	boolean isReusable();
 

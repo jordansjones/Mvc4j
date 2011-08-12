@@ -10,6 +10,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>mvc</artifactId>
+	<packaging>jar</packaging>
+	<name>Mvc4j Mvc Implementation</name>
 
 	<properties>
 		<routing.version>${project.parent.version}</routing.version>

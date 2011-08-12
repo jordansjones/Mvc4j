@@ -13,11 +13,20 @@
 		<module>web</module>
 		<module>routing</module>
 		<module>mvc</module>
+		<module>Mvc4jWebTest</module>
 	</modules>
 
 	<properties>
 		<junit.version>4.8.2</junit.version>
 		<mockito.version>1.9.0-rc1</mockito.version>
+
+		<google.guava.version>r09</google.guava.version>
+		<google.guice.version>3.0</google.guice.version>
+
+
+		<!-- Java Version Source must be 1.6 until 1.7 is available on OS X -->
+		<java.version.source>1.6</java.version.source>
+		<java.version.target>${java.version.source}</java.version.target>
 	</properties>
 
 	<dependencies>
@@ -27,7 +36,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -40,7 +49,19 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>r09</version>
+			<version>${google.guava.version}</version>
+		</dependency>
+
+		<!-- Google's Guice DI framework -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>${google.guice.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-servlet</artifactId>
+			<version>${google.guice.version}</version>
 		</dependency>
 
 		<!-- Static Analysis -->
@@ -74,12 +95,37 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.3.2</version>
 					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>${java.version.source}</source>
+						<target>${java.version.target}</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 			</plugins>
+
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>with-jrebel</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.zeroturnaround</groupId>
+						<artifactId>javarebel-maven-plugin</artifactId>
+						<version>1.0.5</version>
+						<executions>
+							<execution>
+								<id>generate-rebel-xml</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
