@@ -1,7 +1,9 @@
 package com.nextmethod;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.google.inject.TypeLiteral;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * User: jordanjones
@@ -16,12 +18,16 @@ public final class OutParam<T> {
 		this.value = value;
 	}
 
-	public T getValue() {
+	public T get() {
 		return value;
 	}
 
-	public void setValue(T value) {
+	public void set(T value) {
 		this.value = value;
+	}
+
+	public boolean isNull() {
+		return this.value == null;
 	}
 
 	@Override
@@ -33,6 +39,7 @@ public final class OutParam<T> {
 		);
 	}
 
+	@SuppressWarnings({"RedundantIfStatement"})
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -82,7 +89,20 @@ public final class OutParam<T> {
 		return new OutParam<Short>(value);
 	}
 
-	public static <V> OutParam<V> of(@Nullable final V value, @NotNull final Class<V> cls) {
+	public static <V> OutParam<V> of(@Nullable final V value, @Nonnull final Class<V> cls) {
 		return new OutParam<V>(value);
+	}
+
+	public static <V> OutParam<V> of(@Nonnull final Class<V> cls) {
+		return new OutParam<V>(null);
+	}
+
+	@SuppressWarnings({"unchecked"})
+	public static <V> OutParam<V> of(@Nonnull final TypeLiteral<V> type) {
+		return (OutParam<V>) of(type.getRawType());
+	}
+
+	public static <V> OutParam<V> of() {
+		return new OutParam<V>(null);
 	}
 }

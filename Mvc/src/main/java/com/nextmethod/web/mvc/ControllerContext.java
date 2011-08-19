@@ -20,12 +20,18 @@ public class ControllerContext {
 	}
 
 	protected ControllerContext(final ControllerContext controllerContext) {
+		this(controllerContext.getRequestContext(), controllerContext.getController());
 	}
 
 	public ControllerContext(final RequestContext requestContext, final ControllerBase controllerBase) {
+		this.requestContext = requestContext;
+		this.routeData = requestContext.getRouteData();
+		this.httpContext = requestContext.getHttpContext();
+		this.controller = controllerBase;
 	}
 
 	public ControllerContext(final IHttpContext httpContext, final RouteData routeData, final ControllerBase controllerBase) {
+		this(new RequestContext(httpContext, routeData), controllerBase);
 	}
 
 	public boolean isChildAction() {

@@ -171,7 +171,7 @@ class PatternParser {
 
 	RouteValueDictionary addDefaults(final RouteValueDictionary dict, final RouteValueDictionary defaults) {
 		if (defaults != null && !defaults.isEmpty()) {
-			for (Map.Entry<String, Object> entry : dict.entrySet()) {
+			for (Map.Entry<String, Object> entry : defaults.entrySet()) {
 				final String key = entry.getKey();
 				if (dict.containsKey(key))
 					continue;
@@ -219,6 +219,7 @@ class PatternParser {
 					return false;
 
 				scanIndex = startIndex - nameLen + 1;
+				assert pathSegment != null;
 				if (!pathSegment.substring(scanIndex, (scanIndex + nameLen)).equalsIgnoreCase(tokenName.substring(0, nameLen)))
 					return false;
 				startIndex = scanIndex - 1;
@@ -229,6 +230,7 @@ class PatternParser {
 			int nextTokenIndex = tokenIndex - 1;
 			if (nextTokenIndex < 0) {
 				// First token
+				assert pathSegment != null;
 				ret.put(tokenName, pathSegment.substring(0, startIndex + 1));
 				continue;
 			}
@@ -243,6 +245,7 @@ class PatternParser {
 			// current token's value happens to be the same as preceding
 			// literal text, we'll save some time and complexity
 			scanIndex = startIndex - 1;
+			assert pathSegment != null;
 			int lastIndex = pathSegment.lastIndexOf(nextTokenName, scanIndex);
 			if (lastIndex == -1)
 				return false;
@@ -296,6 +299,7 @@ class PatternParser {
 				break;
 
 			if (segment.isAllLiteral()) {
+				assert argSegs != null;
 				if (!argSegs[i].equalsIgnoreCase(segment.getTokens().get(0).getName()))
 					return null;
 				i++;
@@ -399,11 +403,11 @@ class PatternParser {
 				if (parameterNames.containsKey(key))
 					continue;
 
-				final OutParam<Object> outParam = OutParam.of(null, Object.class);
+				final OutParam<Object> outParam = OutParam.of(Object.class);
 				// Has the user specified value for this parameter and, if
 				// yes, is it the same as the one in defaults?
 				if (userValues != null && userValues.tryGetValue(key, outParam)) {
-					final Object parameterValue = outParam.getValue();
+					final Object parameterValue = outParam.get();
 					Object defaultValue = entry.getValue();
 
 					if ((defaultValue instanceof String) && (parameterValue instanceof String)) {
@@ -483,7 +487,6 @@ class PatternParser {
 				tokenValue = ambientValues.get(parameterName);
 				if (tokenValue != null)
 					returnValue.insert(0, tokenValue.toString());
-				continue;
 			}
 		}
 
@@ -527,10 +530,12 @@ class PatternParser {
 	private static String urlEncode(final String part, final String characterEncoding) {
 		try {
 			return URLEncoder.encode(part, characterEncoding);
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			try {
 				return URLEncoder.encode(part, DEFAULT_CHARACTER_ENCODING);
-			} catch (UnsupportedEncodingException e1) {
+			}
+			catch (UnsupportedEncodingException ignored) {
 			}
 		}
 		return part;

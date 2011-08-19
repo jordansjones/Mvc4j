@@ -1,16 +1,17 @@
-package com.nextmethod.web;
+package com.nextmethod.web.mvc;
 
 import com.google.inject.servlet.ServletModule;
+import com.nextmethod.web.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-final class Mvc4jIoCModule extends ServletModule {
+final class Mvc4jIoCServletModule extends ServletModule {
 
 	private final Class<? extends IHttpApplication> httpApplication;
 
-	Mvc4jIoCModule(Class<? extends IHttpApplication> httpApplication) {
+	Mvc4jIoCServletModule(Class<? extends IHttpApplication> httpApplication) {
 		this.httpApplication = httpApplication;
 	}
 
@@ -35,7 +36,8 @@ final class Mvc4jIoCModule extends ServletModule {
 	private <I, T extends I> void bindConstructor(final Class<I> iface, final Class<T> cls, final Class<?>... classes) {
 		try {
 			bind(iface).toConstructor(cls.getConstructor(classes));
-		} catch (NoSuchMethodException e) {
+		}
+		catch (NoSuchMethodException e) {
 			addError(e);
 		}
 	}

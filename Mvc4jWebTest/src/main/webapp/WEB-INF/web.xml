@@ -2,28 +2,14 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5">
+		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
 
-	<display-name>Mvc4j Webapp Test</display-name>
-
-	<!--<context-param>-->
-	<!--<param-name>Mvc4j.application</param-name>-->
-	<!--<param-value>jordan.MvcApplication</param-value>-->
-	<!--</context-param>-->
+	<display-name>Mvc4j Web Test</display-name>
+	<description>Web application test project for the Mvc4j framework.</description>
 
 	<listener>
-		<listener-class>jordan.MvcServletContextListener</listener-class>
+		<listener-class>com.nextmethod.web.mvc.Mvc4jServletContextListener</listener-class>
 	</listener>
-
-	<filter>
-		<filter-name>httpApplicationFilter</filter-name>
-		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>httpApplicationFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
 </web-app>

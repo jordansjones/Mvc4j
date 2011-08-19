@@ -1,10 +1,14 @@
-package com.nextmethod.web;
+package com.nextmethod.web.mvc;
 
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.inject.Injector;
+import com.nextmethod.web.HttpException;
+import com.nextmethod.web.HttpRequest;
+import com.nextmethod.web.IHttpApplication;
+import com.nextmethod.web.IHttpContext;
 import com.nextmethod.web.annotations.HttpApplicationStart;
 import com.nextmethod.web.routing.RouteCollection;
 import com.nextmethod.web.routing.RouteData;
@@ -71,9 +75,11 @@ class Mvc4jFilter implements Filter {
 
 			try {
 				method.invoke(httpApplication);
-			} catch (IllegalAccessException e) {
+			}
+			catch (IllegalAccessException e) {
 				// TODO: Do something
-			} catch (InvocationTargetException e) {
+			}
+			catch (InvocationTargetException e) {
 				// TODO: Do something
 			}
 		}
@@ -83,7 +89,7 @@ class Mvc4jFilter implements Filter {
 
 	private ImmutableMultimap<Class<? extends Annotation>, Method> loadEventMethods(final Method[] methods) {
 
-		final ImmutableMultimap.Builder<Class<? extends Annotation>, Method> builder = ImmutableMultimap.<Class<? extends Annotation>, Method>builder();
+		final ImmutableMultimap.Builder<Class<? extends Annotation>, Method> builder = ImmutableMultimap.builder();
 		for (Method method : ImmutableList.copyOf(methods)) {
 			final Annotation[] annotations = method.getDeclaredAnnotations();
 			for (Annotation annotation : annotations) {

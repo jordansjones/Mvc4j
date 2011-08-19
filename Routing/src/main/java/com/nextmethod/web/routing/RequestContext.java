@@ -1,8 +1,9 @@
 package com.nextmethod.web.routing;
 
 import com.nextmethod.web.IHttpContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -21,7 +22,7 @@ public class RequestContext {
 		this.routeData = null;
 	}
 
-	public RequestContext(@NotNull final IHttpContext httpContext, @NotNull final RouteData routeData) {
+	public RequestContext(@Nonnull final IHttpContext httpContext, @Nonnull final RouteData routeData) {
 		this.httpContext = checkNotNull(httpContext);
 		this.routeData = checkNotNull(routeData);
 	}

@@ -6,8 +6,10 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @RequestScoped
-class HttpResponse implements IHttpResponse {
+public final class HttpResponse implements IHttpResponse {
 
 	private final HttpServletResponse response;
 	private final ServletContext servletContext;
@@ -20,6 +22,11 @@ class HttpResponse implements IHttpResponse {
 
 	@Override
 	public HttpServletResponse getServletResponse() {
-		return null;
+		return this.response;
+	}
+
+	@Override
+	public void appendHeader(final String name, final String value) {
+		this.response.addHeader(checkNotNull(name), value);
 	}
 }

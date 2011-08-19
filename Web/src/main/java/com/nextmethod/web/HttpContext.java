@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 @RequestScoped
-class HttpContext implements IHttpContext {
+public final class HttpContext implements IHttpContext {
 
 	private final ServletContext servletContext;
 	private final IHttpRequest request;

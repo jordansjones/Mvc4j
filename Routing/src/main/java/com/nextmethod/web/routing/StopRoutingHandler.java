@@ -1,7 +1,7 @@
 package com.nextmethod.web.routing;
 
+import com.nextmethod.NotImplementedException;
 import com.nextmethod.web.IHttpHandler;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * User: Jordan

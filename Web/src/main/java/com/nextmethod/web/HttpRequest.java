@@ -2,14 +2,14 @@ package com.nextmethod.web;
 
 import com.google.common.base.Strings;
 import com.google.inject.servlet.RequestScoped;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.nextmethod.NotImplementedException;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 @RequestScoped
-class HttpRequest implements IHttpRequest {
+public final class HttpRequest implements IHttpRequest {
 
 	public static final String ROUTE_DATA_KEY = "mvc4j.route.data";
 
@@ -52,6 +52,18 @@ class HttpRequest implements IHttpRequest {
 
 	@Override
 	public String getPath() {
+		String path = request.getPathInfo();
+		if (!Strings.isNullOrEmpty(path))
+			return path;
+
+		path = request.getPathTranslated();
+		if (!Strings.isNullOrEmpty(path))
+			return path;
+
+		path = request.getServletPath();
+		if (!Strings.isNullOrEmpty(path))
+			return path;
+
 		throw new NotImplementedException();
 	}
 

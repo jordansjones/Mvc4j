@@ -1,9 +1,10 @@
 package com.nextmethod.web.routing;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.nextmethod.OutParam;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -38,8 +39,12 @@ public class RouteValueDictionary implements Map<String, Object> {
 		if (!routeValues.containsKey(checkNotNull(key)))
 			return false;
 
-		checkNotNull(outParam).setValue(routeValues.get(key));
+		checkNotNull(outParam).set(routeValues.get(key));
 		return true;
+	}
+
+	public RouteValueDictionary filterEntries(final Predicate<Entry<String, Object>> predicate) {
+		return new RouteValueDictionary(Maps.filterEntries(routeValues, predicate));
 	}
 
 	@Override

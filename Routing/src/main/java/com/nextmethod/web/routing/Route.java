@@ -4,8 +4,8 @@ import com.google.common.base.Strings;
 import com.nextmethod.OutParam;
 import com.nextmethod.web.IHttpContext;
 import com.nextmethod.web.InvalidOperationException;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -123,7 +123,7 @@ public class Route extends RouteBase {
 		requestContext.setHttpContext(httpContext);
 		final boolean ret = processConstraintInternal(httpContext, this, constraint, parameterName, values, routeDirection, requestContext, invalidConstraint);
 
-		if (invalidConstraint.getValue()) {
+		if (invalidConstraint.get()) {
 			throw new InvalidOperationException(String.format(
 				"Constraint parameter '%s' on the route with Url '%s' must have a string value type or be a type which implements IRouteConstraint",
 				parameterName,
@@ -135,7 +135,7 @@ public class Route extends RouteBase {
 	}
 
 	static boolean processConstraintInternal(final IHttpContext httpContext, final Route route, final Object constraint, final String parameterName, final RouteValueDictionary values, final RouteDirection routeDirection, final RequestContext requestContext, final OutParam<Boolean> invalidConstraint) {
-		invalidConstraint.setValue(false);
+		invalidConstraint.set(false);
 
 		final IRouteConstraint irc = typeAs(constraint, IRouteConstraint.class);
 		if (irc != null)
@@ -144,11 +144,11 @@ public class Route extends RouteBase {
 		try {
 			final String s = typeAs(constraint, String.class);
 			if (s != null) {
-				OutParam<Object> out = OutParam.of(null, Object.class);
+				OutParam<Object> out = OutParam.of(Object.class);
 				String v;
 
 				if (values != null && values.tryGetValue(parameterName, out)) {
-					v = typeAs(out.getValue(), String.class);
+					v = typeAs(out.get(), String.class);
 				} else {
 					v = null;
 				}
@@ -165,15 +165,16 @@ public class Route extends RouteBase {
 					if (!rdValues.tryGetValue(parameterName, out))
 						return false;
 
-					v = typeAs(out.getValue(), String.class);
+					v = typeAs(out.get(), String.class);
 
 					return !Strings.isNullOrEmpty(v) && matchConstraintRegex(v, s);
 				}
 				return false;
 			}
-		} catch (PatternSyntaxException ignored) {
 		}
-		invalidConstraint.setValue(true);
+		catch (PatternSyntaxException ignored) {
+		}
+		invalidConstraint.set(true);
 		return false;
 	}
 

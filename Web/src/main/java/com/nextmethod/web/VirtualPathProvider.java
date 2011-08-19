@@ -1,9 +1,7 @@
 package com.nextmethod.web;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 10:24 PM
+ *
  */
 public abstract class VirtualPathProvider {
 

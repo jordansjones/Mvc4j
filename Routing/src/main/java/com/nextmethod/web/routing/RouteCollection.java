@@ -8,8 +8,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import com.nextmethod.web.IHttpContext;
 import com.nextmethod.web.VirtualPathProvider;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -49,7 +49,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 				return null;
 
 			return routeItems.get(routeName);
-		} finally {
+		}
+		finally {
 			readLock.unlock();
 		}
 	}
@@ -70,7 +71,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 		writeLock.lock();
 		try {
 			routeItems.put(String.valueOf(hashCode), item);
-		} finally {
+		}
+		finally {
 			writeLock.unlock();
 		}
 	}
@@ -81,7 +83,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 		writeLock.lock();
 		try {
 			routeItems.put(name, item);
-		} finally {
+		}
+		finally {
 			writeLock.unlock();
 		}
 	}
@@ -90,7 +93,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 		writeLock.lock();
 		try {
 			routeItems.clear();
-		} finally {
+		}
+		finally {
 			writeLock.unlock();
 		}
 	}
@@ -107,7 +111,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 		readLock.lock();
 		try {
 			routes = ImmutableList.copyOf(routeItems.values());
-		} finally {
+		}
+		finally {
 			readLock.unlock();
 		}
 
@@ -166,7 +171,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 			}
 
 			return null;
-		} finally {
+		}
+		finally {
 			readLock.unlock();
 		}
 	}
@@ -181,7 +187,8 @@ public class RouteCollection implements Iterable<RouteBase> {
 		readLock.lock();
 		try {
 			return Iterators.unmodifiableIterator(routeItems.values().iterator());
-		} finally {
+		}
+		finally {
 			readLock.unlock();
 		}
 	}

@@ -1,5 +1,3 @@
-package jordan;
-
 import com.nextmethod.web.IHttpApplication;
 import com.nextmethod.web.annotations.HttpApplicationStart;
 import com.nextmethod.web.routing.RouteCollection;

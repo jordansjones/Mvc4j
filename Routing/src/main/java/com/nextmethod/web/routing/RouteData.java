@@ -1,5 +1,10 @@
 package com.nextmethod.web.routing;
 
+import com.google.common.base.Strings;
+import com.nextmethod.OutParam;
+import com.nextmethod.TypeHelpers;
+import com.nextmethod.web.InvalidOperationException;
+
 /**
  * User: Jordan
  * Date: 8/5/11
@@ -22,7 +27,15 @@ public class RouteData {
 	}
 
 	public String getRequiredString(final String valueName) {
-		return null;
+		final OutParam<Object> param = OutParam.of(Object.class);
+		if (!values.tryGetValue(valueName, param))
+			throw new InvalidOperationException(String.format("value name '%s' does not match any of the values.", valueName));
+
+		final String s = TypeHelpers.typeAs(param, String.class);
+		if (Strings.isNullOrEmpty(s))
+			throw new InvalidOperationException(String.format("The value for the name '%s' must be a non-empty string", valueName));
+
+		return s;
 	}
 
 	public RouteValueDictionary getDataTokens() {

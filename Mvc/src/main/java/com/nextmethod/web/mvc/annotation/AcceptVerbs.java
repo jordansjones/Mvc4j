@@ -1,4 +1,4 @@
-package com.nextmethod.web.mvc;
+package com.nextmethod.web.mvc.annotation;
 
 import com.nextmethod.web.HttpVerb;
 
