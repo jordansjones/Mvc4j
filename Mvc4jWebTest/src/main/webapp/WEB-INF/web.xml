@@ -9,7 +9,7 @@
 	<description>Web application test project for the Mvc4j framework.</description>
 
 	<listener>
-		<listener-class>com.nextmethod.web.mvc.Mvc4jServletContextListener</listener-class>
+		<listener-class>nextmethod.web.mvc.Mvc4jServletContextListener</listener-class>
 	</listener>
 
 </web-app>

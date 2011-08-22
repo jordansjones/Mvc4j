@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>com.nextmethod</groupId>
 			<artifactId>routing</artifactId>
-			<version>${routing.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 

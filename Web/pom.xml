@@ -11,8 +11,15 @@
 
 	<artifactId>web</artifactId>
 	<packaging>jar</packaging>
-
 	<name>Mvc4j Web</name>
 
+
+	<dependencies>
+		<dependency>
+			<groupId>com.nextmethod</groupId>
+			<artifactId>util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 
 </project>

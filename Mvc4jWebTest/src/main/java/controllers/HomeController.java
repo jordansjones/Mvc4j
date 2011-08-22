@@ -1,7 +1,7 @@
 package controllers;
 
-import com.nextmethod.web.mvc.ActionResult;
-import com.nextmethod.web.mvc.Controller;
+import nextmethod.web.mvc.ActionResult;
+import nextmethod.web.mvc.Controller;
 
 /**
  *

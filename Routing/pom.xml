@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>com.nextmethod</groupId>
 			<artifactId>web</artifactId>
-			<version>${web.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 

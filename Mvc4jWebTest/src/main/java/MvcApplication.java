@@ -1,11 +1,11 @@
-import com.nextmethod.web.IHttpApplication;
-import com.nextmethod.web.annotations.HttpApplicationStart;
-import com.nextmethod.web.routing.RouteCollection;
-import com.nextmethod.web.routing.RouteTable;
-import com.nextmethod.web.routing.RouteValueDictionary;
+import nextmethod.web.IHttpApplication;
+import nextmethod.web.annotations.HttpApplicationStart;
+import nextmethod.web.routing.RouteCollection;
+import nextmethod.web.routing.RouteTable;
+import nextmethod.web.routing.RouteValueDictionary;
 
-import static com.nextmethod.web.mvc.RouteHelper.ignoreRoute;
-import static com.nextmethod.web.mvc.RouteHelper.mapRoute;
+import static nextmethod.web.mvc.RouteHelper.ignoreRoute;
+import static nextmethod.web.mvc.RouteHelper.mapRoute;
 
 
 public class MvcApplication implements IHttpApplication {

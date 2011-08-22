@@ -11,8 +11,6 @@
 
 	<artifactId>util</artifactId>
 	<packaging>jar</packaging>
-
 	<name>Mvc4j Utilities</name>
-
 
 </project>
