@@ -3,6 +3,7 @@ syntax: glob
 
 .idea
 *.iml
+*.DS_Store
 
 
 # switch to regexp syntax.

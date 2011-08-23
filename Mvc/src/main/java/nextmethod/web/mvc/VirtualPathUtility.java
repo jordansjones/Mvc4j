@@ -16,6 +16,8 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.net.URL;
 
+import static nextmethod.SystemHelpers.FileSeparator;
+
 /**
  *
  */
@@ -57,7 +59,7 @@ final class VirtualPathUtility {
 		final ImmutableMultimap.Builder<ClassPathType, String> builder = ImmutableMultimap.builder();
 		if (classes.exists() && classes.isDirectory()) {
 			final ImmutableSet<String> clss = loadPathEntries(ClassPathType.Path, classes);
-			final String s = String.format("%s\\", classes.getAbsolutePath());
+			final String s = String.format("%s%s", classes.getAbsolutePath(), FileSeparator());
 			for (String cls : clss) {
 				builder.put(ClassPathType.Path, cls.replace(s, ""));
 			}
