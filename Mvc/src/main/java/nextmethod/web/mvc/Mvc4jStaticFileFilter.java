@@ -54,7 +54,7 @@ class Mvc4jStaticFileFilter implements Filter {
 			}
 			return;
 		}
-		chain.doFilter(request, response);
+//		chain.doFilter(request, response);
 	}
 
 	@Override

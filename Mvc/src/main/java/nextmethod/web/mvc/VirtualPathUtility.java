@@ -42,10 +42,12 @@ final class VirtualPathUtility {
 	}
 
 	public String getWebInfFolder() {
-		if (WebInfFile == null)
-			getWebInfFolder(null);
+		File webInfFile = WebInfFile;
+		if (webInfFile == null) {
+			webInfFile = getWebInfFolder(null);
+		}
 
-		return WebInfFile.getAbsolutePath();
+		return webInfFile.getAbsolutePath();
 	}
 
 	public ImmutableMultimap<ClassPathType, String> getClassPath() {
@@ -120,8 +122,9 @@ final class VirtualPathUtility {
 		if (WebInfFile != null)
 			return WebInfFile;
 
-		if (baseFile == null)
+		if (baseFile == null) {
 			baseFile = getMvcResourcesProperties();
+		}
 		final String name = baseFile.getName();
 		if (WebInfFolderName.equalsIgnoreCase(name)) {
 			if (WebInfFile == null) {
@@ -143,6 +146,7 @@ final class VirtualPathUtility {
 	private static
 	@Nonnull
 	File getMvcResourcesProperties() {
+//		final URL resource = Resources.getResource("MvcResources.properties");
 		final URL resource = VirtualPathUtility.class.getResource("MvcResources.properties");
 		if (resource == null)
 			throw new InvalidOperationException("Failed to load MvcResources.properties");

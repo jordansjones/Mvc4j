@@ -90,6 +90,8 @@ public class MvcHandler implements IHttpHandler {
 	}
 
 	private static String getMvcVersionString() {
+//		return "1.0";
+//		TODO: Figure out a better way to do this.
 		return Mvc4jResources.Version().getString("version");
 	}
 
