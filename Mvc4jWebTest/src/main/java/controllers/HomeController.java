@@ -16,7 +16,7 @@ public class HomeController extends Controller {
 	@Filters({
 		@Filter(impl = OneActionFilter.class, order = 1),
 		@Filter(impl = TwoActionFilter.class, order = 2),
-		@Filter(impl = ThreeActionFilter.class, order = 3),
+		@Filter(impl = ThreeActionFilter.class, order = 3)
 	})
 	public ActionResult index() {
 		return view();
