@@ -23,6 +23,7 @@ final class Mvc4jIoCServletModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
+		filter("*.css").through(Mvc4jStaticFileFilter.class);
 		filter("/*").through(Mvc4jFilter.class);
 		serve("/*").with(Mvc4jServlet.class);
 

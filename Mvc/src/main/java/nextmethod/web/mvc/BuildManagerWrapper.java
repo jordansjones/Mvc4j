@@ -50,6 +50,8 @@ class BuildManagerWrapper implements IBuildManager {
 			final Class<?> aClass = Class.forName(type);
 			assembly.getEntries().add(AssemblyType.of(aClass));
 		}
+		catch (NoClassDefFoundError ignored) {
+		}
 		catch (ClassNotFoundException e) {
 			// Do Nothing
 		}

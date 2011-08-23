@@ -12,6 +12,12 @@ public class MvcApplication implements IHttpApplication {
 
 	public static void registerRoutes(final RouteCollection routes) {
 		ignoreRoute(routes, "{resource}.axd/{*pathInfo}");
+		ignoreRoute(routes, "{*favicon}", RouteValueDictionary.builder()
+			.put("favicon", "(.*/)?favicon.ico(/.*)?").build()
+		);
+		ignoreRoute(routes, "{folder}/{*pathInfo}", RouteValueDictionary.builder()
+			.put("folder", "Content").build()
+		);
 
 		// Default
 		mapRoute(routes,

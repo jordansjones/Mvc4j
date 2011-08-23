@@ -17,11 +17,7 @@ import java.util.Set;
 
 public class MvcHandler implements IHttpHandler {
 
-
-	private static final String ControllerKey = "controller";
-
 	static final String MvcVersion = getMvcVersionString();
-	public static final String MvcVersionHeaderName = "X-Mvc4j-Version";
 
 	private final RequestContext requestContext;
 
@@ -52,7 +48,7 @@ public class MvcHandler implements IHttpHandler {
 		removeOptionalRoutingParameters();
 
 		// Get the controller type
-		final String controllerName = requestContext.getRouteData().getRequiredString(ControllerKey);
+		final String controllerName = requestContext.getRouteData().getRequiredString(MagicStrings.ControllerKey);
 
 		// Instantiate the controller and call execute
 		factory.set(controllerBuilder.getControllerFactory());
@@ -74,7 +70,7 @@ public class MvcHandler implements IHttpHandler {
 //	}
 
 	private void addVersionHeader(final IHttpContext httpContext) {
-		httpContext.getResponse().appendHeader(MvcVersionHeaderName, MvcVersion);
+		httpContext.getResponse().appendHeader(MagicStrings.MvcVersionHeaderName, MvcVersion);
 	}
 
 	private void removeOptionalRoutingParameters() {

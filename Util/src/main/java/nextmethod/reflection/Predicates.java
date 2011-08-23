@@ -16,7 +16,7 @@ final class Predicates {
 	public static final Predicate<MethodInfo> PublicMethods = new Predicate<MethodInfo>() {
 		@Override
 		public boolean apply(@Nullable final MethodInfo input) {
-			return false;
+			return input != null && input.isPublic();
 		}
 	};
 

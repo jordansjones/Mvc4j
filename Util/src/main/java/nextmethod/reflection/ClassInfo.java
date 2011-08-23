@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import nextmethod.OutParam;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
@@ -84,6 +85,7 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 	}
 
 	public ImmutableCollection<MethodInfo> getMethods() {
+		populateMethods();
 		return ImmutableSet.copyOf(
 			Iterables.filter(this.methods, Predicates.PublicMethods)
 		);
@@ -143,6 +145,43 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 
 	public boolean isStatic() {
 		return isStatic;
+	}
+
+	public T newInstance() throws IllegalAccessException, InstantiationException {
+		return wrapped.newInstance();
+	}
+
+	public boolean tryGetInstance(final OutParam<T> result) {
+		try {
+			final T t = wrapped.newInstance();
+			result.set(t);
+			return true;
+		}
+		catch (InstantiationException e) {
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public <IType extends T> boolean tryGetInstanceAs(final OutParam<IType> result, final Class<IType> typeCls) {
+		if (!typeCls.isAssignableFrom(wrapped))
+			return false;
+
+		try {
+			final T t = wrapped.newInstance();
+			result.set(typeCls.cast(t));
+			return true;
+		}
+		catch (InstantiationException e) {
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override

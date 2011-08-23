@@ -38,4 +38,9 @@ public class ReflectedActionDescriptor extends ActionDescriptor {
 		final Object result = dispatcher.execute(controllerContext.getController(), new Object[0]);
 		return result;
 	}
+
+	@Override
+	public FilterInfo getFilters() {
+		return getFilters(this.actionMethod);
+	}
 }

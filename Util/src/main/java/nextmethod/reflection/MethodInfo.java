@@ -7,11 +7,13 @@ import nextmethod.NotImplementedException;
 import nextmethod.OutParam;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static nextmethod.reflection.TypeOfHelper.typeOf;
 
 /**
  *
@@ -95,7 +97,7 @@ public final class MethodInfo extends MemberInfo<Method> {
 	}
 
 	public ClassInfo getReturnType() {
-		throw new NotImplementedException();
+		return typeOf(this.wrapped.getReturnType());
 	}
 
 	public Object invoke(final Object obj, final Object... parameters) {
@@ -107,7 +109,20 @@ public final class MethodInfo extends MemberInfo<Method> {
 	}
 
 	public boolean tryInvoke(final Object obj, final Object[] parameters, final OutParam<Object> result) {
-		throw new NotImplementedException();
+		try {
+			final Object invokeResult = wrapped.invoke(obj, parameters);
+			result.set(invokeResult);
+			return true;
+		}
+		catch (IllegalAccessException e) {
+			// TODO: Handle this somehow
+			e.printStackTrace();
+		}
+		catch (InvocationTargetException e) {
+			// TODO: Handle this somehow
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override

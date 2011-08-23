@@ -25,7 +25,7 @@ class Mvc4jServlet extends HttpServlet {
 	private Injector injector;
 
 	@Inject
-	private IRouteHandler routeHandler;
+	private IRouteHandler defaultRouteHandler;
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,7 +35,17 @@ class Mvc4jServlet extends HttpServlet {
 		if (data == null)
 			throw new HttpException("No route found"); // This should be a 404?
 
+		final IRouteHandler routeHandler = getRouteHandler(data);
 		final IHttpHandler handler = routeHandler.getHttpHandler(new RequestContext(httpContext, data));
 		handler.processRequest(httpContext);
+	}
+
+	private IRouteHandler getRouteHandler(final RouteData data) {
+		final IRouteHandler routeHandler = data.getRouteHandler();
+		if (routeHandler == null)
+			return defaultRouteHandler;
+
+		injector.injectMembers(routeHandler);
+		return routeHandler;
 	}
 }

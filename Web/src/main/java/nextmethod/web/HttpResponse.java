@@ -5,6 +5,7 @@ import com.google.inject.servlet.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -28,5 +29,26 @@ public final class HttpResponse implements IHttpResponse {
 	@Override
 	public void appendHeader(final String name, final String value) {
 		this.response.addHeader(checkNotNull(name), value);
+	}
+
+	@Override
+	public void setContentEncoding(final String encoding) {
+		this.response.setCharacterEncoding(encoding);
+	}
+
+	@Override
+	public void setContentType(final String contentType) {
+		this.response.setContentType(contentType);
+	}
+
+	@Override
+	public void write(final String content) {
+		try {
+			this.response.getWriter().write(content);
+		}
+		catch (IOException e) {
+			// TODO: Do something with this
+			e.printStackTrace();
+		}
 	}
 }

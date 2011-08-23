@@ -19,7 +19,7 @@ public final class TypeHelpers {
 	public static <T> T typeAs(final Object o, final Class<T> cls) {
 		checkNotNull(cls);
 
-		return o != null && cls.isAssignableFrom(o.getClass()) ? cls.cast(o) : null;
+		return o != null && cls.isInstance(o) ? cls.cast(o) : null;
 	}
 
 	@SuppressWarnings({"unchecked"})
@@ -29,4 +29,10 @@ public final class TypeHelpers {
 		return (T) typeAs(o, typeLiteral.getRawType());
 	}
 
+	@SuppressWarnings({"unchecked"})
+	public static <T> Class<T> rawType() {
+		final TypeLiteral<T> typeLiteral = new TypeLiteral<T>() {
+		};
+		return (Class<T>) typeLiteral.getRawType();
+	}
 }

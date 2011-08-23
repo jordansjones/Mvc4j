@@ -16,6 +16,7 @@ public abstract class ControllerBase implements IController {
 	private final SingleEntryGate executeWasCalledGate = new SingleEntryGate();
 
 	private ControllerContext controllerContext;
+	private boolean validateRequest;
 
 	@Override
 	public void execute(final RequestContext requestContext) {
@@ -39,6 +40,14 @@ public abstract class ControllerBase implements IController {
 
 	public void setControllerContext(final ControllerContext controllerContext) {
 		this.controllerContext = controllerContext;
+	}
+
+	public boolean isValidateRequest() {
+		return validateRequest;
+	}
+
+	public void setValidateRequest(final boolean validateRequest) {
+		this.validateRequest = validateRequest;
 	}
 
 	void verifyExecuteCalledOnce() {

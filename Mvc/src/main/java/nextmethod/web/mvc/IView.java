@@ -1,10 +1,11 @@
 package nextmethod.web.mvc;
 
+import java.io.Writer;
+
 /**
- * User: Jordan
- * Date: 8/6/11
- * Time: 12:09 AM
+ *
  */
 public interface IView {
 
+	void render(ViewContext viewContext, Writer writer);
 }

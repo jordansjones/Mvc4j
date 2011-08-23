@@ -2,7 +2,6 @@ package nextmethod.reflection;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
-import com.google.inject.TypeLiteral;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
@@ -22,13 +21,6 @@ public final class TypeOfHelper {
 	// ************************************************************************
 	// Common Helpers
 	// ************************************************************************
-
-	@SuppressWarnings({"unchecked"})
-	private static <T> Class<T> rawType() {
-		final TypeLiteral<T> typeLiteral = new TypeLiteral<T>() {
-		};
-		return (Class<T>) typeLiteral.getRawType();
-	}
 
 
 	// ************************************************************************

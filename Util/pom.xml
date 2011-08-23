@@ -13,4 +13,12 @@
 	<packaging>jar</packaging>
 	<name>Mvc4j Utilities</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+	</dependencies>
+
 </project>

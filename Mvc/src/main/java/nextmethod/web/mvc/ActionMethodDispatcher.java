@@ -1,6 +1,7 @@
 package nextmethod.web.mvc;
 
 import nextmethod.OutParam;
+import nextmethod.reflection.ClassInfo;
 import nextmethod.reflection.MethodInfo;
 
 /**
@@ -20,12 +21,11 @@ final class ActionMethodDispatcher {
 	}
 
 	private static ActionExecutor<?> getExecutor(final MethodInfo method) {
-//		TODO: Fix this
-//		final Type returnType = method.getGenericReturnType();
-//		if (Void.TYPE.equals(returnType)) {
-		return createVoidActionExecutor(method);
-//		}
-//		return createReturningActionExecutor(method);
+		final ClassInfo returnType = method.getReturnType();
+		if (Void.TYPE.equals(returnType.wrappedType())) {
+			return createVoidActionExecutor(method);
+		}
+		return createReturningActionExecutor(method);
 	}
 
 	private static Object tryInvokeActionMethod(final MethodInfo method, final ControllerBase controllerBase, final Object[] parameters) {

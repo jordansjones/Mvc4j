@@ -22,6 +22,8 @@ class Mvc4jIocCoreModule extends AbstractModule {
 		bind(IControllerFactory.class).to(DefaultControllerFactory.class).in(Singleton.class);
 		// URL route Handler
 		bind(IRouteHandler.class).to(MvcRouteHandler.class);
+		// View Engine
+		bind(IViewEngine.class).to(DumbHtmlViewEngine.class);
 		// Virtual Path Utility
 		bind(VirtualPathUtility.class).in(Singleton.class);
 	}

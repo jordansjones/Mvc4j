@@ -11,5 +11,4 @@
 	<listener>
 		<listener-class>nextmethod.web.mvc.Mvc4jServletContextListener</listener-class>
 	</listener>
-
 </web-app>

@@ -16,13 +16,15 @@ final class Mvc4jResources {
 
 	static enum Resources {
 
-		MvcResources("com.nextmethod.web.mvc.MvcResources"),
-		Version("com.nextmethod.web.mvc.Version");
+		MvcResources,
+		Version;
 
 		private final String bundle;
 
-		Resources(final String bundleName) {
-			this.bundle = bundleName;
+		Resources() {
+			final String name = this.name();
+			final String packageName = this.getClass().getPackage().getName();
+			this.bundle = String.format("%s.%s", packageName, name);
 		}
 
 		@Override

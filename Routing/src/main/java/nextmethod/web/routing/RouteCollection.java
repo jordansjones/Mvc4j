@@ -5,12 +5,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import nextmethod.web.IHttpContext;
 import nextmethod.web.VirtualPathProvider;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -63,6 +65,7 @@ public class RouteCollection implements Iterable<RouteBase> {
 		this.routeExistingFiles = routeExistingFiles;
 	}
 
+	private final List<RouteBase> routes = Lists.newArrayList();
 	private final Map<String, RouteBase> routeItems = Maps.newHashMap();
 
 	public void add(final RouteBase item) {
@@ -71,6 +74,7 @@ public class RouteCollection implements Iterable<RouteBase> {
 		writeLock.lock();
 		try {
 			routeItems.put(String.valueOf(hashCode), item);
+			routes.add(item);
 		}
 		finally {
 			writeLock.unlock();
@@ -83,6 +87,7 @@ public class RouteCollection implements Iterable<RouteBase> {
 		writeLock.lock();
 		try {
 			routeItems.put(name, item);
+			routes.add(item);
 		}
 		finally {
 			writeLock.unlock();
@@ -93,6 +98,7 @@ public class RouteCollection implements Iterable<RouteBase> {
 		writeLock.lock();
 		try {
 			routeItems.clear();
+			routes.clear();
 		}
 		finally {
 			writeLock.unlock();
@@ -110,7 +116,7 @@ public class RouteCollection implements Iterable<RouteBase> {
 		final ImmutableCollection<RouteBase> routes;
 		readLock.lock();
 		try {
-			routes = ImmutableList.copyOf(routeItems.values());
+			routes = ImmutableList.copyOf(this.routes);
 		}
 		finally {
 			readLock.unlock();
@@ -120,7 +126,10 @@ public class RouteCollection implements Iterable<RouteBase> {
 			return null;
 
 		if (!routeExistingFiles) {
-//			final String path = httpContext.getRequest().getAppRelativeCurrentExecutionFilePath();
+			final String requestPath = httpContext.getRequest().getPath();
+			final String applicationPath = httpContext.getRequest().getApplicationPath();
+			final String path = httpContext.getRequest().getAppRelativeCurrentExecutionFilePath();
+			int x = 1;
 			// TODO: WTF?
 		}
 
@@ -186,7 +195,7 @@ public class RouteCollection implements Iterable<RouteBase> {
 	public Iterator<RouteBase> iterator() {
 		readLock.lock();
 		try {
-			return Iterators.unmodifiableIterator(routeItems.values().iterator());
+			return Iterators.unmodifiableIterator(this.routes.iterator());
 		}
 		finally {
 			readLock.unlock();
