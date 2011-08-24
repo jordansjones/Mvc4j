@@ -1,13 +1,14 @@
 package nextmethod.web.routing;
 
+import com.google.inject.Inject;
+
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:38 PM
+ * 
  */
 public class RouteTable {
 
-	private static final RouteCollection routes = new RouteCollection();
+	@Inject
+	private static RouteCollection routes;
 
 	public static RouteCollection getRoutes() {
 		return routes;

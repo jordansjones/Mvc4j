@@ -23,8 +23,8 @@ final class Mvc4jIoCServletModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
-		filter("favicon.ico").through(Mvc4jStaticFileFilter.class);
-		filter("*.css").through(Mvc4jStaticFileFilter.class);
+//		filter("favicon.ico").through(Mvc4jStaticFileFilter.class);
+//		filter("*.css").through(Mvc4jStaticFileFilter.class);
 		filter("/*").through(Mvc4jFilter.class);
 		serve("/*").with(Mvc4jServlet.class);
 

@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 /**
  *
  */
-class Mvc4jIocCoreModule extends AbstractModule {
+final class Mvc4jIocCoreModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
@@ -24,8 +24,6 @@ class Mvc4jIocCoreModule extends AbstractModule {
 		bind(IRouteHandler.class).to(MvcRouteHandler.class);
 		// View Engine
 		bind(IViewEngine.class).to(DumbHtmlViewEngine.class);
-		// Virtual Path Utility
-		bind(VirtualPathUtility.class).in(Singleton.class);
 	}
 
 }

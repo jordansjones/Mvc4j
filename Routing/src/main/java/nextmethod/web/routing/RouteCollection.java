@@ -11,6 +11,8 @@ import nextmethod.web.IHttpContext;
 import nextmethod.web.VirtualPathProvider;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,24 +21,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:38 PM
+ * 
  */
 public class RouteCollection implements Iterable<RouteBase> {
 
-	private final VirtualPathProvider virtualPathProvider;
+	private final Provider<VirtualPathProvider> virtualPathProvider;
 	private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 	private final ReentrantReadWriteLock.ReadLock readLock = rwl.readLock();
 	private final ReentrantReadWriteLock.WriteLock writeLock = rwl.writeLock();
 
 	private boolean routeExistingFiles;
 
-	public RouteCollection() {
-		this(null);
-	}
-
-	public RouteCollection(@Nullable final VirtualPathProvider virtualPathProvider) {
+	@Inject
+	public RouteCollection(final Provider<VirtualPathProvider> virtualPathProvider) {
 		this.virtualPathProvider = virtualPathProvider;
 	}
 
@@ -126,11 +123,11 @@ public class RouteCollection implements Iterable<RouteBase> {
 			return null;
 
 		if (!routeExistingFiles) {
-			final String requestPath = httpContext.getRequest().getPath();
-			final String applicationPath = httpContext.getRequest().getApplicationPath();
 			final String path = httpContext.getRequest().getAppRelativeCurrentExecutionFilePath();
-			int x = 1;
-			// TODO: WTF?
+			final VirtualPathProvider vpp = virtualPathProvider.get();
+			if (!path.equalsIgnoreCase("~/") && vpp != null && (vpp.fileExists(path) || vpp.directoryExists(path))) {
+				return null;
+			}
 		}
 
 		for (RouteBase routeBase : routes) {

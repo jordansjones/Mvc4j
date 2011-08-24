@@ -57,6 +57,7 @@ public final class Mvc4jServletContextListener extends GuiceServletContextListen
 	protected Injector getInjector() {
 		return Guice.createInjector(
 			new Mvc4jIoCServletModule(getHttpApplicationInternal()),
+			new Mvc4jVirtualPathProviderModule(),
 			Modules.override(new Mvc4jIocCoreModule()).with(getModules())
 		);
 	}
