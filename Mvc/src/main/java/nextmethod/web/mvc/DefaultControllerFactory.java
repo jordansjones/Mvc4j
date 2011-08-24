@@ -5,7 +5,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
 import nextmethod.OutParam;
 import nextmethod.TypeHelpers;
 import nextmethod.web.InvalidOperationException;
@@ -27,9 +26,6 @@ import static nextmethod.web.mvc.Mvc4jResources.MvcResources;
  *
  */
 class DefaultControllerFactory implements IControllerFactory {
-
-	protected static final String NamespacesKey = "Namespaces";
-	protected static final String UseNamespaceFallbackKey = "UseNamespaceFallback";
 
 	private static ControllerTypeCache controllerTypeCache = new ControllerTypeCache();
 
@@ -83,18 +79,17 @@ class DefaultControllerFactory implements IControllerFactory {
 	protected Class<?> getControllerType(@Nullable final RequestContext requestContext, final String controllerName) {
 		checkArgument(!Strings.isNullOrEmpty(controllerName), MvcResources().getString("common.nullOrEmpty"));
 
-		final OutParam<Object> routeNamespacesObj = OutParam.of(Object.class);
+		final OutParam<Object> routePackagesObj = OutParam.of(Object.class);
 		Class<?> match;
 
-		// First search in the current route's namespace collection
-		if (requestContext != null && requestContext.getRouteData().getDataTokens().tryGetValue(NamespacesKey, routeNamespacesObj)) {
-			final Iterable<String> routeNamespaces = TypeHelpers.typeAs(routeNamespacesObj.get(), new TypeLiteral<Iterable<String>>() {
-			});
-			if (routeNamespaces != null && !Iterables.isEmpty(routeNamespaces)) {
-				final Set<String> nsSet = Sets.newHashSet(routeNamespaces);
+		// First search in the current route's package collection
+		if (requestContext != null && requestContext.getRouteData().getDataTokens().tryGetValue(MagicStrings.PackagesKey, routePackagesObj)) {
+			final String[] routePackages = TypeHelpers.typeAs(routePackagesObj.get(), String[].class);
+			if (routePackages != null && routePackages.length > 0) {
+				final Set<String> nsSet = Sets.newHashSet(routePackages);
 				match = getControllerTypeWithinPackages(requestContext.getRouteData().getRoute(), controllerName, nsSet);
 
-				if (match != null || Boolean.FALSE.equals(requestContext.getRouteData().getDataTokens().get(UseNamespaceFallbackKey))) {
+				if (match != null || Boolean.FALSE.equals(requestContext.getRouteData().getDataTokens().get(MagicStrings.UsePackageFallbackKey))) {
 					return match;
 				}
 			}
@@ -102,9 +97,9 @@ class DefaultControllerFactory implements IControllerFactory {
 
 		checkNotNull(requestContext);
 
-		// Then search in the application's default namespace collection
-		if (!controllerBuilder.get().getDefaultNamespaces().isEmpty()) {
-			final Set<String> nsDefaults = Sets.newHashSet(controllerBuilder.get().getDefaultNamespaces());
+		// Then search in the application's default package collection
+		if (!controllerBuilder.get().getDefaultPackages().isEmpty()) {
+			final Set<String> nsDefaults = Sets.newHashSet(controllerBuilder.get().getDefaultPackages());
 			assert requestContext != null;
 			match = getControllerTypeWithinPackages(requestContext.getRouteData().getRoute(), controllerName, nsDefaults);
 			if (match != null)
@@ -116,11 +111,11 @@ class DefaultControllerFactory implements IControllerFactory {
 		return getControllerTypeWithinPackages(requestContext.getRouteData().getRoute(), controllerName, null);
 	}
 
-	private Class<?> getControllerTypeWithinPackages(final RouteBase route, final String controllerName, @Nullable final Set<String> namespaces) {
+	private Class<?> getControllerTypeWithinPackages(final RouteBase route, final String controllerName, @Nullable final Set<String> packages) {
 		// Once the master list of controllers has been created, we can quickly index into it
 		controllerTypeCache.ensureInitialized(buildManager);
 
-		final Collection<Class<?>> controllerTypes = controllerTypeCache.getControllerTypes(controllerName, namespaces);
+		final Collection<Class<?>> controllerTypes = controllerTypeCache.getControllerTypes(controllerName, packages);
 		switch (controllerTypes.size()) {
 			case 0:
 				// No matching types

@@ -133,7 +133,7 @@ public class RouteValueDictionary implements Map<String, Object> {
 			this.dictionary = new RouteValueDictionary();
 		}
 
-		public Builder put(final String key, final String value) {
+		public Builder put(final String key, final Object value) {
 			this.dictionary.put(checkNotNull(key), value);
 			return this;
 		}

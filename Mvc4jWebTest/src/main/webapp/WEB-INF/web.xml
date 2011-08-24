@@ -8,6 +8,12 @@
 	<display-name>Mvc4j Web Test</display-name>
 	<description>Web application test project for the Mvc4j framework.</description>
 
+	<!--<context-param>-->
+		<!--<description>Default Packages for Controllers</description>-->
+		<!--<param-name>controllers.defaultPackages</param-name>-->
+		<!--<param-value>controllers</param-value>-->
+	<!--</context-param>-->
+
 	<listener>
 		<listener-class>nextmethod.web.mvc.Mvc4jHttpRuntime</listener-class>
 	</listener>

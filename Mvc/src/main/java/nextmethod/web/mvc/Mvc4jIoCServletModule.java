@@ -1,5 +1,7 @@
 package nextmethod.web.mvc;
 
+import com.google.common.base.Strings;
+import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import nextmethod.web.HttpContext;
 import nextmethod.web.HttpRequest;
@@ -25,6 +27,9 @@ final class Mvc4jIoCServletModule extends ServletModule {
 	protected void configureServlets() {
 		filter("/*").through(Mvc4jFilter.class);
 
+		bind(String.class).annotatedWith(Names.named(MagicStrings.DefaultPackagesParamKey))
+			.toInstance(getDefaultPackages(getServletContext()));
+
 		bind(IHttpApplication.class).to(httpApplication);
 
 		bindConstructor(IHttpRequest.class, HttpRequest.class,
@@ -36,6 +41,13 @@ final class Mvc4jIoCServletModule extends ServletModule {
 		bindConstructor(IHttpContext.class, HttpContext.class,
 			ServletContext.class, IHttpRequest.class, IHttpResponse.class
 		);
+	}
+
+	protected String getDefaultPackages(final ServletContext ctx) {
+		final String s = ctx.getInitParameter(MagicStrings.DefaultPackagesParamKey);
+		return Strings.isNullOrEmpty(s)
+			? MagicStrings.DefaultPackages
+			: s;
 	}
 
 	private <I, T extends I> void bindConstructor(final Class<I> iface, final Class<T> cls, final Class<?>... classes) {

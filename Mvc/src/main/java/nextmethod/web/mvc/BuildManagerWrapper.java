@@ -58,7 +58,7 @@ class BuildManagerWrapper implements IBuildManager {
 	}
 
 	private Assembly createAssemblyFromRawPath(final ImmutableCollection<String> paths) {
-		final Assembly assembly = new Assembly(Assembly.Ungrouped);
+		final Assembly assembly = new Assembly(MagicStrings.UngroupedAssemblyName);
 		for (String path : paths) {
 			final String typeName = VirtualPathUtility.normalizeClassEntry(path);
 			addAssemblyType(assembly, typeName);

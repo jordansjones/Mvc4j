@@ -147,6 +147,10 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 		return isStatic;
 	}
 
+	public boolean hasDefaultConstructor() {
+		return tryGetInstance(OutParam.<T>of());
+	}
+
 	public T newInstance() throws IllegalAccessException, InstantiationException {
 		return wrapped.newInstance();
 	}

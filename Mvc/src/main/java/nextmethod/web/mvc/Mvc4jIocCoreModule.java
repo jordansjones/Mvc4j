@@ -24,6 +24,9 @@ final class Mvc4jIocCoreModule extends AbstractModule {
 		bind(IRouteHandler.class).to(MvcRouteHandler.class);
 		// View Engine
 		bind(IViewEngine.class).to(DumbHtmlViewEngine.class);
+
+		// Static Injections
+		requestStaticInjection(AreaRegistration.class);
 	}
 
 }

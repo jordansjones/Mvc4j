@@ -32,8 +32,6 @@ final class ControllerTypeCache {
 		return 0;
 	}
 
-	private static final String typeCacheName = "MVC-ControllerTypeCache.xml";
-
 	public void ensureInitialized(final IBuildManager buildManager) {
 		if (cache == null) {
 			locker.lock();
@@ -41,7 +39,7 @@ final class ControllerTypeCache {
 				if (cache == null) {
 					cache = HashBasedTable.create();
 
-					final ImmutableList<AssemblyType<?>> controllerTypes = TypeCacheUtil.getFilteredTypesFromAssemblies(typeCacheName, isControllerType(), buildManager);
+					final ImmutableList<AssemblyType<?>> controllerTypes = TypeCacheUtil.getFilteredTypesFromAssemblies(MagicStrings.ControllerTypeCacheName, isControllerType(), buildManager);
 					final HashMultimap<String, AssemblyType<?>> grouping = HashMultimap.create();
 					for (AssemblyType<?> type : controllerTypes) {
 						String name = type.getName();
@@ -67,23 +65,23 @@ final class ControllerTypeCache {
 		}
 	}
 
-	public Collection<Class<?>> getControllerTypes(final String controllerName, final Set<String> namespaces) {
+	public Collection<Class<?>> getControllerTypes(final String controllerName, final Set<String> packages) {
 		final Set<AssemblyType<?>> matchingTypes = Sets.newHashSet();
 
-		final OutParam<Map<String, Set<AssemblyType<?>>>> nsLookup = OutParam.of(new TypeLiteral<Map<String, Set<AssemblyType<?>>>>() {
+		final OutParam<Map<String, Set<AssemblyType<?>>>> packageLookup = OutParam.of(new TypeLiteral<Map<String, Set<AssemblyType<?>>>>() {
 		});
-		if (tryGetCacheValue(controllerName, nsLookup)) {
-			final Map<String, Set<AssemblyType<?>>> nslookupMap = nsLookup.get();
-			if (namespaces != null) {
-				for (String requestedNamespace : namespaces) {
-					for (String targetNamespaceGrouping : nslookupMap.keySet()) {
-						if (isNamespaceMatch(requestedNamespace, targetNamespaceGrouping)) {
-							matchingTypes.addAll(nslookupMap.get(targetNamespaceGrouping));
+		if (tryGetCacheValue(controllerName, packageLookup)) {
+			final Map<String, Set<AssemblyType<?>>> packageMap = packageLookup.get();
+			if (packages != null) {
+				for (String requestedPackage : packages) {
+					for (String targetPackageGroup : packageMap.keySet()) {
+						if (isPackageMatch(requestedPackage, targetPackageGroup)) {
+							matchingTypes.addAll(packageMap.get(targetPackageGroup));
 						}
 					}
 				}
 			} else {
-				for (Set<AssemblyType<?>> types : nslookupMap.values()) {
+				for (Set<AssemblyType<?>> types : packageMap.values()) {
 					matchingTypes.addAll(types);
 				}
 			}
@@ -127,26 +125,26 @@ final class ControllerTypeCache {
 	}
 
 	@SuppressWarnings({"SimplifiableIfStatement"})
-	private static boolean isNamespaceMatch(String requestedNamespace, final String targetNamespace) {
-		if (requestedNamespace == null) {
+	private static boolean isPackageMatch(String requestedPackage, final String targetPackage) {
+		if (requestedPackage == null) {
 			return false;
 		}
-		if (requestedNamespace.length() == 0) {
+		if (requestedPackage.length() == 0) {
 			return true;
 		}
-		if (!requestedNamespace.endsWith(".*")) {
-			return requestedNamespace.equalsIgnoreCase(targetNamespace);
+		if (!requestedPackage.endsWith(".*")) {
+			return requestedPackage.equalsIgnoreCase(targetPackage);
 		}
 
-		requestedNamespace = requestedNamespace.substring(0, requestedNamespace.length() - ".*".length());
-		if (!targetNamespace.startsWith(requestedNamespace))
+		requestedPackage = requestedPackage.substring(0, requestedPackage.length() - ".*".length());
+		if (!targetPackage.startsWith(requestedPackage))
 			return false;
 
-		if (requestedNamespace.length() == targetNamespace.length())
+		if (requestedPackage.length() == targetPackage.length())
 			return true;
 
-		return targetNamespace.length() >= requestedNamespace.length()
-			&& targetNamespace.charAt(requestedNamespace.length()) == '.';
+		return targetPackage.length() >= requestedPackage.length()
+			&& targetPackage.charAt(requestedPackage.length()) == '.';
 
 	}
 }

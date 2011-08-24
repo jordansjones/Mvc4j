@@ -9,8 +9,6 @@ import java.util.Set;
  */
 class Assembly {
 
-	public static final String Ungrouped = "MVC4j-Ungrouped-Classes";
-
 	private final String name;
 	private final Set<AssemblyType<?>> entries;
 

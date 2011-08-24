@@ -43,24 +43,24 @@ public final class RouteHelper {
 		return mapRoute(routes, name, url, defaults, constraints, null);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final String[] namespaces) {
-		return mapRoute(routes, name, url, null, null, namespaces);
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final String[] packages) {
+		return mapRoute(routes, name, url, null, null, packages);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final String[] namespaces) {
-		return mapRoute(routes, name, url, defaults, null, namespaces);
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final String[] packages) {
+		return mapRoute(routes, name, url, defaults, null, packages);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints, @Nullable final String[] namespaces) {
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints, @Nullable final String[] packages) {
 		checkNotNull(routes);
 		checkNotNull(url);
 
 		final Route route = new Route(url, new RouteValueDictionary(defaults), new RouteValueDictionary(constraints), new MvcRouteHandler());
-		if (namespaces != null && namespaces.length > 0) {
-			final RouteValueDictionary dt = new RouteValueDictionary();
-			dt.put("Namespaces", namespaces);
-			route.setDataTokens(dt);
+		final RouteValueDictionary dt = new RouteValueDictionary();
+		if (packages != null && packages.length > 0) {
+			dt.put(MagicStrings.PackagesKey, packages);
 		}
+		route.setDataTokens(dt);
 
 		routes.add(name, route);
 		return route;
