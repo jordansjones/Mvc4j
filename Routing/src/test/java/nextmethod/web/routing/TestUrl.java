@@ -1,9 +1,9 @@
 package nextmethod.web.routing;
 
+import javax.annotation.Nullable;
+
 /**
- * User: jordanjones
- * Date: 8/8/11
- * Time: 10:33 AM
+ * 
  */
 class TestUrl {
 
@@ -12,7 +12,7 @@ class TestUrl {
 	private final String label;
 	private final Class<? extends Exception> expectedException;
 
-	TestUrl(String url, String expected, String label, Class<? extends Exception> expectedException) {
+	TestUrl(String url, @Nullable String expected, String label, @Nullable Class<? extends Exception> expectedException) {
 		this.url = url;
 		this.expected = expected;
 		this.label = label;

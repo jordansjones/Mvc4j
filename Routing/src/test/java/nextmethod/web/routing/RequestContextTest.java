@@ -13,9 +13,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 11:22 PM
+ * 
  */
 public class RequestContextTest extends BaseTest {
 
@@ -80,7 +78,7 @@ public class RequestContextTest extends BaseTest {
 	}
 
 	private IHttpContext mockHttpContext() {
-		return null;
+		return mock(IHttpContext.class);
 //		final IHttpRequest httpRequest = new IHttpRequest(servletRequest, servletContext);
 //		return new IHttpContext(servletContext, httpRequest, servletResponse);
 	}

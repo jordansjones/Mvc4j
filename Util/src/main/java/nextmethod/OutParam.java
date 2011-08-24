@@ -6,9 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * User: jordanjones
- * Date: 8/8/11
- * Time: 3:22 PM
+ * 
  */
 public final class OutParam<T> {
 

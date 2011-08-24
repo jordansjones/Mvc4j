@@ -9,7 +9,7 @@ import javax.inject.Singleton;
 /**
  *
  */
-final class Mvc4jVirtualPathProviderModule extends AbstractModule {
+final class Mvc4jIocVirtualPathProviderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {

@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 final class ControllerTypeCache {
 
-	private Table<String, String, Set<AssemblyType<?>>> cache;
+	private Table<Integer, String, Set<AssemblyType<?>>> cache;
 	private final Lock locker = new ReentrantLock();
 
 	public int size() {
@@ -53,7 +53,7 @@ final class ControllerTypeCache {
 						final AssemblyType<?> value = entry.getValue();
 						final Package aPackage = value.getPackage();
 						final String pckName = (aPackage != null ? aPackage.getName() : "");
-						final String controllerKey = getControllerKey(entry.getKey());
+						final Integer controllerKey = getControllerKey(entry.getKey());
 						if (!cache.contains(controllerKey, pckName)) {
 							cache.put(controllerKey, pckName, Sets.<AssemblyType<?>>newHashSet());
 						}
@@ -100,7 +100,7 @@ final class ControllerTypeCache {
 	}
 
 	private boolean tryGetCacheValue(final String controllerName, final OutParam<Map<String, Set<AssemblyType<?>>>> nsLookup) {
-		final String key = getControllerKey(controllerName);
+		final Integer key = getControllerKey(controllerName);
 		if (cache.containsRow(key)) {
 			nsLookup.set(cache.row(key));
 			return true;
@@ -108,8 +108,8 @@ final class ControllerTypeCache {
 		return false;
 	}
 
-	private static String getControllerKey(final String controllerName) {
-		return Ascii.toUpperCase(Strings.nullToEmpty(controllerName));
+	private static Integer getControllerKey(final String controllerName) {
+		return Ascii.toUpperCase(Strings.nullToEmpty(controllerName)).hashCode();
 	}
 
 	private static final String ControllerString = "Controller";

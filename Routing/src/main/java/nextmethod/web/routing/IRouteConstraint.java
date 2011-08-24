@@ -3,9 +3,7 @@ package nextmethod.web.routing;
 import nextmethod.web.IHttpContext;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:33 PM
+ * 
  */
 public interface IRouteConstraint {
 

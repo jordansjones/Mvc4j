@@ -11,7 +11,7 @@ import java.net.URL;
 /**
  *
  */
-public class DumbHtmlView implements IView {
+class DumbHtmlView implements IView {
 
 	private final URL htmlPage;
 

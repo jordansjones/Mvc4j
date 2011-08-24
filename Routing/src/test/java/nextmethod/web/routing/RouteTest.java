@@ -1,8 +1,10 @@
 package nextmethod.web.routing;
 
 import com.google.common.collect.ImmutableList;
+import nextmethod.web.HttpContext;
 import nextmethod.web.IHttpContext;
 import nextmethod.web.IHttpRequest;
+import nextmethod.web.IHttpResponse;
 import nextmethod.web.InvalidOperationException;
 import org.junit.Test;
 
@@ -15,9 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * User: jordanjones
- * Date: 8/8/11
- * Time: 10:32 AM
+ * 
  */
 public class RouteTest extends BaseTest {
 
@@ -206,7 +206,7 @@ public class RouteTest extends BaseTest {
 	private static IHttpContext mockRequest(final String requestedUrl, final String contextPath) {
 		final IHttpRequest mockRequest = when(mock(IHttpRequest.class).getAppRelativeCurrentExecutionFilePath()).thenReturn(requestedUrl).getMock();
 		final ServletContext context = when(mock(ServletContext.class).getContextPath()).thenReturn(contextPath).getMock();
-		return null;//new HttpContext(context, mockRequest, mock(HttpServletResponse.class));
+		return new HttpContext(context, mockRequest, mock(IHttpResponse.class));
 	}
 
 	private static ImmutableList<TestUrl> generateValidUrls() {

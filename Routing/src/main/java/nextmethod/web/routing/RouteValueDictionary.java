@@ -12,9 +12,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:34 PM
+ * 
  */
 public class RouteValueDictionary implements Map<String, Object> {
 

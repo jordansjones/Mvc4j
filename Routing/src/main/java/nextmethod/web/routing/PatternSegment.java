@@ -3,9 +3,7 @@ package nextmethod.web.routing;
 import java.util.List;
 
 /**
- * User: Jordan
- * Date: 8/7/11
- * Time: 8:07 PM
+ * 
  */
 class PatternSegment {
 

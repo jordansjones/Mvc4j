@@ -26,7 +26,6 @@ import static nextmethod.reflection.TypeOfHelper.typeOf;
 /**
  *
  */
-// TODO: Convert this class to use the ReflectionInfo utilities.
 final class ActionMethodSelector {
 
 	private static final Predicate<MethodInfo> IsValidActionMethod = createIsValidActionMethodPredicate();
@@ -35,7 +34,7 @@ final class ActionMethodSelector {
 	private final ClassInfo<? extends IController> controllerCls;
 
 	private Iterable<MethodInfo> aliasedMethods;
-	private Multimap<String, MethodInfo> nonAliasedMethods;
+	private Multimap<Integer, MethodInfo> nonAliasedMethods;
 
 	public ActionMethodSelector(final ClassInfo<? extends IController> controllerCls) {
 		this.controllerCls = controllerCls;
@@ -44,7 +43,7 @@ final class ActionMethodSelector {
 
 	public MethodInfo findActionMethod(final ControllerContext controllerContext, final String actionName) {
 		final List<MethodInfo> matchingAliasedMethod = getMatchingAliasedMethod(controllerContext, actionName);
-		final String nameKey = getMethodNameKey(actionName);
+		final Integer nameKey = getMethodNameKey(actionName);
 		if (nonAliasedMethods.containsKey(nameKey))
 			matchingAliasedMethod.addAll(nonAliasedMethods.get(nameKey));
 
@@ -75,9 +74,9 @@ final class ActionMethodSelector {
 		}
 	}
 
-	private static String getMethodNameKey(final String methodName) {
+	private static Integer getMethodNameKey(final String methodName) {
 		final String s = Strings.nullToEmpty(methodName);
-		return Ascii.toUpperCase(s);
+		return Ascii.toUpperCase(s).hashCode();
 	}
 
 	List<MethodInfo> getMatchingAliasedMethod(final ControllerContext controllerContext, final String actionName) {

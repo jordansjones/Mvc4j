@@ -7,9 +7,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.web.mvc.Mvc4jResources.MvcResources;
 
 /**
- * User: Jordan
- * Date: 8/6/11
- * Time: 12:00 AM
+ * 
  */
 public abstract class ControllerBase implements IController {
 

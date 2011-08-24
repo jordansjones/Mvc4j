@@ -14,9 +14,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.TypeHelpers.typeAs;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:33 PM
+ * 
  */
 public class Route extends RouteBase {
 
@@ -106,14 +104,6 @@ public class Route extends RouteBase {
 		return new VirtualPathData(this, s);
 	}
 
-	/**
-	 * @param httpContext
-	 * @param constraint
-	 * @param parameterName
-	 * @param values
-	 * @param routeDirection
-	 * @return TRUE if the parameter value matches the constraint
-	 */
 	protected boolean processConstraint(final IHttpContext httpContext, final Object constraint, final String parameterName, final RouteValueDictionary values, final RouteDirection routeDirection) {
 		checkNotNull(parameterName);
 		checkNotNull(values);

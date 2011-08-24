@@ -8,9 +8,7 @@ import nextmethod.web.IHttpContext;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:36 PM
+ * 
  */
 public class HttpMethodConstraint implements IRouteConstraint {
 
@@ -34,24 +32,10 @@ public class HttpMethodConstraint implements IRouteConstraint {
 		);
 	}
 
-	/**
-	 * @param context
-	 * @param route
-	 * @param parameterName
-	 * @param values
-	 * @return TRUE if the incoming request was made by using an allowed HTTP verb
-	 */
 	private boolean matchIncomingRequest(final Object context, final Route route, final String parameterName, final RouteValueDictionary values) {
 		return true;
 	}
 
-	/**
-	 * @param context
-	 * @param route
-	 * @param parameterName
-	 * @param values
-	 * @return TRUE if the supplied values contain an HTTP verb that matches one of the allowed HTTP verbs.
-	 */
 	private boolean matchUrlGeneration(final Object context, final Route route, final String parameterName, final RouteValueDictionary values) {
 		return true;
 	}

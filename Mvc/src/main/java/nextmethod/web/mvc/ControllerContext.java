@@ -5,9 +5,7 @@ import nextmethod.web.routing.RequestContext;
 import nextmethod.web.routing.RouteData;
 
 /**
- * User: Jordan
- * Date: 8/6/11
- * Time: 12:02 AM
+ * 
  */
 public class ControllerContext {
 

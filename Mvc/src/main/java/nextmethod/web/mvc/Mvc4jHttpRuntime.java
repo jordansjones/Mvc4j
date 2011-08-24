@@ -17,7 +17,7 @@ import javax.servlet.ServletContextEvent;
 import java.util.EnumSet;
 import java.util.List;
 
-public final class Mvc4jServletContextListener extends GuiceServletContextListener {
+public final class Mvc4jHttpRuntime extends GuiceServletContextListener {
 
 	private static final String ApplicationClassName = "MvcApplication";
 
@@ -49,7 +49,6 @@ public final class Mvc4jServletContextListener extends GuiceServletContextListen
 
 	private ImmutableList<Module> getModules() {
 		final List<Module> modules = Lists.newArrayList();
-//		this.loadModules(modules);
 		return ImmutableList.copyOf(modules);
 	}
 
@@ -57,7 +56,7 @@ public final class Mvc4jServletContextListener extends GuiceServletContextListen
 	protected Injector getInjector() {
 		return Guice.createInjector(
 			new Mvc4jIoCServletModule(getHttpApplicationInternal()),
-			new Mvc4jVirtualPathProviderModule(),
+			new Mvc4jIocVirtualPathProviderModule(),
 			Modules.override(new Mvc4jIocCoreModule()).with(getModules())
 		);
 	}

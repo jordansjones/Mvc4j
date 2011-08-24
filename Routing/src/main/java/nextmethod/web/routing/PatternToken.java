@@ -1,9 +1,7 @@
 package nextmethod.web.routing;
 
 /**
- * User: Jordan
- * Date: 8/7/11
- * Time: 7:56 PM
+ * 
  */
 class PatternToken {
 

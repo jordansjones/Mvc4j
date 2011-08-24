@@ -16,9 +16,7 @@ import java.util.Map;
 import static nextmethod.web.routing.Helpers.rvdHas;
 
 /**
- * User: Jordan
- * Date: 8/7/11
- * Time: 8:00 PM
+ * 
  */
 class PatternParser {
 

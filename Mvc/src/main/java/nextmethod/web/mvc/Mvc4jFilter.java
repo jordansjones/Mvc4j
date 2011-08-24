@@ -6,13 +6,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.inject.Injector;
 import nextmethod.web.HttpException;
-import nextmethod.web.HttpRequest;
 import nextmethod.web.IHttpApplication;
 import nextmethod.web.IHttpContext;
+import nextmethod.web.IHttpHandler;
 import nextmethod.web.annotations.HttpApplicationStart;
+import nextmethod.web.routing.IRouteHandler;
+import nextmethod.web.routing.RequestContext;
 import nextmethod.web.routing.RouteCollection;
 import nextmethod.web.routing.RouteData;
 import nextmethod.web.routing.RouteTable;
+import nextmethod.web.routing.StopRoutingHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,6 +29,8 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import static nextmethod.TypeHelpers.typeIs;
 
 @Singleton
 class Mvc4jFilter implements Filter {
@@ -46,17 +51,39 @@ class Mvc4jFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final IHttpContext httpContext = injector.getInstance(IHttpContext.class);
+		final IHttpHandler httpHandler = getHttpHandler(httpContext);
 
+		if (httpHandler != null) {
+			injector.injectMembers(httpHandler);
+			httpHandler.processRequest(httpContext);
+		}
+		else {
+			chain.doFilter(request, response);
+		}
+	}
+
+	private IHttpHandler getHttpHandler(final IHttpContext httpContext) throws HttpException {
 		final RouteData routeData = routes.getRouteData(httpContext);
 		if (routeData == null)
-			throw new HttpException("The incoming request does not match any route");
+			return null;
 
-		if (routeData.getRouteHandler() == null)
+		final IRouteHandler routeHandler = getRouteHandler(routeData);
+		if (routeHandler == null)
 			throw new HttpException("No IRouteHandler is assigned to the selected route");
 
-		request.setAttribute(HttpRequest.ROUTE_DATA_KEY, routeData);
+		if (typeIs(routeHandler, StopRoutingHandler.class))
+			return null;
 
-		chain.doFilter(request, response);
+		return routeHandler.getHttpHandler(new RequestContext(httpContext, routeData));
+	}
+
+	private IRouteHandler getRouteHandler(final RouteData data) {
+		final IRouteHandler routeHandler = data.getRouteHandler();
+		if (routeHandler == null)
+			return null;
+
+		injector.injectMembers(routeHandler);
+		return routeHandler;
 	}
 
 	@Override

@@ -3,9 +3,7 @@ package nextmethod.web.mvc;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * User: Jordan
- * Date: 8/6/11
- * Time: 12:20 AM
+ * 
  */
 public class ActionExecutedContext extends ControllerContext {
 
@@ -65,6 +63,7 @@ public class ActionExecutedContext extends ControllerContext {
 		this.result = result == null ? EmptyResult.instance() : result;
 	}
 
+	@SuppressWarnings({"SimplifiableIfStatement"})
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
@@ -77,9 +76,8 @@ public class ActionExecutedContext extends ControllerContext {
 		if (actionDescriptor != null ? !actionDescriptor.equals(that.actionDescriptor) : that.actionDescriptor != null)
 			return false;
 		if (exception != null ? !exception.equals(that.exception) : that.exception != null) return false;
-		if (!result.equals(that.result)) return false;
 
-		return true;
+		return result.equals(that.result);
 	}
 
 	@Override

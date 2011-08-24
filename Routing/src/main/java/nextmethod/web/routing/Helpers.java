@@ -3,9 +3,7 @@ package nextmethod.web.routing;
 import com.google.common.base.Equivalences;
 
 /**
- * User: Jordan
- * Date: 8/7/11
- * Time: 9:35 PM
+ * 
  */
 final class Helpers {
 

@@ -6,9 +6,7 @@ import nextmethod.TypeHelpers;
 import nextmethod.web.InvalidOperationException;
 
 /**
- * User: Jordan
- * Date: 8/5/11
- * Time: 7:38 PM
+ * 
  */
 public class RouteData {
 
