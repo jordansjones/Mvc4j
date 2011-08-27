@@ -1,5 +1,6 @@
 package nextmethod.web.mvc;
 
+import nextmethod.web.HttpException;
 import nextmethod.web.InvalidOperationException;
 import nextmethod.web.routing.RequestContext;
 
@@ -17,7 +18,7 @@ public abstract class ControllerBase implements IController {
 	private boolean validateRequest;
 
 	@Override
-	public void execute(final RequestContext requestContext) {
+	public void execute(final RequestContext requestContext) throws HttpException {
 		checkNotNull(requestContext);
 
 		verifyExecuteCalledOnce();
@@ -29,8 +30,7 @@ public abstract class ControllerBase implements IController {
 		controllerContext = new ControllerContext(requestContext, this);
 	}
 
-	protected abstract void executeCore();
-
+	protected abstract void executeCore() throws HttpException;
 
 	public ControllerContext getControllerContext() {
 		return controllerContext;

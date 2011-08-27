@@ -1,6 +1,7 @@
 package nextmethod.web.mvc;
 
 import com.google.inject.Injector;
+import nextmethod.web.HttpException;
 import nextmethod.web.routing.RequestContext;
 import nextmethod.web.routing.RouteData;
 
@@ -33,7 +34,7 @@ public abstract class Controller extends ControllerBase implements IActionFilter
 	}
 
 	@Override
-	protected void executeCore() {
+	protected void executeCore() throws HttpException{
 		// If code in this method needs to be updated, please also check the beginExecuteCore() and
 		// endExecuteCore() methods of AsyncController to see if that code also must be updated.
 		possiblyLoadTempData();
@@ -48,9 +49,8 @@ public abstract class Controller extends ControllerBase implements IActionFilter
 		}
 	}
 
-	protected void handleUnknownAction(final String actionName) {
-		// TODO: This should be an HttpException with a message.
-		throw new RuntimeException();
+	protected void handleUnknownAction(final String actionName) throws HttpException {
+        throw new HttpException(404, actionName + "not found.");
 	}
 
 	void possiblyLoadTempData() {
