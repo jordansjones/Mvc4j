@@ -65,7 +65,7 @@
 		<skip.tests>false</skip.tests>
 
 		<!-- Java Version Source must be 1.6 until 1.7 is available on OS X -->
-		<java.version.source>1.6</java.version.source>
+		<java.version.source>1.7</java.version.source>
 		<java.version.target>${java.version.source}</java.version.target>
 	</properties>
 
@@ -142,7 +142,6 @@
 					<configuration>
 						<source>${java.version.source}</source>
 						<target>${java.version.target}</target>
-						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 
