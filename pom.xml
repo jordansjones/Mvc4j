@@ -53,6 +53,7 @@
 		<module>mvc</module>
 		<module>Mvc4jWebTest</module>
 		<module>Util</module>
+		<module>Spark</module>
 	</modules>
 
 	<prerequisites>
