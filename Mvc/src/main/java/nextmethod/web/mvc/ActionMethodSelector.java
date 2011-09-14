@@ -1,14 +1,14 @@
 package nextmethod.web.mvc;
 
-import com.google.common.base.Ascii;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import nextmethod.Idx;
+import nextmethod.annotations.TODO;
 import nextmethod.reflection.AnnotationInfo;
 import nextmethod.reflection.ClassInfo;
 import nextmethod.reflection.MethodInfo;
@@ -26,6 +26,7 @@ import static nextmethod.reflection.TypeOfHelper.typeOf;
 /**
  *
  */
+@TODO
 final class ActionMethodSelector {
 
 	private static final Predicate<MethodInfo> IsValidActionMethod = createIsValidActionMethodPredicate();
@@ -34,7 +35,7 @@ final class ActionMethodSelector {
 	private final ClassInfo<? extends IController> controllerCls;
 
 	private Iterable<MethodInfo> aliasedMethods;
-	private Multimap<Integer, MethodInfo> nonAliasedMethods;
+	private Multimap<Idx, MethodInfo> nonAliasedMethods;
 
 	public ActionMethodSelector(final ClassInfo<? extends IController> controllerCls) {
 		this.controllerCls = controllerCls;
@@ -43,7 +44,7 @@ final class ActionMethodSelector {
 
 	public MethodInfo findActionMethod(final ControllerContext controllerContext, final String actionName) {
 		final List<MethodInfo> matchingAliasedMethod = getMatchingAliasedMethod(controllerContext, actionName);
-		final Integer nameKey = getMethodNameKey(actionName);
+		final Idx nameKey = Idx.of(actionName);
 		if (nonAliasedMethods.containsKey(nameKey))
 			matchingAliasedMethod.addAll(nonAliasedMethods.get(nameKey));
 
@@ -70,13 +71,8 @@ final class ActionMethodSelector {
 		final Iterable<MethodInfo> nonAliasedMethods = Iterables.filter(actionMethods, Predicates.not(IsMethodDecoratedWithAliasingAnnotation));
 		this.nonAliasedMethods = HashMultimap.create();
 		for (MethodInfo method : nonAliasedMethods) {
-			this.nonAliasedMethods.put(getMethodNameKey(method.getName()), method);
+			this.nonAliasedMethods.put(Idx.of(method.getName()), method);
 		}
-	}
-
-	private static Integer getMethodNameKey(final String methodName) {
-		final String s = Strings.nullToEmpty(methodName);
-		return Ascii.toUpperCase(s).hashCode();
 	}
 
 	List<MethodInfo> getMatchingAliasedMethod(final ControllerContext controllerContext, final String actionName) {

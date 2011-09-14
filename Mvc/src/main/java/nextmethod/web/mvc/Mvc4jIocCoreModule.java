@@ -16,6 +16,7 @@ final class Mvc4jIocCoreModule extends AbstractModule {
 		bind(IActionInvoker.class).to(ControllerActionInvoker.class);
 		// Build Manager
 		bind(IBuildManager.class).to(BuildManagerWrapper.class);
+		bind(BuildManager.class).in(Singleton.class);
 		// Controller Builder
 		bind(ControllerBuilder.class).in(Singleton.class);
 		// Controller Factory

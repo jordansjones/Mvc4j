@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import nextmethod.annotations.TODO;
 
 import javax.inject.Inject;
 import java.io.FilenameFilter;
@@ -16,14 +17,18 @@ import java.util.jar.JarFile;
 /**
  *
  */
+@TODO
 class BuildManagerWrapper implements IBuildManager {
 
 	@Inject
 	private VirtualPathUtility vpUtil;
 
+	@Inject
+	private BuildManager buildManager;
+
 	@Override
 	public Object createInstanceFromVirtualPath(final String virtualPath, final Class<?> requiredBaseType) {
-		return null;
+		return buildManager.createInstanceFromVirtualPath(virtualPath, requiredBaseType);
 	}
 
 	@Override
@@ -33,16 +38,19 @@ class BuildManagerWrapper implements IBuildManager {
 		final ImmutableSet.Builder<Assembly> builder = ImmutableSet.builder();
 		builder.add(createAssemblyFromRawPath(classPath.get(ClassPathType.Path)));
 		builder.addAll(createAssemblyFromJars(classPath.get(ClassPathType.Jar)));
+		builder.addAll(buildManager.getReferencedAssemblies());
 
 		return builder.build();
 	}
 
 	@Override
 	public void readCachedFile(final String fileName) {
+		buildManager.readCachedFile(fileName);
 	}
 
 	@Override
 	public void createCachedFile(final String fileName) {
+		buildManager.createCachedFile(fileName);
 	}
 
 	private void addAssemblyType(final Assembly assembly, final String type) {

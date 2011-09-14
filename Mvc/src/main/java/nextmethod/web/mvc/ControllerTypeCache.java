@@ -1,9 +1,7 @@
 package nextmethod.web.mvc;
 
-import com.google.common.base.Ascii;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
@@ -11,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.inject.TypeLiteral;
+import nextmethod.Idx;
 import nextmethod.OutParam;
 
 import javax.annotation.Nullable;
@@ -25,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 final class ControllerTypeCache {
 
-	private Table<Integer, String, Set<AssemblyType<?>>> cache;
+	private Table<Idx, String, Set<AssemblyType<?>>> cache;
 	private final Lock locker = new ReentrantLock();
 
 	public int size() {
@@ -51,7 +50,7 @@ final class ControllerTypeCache {
 						final AssemblyType<?> value = entry.getValue();
 						final Package aPackage = value.getPackage();
 						final String pckName = (aPackage != null ? aPackage.getName() : "");
-						final Integer controllerKey = getControllerKey(entry.getKey());
+						final Idx controllerKey = Idx.of(entry.getKey());
 						if (!cache.contains(controllerKey, pckName)) {
 							cache.put(controllerKey, pckName, Sets.<AssemblyType<?>>newHashSet());
 						}
@@ -98,16 +97,12 @@ final class ControllerTypeCache {
 	}
 
 	private boolean tryGetCacheValue(final String controllerName, final OutParam<Map<String, Set<AssemblyType<?>>>> nsLookup) {
-		final Integer key = getControllerKey(controllerName);
+		final Idx key = Idx.of(controllerName);
 		if (cache.containsRow(key)) {
 			nsLookup.set(cache.row(key));
 			return true;
 		}
 		return false;
-	}
-
-	private static Integer getControllerKey(final String controllerName) {
-		return Ascii.toUpperCase(Strings.nullToEmpty(controllerName)).hashCode();
 	}
 
 	private static final String ControllerString = "Controller";
