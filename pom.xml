@@ -50,7 +50,6 @@
 		<module>mvc</module>
 		<module>Mvc4jWebTest</module>
 		<module>Util</module>
-		<module>Spark</module>
 		<!--<module>Razor</module>-->
 	</modules>
 
@@ -114,27 +113,27 @@
 		</dependency>
 
 		<!-- Runtime Utilities -->
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm-all</artifactId>
-			<version>3.3.1</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>asm</groupId>-->
+			<!--<artifactId>asm-all</artifactId>-->
+			<!--<version>3.3.1</version>-->
+		<!--</dependency>-->
 		<!--<dependency>-->
 		<!--<groupId>asm</groupId>-->
 		<!--<artifactId>asm-tree</artifactId>-->
 		<!--<version>3.3.1</version>-->
 		<!--</dependency>-->
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>2.2.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>asm</groupId>
-					<artifactId>asm</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>cglib</groupId>-->
+			<!--<artifactId>cglib</artifactId>-->
+			<!--<version>2.2.2</version>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>asm</groupId>-->
+					<!--<artifactId>asm</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
 
 		<!-- TESTING -->
 		<dependency>
@@ -167,7 +166,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.9</version>
+					<version>2.12</version>
 					<configuration>
 						<skipTests>${skip.tests}</skipTests>
 					</configuration>
@@ -176,7 +175,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>2.4</version>
 					<configuration>
 						<archive>
 							<index>true</index>
