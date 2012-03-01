@@ -9,6 +9,7 @@ import nextmethod.OutParam;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.TypeVariable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -48,12 +49,23 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 		this.isArray = cls.isArray();
 		this.isEnum = cls.isEnum();
 		this.isFinal = Modifier.isFinal(modifiers);
-		this.isGeneric = cls.getGenericSuperclass() != null;
+		this.isGeneric = determineIfIsGeneric(cls);
 		this.isInterface = cls.isInterface();
 		this.isNested = cls.isMemberClass();
 		this.isPrimitive = cls.isPrimitive();
 		this.isPublic = Modifier.isPublic(modifiers);
 		this.isStatic = Modifier.isStatic(modifiers);
+	}
+
+	private boolean determineIfIsGeneric(final Class<T> cls) {
+		try {
+			final TypeVariable<Class<T>>[] typeParameters = cls.getTypeParameters();
+			return typeParameters != null && typeParameters.length >= 1;
+		}
+		catch (java.lang.reflect.GenericSignatureFormatError ignored) {
+		}
+		// If java.lang.reflect.GenericSignatureFormatError is thrown, always return false.
+		return false;
 	}
 
 	private void populateMethods() {
@@ -103,6 +115,10 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 		return fullName;
 	}
 
+	public Package getPackage() {
+		return wrapped.getPackage();
+	}
+
 	public boolean isAbstract() {
 		return isAbstract;
 	}
@@ -113,6 +129,13 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 
 	public boolean isArray() {
 		return isArray;
+	}
+
+	public boolean isClass() {
+		return !isArray
+			&& !isEnum
+			&& !isInterface
+			&& !isAnnotation;
 	}
 
 	public boolean isEnum() {
@@ -161,10 +184,7 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 			result.set(t);
 			return true;
 		}
-		catch (InstantiationException e) {
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e) {
+		catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -179,10 +199,7 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 			result.set(typeCls.cast(t));
 			return true;
 		}
-		catch (InstantiationException e) {
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e) {
+		catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return false;

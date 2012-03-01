@@ -10,12 +10,14 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.util.Modules;
 import nextmethod.web.IHttpApplication;
+import org.reflections.Reflections;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 public final class Mvc4jHttpRuntime extends GuiceServletContextListener {
 
@@ -27,6 +29,8 @@ public final class Mvc4jHttpRuntime extends GuiceServletContextListener {
 		final ServletContext servletContext = servletContextEvent.getServletContext();
 		servletContext.addFilter(GuiceFilter.class.getName(), new GuiceFilter())
 			.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+
+//		ServletContextAnalyzer.analyze(servletContext);
 	}
 
 	@SuppressWarnings({"unchecked"})
@@ -49,6 +53,8 @@ public final class Mvc4jHttpRuntime extends GuiceServletContextListener {
 
 	private ImmutableList<Module> getModules() {
 		final List<Module> modules = Lists.newArrayList();
+		final Reflections reflections = new Reflections(new Object[]{Module.class});
+		final Set<Class<? extends Module>> subTypesOf = reflections.getSubTypesOf(Module.class);
 		return ImmutableList.copyOf(modules);
 	}
 

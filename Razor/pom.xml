@@ -9,27 +9,38 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>mvc</artifactId>
+	<artifactId>razor</artifactId>
 	<packaging>jar</packaging>
-	<name>Mvc4j Mvc Implementation</name>
+	<name>Razor View Engine</name>
 
 	<properties>
-		<routing.version>${project.parent.version}</routing.version>
-	</properties>
 
+	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.nextmethod</groupId>
-			<artifactId>routing</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>[0.9,)</version>
+			<groupId>net.java.dev.javacc</groupId>
+			<artifactId>javacc</artifactId>
+			<version>5.0</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javacc-maven-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>javacc</id>
+						<goals>
+							<goal>javacc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

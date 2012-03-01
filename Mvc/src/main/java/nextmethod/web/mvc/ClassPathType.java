@@ -4,7 +4,7 @@ package nextmethod.web.mvc;
  *
  */
 enum ClassPathType {
-	Path(".class"),
+	Class(".class"),
 	Jar(".jar");
 
 	private final String suffix;

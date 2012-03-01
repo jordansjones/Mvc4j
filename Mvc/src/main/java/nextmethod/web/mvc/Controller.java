@@ -34,7 +34,7 @@ public abstract class Controller extends ControllerBase implements IActionFilter
 	}
 
 	@Override
-	protected void executeCore() throws HttpException{
+	protected void executeCore() throws HttpException {
 		// If code in this method needs to be updated, please also check the beginExecuteCore() and
 		// endExecuteCore() methods of AsyncController to see if that code also must be updated.
 		possiblyLoadTempData();
@@ -50,7 +50,7 @@ public abstract class Controller extends ControllerBase implements IActionFilter
 	}
 
 	protected void handleUnknownAction(final String actionName) throws HttpException {
-        throw new HttpException(404, actionName + "not found.");
+		throw new HttpException(404, actionName + "not found.");
 	}
 
 	void possiblyLoadTempData() {

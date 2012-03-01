@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import nextmethod.annotations.TODO;
+import nextmethod.reflection.AssemblyInfo;
 
 import javax.inject.Inject;
 import java.io.FilenameFilter;
@@ -32,15 +33,16 @@ class BuildManagerWrapper implements IBuildManager {
 	}
 
 	@Override
-	public ImmutableCollection<Assembly> getReferencedAssemblies() {
+	public ImmutableCollection<AssemblyInfo> getReferencedAssemblies() {
 		final ImmutableMultimap<ClassPathType, String> classPath = vpUtil.getClassPath();
 
-		final ImmutableSet.Builder<Assembly> builder = ImmutableSet.builder();
-		builder.add(createAssemblyFromRawPath(classPath.get(ClassPathType.Path)));
+		final ImmutableSet.Builder<AssemblyInfo> builder = ImmutableSet.builder();
+		builder.add(createAssemblyFromRawPath(classPath.get(ClassPathType.Class)));
 		builder.addAll(createAssemblyFromJars(classPath.get(ClassPathType.Jar)));
 		builder.addAll(buildManager.getReferencedAssemblies());
 
 		return builder.build();
+//		return buildManager.getReferencedAssemblies();
 	}
 
 	@Override
@@ -58,25 +60,22 @@ class BuildManagerWrapper implements IBuildManager {
 			final Class<?> aClass = Class.forName(type);
 			assembly.getEntries().add(AssemblyType.of(aClass));
 		}
-		catch (NoClassDefFoundError ignored) {
-		}
-		catch (ClassNotFoundException e) {
-			// Do Nothing
+		catch (NoClassDefFoundError | ClassNotFoundException ignored) {
 		}
 	}
 
-	private Assembly createAssemblyFromRawPath(final ImmutableCollection<String> paths) {
+	private AssemblyInfo createAssemblyFromRawPath(final ImmutableCollection<String> paths) {
 		final Assembly assembly = new Assembly(MagicStrings.UngroupedAssemblyName);
 		for (String path : paths) {
 			final String typeName = VirtualPathUtility.normalizeClassEntry(path);
 			addAssemblyType(assembly, typeName);
 		}
-		return assembly;
+		return assembly.asAssemblyInfo();
 	}
 
-	private Set<Assembly> createAssemblyFromJars(final ImmutableCollection<String> jars) {
-		final Set<Assembly> assemblies = Sets.newHashSet();
-		final FilenameFilter filter = vpUtil.createFileNameFilter(ClassPathType.Path.suffix());
+	private Set<AssemblyInfo> createAssemblyFromJars(final ImmutableCollection<String> jars) {
+		final Set<AssemblyInfo> assemblies = Sets.newHashSet();
+		final FilenameFilter filter = vpUtil.createFileNameFilter(ClassPathType.Class.suffix());
 		for (String jar : jars) {
 			try {
 				final JarFile jarFile = new JarFile(jar);
@@ -94,6 +93,7 @@ class BuildManagerWrapper implements IBuildManager {
 						addAssemblyType(assembly, type);
 					}
 				}
+				assemblies.add(assembly.asAssemblyInfo());
 			}
 			catch (IOException ignored) {
 			}

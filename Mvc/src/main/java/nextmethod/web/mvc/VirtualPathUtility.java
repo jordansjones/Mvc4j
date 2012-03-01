@@ -10,8 +10,6 @@ import nextmethod.web.InvalidOperationException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -26,24 +24,9 @@ import static nextmethod.SystemHelpers.FileSeparator;
 final class VirtualPathUtility {
 
 	@Inject
-	private Provider<ServletContext> contextProvider;
+	private BuildManager buildManager;
 
 	private static final Object lockObject = new Object();
-
-	public String getLocalContextPath() {
-		if (WebInfFile != null)
-			return WebInfFile.getParent();
-
-		String contextPath = contextProvider.get().getContextPath();
-		contextPath = Strings.isNullOrEmpty(contextPath) ? "/" : contextPath;
-		String realPath = contextProvider.get().getRealPath(contextPath);
-		if (Strings.isNullOrEmpty(realPath)) {
-			final File webInfFolder = getWebInfFolder(null);
-			realPath = webInfFolder.getParent();
-		}
-
-		return realPath;
-	}
 
 	public String getWebInfFolder() {
 		File webInfFile = WebInfFile;
@@ -60,10 +43,10 @@ final class VirtualPathUtility {
 
 		final ImmutableMultimap.Builder<ClassPathType, String> builder = ImmutableMultimap.builder();
 		if (classes.exists() && classes.isDirectory()) {
-			final ImmutableSet<String> clss = loadPathEntries(ClassPathType.Path, classes);
+			final ImmutableSet<String> clss = loadPathEntries(ClassPathType.Class, classes);
 			final String s = String.format("%s%s", classes.getAbsolutePath(), FileSeparator());
 			for (String cls : clss) {
-				builder.put(ClassPathType.Path, cls.replace(s, ""));
+				builder.put(ClassPathType.Class, cls.replace(s, ""));
 			}
 		}
 

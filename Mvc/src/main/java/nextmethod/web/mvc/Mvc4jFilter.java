@@ -39,7 +39,7 @@ class Mvc4jFilter implements Filter {
 	private IHttpApplication httpApplication;
 	@Inject
 	private Injector injector;
-	
+
 	private RouteCollection routes;
 
 	@Override
@@ -56,8 +56,7 @@ class Mvc4jFilter implements Filter {
 		if (httpHandler != null) {
 			injector.injectMembers(httpHandler);
 			httpHandler.processRequest(httpContext);
-		}
-		else {
+		} else {
 			chain.doFilter(request, response);
 		}
 	}

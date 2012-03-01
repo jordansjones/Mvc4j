@@ -73,7 +73,8 @@ class Mvc4jVirtualPathProvider implements Provider<VirtualPathProvider> {
 				if (r == null)
 					r = Resources.getResource(String.format("%s%s", WebInfFolder, resource));
 			}
-			catch (Exception ignored) {}
+			catch (Exception ignored) {
+			}
 
 			if (r != null)
 				url.set(r);
@@ -88,7 +89,8 @@ class Mvc4jVirtualPathProvider implements Provider<VirtualPathProvider> {
 				if (r == null)
 					r = this.context.getResource(String.format("%s%s", WebInfFolder, resource));
 			}
-			catch (MalformedURLException ignored) {}
+			catch (MalformedURLException ignored) {
+			}
 
 			if (r != null)
 				url.set(r);

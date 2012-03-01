@@ -7,7 +7,7 @@ import nextmethod.web.mvc.IActionFilter;
 /**
  *
  */
-public class ThreeActionFilter implements IActionFilter {
+public final class ThreeActionFilter implements IActionFilter {
 
 	@Override
 	public void onActionExecuting(final ActionExecutingContext filterContext) {

@@ -8,6 +8,8 @@ import nextmethod.web.mvc.Controller;
 import nextmethod.web.mvc.annotations.Filter;
 import nextmethod.web.mvc.annotations.Filters;
 
+import java.util.Date;
+
 /**
  *
  */
@@ -19,6 +21,7 @@ public class HomeController extends Controller {
 		@Filter(impl = ThreeActionFilter.class, order = 3)
 	})
 	public ActionResult index() {
+		System.out.println("Home.index: " + new Date().toString());
 		return view();
 	}
 

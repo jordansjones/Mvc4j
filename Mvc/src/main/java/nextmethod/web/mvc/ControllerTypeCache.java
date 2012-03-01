@@ -11,6 +11,7 @@ import com.google.common.collect.Table;
 import com.google.inject.TypeLiteral;
 import nextmethod.Idx;
 import nextmethod.OutParam;
+import nextmethod.reflection.ClassInfo;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -19,12 +20,14 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static nextmethod.reflection.TypeOfHelper.typeOf;
+
 /**
  *
  */
 final class ControllerTypeCache {
 
-	private Table<Idx, String, Set<AssemblyType<?>>> cache;
+	private Table<Idx, String, Set<ClassInfo<?>>> cache;
 	private final Lock locker = new ReentrantLock();
 
 	public int size() {
@@ -38,21 +41,21 @@ final class ControllerTypeCache {
 				if (cache == null) {
 					cache = HashBasedTable.create();
 
-					final ImmutableList<AssemblyType<?>> controllerTypes = TypeCacheUtil.getFilteredTypesFromAssemblies(MagicStrings.ControllerTypeCacheName, isControllerType(), buildManager);
-					final HashMultimap<String, AssemblyType<?>> grouping = HashMultimap.create();
-					for (AssemblyType<?> type : controllerTypes) {
+					final ImmutableList<ClassInfo<?>> controllerTypes = TypeCacheUtil.getFilteredTypesFromAssemblies(MagicStrings.ControllerTypeCacheName, isControllerType(), buildManager);
+					final HashMultimap<String, ClassInfo<?>> grouping = HashMultimap.create();
+					for (ClassInfo<?> type : controllerTypes) {
 						String name = type.getName();
 						name = name.substring(0, name.length() - ControllerString.length());
 						grouping.put(name, type);
 					}
 
-					for (Map.Entry<String, AssemblyType<?>> entry : grouping.entries()) {
-						final AssemblyType<?> value = entry.getValue();
+					for (Map.Entry<String, ClassInfo<?>> entry : grouping.entries()) {
+						final ClassInfo<?> value = entry.getValue();
 						final Package aPackage = value.getPackage();
 						final String pckName = (aPackage != null ? aPackage.getName() : "");
 						final Idx controllerKey = Idx.of(entry.getKey());
 						if (!cache.contains(controllerKey, pckName)) {
-							cache.put(controllerKey, pckName, Sets.<AssemblyType<?>>newHashSet());
+							cache.put(controllerKey, pckName, Sets.<ClassInfo<?>>newHashSet());
 						}
 						cache.get(controllerKey, pckName).add(value);
 					}
@@ -65,12 +68,12 @@ final class ControllerTypeCache {
 	}
 
 	public Collection<Class<?>> getControllerTypes(final String controllerName, final Set<String> packages) {
-		final Set<AssemblyType<?>> matchingTypes = Sets.newHashSet();
+		final Set<ClassInfo<?>> matchingTypes = Sets.newHashSet();
 
-		final OutParam<Map<String, Set<AssemblyType<?>>>> packageLookup = OutParam.of(new TypeLiteral<Map<String, Set<AssemblyType<?>>>>() {
+		final OutParam<Map<String, Set<ClassInfo<?>>>> packageLookup = OutParam.of(new TypeLiteral<Map<String, Set<ClassInfo<?>>>>() {
 		});
 		if (tryGetCacheValue(controllerName, packageLookup)) {
-			final Map<String, Set<AssemblyType<?>>> packageMap = packageLookup.get();
+			final Map<String, Set<ClassInfo<?>>> packageMap = packageLookup.get();
 			if (packages != null) {
 				for (String requestedPackage : packages) {
 					for (String targetPackageGroup : packageMap.keySet()) {
@@ -80,23 +83,23 @@ final class ControllerTypeCache {
 					}
 				}
 			} else {
-				for (Set<AssemblyType<?>> types : packageMap.values()) {
+				for (Set<ClassInfo<?>> types : packageMap.values()) {
 					matchingTypes.addAll(types);
 				}
 			}
 		}
 
-		return Collections2.transform(matchingTypes, new Function<AssemblyType<?>, Class<?>>() {
+		return Collections2.transform(matchingTypes, new Function<ClassInfo<?>, Class<?>>() {
 			@Override
-			public Class<?> apply(@Nullable final AssemblyType<?> input) {
+			public Class<?> apply(@Nullable final ClassInfo<?> input) {
 				if (input == null)
 					return null;
-				return input.getTypeClass();
+				return input.wrappedType();
 			}
 		});
 	}
 
-	private boolean tryGetCacheValue(final String controllerName, final OutParam<Map<String, Set<AssemblyType<?>>>> nsLookup) {
+	private boolean tryGetCacheValue(final String controllerName, final OutParam<Map<String, Set<ClassInfo<?>>>> nsLookup) {
 		final Idx key = Idx.of(controllerName);
 		if (cache.containsRow(key)) {
 			nsLookup.set(cache.row(key));
@@ -106,12 +109,12 @@ final class ControllerTypeCache {
 	}
 
 	private static final String ControllerString = "Controller";
-	private static final Class<IController> IControllerClass = IController.class;
+	private static final ClassInfo<IController> IControllerClass = typeOf(IController.class);
 
-	private static Predicate<AssemblyType<?>> isControllerType() {
-		return new Predicate<AssemblyType<?>>() {
+	private static Predicate<ClassInfo<?>> isControllerType() {
+		return new Predicate<ClassInfo<?>>() {
 			@Override
-			public boolean apply(@Nullable final AssemblyType<?> input) {
+			public boolean apply(@Nullable final ClassInfo<?> input) {
 				return input != null
 					&& !input.isAbstract()
 					&& input.isA(IControllerClass);

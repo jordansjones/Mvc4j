@@ -33,10 +33,10 @@ public abstract class AreaRegistration {
 		registerArea(context);
 	}
 
-	private static boolean isAreaRegistrationType(final AssemblyType<?> cls) {
+	private static boolean isAreaRegistrationType(final ClassInfo<?> cls) {
 		if (cls == null)
 			return false;
-		final ClassInfo<?> info = typeOf(cls.getTypeClass());
+		final ClassInfo<?> info = typeOf(cls.wrappedType());
 		return info != null
 			&& info.isA(typeOf(AreaRegistration.class))
 			&& info.hasDefaultConstructor();
@@ -56,15 +56,15 @@ public abstract class AreaRegistration {
 
 	@SuppressWarnings({"unchecked"})
 	static void registerAllAreas(final RouteCollection routes, @Nullable final Object state) {
-		final ImmutableList<AssemblyType<?>> types = TypeCacheUtil.getFilteredTypesFromAssemblies(MagicStrings.AreaTypeCacheName, new Predicate<AssemblyType<?>>() {
+		final ImmutableList<ClassInfo<?>> types = TypeCacheUtil.getFilteredTypesFromAssemblies(MagicStrings.AreaTypeCacheName, new Predicate<ClassInfo<?>>() {
 			@Override
-			public boolean apply(@Nullable final AssemblyType<?> input) {
+			public boolean apply(@Nullable final ClassInfo<?> input) {
 				return isAreaRegistrationType(input);
 			}
 		}, buildManagerProvider.get());
 
-		for (AssemblyType<?> type : types) {
-			final Class<AreaRegistration> typeClass = (Class<AreaRegistration>) type.getTypeClass();
+		for (ClassInfo<?> type : types) {
+			final Class<AreaRegistration> typeClass = (Class<AreaRegistration>) type.wrappedType();
 			final OutParam<AreaRegistration> registration = OutParam.of(typeClass);
 			if (typeOf(typeClass).tryGetInstance(registration)) {
 				registration.get().createContextAndRegister(routes, state);

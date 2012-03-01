@@ -1,8 +1,11 @@
 package nextmethod.web.mvc;
 
 import com.google.common.collect.Sets;
+import nextmethod.reflection.AssemblyInfo;
 
 import java.util.Set;
+
+import static nextmethod.reflection.TypeOfHelper.typeOf;
 
 /**
  *
@@ -23,6 +26,14 @@ class Assembly {
 
 	public Set<AssemblyType<?>> getEntries() {
 		return entries;
+	}
+
+	public AssemblyInfo asAssemblyInfo() {
+		final AssemblyInfo assemblyInfo = new AssemblyInfo(this.name);
+		for (AssemblyType<?> entry : entries) {
+			assemblyInfo.getEntries().add(typeOf(entry.getTypeClass()));
+		}
+		return assemblyInfo;
 	}
 
 	@SuppressWarnings({"RedundantIfStatement"})
