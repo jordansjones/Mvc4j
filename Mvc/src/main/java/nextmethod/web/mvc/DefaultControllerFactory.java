@@ -8,6 +8,7 @@ import com.google.inject.Provider;
 import nextmethod.OutParam;
 import nextmethod.TypeHelpers;
 import nextmethod.annotations.TODO;
+import nextmethod.reflection.AmbiguousMatchException;
 import nextmethod.web.InvalidOperationException;
 import nextmethod.web.routing.RequestContext;
 import nextmethod.web.routing.Route;
@@ -69,8 +70,7 @@ class DefaultControllerFactory implements IControllerFactory {
 			final IController controller = IController.class.cast(controllerType.newInstance());
 			injector.injectMembers(controller);
 			return controller;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new InvalidOperationException(String.format(
 				MvcResources().getString("defaultControllerFactory.errorCreatingController"),
 				controllerType.getName()
@@ -131,7 +131,7 @@ class DefaultControllerFactory implements IControllerFactory {
 		}
 	}
 
-	static InvalidOperationException createAmbiguousControllerException(final RouteBase route, final String controllerName, final Collection<Class<?>> matchingTypes) {
+	static AmbiguousMatchException createAmbiguousControllerException(final RouteBase route, final String controllerName, final Collection<Class<?>> matchingTypes) {
 		final StringBuilder sb = new StringBuilder();
 		for (Class<?> type : matchingTypes) {
 			sb.append(NewLine());
@@ -148,6 +148,6 @@ class DefaultControllerFactory implements IControllerFactory {
 				controllerName, sb.toString());
 		}
 
-		return new InvalidOperationException(errorText);
+		return new AmbiguousMatchException(errorText);
 	}
 }

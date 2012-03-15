@@ -9,10 +9,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import nextmethod.Idx;
 import nextmethod.annotations.TODO;
+import nextmethod.reflection.AmbiguousMatchException;
 import nextmethod.reflection.AnnotationInfo;
 import nextmethod.reflection.ClassInfo;
 import nextmethod.reflection.MethodInfo;
-import nextmethod.web.InvalidOperationException;
 import nextmethod.web.mvc.annotations.ActionNameSelector;
 import nextmethod.web.mvc.annotations.IActionMethodSelector;
 import nextmethod.web.mvc.annotations.IActionNameSelector;
@@ -21,7 +21,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static nextmethod.SystemHelpers.NewLine;
 import static nextmethod.reflection.TypeOfHelper.typeOf;
+import static nextmethod.web.mvc.Mvc4jResources.MvcResources;
 
 /**
  *
@@ -43,7 +45,7 @@ final class ActionMethodSelector {
 	}
 
 	public MethodInfo findActionMethod(final ControllerContext controllerContext, final String actionName) {
-		final List<MethodInfo> matchingAliasedMethod = getMatchingAliasedMethod(controllerContext, actionName);
+		final List<MethodInfo> matchingAliasedMethod = getMatchingAliasedMethods(controllerContext, actionName);
 		final Idx nameKey = Idx.of(actionName);
 		if (nonAliasedMethods.containsKey(nameKey))
 			matchingAliasedMethod.addAll(nonAliasedMethods.get(nameKey));
@@ -57,14 +59,12 @@ final class ActionMethodSelector {
 				return methods.get(0);
 
 			default:
-				// TODO: This
-				throw new InvalidOperationException("Blah blah");
+				throw createAmbiguousMatchException(methods, actionName);
 		}
 	}
 
 	private void populateLookupTables() {
-		final ImmutableCollection<MethodInfo> declaredMethods = controllerCls.getMethods();
-		final Iterable<MethodInfo> actionMethods = Iterables.filter(declaredMethods, IsValidActionMethod);
+		final Iterable<MethodInfo> actionMethods = Iterables.filter(controllerCls.getMethods(), IsValidActionMethod);
 
 		this.aliasedMethods = Iterables.filter(actionMethods, IsMethodDecoratedWithAliasingAnnotation);
 
@@ -75,7 +75,7 @@ final class ActionMethodSelector {
 		}
 	}
 
-	List<MethodInfo> getMatchingAliasedMethod(final ControllerContext controllerContext, final String actionName) {
+	List<MethodInfo> getMatchingAliasedMethods(final ControllerContext controllerContext, final String actionName) {
 		// find all aliased methods which are opting in to this request
 		// to opt in, all annotation defined on the method must return true
 		final List<MethodInfo> methods = Lists.newArrayList();
@@ -131,8 +131,7 @@ final class ActionMethodSelector {
 				if (selector.isValidName(controllerContext, actionName, actionMethod)) {
 					return true;
 				}
-			}
-			catch (Exception ignored) {
+			} catch (Exception ignored) {
 			}
 		}
 		return false;
@@ -146,11 +145,29 @@ final class ActionMethodSelector {
 				if (selector.isValidForRequest(controllerContext, actionMethod)) {
 					return true;
 				}
-			}
-			catch (Exception ignored) {
+			} catch (Exception ignored) {
 			}
 		}
 		return false;
+	}
+
+	private AmbiguousMatchException createAmbiguousMatchException(final List<MethodInfo> amiguousMethods, final String actionName) {
+		final StringBuilder sb = new StringBuilder();
+		for (MethodInfo methodInfo : amiguousMethods) {
+			final String controllerAction = methodInfo.toString();
+			final String controllerType = methodInfo.getReflectedType().getFullName();
+			sb
+				.append(NewLine())
+				.append(String.format(
+					MvcResources().getString("actionMethodSelector.ambiguousMatchType"),
+					controllerAction, controllerType
+				));
+		}
+		final String message = String.format(
+			MvcResources().getString("actionMethodSelector.ambiguousMatch"),
+			actionName, controllerCls.getName(), sb.toString()
+		);
+		return new AmbiguousMatchException(message);
 	}
 
 	private static final ClassInfo<Controller> ControllerClass = typeOf(Controller.class);
