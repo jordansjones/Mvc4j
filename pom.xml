@@ -113,6 +113,11 @@
 		</dependency>
 
 		<!-- Runtime Utilities -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.7-SNAPSHOT</version>
+		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>asm</groupId>-->
 			<!--<artifactId>asm-all</artifactId>-->

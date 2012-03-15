@@ -87,7 +87,7 @@ public class ControllerActionInvoker implements IActionInvoker {
 					invokeActionResultWithFilters(controllerContext, filterInfo.getResultFilters(), postActionCtx.getResult());
 				}
 			}
-//			catch (Thr) {
+//			catch (ThreadAbortException) {
 			// This type of exception occurs as a result of Response.Redirect(), but we special-case so that
 			// the filters don't see this as an error.
 //				throw
@@ -101,7 +101,6 @@ public class ControllerActionInvoker implements IActionInvoker {
 				invokeActionResult(controllerContext, exceptionContext.getResult());
 			}
 
-			invokeActionMethod(controllerContext, actionDescriptor, Maps.<String, Object>newHashMap());
 			return true;
 		}
 
