@@ -72,7 +72,7 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 		if (methods == null) {
 			synchronized (lockObject) {
 				if (methods == null) {
-					methods = TypeOfHelper.asMethodInfo(ImmutableSet.copyOf(wrapped.getMethods()));
+					methods = TypeOfHelper.asMethodInfo(ImmutableSet.copyOf(wrapped.getDeclaredMethods()));
 				}
 			}
 		}
@@ -106,6 +106,10 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 	public boolean isA(@Nullable final ClassInfo<?> classInfo) {
 		return classInfo != null && classInfo.wrapped.isAssignableFrom(this.wrapped);
 	}
+	
+	public boolean canBe(@Nullable final Object o) {
+		return o != null && this.wrapped.isAssignableFrom(o.getClass());
+	}
 
 	public String getName() {
 		return name;
@@ -117,6 +121,10 @@ public final class ClassInfo<T> extends WrappedInfo<Class<T>> {
 
 	public Package getPackage() {
 		return wrapped.getPackage();
+	}
+
+	public boolean allowsNullValues() {
+		return !isPrimitive();
 	}
 
 	public boolean isAbstract() {

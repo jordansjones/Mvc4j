@@ -6,9 +6,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import nextmethod.OutParam;
 import nextmethod.TypeHelpers;
+import nextmethod.collect.IDictionary;
 import nextmethod.reflection.AnnotationInfo;
 import nextmethod.reflection.ClassInfo;
 import nextmethod.reflection.MethodInfo;
+import nextmethod.reflection.ParameterInfo;
 import nextmethod.web.mvc.annotations.Filter;
 import nextmethod.web.mvc.annotations.FilterHelpers;
 import nextmethod.web.mvc.annotations.FilterTarget;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 import static nextmethod.TypeHelpers.typeAs;
 import static nextmethod.reflection.TypeOfHelper.typeOf;
+import static nextmethod.web.mvc.Mvc4jResources.MvcResources;
 
 /**
  *
@@ -27,17 +30,63 @@ import static nextmethod.reflection.TypeOfHelper.typeOf;
 public abstract class ActionDescriptor {
 
 	private static final ActionSelector[] emptySelectors = new ActionSelector[0];
+
+	private static final AllowMultipleAnnotationsCache allowMultipleAnnotationsCache = new AllowMultipleAnnotationsCache();
 	private static final ActionMethodDispatcherCache staticDispatcherCache = new ActionMethodDispatcherCache();
 
 	private ActionMethodDispatcherCache instanceDispatcherCache;
 
-	public abstract Object execute(final ControllerContext controllerContext, final Map<String, Object> parameters);
+	public abstract String getActionName();
+	public abstract ControllerDescriptor getControllerDescriptor();
+	public abstract ParameterDescriptor[] getParameters();
+	public abstract Object execute(final ControllerContext controllerContext, final IDictionary<String, Object> parameters);
 
-	static Object extractParameterFromMap(Object parameterInfo, Map<String, Object> parmeters, final MethodInfo actionMethod) {
-		Object value = null;
+
+	static Object extractParameterFromIDictionary(final ParameterInfo parameterInfo, final IDictionary<String, Object> parameters, final MethodInfo actionMethod) {
+		final OutParam<Object> value = OutParam.of();
+
+		if (!parameters.tryGetValue(parameterInfo.getName(), value)) {
+			final String message = String.format(
+				MvcResources().getString("reflectedActionDescriptor.parameterNotInDictionary"),
+				parameterInfo.getName(), parameterInfo.getParameterType().getName(), actionMethod.getName(), actionMethod.getReflectedType().getName()
+			);
+			throw new IllegalArgumentException(message);
+		}
+
+		if (value.isNull() && !parameterInfo.getParameterType().allowsNullValues()) {
+			final String message = String.format(
+				MvcResources().getString("reflectedActionDescriptor.parameterCannotBeNull"),
+				parameterInfo.getName(), parameterInfo.getParameterType().getName(), actionMethod.getName(), actionMethod.getReflectedType().getName()
+			);
+			throw new IllegalArgumentException(message);
+		}
+
+		if (!value.isNull() && !parameterInfo.getParameterType().canBe(value.get())) {
+			final String message = String.format(
+				MvcResources().getString("reflectedActionDescriptor.parameterValueHasWrongType"),
+				parameterInfo.getName(), actionMethod.getName(), actionMethod.getReflectedType().getName(), value.get().getClass().getName(), parameterInfo.getParameterType().getName()
+			);
+			throw new IllegalArgumentException(message);
+		}
 
 
-		return value;
+		return value.get();
+	}
+	
+	static Object extractParameterOrDefaultFromIDictionary(final ParameterInfo parameterInfo, final IDictionary<String, Object> parameters) {
+		final ClassInfo<?> parameterType = parameterInfo.getParameterType();
+
+		final OutParam<Object> value = OutParam.of();
+		parameters.tryGetValue(parameterInfo.getName(), value);
+
+		if (!value.isNull() && parameterType.canBe(value.get().getClass())) {
+			return value.get();
+		}
+		else {
+			// TODO: Get default value
+		}
+
+		return null;
 	}
 
 	public ActionMethodDispatcherCache getDispatcherCache() {
@@ -67,6 +116,11 @@ public abstract class ActionDescriptor {
 		mergeFiltersIntoList(orderedFilters, filterInfo.getResultFilters(), IResultFilter.class);
 
 		return filterInfo;
+	}
+
+	static String verifyActionMethodIsCallable(final MethodInfo methodInfo) {
+		// TODO: Define this
+		return null;
 	}
 
 

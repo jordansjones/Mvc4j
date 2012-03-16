@@ -24,12 +24,12 @@ public class HomeController extends Controller {
 		System.out.println("Home.index: " + new Date().toString());
 		return view();
 	}
-
-	public ActionResult about() {
+	
+	public ActionResult test(final String id) {
 		return view();
 	}
 
-	public void test() {
-		int x = 1;
+	public ActionResult about() {
+		return view();
 	}
 }

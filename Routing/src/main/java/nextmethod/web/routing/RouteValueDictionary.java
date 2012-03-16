@@ -3,6 +3,7 @@ package nextmethod.web.routing;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import nextmethod.OutParam;
+import nextmethod.collect.IDictionary;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -14,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * 
  */
-public class RouteValueDictionary implements Map<String, Object> {
+public class RouteValueDictionary implements IDictionary<String, Object> {
 
 	private final Map<String, Object> routeValues = Maps.newHashMap();
 
@@ -41,7 +42,7 @@ public class RouteValueDictionary implements Map<String, Object> {
 		return true;
 	}
 
-	public RouteValueDictionary filterEntries(final Predicate<Entry<String, Object>> predicate) {
+	public RouteValueDictionary filterEntries(final Predicate<Map.Entry<String, Object>> predicate) {
 		return new RouteValueDictionary(Maps.filterEntries(routeValues, predicate));
 	}
 

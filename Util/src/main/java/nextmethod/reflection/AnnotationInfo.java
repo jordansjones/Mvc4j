@@ -8,6 +8,10 @@ import java.lang.annotation.Annotation;
 public final class AnnotationInfo<T extends Annotation> extends WrappedInfo<T> {
 
 	static AnnotationInfo[] EmptyArray = new AnnotationInfo[0];
+	
+	public static <T extends Annotation> AnnotationInfo<T> of (final T a) {
+		return new AnnotationInfo<T>(a);
+	}
 
 	public AnnotationInfo(final T annotation) {
 		super(annotation);

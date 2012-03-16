@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
+import nextmethod.collect.ImmutableDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,8 +61,11 @@ public class ControllerActionInvoker implements IActionInvoker {
 	}
 
 	protected Map<String, Object> getParameterValues(final ControllerContext controllerContext, final ActionDescriptor actionDescriptor) {
-		return Maps.newHashMap();
-//		throw new NotImplementedException();
+		final Map<String, Object> results = Maps.newHashMap();
+
+//		actionDescriptor.
+
+		return results;
 	}
 
 	@Override
@@ -109,7 +113,7 @@ public class ControllerActionInvoker implements IActionInvoker {
 	}
 
 	protected ActionResult invokeActionMethod(final ControllerContext controllerContext, final ActionDescriptor actionDescriptor, @Nullable final Map<String, Object> parameters) {
-		final Object returnValue = actionDescriptor.execute(controllerContext, parameters);
+		final Object returnValue = actionDescriptor.execute(controllerContext, ImmutableDictionary.of(parameters));
 		return createActionResult(controllerContext, actionDescriptor, returnValue);
 	}
 

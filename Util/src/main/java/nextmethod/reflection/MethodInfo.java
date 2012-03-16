@@ -3,13 +3,13 @@ package nextmethod.reflection;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.thoughtworks.paranamer.CachingParanamer;
 import nextmethod.NotImplementedException;
 import nextmethod.OutParam;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -27,7 +27,7 @@ public final class MethodInfo extends MemberInfo<Method> {
 
 	private final Object lockObject = new Object();
 
-	private ImmutableList<ParameterInfo> parameters;
+	private ImmutableList<ParameterInfo<?>> parameters;
 	private ImmutableCollection<Annotation> annotations;
 
 	public MethodInfo(final Method method) {
@@ -41,17 +41,28 @@ public final class MethodInfo extends MemberInfo<Method> {
 		populateParameters();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void populateParameters() {
-		if (parameters != null)
-			return;
+		if (parameters == null) {
+			synchronized (lockObject) {
+				final ImmutableList.Builder<ParameterInfo<?>> builder = ImmutableList.builder();
 
-		final ImmutableList.Builder<ParameterInfo> builder = ImmutableList.builder();
+//				final Type[] genericParameterTypes = wrapped.getGenericParameterTypes();
+				final Class<?>[] parameterTypes = wrapped.getParameterTypes();
+				final Annotation[][] parameterAnnotations = wrapped.getParameterAnnotations();
 
-		final Type[] genericParameterTypes = wrapped.getGenericParameterTypes();
-		final Class<?>[] parameterTypes = wrapped.getParameterTypes();
-		final Annotation[][] parameterAnnotations = wrapped.getParameterAnnotations();
+				final CachingParanamer paranamer = new CachingParanamer();
+				final String[] paramNames = paranamer.lookupParameterNames(wrapped);
 
-		int x = 1;
+				if (parameterTypes.length == paramNames.length) {
+					for (int i = 0; i < parameterTypes.length; i++) {
+						final ParameterInfo pInfo = new ParameterInfo(parameterTypes[i], paramNames[i], parameterAnnotations[i]);
+						builder.add(pInfo);
+					}
+				}
+				this.parameters = builder.build();
+			}
+		}
 	}
 
 	private void populateAnnotations() {
@@ -88,8 +99,8 @@ public final class MethodInfo extends MemberInfo<Method> {
 		throw new NotImplementedException();
 	}
 
-	public ParameterInfo[] getParameters() {
-		throw new NotImplementedException();
+	public ParameterInfo<?>[] getParameters() {
+		return Iterables.toArray(this.parameters, ParameterInfo.class);
 	}
 
 	public ParameterInfo getReturnParameter() {

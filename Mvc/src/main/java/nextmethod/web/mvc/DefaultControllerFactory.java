@@ -67,9 +67,10 @@ class DefaultControllerFactory implements IControllerFactory {
 			));
 
 		try {
-			final IController controller = IController.class.cast(controllerType.newInstance());
-			injector.injectMembers(controller);
-			return controller;
+			return injector.getInstance(controllerType.asSubclass(IController.class));
+//			final IController controller = IController.class.cast(controllerType.newInstance());
+//			injector.injectMembers(controller);
+//			return controller;
 		} catch (Exception e) {
 			throw new InvalidOperationException(String.format(
 				MvcResources().getString("defaultControllerFactory.errorCreatingController"),

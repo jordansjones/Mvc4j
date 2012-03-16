@@ -23,6 +23,11 @@
 			<artifactId>web</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.nextmethod</groupId>
+			<artifactId>util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>
