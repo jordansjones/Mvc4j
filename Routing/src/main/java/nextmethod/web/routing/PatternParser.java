@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import nextmethod.OutParam;
+import nextmethod.collect.KeyValuePair;
 import nextmethod.web.IHttpContext;
 
 import java.io.UnsupportedEncodingException;
@@ -169,11 +170,11 @@ class PatternParser {
 
 	RouteValueDictionary addDefaults(final RouteValueDictionary dict, final RouteValueDictionary defaults) {
 		if (defaults != null && !defaults.isEmpty()) {
-			for (Map.Entry<String, Object> entry : defaults.entrySet()) {
+			for (KeyValuePair<String, Object> entry : defaults) {
 				final String key = entry.getKey();
 				if (dict.containsKey(key))
 					continue;
-				dict.put(key, entry.getValue());
+				dict.add(key, entry.getValue());
 			}
 		}
 
@@ -206,7 +207,10 @@ class PatternParser {
 					builder.append(argSegs[j]);
 				}
 
-				ret.put(tokenName, builder.toString());
+				if (ret.containsKey(tokenName))
+					ret.set(tokenName, builder.toString());
+				else
+					ret.add(tokenName, builder.toString());
 				break;
 			}
 
@@ -229,7 +233,11 @@ class PatternParser {
 			if (nextTokenIndex < 0) {
 				// First token
 				assert pathSegment != null;
-				ret.put(tokenName, pathSegment.substring(0, startIndex + 1));
+				final String pSegment = pathSegment.substring(0, startIndex + 1);
+				if (ret.containsKey(tokenName))
+					ret.set(tokenName, pSegment);
+				else
+					ret.add(tokenName, pSegment);
 				continue;
 			}
 
@@ -395,7 +403,7 @@ class PatternParser {
 
 		// Check for non-url parameters
 		if (defaultValues != null) {
-			for (Map.Entry<String, Object> entry : defaultValues.entrySet()) {
+			for (KeyValuePair<String, Object> entry : defaultValues) {
 				final String key = entry.getKey();
 
 				if (parameterNames.containsKey(key))
@@ -428,7 +436,7 @@ class PatternParser {
 			final IHttpContext httpContext = requestContext.getHttpContext();
 			final OutParam<Boolean> invalidConstraint = OutParam.of(false);
 
-			for (Map.Entry<String, Object> entry : constraints.entrySet()) {
+			for (KeyValuePair<String, Object> entry : constraints) {
 				if (!Route.processConstraintInternal(httpContext, route, entry.getValue(), entry.getKey(), userValues, RouteDirection.UrlGeneration, requestContext, invalidConstraint))
 					return null; // constraint not met -> no match
 			}
@@ -494,7 +502,7 @@ class PatternParser {
 		if (userValues != null) {
 			boolean first = true;
 			final String characterEncoding = requestContext.getContentEncoding();
-			for (Map.Entry<String, Object> entry : userValues.entrySet()) {
+			for (KeyValuePair<String, Object> entry : userValues) {
 				final String parameterName = entry.getKey();
 				if (parameterNames.containsKey(parameterName) || rvdHas(defaultValues, parameterName) || rvdHas(constraints, parameterName))
 					continue;

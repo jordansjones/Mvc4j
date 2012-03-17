@@ -1,10 +1,13 @@
 package nextmethod.web.mvc;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
+import nextmethod.annotations.TODO;
 import nextmethod.collect.ImmutableDictionary;
+import nextmethod.reflection.ParameterInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,12 +63,41 @@ public class ControllerActionInvoker implements IActionInvoker {
 		return controllerDescriptor.findAction(context, actionName);
 	}
 
+	@TODO
+	private IModelBinder getModelBinder(final ParameterDescriptor parameterDescriptor) {
+		return null;
+	}
+	
+	protected Object getParameterValue(final ControllerContext controllerContext, final ParameterDescriptor parameterDescriptor) {
+		// Collect all necessary binding properties
+		final ParameterInfo<?> parameterType = parameterDescriptor.getParameterType();
+		final IModelBinder binder = getModelBinder(parameterDescriptor);
+		final IValueProvider valueProvider = controllerContext.getController().getValueProvider();
+		String parameterName = parameterDescriptor.getBindingInfo().getPrefix();
+		parameterName = Strings.isNullOrEmpty(parameterName) ? parameterDescriptor.getParameterName() : parameterName;
+		final Predicate<String> propertyFilter = getPropertyFilter(parameterDescriptor);
+
+		// Finally, call into the binder
+		final ModelBindingContext bindingContext = new ModelBindingContext();
+
+		return null;
+	}
+
 	protected Map<String, Object> getParameterValues(final ControllerContext controllerContext, final ActionDescriptor actionDescriptor) {
 		final Map<String, Object> results = Maps.newHashMap();
 
-//		actionDescriptor.
+		final ParameterDescriptor[] parameters = actionDescriptor.getParameters();
+
+		for (ParameterDescriptor parameter : parameters) {
+			results.put(parameter.getParameterName(), getParameterValue(controllerContext, parameter));
+		}
 
 		return results;
+	}
+
+	@TODO
+	private static Predicate<String> getPropertyFilter(final ParameterDescriptor parameterDescriptor) {
+		return null;
 	}
 
 	@Override

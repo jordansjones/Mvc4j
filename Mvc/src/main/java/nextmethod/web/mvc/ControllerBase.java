@@ -1,5 +1,6 @@
 package nextmethod.web.mvc;
 
+import nextmethod.annotations.TODO;
 import nextmethod.web.HttpException;
 import nextmethod.web.InvalidOperationException;
 import nextmethod.web.routing.RequestContext;
@@ -31,6 +32,11 @@ public abstract class ControllerBase implements IController {
 	}
 
 	protected abstract void executeCore() throws HttpException;
+
+	@TODO
+	public IValueProvider getValueProvider() {
+		return null;
+	}
 
 	public ControllerContext getControllerContext() {
 		return controllerContext;

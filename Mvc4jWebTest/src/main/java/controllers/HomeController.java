@@ -25,7 +25,7 @@ public class HomeController extends Controller {
 		return view();
 	}
 	
-	public ActionResult test(final String id) {
+	public ActionResult test(@javax.inject.Named("Id") final String id, @com.google.inject.name.Named("Pid") final String pid) {
 		return view();
 	}
 

@@ -2,24 +2,23 @@ package nextmethod.collect;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import nextmethod.OutParam;
+import nextmethod.base.IEqualityComparer;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class ImmutableDictionary<K,V> implements IDictionary<K,V> {
 	
-	private final ImmutableMap<K, V> delegate;
+	private final IDictionary<K, V> delegate;
 
 	ImmutableDictionary(final Map<K, V> delegate) {
-		this.delegate = delegate == null ? ImmutableMap.<K, V>of() : ImmutableMap.copyOf(delegate);
+		this(delegate == null ? new Dictionary<K, V>() : new Dictionary<K, V>(delegate));
+	}
+	
+	ImmutableDictionary(final IDictionary<K, V> delegate) {
+		this.delegate = delegate == null ? new Dictionary<K, V>() : new Dictionary<K, V>(delegate);
 	}
 	
 	public static <K, V> ImmutableDictionary<K, V> of(@Nullable final Map<K, V> map) {
@@ -27,38 +26,64 @@ public final class ImmutableDictionary<K,V> implements IDictionary<K,V> {
 	}
 
 	@Override
-	public void clear() {
-		delegate.clear();
+	public ImmutableDictionary<K, V> add(KeyValuePair<K, V> item) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean containsKey(@Nullable Object key) {
-		return delegate.containsKey(key);
+	public ImmutableDictionary<K, V> add(IDictionary<? extends K, ? extends V> items) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean containsValue(@Nullable Object value) {
-		return delegate.containsValue(value);
+	public ImmutableDictionary<K, V> add(Map<K, V> items) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ImmutableSet<Entry<K, V>> entrySet() {
-		return delegate.entrySet();
+	public ImmutableDictionary<K, V> add(K k, V v) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean equals(@Nullable Object object) {
-		return delegate.equals(object);
+	public ImmutableDictionary<K, V> clear() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public V get(@Nullable Object key) {
-		return delegate.get(key);
+	public boolean contains(KeyValuePair<K, V> item) {
+		return delegate.contains(item);
 	}
 
 	@Override
-	public int hashCode() {
-		return delegate.hashCode();
+	public boolean containsKey(K k) {
+		return delegate.containsKey(k);
+	}
+
+	@Override
+	public boolean containsValue(V v) {
+		return delegate.containsValue(v);
+	}
+
+	@Override
+	public ImmutableDictionary<K, V> copyTo(KeyValuePair<K, V>[] array, int arrayIndex) {
+		delegate.copyTo(array, arrayIndex);
+		return this;
+	}
+
+	@Override
+	public ImmutableDictionary<K, V> filterEntries(final Predicate<KeyValuePair<K, V>> filter) {
+		return new ImmutableDictionary<K, V>(this.delegate.filterEntries(filter));
+	}
+
+	@Override
+	public V get(K k) {
+		return delegate.get(k);
+	}
+
+	@Override
+	public IEqualityComparer<K> getComparer() {
+		return delegate.getComparer();
 	}
 
 	@Override
@@ -67,31 +92,33 @@ public final class ImmutableDictionary<K,V> implements IDictionary<K,V> {
 	}
 
 	@Override
-	public ImmutableSet<K> keySet() {
-		return delegate.keySet();
-	}
-
-	public V put(K k, V v) {
-		return delegate.put(k, v);
-	}
-
-	public void putAll(Map<? extends K, ? extends V> map) {
-		delegate.putAll(map);
+	public boolean isReadOnly() {
+		return true;
 	}
 
 	@Override
-	public V remove(Object o) {
-		return delegate.remove(o);
+	public ImmutableDictionary<K, V> put(final K k, final V v) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public String toString() {
-		return delegate.toString();
+	public Iterator<KeyValuePair<K, V>> iterator() {
+		return delegate.iterator();
 	}
 
 	@Override
-	public ImmutableCollection<V> values() {
-		return delegate.values();
+	public boolean remove(KeyValuePair<K, V> item) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean remove(K k) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public IDictionary<K, V> set(K k, V v) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -100,24 +127,17 @@ public final class ImmutableDictionary<K,V> implements IDictionary<K,V> {
 	}
 
 	@Override
-	public boolean tryGetValue(@Nonnull final K key, @Nonnull final OutParam<V> value) {
-		final Optional<K> result = Iterables.tryFind(this.keySet(), new Predicate<K>() {
-			@Override
-			public boolean apply(@Nullable K input) {
-				if (input == null) return false;
-				if (key.getClass().equals(String.class)) {
-					final String keyString = String.class.cast(key);
-					final String inputString = String.class.cast(input);
-					return inputString.equalsIgnoreCase(keyString);
-				}
-				return input.equals(key);
-			}
-		});
+	public Map<K, V> toMap() {
+		return null;
+	}
 
-		if (!result.isPresent())
-			return false;
+	@Override
+	public Optional<V> tryGetValue(K k) {
+		return delegate.tryGetValue(k);
+	}
 
-		checkNotNull(value).set(this.get(result.get()));
-		return true;
+	@Override
+	public boolean tryGetValue(K k, OutParam<V> value) {
+		return delegate.tryGetValue(k, value);
 	}
 }

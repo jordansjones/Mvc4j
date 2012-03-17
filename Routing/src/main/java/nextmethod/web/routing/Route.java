@@ -2,11 +2,11 @@ package nextmethod.web.routing;
 
 import com.google.common.base.Strings;
 import nextmethod.OutParam;
+import nextmethod.collect.KeyValuePair;
 import nextmethod.web.IHttpContext;
 import nextmethod.web.InvalidOperationException;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -62,7 +62,7 @@ public class Route extends RouteBase {
 
 		final RouteValueDictionary constraints = this.constraints;
 		if (constraints != null) {
-			for (Map.Entry<String, Object> entry : constraints.entrySet()) {
+			for (KeyValuePair<String, Object> entry : constraints) {
 				if (!processConstraint(httpContext, entry.getValue(), entry.getKey(), values, RouteDirection.IncomingRequest))
 					return null;
 			}
@@ -71,14 +71,14 @@ public class Route extends RouteBase {
 		final RouteData rd = new RouteData(this, routeHandler);
 		final RouteValueDictionary rdValues = rd.getValues();
 
-		for (Map.Entry<String, Object> entry : values.entrySet()) {
+		for (KeyValuePair<String, Object> entry : values) {
 			rdValues.put(entry.getKey(), entry.getValue());
 		}
 
 		final RouteValueDictionary dataTokens = this.dataTokens;
 		if (dataTokens != null) {
 			final RouteValueDictionary rdDataTokens = rd.getDataTokens();
-			for (Map.Entry<String, Object> entry : dataTokens.entrySet()) {
+			for (KeyValuePair<String, Object> entry : dataTokens) {
 				rdDataTokens.put(entry.getKey(), entry.getValue());
 			}
 		}

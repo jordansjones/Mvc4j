@@ -1,14 +1,16 @@
 package nextmethod.web.routing;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 import nextmethod.OutParam;
+import nextmethod.base.IEqualityComparer;
+import nextmethod.collect.Dictionary;
 import nextmethod.collect.IDictionary;
+import nextmethod.collect.KeyValuePair;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class RouteValueDictionary implements IDictionary<String, Object> {
 
-	private final Map<String, Object> routeValues = Maps.newHashMap();
+	private IDictionary<String, Object> routeValues = new Dictionary<>();
 
 	public RouteValueDictionary() {
 //		this(null);
@@ -25,101 +27,138 @@ public class RouteValueDictionary implements IDictionary<String, Object> {
 
 	public RouteValueDictionary(@Nullable final Builder values) {
 		if (values != null) {
-			this.routeValues.putAll(values.build().routeValues);
+			this.routeValues.add(values.build().routeValues);
 		}
 	}
 
 	public RouteValueDictionary(@Nullable final Map<String, Object> values) {
 		if (values != null && !values.isEmpty())
-			this.routeValues.putAll(values);
-	}
-
-	public boolean tryGetValue(final String key, final OutParam<Object> outParam) {
-		if (!routeValues.containsKey(checkNotNull(key)))
-			return false;
-
-		checkNotNull(outParam).set(routeValues.get(key));
-		return true;
-	}
-
-	public RouteValueDictionary filterEntries(final Predicate<Map.Entry<String, Object>> predicate) {
-		return new RouteValueDictionary(Maps.filterEntries(routeValues, predicate));
+			this.routeValues.add(values);
 	}
 
 	@Override
-	public int size() {
-		return routeValues.size();
+	public RouteValueDictionary add(final KeyValuePair<String, Object> item) {
+		this.routeValues.add(item);
+		return this;
+	}
+
+	@Override
+	public RouteValueDictionary add(final String s, final Object o) {
+		this.routeValues.add(s, o);
+		return this;
+	}
+
+	@Override
+	public RouteValueDictionary add(final IDictionary<? extends String, ? extends Object> items) {
+		this.routeValues.add(items);
+		return this;
+	}
+
+	@Override
+	public RouteValueDictionary add(final Map<String, Object> items) {
+		this.routeValues.add(items);
+		return this;
+	}
+
+	@Override
+	public RouteValueDictionary clear() {
+		this.routeValues.clear();
+		return this;
+	}
+
+	@Override
+	public boolean contains(final KeyValuePair<String, Object> item) {
+		return this.routeValues.contains(item);
+	}
+
+	@Override
+	public boolean containsKey(final String s) {
+		return this.routeValues.containsKey(s);
+	}
+
+	@Override
+	public boolean containsValue(final Object o) {
+		return this.routeValues.containsValue(o);
+	}
+
+	@Override
+	public RouteValueDictionary copyTo(final KeyValuePair<String, Object>[] array, final int arrayIndex) {
+		this.routeValues.copyTo(array, arrayIndex);
+		return this;
+	}
+
+	@Override
+	public RouteValueDictionary filterEntries(final Predicate<KeyValuePair<String, Object>> filter) {
+		final RouteValueDictionary dictionary = new RouteValueDictionary();
+		dictionary.routeValues = this.routeValues.filterEntries(filter);
+		return dictionary;
+	}
+
+	@Override
+	public Object get(final String s) {
+		return this.routeValues.get(s);
+	}
+
+	@Override
+	public IEqualityComparer<String> getComparer() {
+		return this.routeValues.getComparer();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return routeValues.isEmpty();
+		return this.routeValues.isEmpty();
 	}
 
 	@Override
-	public boolean containsKey(final Object key) {
-		return routeValues.containsKey(key);
+	public boolean isReadOnly() {
+		return this.routeValues.isReadOnly();
 	}
 
 	@Override
-	public boolean containsValue(final Object value) {
-		return routeValues.containsValue(value);
+	public RouteValueDictionary put(final String s, final Object o) {
+		this.routeValues.put(s, o);
+		return this;
 	}
 
 	@Override
-	public Object get(final Object key) {
-		return routeValues.get(key);
+	public boolean remove(final KeyValuePair<String, Object> item) {
+		return this.routeValues.remove(item);
 	}
 
 	@Override
-	public Object put(final String key, final Object value) {
-		return routeValues.put(key, value);
+	public boolean remove(final String s) {
+		return this.routeValues.remove(s);
 	}
 
 	@Override
-	public Object remove(final Object key) {
-		return routeValues.remove(key);
+	public RouteValueDictionary set(final String s, final Object o) {
+		this.routeValues.set(s, o);
+		return this;
 	}
 
 	@Override
-	public void putAll(final Map<? extends String, ?> m) {
-		routeValues.putAll(m);
+	public int size() {
+		return this.routeValues.size();
 	}
 
 	@Override
-	public void clear() {
-		routeValues.clear();
+	public Map<String, Object> toMap() {
+		return this.routeValues.toMap();
 	}
 
 	@Override
-	public Set<String> keySet() {
-		return routeValues.keySet();
+	public Optional<Object> tryGetValue(final String s) {
+		return this.routeValues.tryGetValue(s);
 	}
 
 	@Override
-	public Collection<Object> values() {
-		return routeValues.values();
+	public boolean tryGetValue(final String s, final OutParam<Object> value) {
+		return this.routeValues.tryGetValue(s, value);
 	}
 
 	@Override
-	public Set<Entry<String, Object>> entrySet() {
-		return routeValues.entrySet();
-	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof RouteValueDictionary)) return false;
-
-		final RouteValueDictionary that = (RouteValueDictionary) o;
-
-		return routeValues.equals(that.routeValues);
-
-	}
-
-	@Override
-	public int hashCode() {
-		return routeValues.hashCode();
+	public Iterator<KeyValuePair<String, Object>> iterator() {
+		return this.routeValues.iterator();
 	}
 
 	public static Builder builder() {
@@ -135,7 +174,7 @@ public class RouteValueDictionary implements IDictionary<String, Object> {
 		}
 
 		public Builder put(final String key, final Object value) {
-			this.dictionary.put(checkNotNull(key), value);
+			this.dictionary.add(checkNotNull(key), value);
 			return this;
 		}
 

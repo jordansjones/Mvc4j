@@ -1,9 +1,10 @@
 package nextmethod.reflection;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.thoughtworks.paranamer.CachingParanamer;
+import com.google.common.collect.Lists;
 import nextmethod.NotImplementedException;
 import nextmethod.OutParam;
 
@@ -11,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.reflection.TypeOfHelper.typeOf;
@@ -19,6 +21,9 @@ import static nextmethod.reflection.TypeOfHelper.typeOf;
  *
  */
 public final class MethodInfo extends MemberInfo<Method> {
+
+	static final Class<? extends Annotation> JavaxNamedAnnotation = javax.inject.Named.class;
+	static final Class<? extends Annotation> GuiceNamedAnnotation = com.google.inject.name.Named.class;
 
 	static MethodInfo[] EmptyArray = new MethodInfo[0];
 
@@ -50,15 +55,31 @@ public final class MethodInfo extends MemberInfo<Method> {
 //				final Type[] genericParameterTypes = wrapped.getGenericParameterTypes();
 				final Class<?>[] parameterTypes = wrapped.getParameterTypes();
 				final Annotation[][] parameterAnnotations = wrapped.getParameterAnnotations();
-
-				final CachingParanamer paranamer = new CachingParanamer();
-				final String[] paramNames = paranamer.lookupParameterNames(wrapped);
-
-				if (parameterTypes.length == paramNames.length) {
-					for (int i = 0; i < parameterTypes.length; i++) {
-						final ParameterInfo pInfo = new ParameterInfo(parameterTypes[i], paramNames[i], parameterAnnotations[i]);
-						builder.add(pInfo);
+				
+				final List<String> paramNames = Lists.newArrayListWithExpectedSize(parameterTypes.length);
+				int argIdx = 1;
+				for (Annotation[] paramAnnotations : parameterAnnotations) {
+					String named = null;
+					for (Annotation annotation : paramAnnotations) {
+						if (annotation instanceof javax.inject.Named) {
+							named = ((javax.inject.Named) annotation).value();
+							break;
+						}
+						else if (annotation instanceof com.google.inject.name.Named) {
+							named = ((com.google.inject.name.Named) annotation).value();
+						}
 					}
+					
+					if (Strings.isNullOrEmpty(named)) {
+						named = String.format("arg%d", argIdx++);
+					}
+					paramNames.add(named);
+				}
+
+
+				for (int i = 0; i < parameterTypes.length; i++) {
+					final ParameterInfo pInfo = new ParameterInfo(parameterTypes[i], paramNames.get(i), parameterAnnotations[i]);
+					builder.add(pInfo);
 				}
 				this.parameters = builder.build();
 			}

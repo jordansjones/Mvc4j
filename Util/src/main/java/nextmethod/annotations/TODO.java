@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * Indicating that further development is needed.
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
 @Retention(RetentionPolicy.CLASS)
 @Documented
 public @interface TODO {
