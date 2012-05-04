@@ -20,7 +20,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.nextmethod</groupId>
+			<groupId>${parent.groupId}</groupId>
 			<artifactId>routing</artifactId>
 			<version>${project.version}</version>
 		</dependency>

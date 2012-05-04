@@ -19,12 +19,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.nextmethod</groupId>
+			<groupId>${parent.groupId}</groupId>
 			<artifactId>web</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.nextmethod</groupId>
+			<groupId>${parent.groupId}</groupId>
 			<artifactId>util</artifactId>
 			<version>${project.version}</version>
 		</dependency>

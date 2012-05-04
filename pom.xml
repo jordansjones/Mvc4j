@@ -15,7 +15,7 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<scm>
-		<!--<developerConnection>scm:hg:https://bitbucket.org/jordansjones/mvc4j</developerConnection>-->
+		<developerConnection>scm:git:https://github.com/jordansjones/Mvc4j.git</developerConnection>
 		<url>https://bitbucket.org/nextmethod/mvc4j</url>
 	</scm>
 	<issueManagement>
@@ -36,12 +36,6 @@
 			<email>jordansjones@gmail.com</email>
 			<timezone>-7</timezone>
 		</developer>
-		<developer>
-			<id>miketrionfo</id>
-			<name>Mike Trionfo</name>
-			<email>miketrionfo@gmail.com</email>
-			<timezone>-7</timezone>
-		</developer>
 	</developers>
 
 	<modules>
@@ -50,7 +44,7 @@
 		<module>mvc</module>
 		<module>Mvc4jWebTest</module>
 		<module>Util</module>
-		<!--<module>Razor</module>-->
+		<module>razor</module>
 	</modules>
 
 	<prerequisites>
@@ -80,7 +74,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>11.0.2</version>
+			<version>12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
@@ -116,7 +110,7 @@
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
-			<version>0.9.7-SNAPSHOT</version>
+			<version>0.9.6</version>
 		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>asm</groupId>-->
@@ -192,28 +186,4 @@
 		</pluginManagement>
 
 	</build>
-
-	<profiles>
-		<profile>
-			<id>with-jrebel</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.zeroturnaround</groupId>
-						<artifactId>javarebel-maven-plugin</artifactId>
-						<version>1.0.5</version>
-						<executions>
-							<execution>
-								<id>generate-rebel-xml</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

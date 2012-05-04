@@ -16,7 +16,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.nextmethod</groupId>
+			<groupId>${parent.groupId}</groupId>
 			<artifactId>util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
