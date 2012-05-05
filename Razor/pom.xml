@@ -13,4 +13,12 @@
 	<packaging>jar</packaging>
 	<name>Razor View Engine</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>util</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+	</dependencies>
+
 </project>
