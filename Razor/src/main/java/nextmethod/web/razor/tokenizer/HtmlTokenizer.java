@@ -91,12 +91,14 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 	private StateResult data() {
 		if (isWhitespace(getCurrentChar()))
 			return stay(whitespace());
+
 		if (isNewLine(getCurrentChar()))
 			return stay(newline());
+
 		if (getCurrentChar() == '@') {
 			takeCurrent();
 			if (getCurrentChar() == '*')
-				return transition(endSymbol(HtmlSymbolType.Transition), afterRazorCommenTransitionState);
+				return transition(endSymbol(HtmlSymbolType.RazorCommentTransition), afterRazorCommenTransitionState);
 			if (getCurrentChar() == '@')
 				return transition(endSymbol(HtmlSymbolType.Transition), new State() {
 					@Override
@@ -108,6 +110,7 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 
 			return stay(endSymbol(HtmlSymbolType.Transition));
 		}
+
 		if (atSymbol())
 			return stay(symbol());
 

@@ -87,15 +87,18 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 		assert buffer.length() == 0;
 		startSymbol();
 
-//		if (isEndOfFile())
+		if (isEndOfFile())
 			return null;
 
+		final TSymbol sym = turn();
 
+		assert buffer.length() == 0;
+
+		return sym;
 	}
 
 	public void reset() {
-		// TODO
-//		currentStart = sta
+		this.currentState = this.getStartState();
 	}
 
 	protected TSymbol single(@Nonnull final TSymbolType type) {
