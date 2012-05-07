@@ -1,6 +1,5 @@
 package nextmethod.web.razor.parser;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -9,6 +8,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class ParserHelpers {
+
+	public static final Predicate<Character> IsIdentifierPartPredicate = new Predicate<Character>() {
+		@Override
+		public boolean apply(@Nullable Character val) {
+			return val != null && (
+				isLetter(val) ||
+				isDecimalDigit(val) ||
+				isConnecting(val) ||
+				isCombining(val) ||
+				isFormatting(val)
+			);
+		}
+	};
+
 	private ParserHelpers() {}
 
 	public static boolean isNewLine(final char val) {
@@ -23,12 +36,21 @@ public final class ParserHelpers {
 		return val != null && (val.length() == 1 && isNewLine(val.charAt(0)) || "\r\n".equalsIgnoreCase(val));
 	}
 
+	public static Predicate<Character> IsWhitespacePredicate = new Predicate<Character>() {
+		@Override
+		public boolean apply(@Nullable Character val) {
+			return val != null && (
+					val == ' ' ||
+					val == '\f' ||
+					val == '\t' ||
+					val == '\u000B' || // Vertical Tab
+					Character.getType(val) == Character.SPACE_SEPARATOR
+				);
+		}
+	};
+
 	public static boolean isWhitespace(final char val) {
-		return val == ' ' ||
-			val == '\f' ||
-			val == '\t' ||
-			val == '\u000B' || // Vertical Tab
-			Character.isSpaceChar(val);
+		return IsWhitespacePredicate.apply(val);
 	}
 
 	public static boolean isWhitespaceOrNewLine(final char val) {
@@ -45,12 +67,11 @@ public final class ParserHelpers {
 			characters = Iterables.skip(characters, 1);
 		}
 		final Character first = Iterables.getFirst(characters, null);
-		return (!requireIdentifierStart || isIdentifierStart(first) && Iterables.all(characters, new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable Character input) {
-				return input != null && isIdentifierPart(input);
-			}
-		}));
+		return (!requireIdentifierStart || isIdentifierStart(first) && Iterables.all(characters, IsIdentifierPartPredicate));
+	}
+
+	public static boolean isHexDigit(final char val) {
+		return (val >= '0' && val <= '9') || (val >= 'A' && val <= 'F') || (val >= 'a' && val <= 'f');
 	}
 
 	public static boolean isIdentifierStart(final char val) {
@@ -58,11 +79,7 @@ public final class ParserHelpers {
 	}
 
 	public static boolean isIdentifierPart(final char val) {
-		return isLetter(val)
-			|| isDecimalDigit(val)
-			|| isConnecting(val)
-			|| isCombining(val)
-			|| isFormatting(val);
+		return IsIdentifierPartPredicate.apply(val);
 	}
 
 	public static boolean isTerminatingCharToken(final char value)
@@ -77,58 +94,62 @@ public final class ParserHelpers {
 
 	public static boolean isDecimalDigit(final char value)
 	{
-		return CharMatcher.DIGIT.matches(value);
+		return Character.getType(value) == Character.DECIMAL_DIGIT_NUMBER;
 	}
 
-	public static boolean isLetterOrDecimalDigit(char value)
+	public static boolean isLetterOrDecimalDigit(final char value)
 	{
 		return isLetter(value) || isDecimalDigit(value);
 	}
 
-	public static boolean isLetter(char value)
+	public static boolean isLetter(final char value)
 	{
-		return CharMatcher.JAVA_UPPER_CASE
-			.or(CharMatcher.JAVA_LOWER_CASE)
-			.or(CharMatcher.JAVA_LETTER)
-			.matches(value);
+		final int type = Character.getType(value);
+		return type == Character.UPPERCASE_LETTER ||
+			type == Character.LOWERCASE_LETTER ||
+			type == Character.TITLECASE_LETTER ||
+			type == Character.MODIFIER_LETTER ||
+			type == Character.OTHER_LETTER ||
+			type == Character.LETTER_NUMBER;
 	}
 
-	public static boolean isFormatting(char value)
+	public static boolean isFormatting(final char value)
 	{
-		return false;
-//		return Char.GetUnicodeCategory(value) == UnicodeCategory.Format;
+		return Character.getType(value) == Character.FORMAT;
 	}
 
-	public static boolean isCombining(char value)
+	public static boolean isCombining(final char value)
 	{
-		return false;
-//		var cat = Char.GetUnicodeCategory(value);
-//		return cat == UnicodeCategory.SpacingCombiningMark || cat == UnicodeCategory.NonSpacingMark;
+		final int type = Character.getType(value);
+		return type == Character.COMBINING_SPACING_MARK ||
+			type == Character.NON_SPACING_MARK;
 	}
 
-	public static boolean isConnecting(char value)
+	public static boolean isConnecting(final char value)
 	{
-		return false;
-//		return Char.GetUnicodeCategory(value) == UnicodeCategory.ConnectorPunctuation;
+		return Character.getType(value) == Character.CONNECTOR_PUNCTUATION;
 	}
 
-//	public static string SanitizeClassName(string inputName)
-//	{
-//		if (!IsIdentifierStart(inputName[0]) && IsIdentifierPart(inputName[0]))
-//		{
-//			inputName = "_" + inputName;
-//		}
-//
-//		return new String((from value in inputName
-//			select IsIdentifierPart(value) ? value : '_')
-//			.ToArray());
-//	}
+	public static String sanitizeClassName(@Nonnull String inputName)
+	{
+		final char c = inputName.charAt(0);
+		if (!isIdentifierStart(c) && isIdentifierPart(c)) {
+			inputName = "_" + inputName;
+		}
+
+		final char[] chars = inputName.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			char ch = chars[i];
+			chars[i] = isIdentifierPart(ch) ? ch : '_';
+		}
+		return String.valueOf(chars);
+	}
 
 	public static boolean isEmailPart(final char character)
 	{
 		// Source: http://tools.ietf.org/html/rfc5322#section-3.4.1
 		// We restrict the allowed characters to alpha-numerics and '_' in order to ensure we cover most of the cases where an
 		// email address is intended without restricting the usage of code within JavaScript, CSS, and other contexts.
-		return CharMatcher.JAVA_LETTER_OR_DIGIT.matches(character) || character == '_';
+		return Character.isLetter(character) || Character.isDigit(character) || character == '_';
 	}
 }

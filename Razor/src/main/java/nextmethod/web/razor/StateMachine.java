@@ -1,6 +1,7 @@
 package nextmethod.web.razor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class StateMachine<TReturn> {
 
@@ -51,7 +52,7 @@ public abstract class StateMachine<TReturn> {
 		return new StateResult(getCurrentState());
 	}
 
-	protected StateResult stay(@Nonnull final TReturn output) {
+	protected StateResult stay(@Nullable final TReturn output) {
 		return new StateResult(output, getCurrentState());
 	}
 
@@ -66,7 +67,7 @@ public abstract class StateMachine<TReturn> {
 			this.next = next;
 		}
 
-		public StateResult(@Nonnull final TReturn output, @Nonnull final State next) {
+		public StateResult(@Nullable final TReturn output, @Nonnull final State next) {
 			this.hasOutput = true;
 			this.output = output;
 			this.next = next;
@@ -92,7 +93,7 @@ public abstract class StateMachine<TReturn> {
 			return output;
 		}
 
-		public void setOutput(@Nonnull final TReturn output) {
+		public void setOutput(@Nullable final TReturn output) {
 			this.output = output;
 		}
 	}

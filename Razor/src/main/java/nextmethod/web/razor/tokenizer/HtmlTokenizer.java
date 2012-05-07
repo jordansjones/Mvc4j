@@ -74,13 +74,6 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 		}
 	};
 
-	private final State afterRazorCommenTransitionState = new State() {
-		@Override
-		public StateResult invoke() {
-			return afterRazorCommentTransition();
-		}
-	};
-
 	private final State textState = new State() {
 		@Override
 		public StateResult invoke() {

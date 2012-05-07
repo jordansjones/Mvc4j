@@ -202,6 +202,13 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 		}
 	}
 
+	protected final State afterRazorCommenTransitionState = new State() {
+		@Override
+		public StateResult invoke() {
+			return afterRazorCommentTransition();
+		}
+	};
+
 	protected StateResult afterRazorCommentTransition() {
 		if (getCurrentChar() != '*') {
 			// We've been moved since last time we were asked for a symbol... reset the state
