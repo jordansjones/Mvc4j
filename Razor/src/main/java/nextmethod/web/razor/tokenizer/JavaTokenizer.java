@@ -112,6 +112,9 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 			case '\'':
 				takeCurrent();
 				return transition(quotedLiteral('\'', JavaSymbolType.CharacterLiteral));
+			case '"':
+				takeCurrent();
+				return transition(quotedLiteral('"', JavaSymbolType.StringLiteral));
 			case '.':
 				if (Character.isDigit(peek()))
 					return realLiteral();
@@ -357,12 +360,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 	}
 
 	private StateResult decimalLiteral() {
-		takeUntil(new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable Character input) {
-				return input != null && Character.isDigit(input);
-			}
-		});
+		takeUntil(Predicates.not(IsCharacterDigitPredicate));
 		if (getCurrentChar() == '.' && Character.isDigit(peek())) {
 			return realLiteral();
 		}

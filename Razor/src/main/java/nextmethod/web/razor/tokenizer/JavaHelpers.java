@@ -27,9 +27,7 @@ public final class JavaHelpers {
 		return c == 'F' ||
 			c == 'f' ||
 			c == 'D' ||
-			c == 'd' ||
-			c == 'L' ||
-			c == 'l';
+			c == 'd';
 	}
 
 	public static boolean isIdentifierPartByCharMatcher(final char c) {
