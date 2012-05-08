@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DisposableActionTest {
@@ -15,21 +16,34 @@ public class DisposableActionTest {
 	}
 
 	@Test
-	public void actionIsExecutedOnDispose() {
-		// Arrange
+	public void actionIsExecutedOnExplicitDispose() {
 		final AtomicBoolean called = new AtomicBoolean(false);
-		DisposableAction action = new DisposableAction(new IAction<Object>() {
-			@Override
-			public Object invoke() {
-				called.set(true);
-				return null;
-			}
-		});
+		DisposableAction action = new DisposableAction(createAction(called));
 
-		// Act
+		assertFalse(called.get());
+
 		action.close();
 
-		// Assert
 		assertTrue("The action was not run when the DisposableAction was closed", called.get());
+	}
+
+	@Test
+	public void actionIsExectuedOnImplicitDispose() {
+		final AtomicBoolean called = new AtomicBoolean(false);
+
+		try (DisposableAction action = new DisposableAction(createAction(called))) {
+			assertFalse(called.get());
+		}
+
+		assertTrue("The action was not run when the DisposableAction was closed", called.get());
+	}
+
+	private static IAction<Boolean> createAction(final AtomicBoolean called) {
+		return new IAction<Boolean>() {
+			@Override
+			public Boolean invoke() {
+				return called.getAndSet(true);
+			}
+		};
 	}
 }

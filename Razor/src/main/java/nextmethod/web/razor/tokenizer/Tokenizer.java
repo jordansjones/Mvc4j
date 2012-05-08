@@ -192,13 +192,9 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 	}
 
 	protected char peek() {
-		final LookaheadToken lookaheadToken = beginLookahead(source);
-		try {
+		try(final LookaheadToken token = beginLookahead(source)) {
 			moveNext();
 			return getCurrentChar();
-		}
-		finally {
-			lookaheadToken.dispose();
 		}
 	}
 
