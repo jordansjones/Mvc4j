@@ -75,15 +75,15 @@ public class Block extends SyntaxTreeNode {
 	@Override
 	public SourceLocation getStart() {
 		final SyntaxTreeNode child = Iterables.getFirst(this.children, null);
-		if (child == null) {
-			return null; // SourceLocation.Zero;
-		}
+		if (child == null)
+			return SourceLocation.Zero;
+
 		return child.getStart();
 	}
 
 	@Override
 	public void accept(@Nonnull final ParserVisitor visitor) {
-//		visitor.visitBlock(this);
+		visitor.visitBlock(this);
 	}
 
 	@Override
