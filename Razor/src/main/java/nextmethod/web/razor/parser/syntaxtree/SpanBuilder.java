@@ -88,4 +88,12 @@ public class SpanBuilder {
 	public void setStart(@Nonnull final SourceLocation start) {
 		this.start = start;
 	}
+
+	public SpanEditHandler getEditHandler() {
+		return editHandler;
+	}
+
+	public ISpanCodeGenerator getCodeGenerator() {
+		return codeGenerator;
+	}
 }
