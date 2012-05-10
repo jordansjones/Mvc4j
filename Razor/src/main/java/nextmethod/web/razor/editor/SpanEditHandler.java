@@ -1,15 +1,22 @@
 package nextmethod.web.razor.editor;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.Span;
+import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
+import nextmethod.web.razor.text.SourceLocation;
+import nextmethod.web.razor.text.SourceLocationTracker;
 import nextmethod.web.razor.text.TextChange;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
+import java.util.Objects;
 
 public class SpanEditHandler {
 
@@ -49,13 +56,42 @@ public class SpanEditHandler {
 	}
 
 	public EditResult applyChange(@Nonnull final Span target, @Nonnull final TextChange change, final boolean force) {
-		// TODO
-		return new EditResult(null);
+		EnumSet<PartialParseResult> result = EnumSet.of(PartialParseResult.Accepted);
+		final TextChange normalized = change.normalize();
+		if (!force)
+			result = canAcceptChange(target, normalized);
+
+		// If the change is accepted then apply the change
+		if (result.contains(PartialParseResult.Accepted))
+			return new EditResult(updateSpan(target, normalized), result);
+
+		return new EditResult(new SpanBuilder(target), result);
 	}
 
 	public boolean ownsChange(@Nonnull final Span target, @Nonnull final TextChange change) {
-		// TODO
-		return false;
+		final int end = target.getStart().getAbsoluteIndex() + target.getLength();
+		final int changeOldEnd = change.getOldPosition() + change.getOldLength();
+		return change.getOldPosition() >= target.getStart().getAbsoluteIndex() &&
+			(changeOldEnd < end || (changeOldEnd == end && acceptedCharacters != AcceptedCharacters.setOf(AcceptedCharacters.None)));
+	}
+
+	protected EnumSet<PartialParseResult> canAcceptChange(@Nonnull final Span target, @Nonnull final TextChange normalizedChange) {
+		return EnumSet.of(PartialParseResult.Rejected);
+	}
+
+	protected SpanBuilder updateSpan(@Nonnull final Span target, @Nonnull final TextChange normalizedChange) {
+		final String newContent = normalizedChange.applyChange(target);
+		final SpanBuilder newSpan = new SpanBuilder(target);
+		newSpan.clearSymbols();
+		for (ISymbol symbol : tokenizer.apply(newContent)) {
+			symbol.offsetStart(target.getStart());
+			newSpan.accept(symbol);
+		}
+		if (target.getNext() != null) {
+			final SourceLocation newEnd = SourceLocationTracker.calculateNewLocation(target.getStart(), newContent);
+			target.getNext().changeStart(newEnd);
+		}
+		return newSpan;
 	}
 
 	public EnumSet<AcceptedCharacters> getAcceptedCharacters() {
@@ -68,5 +104,88 @@ public class SpanEditHandler {
 
 	public Function<String, Iterable<ISymbol>> getTokenizer() {
 		return tokenizer;
+	}
+
+	private static final Joiner joiner = Joiner.on(',');
+
+	@Override
+	public String toString() {
+		return String.format(
+			"%s;Accepts:%s%s",
+			getClass().getName(),
+			joiner.join(acceptedCharacters),
+			editorHints == EnumSet.of(EditorHints.None)
+				? ""
+				: (";Hints:" + joiner.join(editorHints))
+		);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof SpanEditHandler)) return false;
+
+		SpanEditHandler that = (SpanEditHandler) o;
+		return getAcceptedCharacters() == that.getAcceptedCharacters()
+			&& getEditorHints() == that.getEditorHints();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+			getAcceptedCharacters(),
+			getEditorHints()
+		);
+	}
+
+	protected static boolean isAtEndOfFirstLine(@Nonnull final Span target, @Nonnull final TextChange change) {
+		final int endOfFirstLine = indexOfAny(target.getContent(), new char[]{(char) 0x000d, (char) 0x000a, (char) 0x2028, (char) 0x2029});
+		return (endOfFirstLine == -1 || (change.getOldPosition() - target.getStart().getAbsoluteIndex()) <= endOfFirstLine);
+	}
+
+	protected static boolean isEndInsertion(@Nonnull final Span target, @Nonnull final TextChange change) {
+		return change.isInsert() && isAtEndOfSpan(target, change);
+	}
+
+	protected static boolean isEndDeletion(@Nonnull final Span target, @Nonnull final TextChange change) {
+		return change.isDelete() && isAtEndOfSpan(target, change);
+	}
+
+	protected static boolean isEndReplace(@Nonnull final Span target, @Nonnull final TextChange change) {
+		return change.isReplace() && isAtEndOfSpan(target, change);
+	}
+
+	protected static boolean isAtEndOfSpan(@Nonnull final Span target, @Nonnull final TextChange change) {
+		return (change.getOldPosition() + change.getOldLength()) == (target.getStart().getAbsoluteIndex() + target.getLength());
+	}
+
+	protected static boolean isAdjecentOnRight(@Nonnull final Span target, @Nonnull final Span other) {
+		final int targetIdx = target.getStart().getAbsoluteIndex();
+		final int otherIdx = other.getStart().getAbsoluteIndex();
+		return targetIdx < otherIdx && targetIdx + target.getLength() == otherIdx;
+	}
+
+	protected static boolean isAdjecentOnLeft(@Nonnull final Span target, @Nonnull final Span other) {
+		final int targetIdx = target.getStart().getAbsoluteIndex();
+		final int otherIdx = other.getStart().getAbsoluteIndex();
+		return otherIdx < targetIdx && otherIdx + other.getLength() == targetIdx;
+	}
+
+	protected static String getOldText(@Nonnull final Span target, @Nonnull final TextChange change) {
+		final int offset = change.getOldPosition() - target.getStart().getAbsoluteIndex();
+		return target.getContent().substring(offset, (offset + change.getOldLength()));
+	}
+
+
+	protected static int indexOfAny(@Nonnull final String target, final char[] anyOf) {
+		int result = -1;
+		if (Strings.isNullOrEmpty(target) || anyOf == null || anyOf.length < 1) return result;
+
+		for (char c : anyOf) {
+			result = target.indexOf(c);
+			if (result != -1)
+				break;
+		}
+		return result;
 	}
 }
