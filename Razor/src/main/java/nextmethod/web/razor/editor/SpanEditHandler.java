@@ -18,7 +18,7 @@ public class SpanEditHandler {
 
 
 	public SpanEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer) {
-		this(tokenizer, AcceptedCharacters.Any());
+		this(tokenizer, AcceptedCharacters.Any);
 	}
 
 	public SpanEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer, @Nonnull final AcceptedCharacters accepted) {
