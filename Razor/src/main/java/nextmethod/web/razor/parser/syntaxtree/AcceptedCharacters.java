@@ -11,10 +11,10 @@ public enum AcceptedCharacters {
 	WhiteSpace,
 	NonWhiteSpace,;
 
-	public static EnumSet<AcceptedCharacters> AllWhiteSpace = EnumSet.of(NewLine, WhiteSpace);
-	public static EnumSet<AcceptedCharacters> Any = EnumSet.allOf(AcceptedCharacters.class);
-	public static EnumSet<AcceptedCharacters> NotAny = EnumSet.noneOf(AcceptedCharacters.class);
-	public static EnumSet<AcceptedCharacters> AnyExceptNewLine = EnumSet.of(NonWhiteSpace, WhiteSpace);
+	public static final EnumSet<AcceptedCharacters> AllWhiteSpace = EnumSet.of(NewLine, WhiteSpace);
+	public static final EnumSet<AcceptedCharacters> Any = EnumSet.allOf(AcceptedCharacters.class);
+	public static final EnumSet<AcceptedCharacters> NotAny = EnumSet.noneOf(AcceptedCharacters.class);
+	public static final EnumSet<AcceptedCharacters> AnyExceptNewLine = EnumSet.of(NonWhiteSpace, WhiteSpace);
 
 	public static EnumSet<AcceptedCharacters> setOf(@Nullable final AcceptedCharacters... values) {
 		if (values == null || values.length < 1) return NotAny;

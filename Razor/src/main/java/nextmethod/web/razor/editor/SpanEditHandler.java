@@ -15,6 +15,7 @@ public class SpanEditHandler {
 
 	private EnumSet<AcceptedCharacters> acceptedCharacters;
 	private Function<String, Iterable<ISymbol>> tokenizer;
+	private EnumSet<EditorHints> editorHints;
 
 
 	public SpanEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer) {
@@ -49,11 +50,23 @@ public class SpanEditHandler {
 
 	public EditResult applyChange(@Nonnull final Span target, @Nonnull final TextChange change, final boolean force) {
 		// TODO
-		return new EditResult();
+		return new EditResult(null);
 	}
 
 	public boolean ownsChange(@Nonnull final Span target, @Nonnull final TextChange change) {
 		// TODO
 		return false;
+	}
+
+	public EnumSet<AcceptedCharacters> getAcceptedCharacters() {
+		return acceptedCharacters;
+	}
+
+	public EnumSet<EditorHints> getEditorHints() {
+		return editorHints;
+	}
+
+	public Function<String, Iterable<ISymbol>> getTokenizer() {
+		return tokenizer;
 	}
 }
