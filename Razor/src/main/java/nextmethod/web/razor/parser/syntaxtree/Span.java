@@ -2,6 +2,7 @@ package nextmethod.web.razor.parser.syntaxtree;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multiset;
@@ -42,7 +43,7 @@ public class Span extends SyntaxTreeNode {
 	}
 
 	public void replaceWith(@Nonnull final SpanBuilder builder) {
-		// TODO Debug.Assert(!builder.Symbols.Any() || builder.Symbols.All(s => s != null));
+		assert !Iterables.any(builder.symbols(), Predicates.isNull()) || Iterables.all(builder.symbols(), Predicates.notNull());
 
 		this.kind = builder.getKind();
 		this.symbols = builder.symbols();
@@ -88,7 +89,7 @@ public class Span extends SyntaxTreeNode {
 		Span current = this;
 		final SourceLocationTracker tracker = new SourceLocationTracker(newStart);
 		tracker.updateLocation(content);
-		while((current = current.getNext()) != null) {
+		while ((current = current.getNext()) != null) {
 			current.start = tracker.getCurrentLocation();
 			tracker.updateLocation(current.getContent());
 		}

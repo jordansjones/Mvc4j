@@ -7,6 +7,7 @@ import nextmethod.web.razor.tokenizer.symbols.SymbolBase;
 
 import javax.annotation.Nonnull;
 
+// TODO
 public abstract class LanguageCharacteristics<
 	TTokenizer extends Tokenizer<TSymbol, TSymbolType>,
 	TSymbol extends SymbolBase<TSymbolType>,
