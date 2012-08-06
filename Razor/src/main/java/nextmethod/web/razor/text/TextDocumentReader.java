@@ -2,7 +2,7 @@ package nextmethod.web.razor.text;
 
 import javax.annotation.Nonnull;
 
-public class TextDocumentReader implements ITextDocument, AutoCloseable {
+public class TextDocumentReader extends TextReader implements ITextDocument, AutoCloseable {
 
 	private final ITextDocument document;
 
@@ -40,8 +40,4 @@ public class TextDocumentReader implements ITextDocument, AutoCloseable {
 		return document.peek();
 	}
 
-	@Override
-	public void close() throws Exception {
-//		document.
-	}
 }

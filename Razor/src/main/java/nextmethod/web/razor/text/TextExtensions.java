@@ -3,6 +3,8 @@ package nextmethod.web.razor.text;
 import nextmethod.base.IAction;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.Reader;
 
 public final class TextExtensions {
 
@@ -35,5 +37,17 @@ public final class TextExtensions {
 			builder.append((char)read);
 		}
 		return builder.toString();
+	}
+
+	public static String readToEnd(@Nonnull final Reader reader) {
+		final StringBuilder sb = new StringBuilder();
+		try {
+			int read;
+			while ((read = reader.read()) != -1)
+				sb.append((char) read);
+		}
+		catch (IOException ignored) {}
+
+		return sb.toString();
 	}
 }

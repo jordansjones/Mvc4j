@@ -3,8 +3,9 @@ package nextmethod.web.razor.text;
 import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
+import java.io.Reader;
 
-public class SeekableTextReader implements ITextDocument {
+public class SeekableTextReader extends TextReader implements ITextDocument {
 
 	private int position = 0;
 	private LineTrackingStringBuffer buffer = new LineTrackingStringBuffer();
@@ -16,10 +17,9 @@ public class SeekableTextReader implements ITextDocument {
 		updateState();
 	}
 
-//	public SeekableTextReader(@Nonnull final Reader reader) {
-//		final StringBuilder sb = new StringBuilder();
-//		CharStreams.copy(reader, sb);
-//	}
+	public SeekableTextReader(@Nonnull final Reader reader) {
+		this(TextExtensions.readToEnd(reader));
+	}
 
 	public SeekableTextReader(@Nonnull final ITextBuffer buffer) {
 		this(TextExtensions.readToEnd(buffer));

@@ -5,7 +5,7 @@ import nextmethod.web.razor.parser.ParserHelpers;
 
 import java.util.List;
 
-class LineTrackingStringBuffer {
+final class LineTrackingStringBuffer {
 
 	private TextLine currentLine;
 	private TextLine endLine;
