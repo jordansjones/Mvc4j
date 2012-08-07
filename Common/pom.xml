@@ -9,16 +9,9 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>razor</artifactId>
+	<artifactId>common</artifactId>
 	<packaging>jar</packaging>
-	<name>Razor View Engine</name>
+	<name>Commons</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.nextmethod</groupId>
-			<artifactId>common</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-	</dependencies>
 
 </project>

@@ -21,6 +21,10 @@ public class TextChange {
 	private String newText;
 	private String oldText;
 
+	public TextChange(final int position, final int oldLength, @Nonnull final ITextBuffer oldBuffer, final int newLength, @Nonnull final ITextBuffer newBuffer) {
+		this(position, oldLength, oldBuffer, position, newLength, newBuffer);
+	}
+
 	public TextChange(final int oldPosition, final int oldLength, @Nonnull final ITextBuffer oldBuffer, final int newPosition, final int newLength, @Nonnull final ITextBuffer newBuffer) {
 		checkArgument(oldPosition < 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "0");
 		checkArgument(newPosition < 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "0");

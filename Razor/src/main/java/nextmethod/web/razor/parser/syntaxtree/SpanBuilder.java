@@ -50,8 +50,9 @@ public class SpanBuilder {
 		return new Span(this);
 	}
 
-	public void clearSymbols() {
+	public SpanBuilder clearSymbols() {
 		this.symbolList.clear();
+		return this;
 	}
 
 	public void accept(@Nullable final ISymbol symbol) {
@@ -77,23 +78,35 @@ public class SpanBuilder {
 		return kind;
 	}
 
-	public void setKind(@Nonnull final SpanKind kind) {
+	public SpanBuilder setKind(@Nonnull final SpanKind kind) {
 		this.kind = kind;
+		return this;
 	}
 
 	public SourceLocation getStart() {
 		return start;
 	}
 
-	public void setStart(@Nonnull final SourceLocation start) {
+	public SpanBuilder setStart(@Nonnull final SourceLocation start) {
 		this.start = start;
+		return this;
 	}
 
 	public SpanEditHandler getEditHandler() {
 		return editHandler;
 	}
 
+	public SpanBuilder setEditHandler(@Nonnull final SpanEditHandler editHandler) {
+		this.editHandler = editHandler;
+		return this;
+	}
+
 	public ISpanCodeGenerator getCodeGenerator() {
 		return codeGenerator;
+	}
+
+	public SpanBuilder setCodeGenerator(@Nonnull final ISpanCodeGenerator codeGenerator) {
+		this.codeGenerator = codeGenerator;
+		return this;
 	}
 }

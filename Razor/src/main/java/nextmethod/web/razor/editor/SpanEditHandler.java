@@ -98,8 +98,16 @@ public class SpanEditHandler {
 		return acceptedCharacters;
 	}
 
+	public void setAcceptedCharacters(@Nonnull final EnumSet<AcceptedCharacters> acceptedCharacters) {
+		this.acceptedCharacters = acceptedCharacters;
+	}
+
 	public EnumSet<EditorHints> getEditorHints() {
 		return editorHints;
+	}
+
+	public void setEditorHints(@Nonnull final EnumSet<EditorHints> editorHints) {
+		this.editorHints = editorHints;
 	}
 
 	public Function<String, Iterable<ISymbol>> getTokenizer() {

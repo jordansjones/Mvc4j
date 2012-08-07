@@ -22,7 +22,7 @@ public abstract class StateMachine<TReturn> {
 		if (getCurrentState() != null) {
 			StateResult result;
 			do {
-				// Keep running until we get a null result or output
+				// Keep running until we value a null result or output
 				result = getCurrentState().invoke();
 				setCurrentState(result.getNext());
 			}

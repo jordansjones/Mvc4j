@@ -1,6 +1,6 @@
 package nextmethod.web.razor.tokenizer;
 
-import nextmethod.SystemHelpers;
+import nextmethod.base.SystemHelpers;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SeekableTextReader;
 import nextmethod.web.razor.tokenizer.symbols.SymbolBase;
@@ -25,19 +25,19 @@ public abstract class TokenizerTestBase<TSymbol extends SymbolBase<TSymbolType>,
 			TSymbol current = null;
 			while ((current = tokenizer.nextSymbol()) != null) {
 				if (counter >= symbols.length) {
-					output.append(String.format("F: Expected: << Nothing >>; Actual: %s", current)).append(SystemHelpers.NewLine());
+					output.append(String.format("F: Expected: << Nothing >>; Actual: %s", current)).append(SystemHelpers.newLine());
 					success = false;
 				}
 				else if (getIgnoreRemaining().equals(symbols[counter])) {
-					output.append(String.format("P: Ignored %s", current)).append(SystemHelpers.NewLine());
+					output.append(String.format("P: Ignored %s", current)).append(SystemHelpers.newLine());
 				}
 				else {
 					if (!current.equals(symbols[counter])) {
-						output.append(String.format("F: Expected: %s; Actual: %s", symbols[counter], current)).append(SystemHelpers.NewLine());
+						output.append(String.format("F: Expected: %s; Actual: %s", symbols[counter], current)).append(SystemHelpers.newLine());
 						success = false;
 					}
 					else {
-						output.append(String.format("P: Expected %s", current)).append(SystemHelpers.NewLine());
+						output.append(String.format("P: Expected %s", current)).append(SystemHelpers.newLine());
 					}
 					counter++;
 				}
@@ -45,7 +45,7 @@ public abstract class TokenizerTestBase<TSymbol extends SymbolBase<TSymbolType>,
 			if (counter < symbols.length && !getIgnoreRemaining().equals(symbols[counter])) {
 				success = false;
 				for (; counter < symbols.length; counter++) {
-					output.append(String.format("F: Expected: %s; Actual: << NONE >>", symbols[counter])).append(SystemHelpers.NewLine());
+					output.append(String.format("F: Expected: %s; Actual: << NONE >>", symbols[counter])).append(SystemHelpers.newLine());
 				}
 			}
 		}

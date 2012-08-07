@@ -1,7 +1,7 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.collect.Lists;
-import nextmethod.Tuple;
+import nextmethod.base.Pair;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SourceLocation;
@@ -77,7 +77,7 @@ public abstract class LanguageCharacteristics<
 		return symbol != null && Objects.equals(symbol.getType(), getKnownSymbolType(type));
 	}
 
-	public Tuple<TSymbol, TSymbol> splitSymbol(@Nonnull final TSymbol symbol, final int splitAt, @Nonnull final TSymbolType leftType) {
+	public Pair<TSymbol, TSymbol> splitSymbol(@Nonnull final TSymbol symbol, final int splitAt, @Nonnull final TSymbolType leftType) {
 		final SourceLocation symbolStart = symbol.getStart();
 		final String symbolContent = symbol.getContent();
 		final TSymbol left = createSymbol(symbolStart, symbolContent.substring(0, splitAt), leftType, Lists.<RazorError>newArrayList());
@@ -85,7 +85,7 @@ public abstract class LanguageCharacteristics<
 		if (splitAt < symbolContent.length()) {
 			right = createSymbol(SourceLocationTracker.calculateNewLocation(symbolStart, left.getContent()), symbolContent.substring(splitAt), symbol.getType(), symbol.getErrors());
 		}
-		return Tuple.of(left, right);
+		return Pair.of(left, right);
 	}
 
 	public boolean knowsSymbolType(@Nonnull final KnownSymbolType type) {

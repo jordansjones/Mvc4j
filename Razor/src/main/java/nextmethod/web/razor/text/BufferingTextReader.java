@@ -128,7 +128,7 @@ public class BufferingTextReader extends LookaheadTextReader {
 		}
 		else {
 			// Just act like normal
-			innerReader.read(); // Don't care about the return value, peek() is used to get the characters from the source
+			innerReader.read(); // Don't care about the return value, peek() is used to value the characters from the source
 		}
 
 		updateCurrentCharacter();

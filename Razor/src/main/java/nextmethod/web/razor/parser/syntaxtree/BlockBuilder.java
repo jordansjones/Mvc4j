@@ -45,16 +45,18 @@ public class BlockBuilder {
 		return type != null ? Optional.of(type) : Optional.<BlockType>absent();
 	}
 
-	public void setType(@Nullable final BlockType type) {
+	public BlockBuilder setType(@Nullable final BlockType type) {
 		this.type = type;
+		return this;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(@Nullable final String name) {
+	public BlockBuilder setName(@Nullable final String name) {
 		this.name = name;
+		return this;
 	}
 
 	public List<SyntaxTreeNode> getChildren() {
@@ -65,8 +67,9 @@ public class BlockBuilder {
 		return codeGenerator;
 	}
 
-	public void setCodeGenerator(@Nullable final IBlockCodeGenerator codeGenerator) {
+	public BlockBuilder setCodeGenerator(@Nullable final IBlockCodeGenerator codeGenerator) {
 		this.codeGenerator = codeGenerator;
+		return this;
 	}
 
 }

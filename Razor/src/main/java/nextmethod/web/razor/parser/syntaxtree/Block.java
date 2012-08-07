@@ -1,12 +1,16 @@
 package nextmethod.web.razor.parser.syntaxtree;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
 import nextmethod.web.razor.parser.ParserVisitor;
 import nextmethod.web.razor.text.SourceLocation;
+import nextmethod.web.razor.text.TextChange;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
+import static nextmethod.base.TypeHelpers.typeAs;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 /**
@@ -84,6 +88,67 @@ public class Block extends SyntaxTreeNode {
 	@Override
 	public void accept(@Nonnull final ParserVisitor visitor) {
 		visitor.visitBlock(this);
+	}
+
+	public Span findFirstDescendentSpan() {
+		SyntaxTreeNode current = this;
+		while(current != null && current.isBlock()) {
+			current = Iterables.getFirst(((Block) current).children, null);
+		}
+
+		return typeAs(current, Span.class);
+	}
+
+	public Span findLastDescendentSpan() {
+		SyntaxTreeNode current = this;
+		while(current != null && current.isBlock()) {
+			current = Iterables.getLast(((Block) current).children, null);
+		}
+		return typeAs(current, Span.class);
+	}
+
+	public Iterable<Span> flatten() {
+		final List<Span> values = Lists.newArrayList();
+
+		// Create an enumerable that flattens the tree for use by syntax highlighters, etc.
+		for (SyntaxTreeNode element : children) {
+			final Span span = typeAs(element, Span.class);
+			if (span != null) {
+				values.add(span);
+			}
+			else {
+				final Block block = typeAs(element, Block.class);
+				if (block != null) {
+					for (Span childSpan : block.flatten()) {
+						values.add(childSpan);
+					}
+				}
+			}
+		}
+		return values;
+	}
+
+	public Span locateOwner(final TextChange change) {
+		// Ask each child recursively
+		Span owner = null;
+		for (SyntaxTreeNode element : children) {
+			final Span span = typeAs(element, Span.class);
+			if (span == null) {
+				owner = ((Block) element).locateOwner(change);
+			}
+			else {
+				if (change.getOldPosition() < span.getStart().getAbsoluteIndex()) {
+					// Early escape for cases when changes overlap multiple spans...
+					break;
+				}
+				owner = span.getEditHandler().ownsChange(span, change) ? span : owner;
+			}
+
+			if (owner != null) {
+				break;
+			}
+		}
+		return owner;
 	}
 
 	@Override

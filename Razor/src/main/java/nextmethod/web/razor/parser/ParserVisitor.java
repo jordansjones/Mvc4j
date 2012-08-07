@@ -1,8 +1,8 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.base.Optional;
-import nextmethod.CancellationToken;
-import nextmethod.OperationCanceledException;
+import nextmethod.threading.CancellationToken;
+import nextmethod.threading.OperationCanceledException;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.parser.syntaxtree.Span;

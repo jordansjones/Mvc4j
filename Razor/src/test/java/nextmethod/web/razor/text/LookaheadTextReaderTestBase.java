@@ -1,7 +1,7 @@
 package nextmethod.web.razor.text;
 
 import com.google.common.base.Function;
-import nextmethod.OutParam;
+import nextmethod.base.OutParam;
 import nextmethod.base.IDisposable;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -66,9 +66,9 @@ public abstract class LookaheadTextReaderTestBase {
 			})
 		);
 
-		assertEquals(expectedLocation.get().getAbsoluteIndex(), actualLocation.get().getAbsoluteIndex());
-		assertEquals(expectedLocation.get().getCharacterIndex(), actualLocation.get().getCharacterIndex());
-		assertEquals(expectedLocation.get().getLineIndex(), actualLocation.get().getLineIndex());
+		assertEquals(expectedLocation.value().getAbsoluteIndex(), actualLocation.value().getAbsoluteIndex());
+		assertEquals(expectedLocation.value().getCharacterIndex(), actualLocation.value().getCharacterIndex());
+		assertEquals(expectedLocation.value().getLineIndex(), actualLocation.value().getLineIndex());
 	}
 
 	protected void runReadToEndTest() {
