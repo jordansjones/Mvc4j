@@ -1,7 +1,7 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Strings;
-import nextmethod.base.IVoidAction;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.parser.SyntaxConstants;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
@@ -15,7 +15,7 @@ public class StatementCodeGenerator extends SpanCodeGenerator {
 	@Override
 	public void generateCode(@Nonnull final Span target, @Nonnull final CodeGeneratorContext context) {
 		context.flushBufferedStatement();
-		String generatedCode = context.buildCodeString(new IVoidAction<CodeWriter>() {
+		String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(CodeWriter input) {
 				input.writeSnippet(target.getContent());

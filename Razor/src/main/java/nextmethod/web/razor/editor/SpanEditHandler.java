@@ -1,9 +1,9 @@
 package nextmethod.web.razor.editor;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.Span;
@@ -21,33 +21,33 @@ import java.util.Objects;
 public class SpanEditHandler {
 
 	private EnumSet<AcceptedCharacters> acceptedCharacters;
-	private Function<String, Iterable<ISymbol>> tokenizer;
+	private Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer;
 	private EnumSet<EditorHints> editorHints;
 
 
-	public SpanEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer) {
+	public SpanEditHandler(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer) {
 		this(tokenizer, AcceptedCharacters.Any);
 	}
 
-	public SpanEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer, @Nonnull final AcceptedCharacters accepted) {
+	public SpanEditHandler(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer, @Nonnull final AcceptedCharacters accepted) {
 		this(tokenizer, EnumSet.of(accepted));
 	}
 
-	public SpanEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer, @Nonnull final EnumSet<AcceptedCharacters> accepted) {
+	public SpanEditHandler(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer, @Nonnull final EnumSet<AcceptedCharacters> accepted) {
 		this.tokenizer = tokenizer;
 		this.acceptedCharacters = accepted;
 	}
 
 	public static SpanEditHandler createDefault() {
-		return createDefault(new Function<String, Iterable<ISymbol>>() {
+		return createDefault(new Delegates.IFunc1<String, Iterable<ISymbol>>() {
 			@Override
-			public Iterable<ISymbol> apply(@Nullable String input) {
+			public Iterable<ISymbol> invoke(@Nullable final String input1) {
 				return Lists.newArrayList();
 			}
 		});
 	}
 
-	public static SpanEditHandler createDefault(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer) {
+	public static SpanEditHandler createDefault(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer) {
 		return new SpanEditHandler(tokenizer);
 	}
 
@@ -83,7 +83,7 @@ public class SpanEditHandler {
 		final String newContent = normalizedChange.applyChange(target);
 		final SpanBuilder newSpan = new SpanBuilder(target);
 		newSpan.clearSymbols();
-		for (ISymbol symbol : tokenizer.apply(newContent)) {
+		for (ISymbol symbol : Lists.newArrayList(tokenizer.invoke(newContent))) {
 			symbol.offsetStart(target.getStart());
 			newSpan.accept(symbol);
 		}
@@ -110,7 +110,7 @@ public class SpanEditHandler {
 		this.editorHints = editorHints;
 	}
 
-	public Function<String, Iterable<ISymbol>> getTokenizer() {
+	public Delegates.IFunc1<String, Iterable<ISymbol>> getTokenizer() {
 		return tokenizer;
 	}
 

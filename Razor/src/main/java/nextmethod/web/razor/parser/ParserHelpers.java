@@ -1,6 +1,7 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -48,6 +49,16 @@ public final class ParserHelpers {
 				);
 		}
 	};
+
+	public static boolean isNullOrWhitespace(final String val) {
+		if (Strings.isNullOrEmpty(val)) return true;
+		final char[] chars = val.toCharArray();
+		for (char aChar : chars) {
+			if (!isWhitespace(aChar))
+				return false;
+		}
+		return true;
+	}
 
 	public static boolean isWhitespace(final char val) {
 		return IsWhitespacePredicate.apply(val);

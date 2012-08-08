@@ -2,17 +2,24 @@ package nextmethod.web.razor.generator;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Closeables;
-import nextmethod.annotations.TODO;
 import nextmethod.base.IDisposable;
+import nextmethod.codedom.CodeLinePragma;
+import nextmethod.web.razor.text.LocationTagged;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.StringWriter;
 
+import static nextmethod.base.SystemHelpers.newLine;
+
+@SuppressWarnings("UnusedDeclaration")
 abstract class CodeWriter implements IDisposable {
 
 	private StringWriter writer;
 
 	protected CodeWriter() {}
 
+	@SuppressWarnings("UnusedDeclaration")
 	private enum WriterMode {
 		Constructor,
 		MethodCall,
@@ -35,25 +42,28 @@ abstract class CodeWriter implements IDisposable {
 		return true;
 	}
 
+	public void writeLine() {
+		getInnerWriter().write(newLine());
+	}
+
 	public abstract void writeParameterSeparator();
 	public abstract void writeReturn();
-	public abstract void writeLinePragma(final Optional<Integer> lineNumber, final String fileName);
-	public abstract void writeHelperHeaderPrefix(final String templateTypeName, final boolean isStatic);
-	public abstract void writeSnippet(final String snippet);
-	public abstract void writeStringLiteral(final String literal);
-	public abstract int writeVariableDeclaration(final String type, final String name, final String value);
+	public abstract void writeLinePragma(@Nonnull final Optional<Integer> lineNumber, final String fileName);
+	public abstract void writeHelperHeaderPrefix(@Nonnull final String templateTypeName, final boolean isStatic);
+	public abstract void writeSnippet(@Nonnull final String snippet);
+	public abstract void writeStringLiteral(@Nonnull final String literal);
+	public abstract int writeVariableDeclaration(@Nonnull final String type, @Nonnull final String name, @Nullable final String value);
 
 	public void writeLinePragma() {
 		writeLinePragma(null);
 	}
 
-	@TODO
-	public void writeLinePragma(final /*CodeLinePragma*/Object pragma) {
+	public void writeLinePragma(final CodeLinePragma pragma) {
 		if (pragma == null) {
 			writeLinePragma(Optional.<Integer>absent(), null);
 		}
 		else {
-//			writeLinePragma(pragma.getLineNumber(), pragma.getFileName());
+			writeLinePragma(Optional.of(pragma.getLineNumber()), pragma.getFileName());
 		}
 	}
 
@@ -69,11 +79,11 @@ abstract class CodeWriter implements IDisposable {
 
 	}
 
-	public void writeIdentifier(final String identifier) {
+	public void writeIdentifier(@Nonnull final String identifier) {
 		getInnerWriter().write(identifier);
 	}
 
-	public void writeHelperHeaderSuffix(final String templateTypeName) {
+	public void writeHelperHeaderSuffix(@Nonnull final String templateTypeName) {
 
 	}
 
@@ -81,11 +91,11 @@ abstract class CodeWriter implements IDisposable {
 
 	}
 
-	public void writeStartMethodInvoke(final String methodName) {
+	public void writeStartMethodInvoke(@Nonnull final String methodName) {
 		emitStartMethodInvoke(methodName);
 	}
 
-	public void writeStartMethodInvoke(final String methodName, final String... genericArguments) {
+	public void writeStartMethodInvoke(@Nonnull final String methodName, @Nonnull final String... genericArguments) {
 		emitStartMethodInvoke(methodName, genericArguments);
 	}
 
@@ -97,20 +107,20 @@ abstract class CodeWriter implements IDisposable {
 
 	}
 
-	public void writeStartAssigment(final String variableName) {
+	public void writeStartAssigment(@Nonnull final String variableName) {
 		getInnerWriter().write(variableName);
 		getInnerWriter().write(" = ");
 	}
 
-	public void writeStartLambdaExpression(final String... parameterNames) {
+	public void writeStartLambdaExpression(@Nonnull final String... parameterNames) {
 		emitStartLambdaExpression(parameterNames);
 	}
 
-	public void writeStartConstructor(final String typeName) {
+	public void writeStartConstructor(@Nonnull final String typeName) {
 		emitStartConstructor(typeName);
 	}
 
-	public void writeStartLambdaDelegate(final String... parameterNames) {
+	public void writeStartLambdaDelegate(@Nonnull final String... parameterNames) {
 		emitStartLambdaDelegate(parameterNames);
 	}
 
@@ -134,6 +144,14 @@ abstract class CodeWriter implements IDisposable {
 		writeSnippet(String.valueOf(value));
 	}
 
+	public void writeLocationTaggedString(@Nonnull final LocationTagged<String> value) {
+		writeStartMethodInvoke("Tuple.Create");
+		writeStringLiteral(value.getValue());
+		writeParameterSeparator();
+		writeSnippet(String.valueOf(value.getLocation().getAbsoluteIndex()));
+		writeEndMethodInvoke();
+	}
+
 	@Override
 	public void close() {
 		dispose(true);
@@ -154,12 +172,12 @@ abstract class CodeWriter implements IDisposable {
 //		return new CodeSnippetTypeMember(getContent());
 //	}
 
-	protected abstract void emitStartLambdaDelegate(final String[] parameterNames);
-	protected abstract void emitStartLambdaExpression(final String[] parameterNames);
-	protected abstract void emitStartConstructor(final String typeName);
-	protected abstract void emitStartMethodInvoke(final String methodName);
+	protected abstract void emitStartLambdaDelegate(@Nonnull final String[] parameterNames);
+	protected abstract void emitStartLambdaExpression(@Nonnull final String[] parameterNames);
+	protected abstract void emitStartConstructor(@Nonnull final String typeName);
+	protected abstract void emitStartMethodInvoke(@Nonnull final String methodName);
 
-	protected void emitStartMethodInvoke(final String methodName, final String... genericArguments) {
+	protected void emitStartMethodInvoke(@Nonnull final String methodName, final String... genericArguments) {
 		emitStartMethodInvoke(methodName);
 	}
 

@@ -4,12 +4,13 @@ import nextmethod.web.razor.generator.IBlockCodeGenerator;
 import nextmethod.web.razor.generator.TemplateBlockCodeGenerator;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class TemplateBlock extends Block {
 
 	private static final BlockType blockType = BlockType.Template;
 
-	public TemplateBlock(final IBlockCodeGenerator codeGenerator, final Iterable<SyntaxTreeNode> children) {
+	public TemplateBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
 		super(blockType, children, codeGenerator);
 	}
 
@@ -21,7 +22,7 @@ public class TemplateBlock extends Block {
 		this(new TemplateBlockCodeGenerator(), nodes);
 	}
 
-	public TemplateBlock(final Iterable<SyntaxTreeNode> children) {
+	public TemplateBlock(final Collection<SyntaxTreeNode> children) {
 		this(new TemplateBlockCodeGenerator(), children);
 	}
 

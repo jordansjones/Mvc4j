@@ -3,7 +3,7 @@ package nextmethod.web.razor.generator;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import nextmethod.base.IVoidAction;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
@@ -25,7 +25,7 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 			}
 		}
 
-		final String writeInvocation = context.buildCodeString(new IVoidAction<CodeWriter>() {
+		final String writeInvocation = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(CodeWriter input) {
 				if (context.getHost().isDesignTimeMode()) {
@@ -51,7 +51,7 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 
 	@Override
 	public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		final String endBlock = context.buildCodeString(new IVoidAction<CodeWriter>() {
+		final String endBlock = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(CodeWriter input) {
 				if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
@@ -100,7 +100,7 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
 	@Override
 	public boolean equals(Object obj) {
-		return typeIs(obj, this.getClass());
+		return obj != null && typeIs(obj, ExpressionCodeGenerator.class);
 	}
 
 	private static Span getFirstOrDefaultSpan(final Block target) {

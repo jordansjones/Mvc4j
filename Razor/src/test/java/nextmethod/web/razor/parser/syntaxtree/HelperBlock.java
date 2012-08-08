@@ -4,12 +4,13 @@ import nextmethod.web.razor.generator.BlockCodeGenerator;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class HelperBlock extends Block {
 
 	private static final BlockType blockType = BlockType.Helper;
 
-	public HelperBlock(final IBlockCodeGenerator codeGenerator, final Iterable<SyntaxTreeNode> children) {
+	public HelperBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
 		super(blockType, children, codeGenerator);
 	}
 
@@ -21,7 +22,7 @@ public class HelperBlock extends Block {
 		this(BlockCodeGenerator.Null, nodes);
 	}
 
-	public HelperBlock(final Iterable<SyntaxTreeNode> children) {
+	public HelperBlock(final Collection<SyntaxTreeNode> children) {
 		this(BlockCodeGenerator.Null, children);
 	}
 

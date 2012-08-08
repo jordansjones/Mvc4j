@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
-import nextmethod.base.IAction;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.State;
 import nextmethod.web.razor.parser.ParserHelpers;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
@@ -21,13 +21,13 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 
-	private final ImmutableMap<Character, IAction<JavaSymbolType>> operatorHandlers;
+	private final ImmutableMap<Character, Delegates.IFunc<JavaSymbolType>> operatorHandlers;
 
 	public JavaTokenizer(@Nonnull final ITextDocument source) {
 		super(source);
 		this.setCurrentState(dataState);
 
-		this.operatorHandlers = ImmutableMap.<Character, IAction<JavaSymbolType>>builder()
+		this.operatorHandlers = ImmutableMap.<Character, Delegates.IFunc<JavaSymbolType>>builder()
 			.put('-', minusOperatorAction)
 			.put('<', lessThanOperatorAction)
 			.put('>', greaterThanOperatorAction)
@@ -170,7 +170,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.Unknown;
 	}
 
-	private final IAction<JavaSymbolType> operatorAction = new IAction<JavaSymbolType>() {
+	private final Delegates.IFunc<JavaSymbolType> operatorAction = new Delegates.IFunc<JavaSymbolType>() {
 		@Override
 		public JavaSymbolType invoke() {
 			return operator();
@@ -185,7 +185,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.LessThan;
 	}
 
-	private final IAction<JavaSymbolType> lessThanOperatorAction = new IAction<JavaSymbolType>() {
+	private final Delegates.IFunc<JavaSymbolType> lessThanOperatorAction = new Delegates.IFunc<JavaSymbolType>() {
 		@Override
 		public JavaSymbolType invoke() {
 			return lessThanOperator();
@@ -200,7 +200,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.GreaterThan;
 	}
 
-	private final IAction<JavaSymbolType> greaterThanOperatorAction = new IAction<JavaSymbolType>() {
+	private final Delegates.IFunc<JavaSymbolType> greaterThanOperatorAction = new Delegates.IFunc<JavaSymbolType>() {
 		@Override
 		public JavaSymbolType invoke() {
 			return greaterThanOperator();
@@ -223,15 +223,15 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.Minus;
 	}
 
-	private final IAction<JavaSymbolType> minusOperatorAction = new IAction<JavaSymbolType>() {
+	private final Delegates.IFunc<JavaSymbolType> minusOperatorAction = new Delegates.IFunc<JavaSymbolType>() {
 		@Override
 		public JavaSymbolType invoke() {
 			return minusOperator();
 		}
 	};
 
-	private IAction<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char second, @Nonnull final JavaSymbolType typeIfBoth) {
-		return new IAction<JavaSymbolType>() {
+	private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char second, @Nonnull final JavaSymbolType typeIfBoth) {
+		return new Delegates.IFunc<JavaSymbolType>() {
 			@Override
 			public JavaSymbolType invoke() {
 				if (getCurrentChar() == second) {
@@ -243,8 +243,8 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		};
 	}
 
-	private IAction<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char option1, @Nonnull final JavaSymbolType typeIfOption1, final char option2, @Nonnull final JavaSymbolType typeIfOption2) {
-		return new IAction<JavaSymbolType>() {
+	private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char option1, @Nonnull final JavaSymbolType typeIfOption1, final char option2, @Nonnull final JavaSymbolType typeIfOption2) {
+		return new Delegates.IFunc<JavaSymbolType>() {
 			@Override
 			public JavaSymbolType invoke() {
 				if (getCurrentChar() == option1) {
@@ -417,8 +417,8 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return stay(sym);
 	}
 	
-	private static IAction<JavaSymbolType> createIAction(@Nonnull final JavaSymbolType type) {
-		return new IAction<JavaSymbolType>() {
+	private static Delegates.IFunc<JavaSymbolType> createIAction(@Nonnull final JavaSymbolType type) {
+		return new Delegates.IFunc<JavaSymbolType>() {
 			@Override
 			public JavaSymbolType invoke() {
 				return type;

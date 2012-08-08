@@ -2,12 +2,12 @@ package nextmethod.base;
 
 import javax.annotation.Nonnull;
 
-public class Pair<A, B> {
+public class Tuple<A, B> {
 
 	private final A item1;
 	private final B item2;
 
-	public Pair(@Nonnull final A item1, @Nonnull final B item2) {
+	public Tuple(@Nonnull final A item1, @Nonnull final B item2) {
 		this.item1 = item1;
 		this.item2 = item2;
 	}
@@ -22,16 +22,20 @@ public class Pair<A, B> {
 		return item2;
 	}
 
-	public static <A, B> Pair<A, B> of(@Nonnull final A a, @Nonnull final B b) {
-		return new Pair<>(a, b);
+	public static <A, B> Tuple<A, B> of(@Nonnull final A a, @Nonnull final B b) {
+		return new Tuple<>(a, b);
+	}
+
+	public static <A, B> Tuple<A, B> create(@Nonnull final A a, @Nonnull final B b) {
+		return of(a, b);
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Pair)) return false;
+		if (!(o instanceof Tuple)) return false;
 
-		Pair tuple = (Pair) o;
+		Tuple tuple = (Tuple) o;
 
 		if (!item1.equals(tuple.item1)) return false;
 		if (!item2.equals(tuple.item2)) return false;

@@ -4,12 +4,13 @@ import nextmethod.web.razor.generator.BlockCodeGenerator;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class DirectiveBlock extends Block {
 
 	private static final BlockType blockType = BlockType.Directive;
 
-	public DirectiveBlock(final IBlockCodeGenerator codeGenerator, final Iterable<SyntaxTreeNode> children) {
+	public DirectiveBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
 		super(blockType, children, codeGenerator);
 	}
 
@@ -21,7 +22,7 @@ public class DirectiveBlock extends Block {
 		this(BlockCodeGenerator.Null, nodes);
 	}
 
-	public DirectiveBlock(final Iterable<SyntaxTreeNode> children) {
+	public DirectiveBlock(final Collection<SyntaxTreeNode> children) {
 		this(BlockCodeGenerator.Null, children);
 	}
 

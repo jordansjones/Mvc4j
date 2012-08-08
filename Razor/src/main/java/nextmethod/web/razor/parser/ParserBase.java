@@ -1,6 +1,6 @@
 package nextmethod.web.razor.parser;
 
-import nextmethod.base.Pair;
+import nextmethod.base.Tuple;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.text.SourceLocation;
 
@@ -47,7 +47,7 @@ public abstract class ParserBase {
 	 * the markup parser is the first parser to hit the document and the
 	 * logic may be different than the parseBlock method.
 	 */
-	public void parseSection(@Nonnull final Pair<String, String> nestingSequence, final boolean caseSensitive) {
+	public void parseSection(@Nonnull final Tuple<String, String> nestingSequence, final boolean caseSensitive) {
 		assert isMarkerParser();
 		throw new UnsupportedOperationException(RazorResources().getString("parserIsNotAMarkupParser"));
 	}

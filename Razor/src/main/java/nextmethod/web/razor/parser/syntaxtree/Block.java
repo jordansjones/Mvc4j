@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.syntaxtree;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
@@ -8,6 +9,7 @@ import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.text.TextChange;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 
 import static nextmethod.base.TypeHelpers.typeAs;
@@ -19,7 +21,7 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 public class Block extends SyntaxTreeNode {
 
 	private final BlockType type;
-	private final Iterable<SyntaxTreeNode> children;
+	private final Collection<SyntaxTreeNode> children;
 	private final IBlockCodeGenerator codeGenerator;
 	private final String name;
 
@@ -39,7 +41,7 @@ public class Block extends SyntaxTreeNode {
 		}
 	}
 
-	Block(@Nonnull final BlockType type, @Nonnull final Iterable<SyntaxTreeNode> contents, @Nonnull final IBlockCodeGenerator generator) {
+	Block(@Nonnull final BlockType type, @Nonnull final Collection<SyntaxTreeNode> contents, @Nonnull final IBlockCodeGenerator generator) {
 		this.type = type;
 		this.name = type.name();
 		this.children = contents;
@@ -50,7 +52,7 @@ public class Block extends SyntaxTreeNode {
 		return type;
 	}
 
-	public Iterable<SyntaxTreeNode> getChildren() {
+	public Collection<SyntaxTreeNode> getChildren() {
 		return children;
 	}
 
@@ -153,11 +155,34 @@ public class Block extends SyntaxTreeNode {
 
 	@Override
 	public boolean equivalentTo(@Nonnull final SyntaxTreeNode node) {
-		return false;
+		final Block other = typeAs(node, Block.class);
+		if (other == null || other.getType() != getType()) {
+			return false;
+		}
+		return childrenEqual(getChildren(), other.getChildren());
 	}
 
 	@Override
 	public String toString() {
 		return String.format("%s Block at %s::%d (Gen:%s)", this.type, getStart(), getLength(), this.codeGenerator);
+	}
+
+	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+	@Override
+	public boolean equals(final Object obj) {
+		final Block other = typeAs(obj, Block.class);
+		return other != null
+			&& getType() == other.getType()
+			&& Objects.equal(getCodeGenerator(), other.getCodeGenerator())
+			&& childrenEqual(getChildren(), other.getChildren());
+	}
+
+	@Override
+	public int hashCode() {
+		return getType().hashCode();
+	}
+
+	private static boolean childrenEqual(final Iterable<SyntaxTreeNode> left, final Iterable<SyntaxTreeNode> right) {
+		return Iterables.elementsEqual(left, right);
 	}
 }

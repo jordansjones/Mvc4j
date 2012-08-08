@@ -1,7 +1,7 @@
 package nextmethod.web.razor.text;
 
 import com.google.common.collect.Queues;
-import nextmethod.base.IAction;
+import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.web.razor.utils.DisposableAction;
 
@@ -73,11 +73,10 @@ public class BufferingTextReader extends LookaheadTextReader {
 		final BacktrackContext context = new BacktrackContext(currentBufferPosition, getCurrentLocation());
 		backtrackStack.push(context);
 
-		return new DisposableAction(new IAction<Object>() {
+		return new DisposableAction(new Delegates.IAction() {
 			@Override
-			public Object invoke() {
+			public void invoke() {
 				endLookahead(context);
-				return null;
 			}
 		});
 	}

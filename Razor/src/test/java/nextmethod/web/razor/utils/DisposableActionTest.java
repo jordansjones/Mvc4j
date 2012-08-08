@@ -1,6 +1,6 @@
 package nextmethod.web.razor.utils;
 
-import nextmethod.base.IAction;
+import nextmethod.base.Delegates;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,11 +38,11 @@ public class DisposableActionTest {
 		assertTrue("The action was not run when the DisposableAction was closed", called.get());
 	}
 
-	private static IAction<Boolean> createAction(final AtomicBoolean called) {
-		return new IAction<Boolean>() {
+	private static Delegates.IAction createAction(final AtomicBoolean called) {
+		return new Delegates.IAction() {
 			@Override
-			public Boolean invoke() {
-				return called.getAndSet(true);
+			public void invoke() {
+				called.set(true);
 			}
 		};
 	}

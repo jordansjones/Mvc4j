@@ -1,16 +1,16 @@
 package nextmethod.web.razor.text;
 
-import nextmethod.base.IAction;
+import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 
 import javax.annotation.Nonnull;
 
 public class LookaheadToken implements IDisposable {
 
-	private IAction cancelAction;
+	private Delegates.IFunc cancelAction;
 	private boolean accepted;
 
-	public LookaheadToken(@Nonnull final IAction<?> cancelAction) {
+	public LookaheadToken(@Nonnull final Delegates.IFunc<?> cancelAction) {
 		this.cancelAction = cancelAction;
 	}
 

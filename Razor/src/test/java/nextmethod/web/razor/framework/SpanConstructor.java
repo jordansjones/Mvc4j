@@ -1,7 +1,7 @@
 package nextmethod.web.razor.framework;
 
-import com.google.common.base.Function;
-import nextmethod.base.IVoidAction;
+import com.google.common.collect.Lists;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.editor.SpanEditHandler;
@@ -11,6 +11,7 @@ import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
+import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
 import javax.annotation.Nullable;
@@ -18,11 +19,11 @@ import java.util.EnumSet;
 
 public class SpanConstructor {
 
-	static Function<String, Iterable<ISymbol>> testTokenizer = new Function<String, Iterable<ISymbol>>() {
+	static Delegates.IFunc1<String, Iterable<ISymbol>> testTokenizer = new Delegates.IFunc1<String, Iterable<ISymbol>>() {
 		@Override
-		public Iterable<ISymbol> apply(@Nullable String input) {
-//			return new RawTextSymbol();
-			return null;
+		public Iterable<ISymbol> invoke(@Nullable final String input) {
+			assert input != null;
+			return Lists.<ISymbol>newArrayList(new RawTextSymbol(SourceLocation.Zero, input));
 		}
 	};
 
@@ -49,12 +50,12 @@ public class SpanConstructor {
 		return this;
 	}
 
-	public SpanConstructor withGenerator(final IVoidAction<ISpanCodeGenerator> generatorConfigurer) {
+	public SpanConstructor withGenerator(final Delegates.IAction1<ISpanCodeGenerator> generatorConfigurer) {
 		generatorConfigurer.invoke(builder.getCodeGenerator());
 		return this;
 	}
 
-	public SpanConstructor withHandler(final IVoidAction<SpanEditHandler> handlerConfigurer) {
+	public SpanConstructor withHandler(final Delegates.IAction1<SpanEditHandler> handlerConfigurer) {
 		handlerConfigurer.invoke(builder.getEditHandler());
 		return this;
 	}
@@ -73,7 +74,7 @@ public class SpanConstructor {
 	}
 
 	public SpanConstructor accepts(final AcceptedCharacters accepted) {
-		return this.withHandler(new IVoidAction<SpanEditHandler>() {
+		return this.withHandler(new Delegates.IAction1<SpanEditHandler>() {
 			@Override
 			public void invoke(SpanEditHandler input) {
 				input.setAcceptedCharacters(EnumSet.of(accepted));
@@ -93,7 +94,7 @@ public class SpanConstructor {
 	}
 
 	public SpanConstructor withEditorHints(final EditorHints hints) {
-		return this.withHandler(new IVoidAction<SpanEditHandler>() {
+		return this.withHandler(new Delegates.IAction1<SpanEditHandler>() {
 			@Override
 			public void invoke(SpanEditHandler input) {
 				input.setEditorHints(EnumSet.of(hints));

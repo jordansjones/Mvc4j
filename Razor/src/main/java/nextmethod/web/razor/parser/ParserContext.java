@@ -14,4 +14,8 @@ public class ParserContext {
 		// TODO
 	}
 
+	public ParserBase getMarkupParser() {
+		return null;
+	}
+
 }

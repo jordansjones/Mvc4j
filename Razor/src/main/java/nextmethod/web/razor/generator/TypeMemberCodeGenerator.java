@@ -1,6 +1,7 @@
 package nextmethod.web.razor.generator;
 
-import nextmethod.base.IVoidAction;
+import nextmethod.base.Delegates;
+import nextmethod.codedom.CodeSnippetTypeMember;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;
@@ -11,7 +12,7 @@ public class TypeMemberCodeGenerator extends SpanCodeGenerator {
 
 	@Override
 	public void generateCode(@Nonnull final Span target, @Nonnull final CodeGeneratorContext context) {
-		final String generatedCode = context.buildCodeString(new IVoidAction<CodeWriter>() {
+		final String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(CodeWriter input) {
 				input.writeSnippet(target.getContent());

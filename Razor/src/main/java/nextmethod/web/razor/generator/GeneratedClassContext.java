@@ -3,6 +3,11 @@ package nextmethod.web.razor.generator;
 import com.google.common.base.Strings;
 import nextmethod.annotations.TODO;
 
+import java.util.Objects;
+
+import static nextmethod.base.TypeHelpers.typeAs;
+import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
+
 @TODO
 public class GeneratedClassContext {
 
@@ -17,6 +22,25 @@ public class GeneratedClassContext {
 
 	public GeneratedClassContext(final String executeMethodName, final String writeMethodName, final String writeLiteralMethodName) {
 
+		if (Strings.isNullOrEmpty(executeMethodName)) {
+			throw new IllegalArgumentException(String.format(
+				CommonResources().getString("argument.cannot.be.null.or.empty"),
+				"executeMethodName"
+			));
+		}
+		if (Strings.isNullOrEmpty(writeMethodName)) {
+			throw new IllegalArgumentException(String.format(
+				CommonResources().getString("argument.cannot.be.null.or.empty"),
+				"writeMethodName"
+			));
+		}
+		if (Strings.isNullOrEmpty(writeLiteralMethodName)) {
+			throw new IllegalArgumentException(String.format(
+				CommonResources().getString("argument.cannot.be.null.or.empty"),
+				"writeLiteralMethodName"
+			));
+		}
+
 		this.writeMethodName = writeMethodName;
 		this.writeLiteralMethodName = writeLiteralMethodName;
 		this.executeMethodName = executeMethodName;
@@ -29,6 +53,52 @@ public class GeneratedClassContext {
 		this.layoutPropertyName = DefaultLayoutPropertyName;
 		this.writeAttributeMethodName = DefaultWriteAttributeMethodName;
 		this.writeAttributeToMethodName = DefaultWriteAttributeToMethodName;
+	}
+
+	public GeneratedClassContext(
+		final String executeMethodName,
+	    final String writeMethodName,
+	    final String writeLiteralMethodName,
+	    final String writeToMethodName,
+	    final String writeLiteralToMethodName,
+	    final String templateTypeName
+	) {
+		this(executeMethodName, writeMethodName, writeLiteralMethodName);
+
+		this.writeToMethodName = writeToMethodName;
+		this.writeLiteralToMethodName = writeLiteralToMethodName;
+		this.templateTypeName = templateTypeName;
+	}
+
+	public GeneratedClassContext(
+		final String executeMethodName,
+		final String writeMethodName,
+		final String writeLiteralMethodName,
+		final String writeToMethodName,
+		final String writeLiteralToMethodName,
+		final String templateTypeName,
+	    final String defineSectionMethodName
+	) {
+		this(executeMethodName, writeMethodName, writeLiteralMethodName, writeToMethodName, writeLiteralToMethodName, templateTypeName);
+
+		this.defineSectionMethodName = defineSectionMethodName;
+	}
+
+	public GeneratedClassContext(
+		final String executeMethodName,
+		final String writeMethodName,
+		final String writeLiteralMethodName,
+		final String writeToMethodName,
+		final String writeLiteralToMethodName,
+		final String templateTypeName,
+		final String defineSectionMethodName,
+	    final String beginContextMethodName,
+	    final String endContextMethodName
+	) {
+		this(executeMethodName, writeMethodName, writeLiteralMethodName, writeToMethodName, writeLiteralToMethodName, templateTypeName, defineSectionMethodName);
+
+		this.beginContextMethodName = beginContextMethodName;
+		this.endContextMethodName = endContextMethodName;
 	}
 
 	public boolean allowSections() {
@@ -143,5 +213,47 @@ public class GeneratedClassContext {
 
 	public void setResolveUrlMethodName(String resolveUrlMethodName) {
 		this.resolveUrlMethodName = resolveUrlMethodName;
+	}
+
+	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+	@Override
+	public boolean equals(final Object obj) {
+		final GeneratedClassContext other = typeAs(obj, GeneratedClassContext.class);
+		if (other == null) {
+			return false;
+		}
+
+		return Objects.equals(defineSectionMethodName, other.defineSectionMethodName)
+			&& Objects.equals(writeMethodName, other.writeMethodName)
+			&& Objects.equals(writeLiteralMethodName, other.writeLiteralMethodName)
+			&& Objects.equals(writeToMethodName, other.writeToMethodName)
+			&& Objects.equals(writeLiteralToMethodName, other.writeLiteralToMethodName)
+			&& Objects.equals(executeMethodName, other.executeMethodName)
+			&& Objects.equals(templateTypeName, other.templateTypeName)
+			&& Objects.equals(beginContextMethodName, other.beginContextMethodName)
+			&& Objects.equals(endContextMethodName, other.endContextMethodName);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+			defineSectionMethodName,
+			writeMethodName,
+			writeLiteralMethodName,
+			writeToMethodName,
+			writeLiteralToMethodName,
+			executeMethodName,
+			templateTypeName,
+			beginContextMethodName,
+			endContextMethodName
+		);
+	}
+
+	public static boolean isEqualTo(final GeneratedClassContext left, final GeneratedClassContext right) {
+		return left.equals(right);
+	}
+
+	public static boolean isNotEqualTo(final GeneratedClassContext left, final GeneratedClassContext right) {
+		return !isEqualTo(left, right);
 	}
 }

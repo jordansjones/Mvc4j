@@ -1,7 +1,11 @@
 package nextmethod.web.razor.framework;
 
+import nextmethod.web.razor.editor.ImplicitExpressionEditorHandler;
+import nextmethod.web.razor.generator.AddImportCodeGenerator;
 import nextmethod.web.razor.generator.ExpressionCodeGenerator;
 import nextmethod.web.razor.generator.ISpanCodeGenerator;
+import nextmethod.web.razor.generator.RazorDirectiveAnnotationCodeGenerator;
+import nextmethod.web.razor.generator.SetBaseTypeCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
 import nextmethod.web.razor.generator.StatementCodeGenerator;
 import nextmethod.web.razor.generator.TypeMemberCodeGenerator;
@@ -35,7 +39,7 @@ public class UnclassifiedCodeSpanConstructor {
 	}
 
 	public SpanConstructor asImplicitExpression(final Set<String> keywords, final boolean acceptTrailingDot) {
-		return self.with(new ImplicitExpressionEditHandler(SpanConstructor.testTokenizer, keywords, acceptTrailingDot)).with(new ExpressionCodeGenerator());
+		return self.with(new ImplicitExpressionEditorHandler(SpanConstructor.testTokenizer, keywords, acceptTrailingDot)).with(new ExpressionCodeGenerator());
 	}
 
 	public SpanConstructor asFunctionsBody() {
@@ -54,8 +58,8 @@ public class UnclassifiedCodeSpanConstructor {
 		return self.with(new SetBaseTypeCodeGenerator(baseType));
 	}
 
-	public SpanConstructor asRazorDirectiveAttribute(final String key, final String value) {
-		return self.with(new RazorDirectiveAttributeCodeGenerator(key, value));
+	public SpanConstructor asRazorDirectiveAnnotation(final String key, final String value) {
+		return self.with(new RazorDirectiveAnnotationCodeGenerator(key, value));
 	}
 
 	public SpanConstructor as(final ISpanCodeGenerator codeGen) {

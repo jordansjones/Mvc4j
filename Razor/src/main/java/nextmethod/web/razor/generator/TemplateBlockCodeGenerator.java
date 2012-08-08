@@ -1,7 +1,6 @@
 package nextmethod.web.razor.generator;
 
-import nextmethod.annotations.TODO;
-import nextmethod.base.IVoidAction;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 
 import javax.annotation.Nonnull;
@@ -15,7 +14,7 @@ public class TemplateBlockCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		final String generatedCode = context.buildCodeString(new IVoidAction<CodeWriter>() {
+		final String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(final CodeWriter input) {
 				input.writeStartLambdaExpression(ItemParameterName);
@@ -34,7 +33,7 @@ public class TemplateBlockCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateEndBlockCode(@Nonnull Block target, @Nonnull CodeGeneratorContext context) {
-		final String generatedCode = context.buildCodeString(new IVoidAction<CodeWriter>() {
+		final String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(final CodeWriter input) {
 				input.writeEndLambdaDelegate();

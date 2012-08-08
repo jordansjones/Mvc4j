@@ -1,7 +1,7 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Strings;
-import nextmethod.base.IVoidAction;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;
@@ -19,7 +19,7 @@ public class MarkupCodeGenerator extends SpanCodeGenerator {
 		}
 
 		if (!Strings.isNullOrEmpty(target.getContent()) && !context.getHost().isDesignTimeMode()) {
-			final String code = context.buildCodeString(new IVoidAction<CodeWriter>() {
+			final String code = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
 				@Override
 				public void invoke(final CodeWriter input) {
 					if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {

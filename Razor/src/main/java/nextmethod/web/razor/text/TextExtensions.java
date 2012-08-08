@@ -1,8 +1,10 @@
 package nextmethod.web.razor.text;
 
-import nextmethod.base.IAction;
+import com.google.common.base.Predicate;
+import nextmethod.base.Delegates;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -21,7 +23,7 @@ public final class TextExtensions {
 
 	public static LookaheadToken beginLookahead(@Nonnull final ITextBuffer buffer) {
 		final int start = buffer.getPosition();
-		return new LookaheadToken(new IAction<Void>() {
+		return new LookaheadToken(new Delegates.IFunc<Void>() {
 			@Override
 			public Void invoke() {
 				buffer.setPosition(start);
@@ -49,5 +51,36 @@ public final class TextExtensions {
 		catch (IOException ignored) {}
 
 		return sb.toString();
+	}
+
+	public static String readUntil(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition) {
+		return readUntil(reader, condition, false);
+	}
+
+	public static String readUntil(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition, final boolean inclusive) {
+		final StringBuilder sb = new StringBuilder();
+		int ch = -1;
+		while ((ch = reader.peek()) != -1 && !(condition.apply((char) ch))) {
+			reader.read(); // Advance the reader
+			sb.append((char) ch);
+		}
+
+		if (inclusive && reader.peek() != -1) {
+			sb.append((char) reader.read());
+		}
+		return sb.toString();
+	}
+
+	public static String readWhile(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition) {
+		return readWhile(reader, condition, false);
+	}
+
+	public static String readWhile(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition, final boolean inclusive) {
+		return readUntil(reader, new Predicate<Character>() {
+			@Override
+			public boolean apply(@Nullable final Character input) {
+				return !condition.apply(input);
+			}
+		}, inclusive);
 	}
 }

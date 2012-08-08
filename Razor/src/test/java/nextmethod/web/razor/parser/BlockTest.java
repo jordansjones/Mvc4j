@@ -27,8 +27,12 @@ public class BlockTest {
 
 	@Test
 	public void testConstructorWithBlockBuilderSetsParent() {
-		final Block block = new BlockBuilder().setType(BlockType.Comment).build();
+		final BlockBuilder blockBuilder = new BlockBuilder().setType(BlockType.Comment);
 		final Span span = new SpanBuilder().setKind(SpanKind.Code).build();
+
+		blockBuilder.getChildren().add(span);
+
+		final Block block = blockBuilder.build();
 
 		assertSame(block, span.getParent());
 	}

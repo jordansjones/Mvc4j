@@ -1,6 +1,6 @@
 package nextmethod.web.razor.editor;
 
-import com.google.common.base.Function;
+import nextmethod.base.Delegates;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.ParserHelpers;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
@@ -16,15 +16,15 @@ public class AutoCompleteEditHandler extends SpanEditHandler {
 	private boolean autoCompleteAtEndOfSpan;
 	private String autoCompleteString;
 
-	public AutoCompleteEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer) {
+	public AutoCompleteEditHandler(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer) {
 		super(tokenizer);
 	}
 
-	public AutoCompleteEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer, @Nonnull final AcceptedCharacters accepted) {
+	public AutoCompleteEditHandler(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer, @Nonnull final AcceptedCharacters accepted) {
 		super(tokenizer, accepted);
 	}
 
-	public AutoCompleteEditHandler(@Nonnull final Function<String, Iterable<ISymbol>> tokenizer, @Nonnull final EnumSet<AcceptedCharacters> accepted) {
+	public AutoCompleteEditHandler(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer, @Nonnull final EnumSet<AcceptedCharacters> accepted) {
 		super(tokenizer, accepted);
 	}
 

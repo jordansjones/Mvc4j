@@ -1,22 +1,29 @@
 package nextmethod.web.razor.generator;
 
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import nextmethod.annotations.TODO;
-import nextmethod.base.IAction;
+import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
-import nextmethod.base.IVoidAction;
+import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.CodeLinePragma;
+import nextmethod.codedom.CodeMemberField;
+import nextmethod.codedom.CodeMemberMethod;
+import nextmethod.codedom.CodePackage;
+import nextmethod.codedom.CodeSnippetStatement;
+import nextmethod.codedom.CodeTypeDeclaration;
+import nextmethod.codedom.MemberAttributes;
 import nextmethod.web.razor.RazorEngineHost;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.text.SourceLocation;
+import nextmethod.web.razor.utils.DisposableAction;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+
+import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 @TODO
 public class CodeGeneratorContext {
@@ -25,16 +32,18 @@ public class CodeGeneratorContext {
 
 	private int nextDesignTimePragmaId = 1;
 	private boolean expressionHelperVariableWritten;
-//	private CodeMemberMethod designTimeHelperMethod;
+	private CodeMemberMethod designTimeHelperMethod;
 	private StatementBuffer currentBuffer = new StatementBuffer();
 
 	private CodeGeneratorContext() {
 		this.expressionRenderingMode = ExpressionRenderingMode.WriteToOutput;
 	}
 
+	// Internal/Private state. Technically consumers might want to use some of these but they can implement them independently if necessary.
+	// It's way safer to make them internal for now, especially with the code generator stuff in a bit of flux.
 	private ExpressionRenderingMode expressionRenderingMode;
-	private Function<String, CodeLinePragma> statementCollector;
-	private IAction<CodeWriter> codeWriterFactory;
+	private Delegates.IAction2<String, CodeLinePragma> statementCollector;
+	private Delegates.IFunc<CodeWriter> codeWriterFactory;
 
 	private String sourceFile;
 	private CodeCompileUnit compileUnit;
@@ -54,7 +63,7 @@ public class CodeGeneratorContext {
 	}
 
 	@TODO
-	static CodeGeneratorContext create(final RazorEngineHost host, final IAction<CodeWriter> writerFactory, final String className, final String rootPackage, final String sourceFile, final boolean shouldGenerateLinePragmas) {
+	static CodeGeneratorContext create(final RazorEngineHost host, final Delegates.IFunc<CodeWriter> writerFactory, final String className, final String rootPackage, final String sourceFile, final boolean shouldGenerateLinePragmas) {
 		final CodeGeneratorContext context = new CodeGeneratorContext();
 		context.host = host;
 		context.codeWriterFactory = writerFactory;
@@ -62,10 +71,10 @@ public class CodeGeneratorContext {
 		context.compileUnit = new CodeCompileUnit();
 		context.codePackage = new CodePackage(rootPackage);
 		context.generatedClass = new CodeTypeDeclaration(className);
-		context.generatedClass.isClass = true;
+		context.generatedClass.setIsClass(true);
 		context.targetMethod = new CodeMemberMethod();
-		context.targetMethod.name = host.getGeneratedClassContext().getExecuteMethodName();
-		context.targetMethod.attributes = MemberAttributes.Override | MemberAttributes.Public;
+		context.targetMethod.setName(host.getGeneratedClassContext().getExecuteMethodName());
+		context.targetMethod.setAttributes(MemberAttributes.Public);
 		context.codeMappings = Maps.newHashMap();
 
 		context.compileUnit.getPackages().add(context.codePackage);
@@ -78,13 +87,32 @@ public class CodeGeneratorContext {
 	}
 
 	public void addDesignTypeHelperStatement(final CodeSnippetStatement statement) {
+		if (designTimeHelperMethod == null) {
+			designTimeHelperMethod = new CodeMemberMethod();
+			designTimeHelperMethod.setName(DesignTimeHelperMethodName);
+			designTimeHelperMethod.setAttributes(MemberAttributes.Private);
 
+			designTimeHelperMethod.getStatements().add(new CodeSnippetStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
+				@Override
+				public void invoke(final CodeWriter input) {
+					input.writeDisableUnusedFieldWarningPragma();
+				}
+			})));
+			designTimeHelperMethod.getStatements().add(new CodeSnippetStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
+				@Override
+				public void invoke(final CodeWriter input) {
+					input.writeRestoreUnusedFieldWarningPragma();
+				}
+			})));
+			generatedClass.getMembers().add(0, designTimeHelperMethod);
+		}
+
+		designTimeHelperMethod.getStatements().add(designTimeHelperMethod.getStatements().size() - 1, statement);
 	}
 
-	@TODO
 	public int addCodeMapping(final SourceLocation sourceLocation, final int generatedCodeStart, final int generatedCodeLength) {
 		if (generatedCodeLength == Integer.MAX_VALUE) {
-			// Throw Exception
+			throw new IllegalArgumentException("generatedCodeStart out of range");
 		}
 
 		final GeneratedCodeMapping mapping = new GeneratedCodeMapping(
@@ -130,15 +158,22 @@ public class CodeGeneratorContext {
 		bufferStatementFragment(fragment, null);
 	}
 
-	@TODO
 	public void bufferStatementFragment(final String fragment, final Span sourceSpan) {
+		final StringBuilder builder = currentBuffer.getBuilder();
 		if (sourceSpan != null && currentBuffer.getLinePragmaSpan() == null) {
-//			currentBuffer.setLinePragmaSpan(sourceSpan);
-//			// Pad the output as necessary
-//			int start = currentBuffer.getBuilder().length;
-//			if ()
+			currentBuffer.setLinePragmaSpan(sourceSpan);
+			// Pad the output as necessary
+			int start = builder.length();
+			if (currentBuffer.getGeneratedCodeStart().isPresent()) {
+				start = currentBuffer.getGeneratedCodeStart().get();
+			}
+
+			String padded = CodeGeneratorBase.pad(builder.toString(), sourceSpan, start);
+			currentBuffer.setGeneratedCodeStart(Optional.of(start + (padded.length() - builder.length())));
+			builder.delete(0, builder.length());
+			builder.append(padded);
 		}
-		currentBuffer.getBuilder().append(fragment);
+		builder.append(fragment);
 	}
 
 	public void markStartOfGeneratedCode() {
@@ -149,9 +184,24 @@ public class CodeGeneratorContext {
 		currentBuffer.markEnd();
 	}
 
-	@TODO
 	public void flushBufferedStatement() {
-
+		final StringBuilder builder = currentBuffer.getBuilder();
+		if (builder.length() > 0) {
+			CodeLinePragma pragma = null;
+			if (currentBuffer.getLinePragmaSpan() != null) {
+				int start = builder.length();
+				if (currentBuffer.getGeneratedCodeStart().isPresent()) {
+					start = currentBuffer.getGeneratedCodeStart().get();
+				}
+				int len = builder.length() - start;
+				if (currentBuffer.getCodeLength().isPresent()) {
+					len = currentBuffer.getCodeLength().get();
+				}
+				pragma = generateLinePragma(currentBuffer.getLinePragmaSpan(), start, len);
+			}
+			addStatement(builder.toString(), pragma);
+			currentBuffer.reset();
+		}
 	}
 
 	public void addStatement(final String generatedCode) {
@@ -160,34 +210,67 @@ public class CodeGeneratorContext {
 
 	@TODO
 	public void addStatement(final String body, final CodeLinePragma pragma) {
-
+		if (statementCollector == null) {
+			final CodeSnippetStatement statement = new CodeSnippetStatement(body);
+			statement.setLinePragma(pragma);
+			targetMethod.getStatements().add(statement);
+		}
+		else {
+			statementCollector.invoke(body, pragma);
+		}
 	}
 
-	@TODO
 	public void ensureExpressionHelperVariable() {
-
+		if (!expressionHelperVariableWritten) {
+			final CodeMemberField field = new CodeMemberField(Object.class, "__o");
+			field.setAttributes(MemberAttributes.Private, MemberAttributes.Static);
+			generatedClass.getMembers().add(0, field);
+			expressionHelperVariableWritten = true;
+		}
 	}
 
-	@TODO
-	public IDisposable changeStatementCollection(final Function<String, CodeLinePragma> collector) {
-		return null;
+	public IDisposable changeStatementCollection(final Delegates.IAction2<String, CodeLinePragma> collector) {
+		final Delegates.IAction2<String, CodeLinePragma> oldCollector = this.statementCollector;
+		this.statementCollector = collector;
+		return new DisposableAction(new Delegates.IAction() {
+			@Override
+			public void invoke() {
+				statementCollector = oldCollector;
+			}
+		});
 	}
 
 	@TODO
 	public void addContextCall(final Span contentSpan, final String methodName, final boolean isLiteral) {
-
+		addStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
+			@Override
+			public void invoke(final CodeWriter input) {
+				input.writeStartMethodInvoke(methodName);
+				if (!Strings.isNullOrEmpty(targetWriterName)) {
+					input.writeSnippet(targetWriterName);
+					input.writeParameterSeparator();
+				}
+				input.writeStringLiteral(host.getInstrumentedSourceFilePath());
+				input.writeParameterSeparator();
+				input.writeSnippet(String.valueOf(contentSpan.getContent().length()));
+				input.writeParameterSeparator();
+				input.writeSnippet(String.valueOf(isLiteral));
+				input.writeEndMethodInvoke();
+				input.writeEndStatement();
+			}
+		}));
 	}
 
-	@TODO
+	@SuppressWarnings("ConstantConditions")
 	CodeWriter createCodeWriter() {
 		assert codeWriterFactory != null;
 		if (codeWriterFactory == null) {
-			// Throw Exception
+			throw new UnsupportedOperationException(RazorResources().getString("createCodeWriter.noCodeWriter"));
 		}
 		return codeWriterFactory.invoke();
 	}
 
-	String buildCodeString(final IVoidAction<CodeWriter> action) {
+	String buildCodeString(final Delegates.IAction1<CodeWriter> action) {
 		try (CodeWriter cw = codeWriterFactory.invoke()) {
 			action.invoke(cw);
 			return cw.getContent();
@@ -206,11 +289,11 @@ public class CodeGeneratorContext {
 		return host;
 	}
 
-	public IAction<CodeWriter> getCodeWriterFactory() {
+	public Delegates.IFunc<CodeWriter> getCodeWriterFactory() {
 		return codeWriterFactory;
 	}
 
-	public void setCodeWriterFactory(IAction<CodeWriter> codeWriterFactory) {
+	public void setCodeWriterFactory(final Delegates.IFunc<CodeWriter> codeWriterFactory) {
 		this.codeWriterFactory = codeWriterFactory;
 	}
 
@@ -286,11 +369,11 @@ public class CodeGeneratorContext {
 		this.nextDesignTimePragmaId = nextDesignTimePragmaId;
 	}
 
-	public Function<String, CodeLinePragma> getStatementCollector() {
+	public Delegates.IAction2<String, CodeLinePragma> getStatementCollector() {
 		return statementCollector;
 	}
 
-	public void setStatementCollector(Function<String, CodeLinePragma> statementCollector) {
+	public void setStatementCollector(final Delegates.IAction2<String, CodeLinePragma> statementCollector) {
 		this.statementCollector = statementCollector;
 	}
 

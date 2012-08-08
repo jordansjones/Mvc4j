@@ -4,12 +4,13 @@ import nextmethod.web.razor.generator.ExpressionCodeGenerator;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class ExpressionBlock extends Block {
 
 	private static final BlockType blockType = BlockType.Expression;
 
-	public ExpressionBlock(final IBlockCodeGenerator codeGenerator, final Iterable<SyntaxTreeNode> children) {
+	public ExpressionBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
 		super(blockType, children, codeGenerator);
 	}
 
@@ -21,7 +22,7 @@ public class ExpressionBlock extends Block {
 		this(new ExpressionCodeGenerator(), nodes);
 	}
 
-	public ExpressionBlock(final Iterable<SyntaxTreeNode> children) {
+	public ExpressionBlock(final Collection<SyntaxTreeNode> children) {
 		this(new ExpressionCodeGenerator(), children);
 	}
 

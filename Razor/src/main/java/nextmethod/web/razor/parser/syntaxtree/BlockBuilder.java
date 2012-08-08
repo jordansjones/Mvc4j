@@ -7,6 +7,7 @@ import nextmethod.web.razor.generator.IBlockCodeGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public class BlockBuilder {
 		return this;
 	}
 
-	public List<SyntaxTreeNode> getChildren() {
+	public Collection<SyntaxTreeNode> getChildren() {
 		return children;
 	}
 
