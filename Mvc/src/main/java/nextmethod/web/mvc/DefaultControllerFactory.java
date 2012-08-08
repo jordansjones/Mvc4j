@@ -10,9 +10,9 @@ import nextmethod.TypeHelpers;
 import nextmethod.annotations.TODO;
 import nextmethod.reflection.AmbiguousMatchException;
 import nextmethod.web.InvalidOperationException;
-import nextmethod.web.routing.RequestContext;
-import nextmethod.web.routing.Route;
-import nextmethod.web.routing.RouteBase;
+import nextmethod.web.http.routing.RequestContext;
+import nextmethod.web.http.routing.Route;
+import nextmethod.web.http.routing.RouteBase;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

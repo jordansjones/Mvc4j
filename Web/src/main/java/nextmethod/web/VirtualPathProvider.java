@@ -1,8 +1,11 @@
 package nextmethod.web;
 
+import nextmethod.annotations.TODO;
+
 /**
  *
  */
+@TODO
 public abstract class VirtualPathProvider {
 
 	public abstract String combineVirtualPaths(final String basePath, final String relativePath);

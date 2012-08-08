@@ -3,7 +3,7 @@ package nextmethod.web.mvc;
 import nextmethod.annotations.TODO;
 import nextmethod.web.HttpException;
 import nextmethod.web.InvalidOperationException;
-import nextmethod.web.routing.RequestContext;
+import nextmethod.web.http.routing.RequestContext;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.web.mvc.Mvc4jResources.MvcResources;

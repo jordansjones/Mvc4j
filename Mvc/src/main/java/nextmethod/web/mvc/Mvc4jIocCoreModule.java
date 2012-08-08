@@ -1,7 +1,7 @@
 package nextmethod.web.mvc;
 
 import com.google.inject.AbstractModule;
-import nextmethod.web.routing.IRouteHandler;
+import nextmethod.web.http.routing.IRouteHandler;
 
 import javax.inject.Singleton;
 

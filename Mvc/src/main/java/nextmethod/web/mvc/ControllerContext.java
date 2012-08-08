@@ -1,8 +1,8 @@
 package nextmethod.web.mvc;
 
 import nextmethod.web.IHttpContext;
-import nextmethod.web.routing.RequestContext;
-import nextmethod.web.routing.RouteData;
+import nextmethod.web.http.routing.RequestContext;
+import nextmethod.web.http.routing.RouteData;
 
 /**
  * 

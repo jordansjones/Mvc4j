@@ -2,7 +2,7 @@ package nextmethod.web.mvc;
 
 import com.google.inject.AbstractModule;
 import nextmethod.web.VirtualPathProvider;
-import nextmethod.web.routing.RouteTable;
+import nextmethod.web.http.routing.RouteTable;
 
 /**
  *

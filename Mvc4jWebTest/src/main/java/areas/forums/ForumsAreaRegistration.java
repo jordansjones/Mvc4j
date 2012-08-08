@@ -3,7 +3,7 @@ package areas.forums;
 import nextmethod.web.mvc.AreaRegistration;
 import nextmethod.web.mvc.AreaRegistrationContext;
 import nextmethod.web.mvc.UrlParameter;
-import nextmethod.web.routing.RouteValueDictionary;
+import nextmethod.web.http.routing.HttpRouteValueDictionary;
 
 /**
  *
@@ -20,7 +20,7 @@ public class ForumsAreaRegistration extends AreaRegistration {
 		context.mapRoute(
 			"Forums_default",
 			"Forums/{controller}/{action}/{id}",
-			RouteValueDictionary.builder()
+			HttpRouteValueDictionary.builder()
 				.put("controller", "Home").put("action", "Index").put("id", UrlParameter.Optional)
 				.build()
 		);

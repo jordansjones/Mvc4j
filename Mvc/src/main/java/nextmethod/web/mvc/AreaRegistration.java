@@ -6,8 +6,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import nextmethod.OutParam;
 import nextmethod.reflection.ClassInfo;
-import nextmethod.web.routing.RouteCollection;
-import nextmethod.web.routing.RouteTable;
+import nextmethod.web.http.routing.RouteCollection;
+import nextmethod.web.http.routing.RouteTable;
 
 import javax.annotation.Nullable;
 

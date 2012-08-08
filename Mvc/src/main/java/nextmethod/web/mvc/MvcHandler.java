@@ -6,8 +6,8 @@ import nextmethod.web.HttpException;
 import nextmethod.web.IHttpContext;
 import nextmethod.web.IHttpHandler;
 import nextmethod.web.InvalidOperationException;
-import nextmethod.web.routing.RequestContext;
-import nextmethod.web.routing.RouteValueDictionary;
+import nextmethod.web.http.routing.HttpRouteValueDictionary;
+import nextmethod.web.http.routing.RequestContext;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -74,7 +74,7 @@ public class MvcHandler implements IHttpHandler {
 	}
 
 	private void removeOptionalRoutingParameters() {
-		final RouteValueDictionary rvd = requestContext.getRouteData().getValues();
+		final HttpRouteValueDictionary rvd = requestContext.getRouteData().getValues();
 		final Set<String> matchingKeys = rvd.filterEntries(new Predicate<Map.Entry<String, Object>>() {
 			@Override
 			public boolean apply(@Nullable final Map.Entry<String, Object> input) {

@@ -1,7 +1,7 @@
 package nextmethod.web.mvc;
 
 import nextmethod.web.HttpException;
-import nextmethod.web.routing.RequestContext;
+import nextmethod.web.http.routing.RequestContext;
 
 /**
  *

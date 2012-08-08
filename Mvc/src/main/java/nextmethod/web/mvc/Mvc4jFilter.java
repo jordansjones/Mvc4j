@@ -10,12 +10,12 @@ import nextmethod.web.IHttpApplication;
 import nextmethod.web.IHttpContext;
 import nextmethod.web.IHttpHandler;
 import nextmethod.web.annotations.HttpApplicationStart;
-import nextmethod.web.routing.IRouteHandler;
-import nextmethod.web.routing.RequestContext;
-import nextmethod.web.routing.RouteCollection;
-import nextmethod.web.routing.RouteData;
-import nextmethod.web.routing.RouteTable;
-import nextmethod.web.routing.StopRoutingHandler;
+import nextmethod.web.http.routing.IRouteHandler;
+import nextmethod.web.http.routing.RequestContext;
+import nextmethod.web.http.routing.RouteCollection;
+import nextmethod.web.http.routing.RouteData;
+import nextmethod.web.http.routing.RouteTable;
+import nextmethod.web.http.routing.StopRoutingHandler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

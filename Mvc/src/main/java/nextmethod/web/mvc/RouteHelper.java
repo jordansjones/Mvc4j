@@ -1,11 +1,7 @@
 package nextmethod.web.mvc;
 
-import nextmethod.web.routing.RequestContext;
-import nextmethod.web.routing.Route;
-import nextmethod.web.routing.RouteCollection;
-import nextmethod.web.routing.RouteValueDictionary;
-import nextmethod.web.routing.StopRoutingHandler;
-import nextmethod.web.routing.VirtualPathData;
+import nextmethod.web.http.routing.*;
+import nextmethod.web.http.routing.HttpRouteValueDictionary;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +16,7 @@ public final class RouteHelper {
 		ignoreRoute(routes, url, null);
 	}
 
-	public static void ignoreRoute(final RouteCollection routes, final String url, @Nullable final RouteValueDictionary constraints) {
+	public static void ignoreRoute(final RouteCollection routes, final String url, @Nullable final HttpRouteValueDictionary constraints) {
 		checkNotNull(routes);
 		checkNotNull(url);
 
@@ -35,11 +31,11 @@ public final class RouteHelper {
 		return mapRoute(routes, name, url, null, null, null);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults) {
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final HttpRouteValueDictionary defaults) {
 		return mapRoute(routes, name, url, defaults, null, null);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints) {
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final HttpRouteValueDictionary defaults, @Nullable final HttpRouteValueDictionary constraints) {
 		return mapRoute(routes, name, url, defaults, constraints, null);
 	}
 
@@ -47,16 +43,16 @@ public final class RouteHelper {
 		return mapRoute(routes, name, url, null, null, packages);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final String[] packages) {
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final HttpRouteValueDictionary defaults, @Nullable final String[] packages) {
 		return mapRoute(routes, name, url, defaults, null, packages);
 	}
 
-	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints, @Nullable final String[] packages) {
+	public static Route mapRoute(final RouteCollection routes, final String name, final String url, @Nullable final HttpRouteValueDictionary defaults, @Nullable final HttpRouteValueDictionary constraints, @Nullable final String[] packages) {
 		checkNotNull(routes);
 		checkNotNull(url);
 
-		final Route route = new Route(url, new RouteValueDictionary(defaults), new RouteValueDictionary(constraints), new MvcRouteHandler());
-		final RouteValueDictionary dt = new RouteValueDictionary();
+		final Route route = new Route(url, new HttpRouteValueDictionary(defaults), new HttpRouteValueDictionary(constraints), new MvcRouteHandler());
+		final HttpRouteValueDictionary dt = new HttpRouteValueDictionary();
 		if (packages != null && packages.length > 0) {
 			dt.put(MagicStrings.PackagesKey, packages);
 		}
@@ -73,7 +69,7 @@ public final class RouteHelper {
 		}
 
 		@Override
-		public VirtualPathData getVirtualPath(final RequestContext requestContext, final RouteValueDictionary values) {
+		public VirtualPathData getVirtualPath(final RequestContext requestContext, final HttpRouteValueDictionary values) {
 			// Never match during route generation. This avoids the scenario where an IgnoreRoute with
 			// fairly relaxed constraints ends up eagerly matching all generated Urls.
 			return null;

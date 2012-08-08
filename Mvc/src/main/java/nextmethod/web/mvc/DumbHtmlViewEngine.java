@@ -3,7 +3,7 @@ package nextmethod.web.mvc;
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 import nextmethod.OutParam;
-import nextmethod.web.routing.RouteData;
+import nextmethod.web.http.routing.RouteData;
 
 import java.net.URL;
 

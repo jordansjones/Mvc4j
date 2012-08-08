@@ -1,6 +1,6 @@
 package nextmethod.web.mvc;
 
-import nextmethod.web.routing.RequestContext;
+import nextmethod.web.http.routing.RequestContext;
 
 /**
  *

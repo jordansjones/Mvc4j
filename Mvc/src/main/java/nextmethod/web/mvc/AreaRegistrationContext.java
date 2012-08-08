@@ -2,9 +2,9 @@ package nextmethod.web.mvc;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import nextmethod.web.routing.Route;
-import nextmethod.web.routing.RouteCollection;
-import nextmethod.web.routing.RouteValueDictionary;
+import nextmethod.web.http.routing.HttpRouteValueDictionary;
+import nextmethod.web.http.routing.Route;
+import nextmethod.web.http.routing.RouteCollection;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -38,14 +38,14 @@ public class AreaRegistrationContext {
 	// ************************************************************************
 
 	public Route mapRoute(final String name, final String url) {
-		return mapRoute(name, url, (RouteValueDictionary) null);
+		return mapRoute(name, url, (HttpRouteValueDictionary) null);
 	}
 
-	public Route mapRoute(final String name, final String url, @Nullable RouteValueDictionary defaults) {
-		return mapRoute(name, url, defaults, (RouteValueDictionary) null);
+	public Route mapRoute(final String name, final String url, @Nullable HttpRouteValueDictionary defaults) {
+		return mapRoute(name, url, defaults, (HttpRouteValueDictionary) null);
 	}
 
-	public Route mapRoute(final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints) {
+	public Route mapRoute(final String name, final String url, @Nullable final HttpRouteValueDictionary defaults, @Nullable final HttpRouteValueDictionary constraints) {
 		return mapRoute(name, url, defaults, constraints, null);
 	}
 
@@ -53,11 +53,11 @@ public class AreaRegistrationContext {
 		return mapRoute(name, url, null, packages);
 	}
 
-	public Route mapRoute(final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final String[] packages) {
+	public Route mapRoute(final String name, final String url, @Nullable final HttpRouteValueDictionary defaults, @Nullable final String[] packages) {
 		return mapRoute(name, url, defaults, null, packages);
 	}
 
-	public Route mapRoute(final String name, final String url, @Nullable final RouteValueDictionary defaults, @Nullable final RouteValueDictionary constraints, @Nullable String[] packages) {
+	public Route mapRoute(final String name, final String url, @Nullable final HttpRouteValueDictionary defaults, @Nullable final HttpRouteValueDictionary constraints, @Nullable String[] packages) {
 		if (packages == null && this.packages != null) {
 			packages = Iterables.toArray(this.packages, String.class);
 		}

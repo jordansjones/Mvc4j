@@ -2,8 +2,8 @@ package nextmethod.web.mvc;
 
 import com.google.inject.Injector;
 import nextmethod.web.IHttpHandler;
-import nextmethod.web.routing.IRouteHandler;
-import nextmethod.web.routing.RequestContext;
+import nextmethod.web.http.routing.IRouteHandler;
+import nextmethod.web.http.routing.RequestContext;
 
 import javax.inject.Inject;
 

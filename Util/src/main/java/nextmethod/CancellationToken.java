@@ -1,6 +1,8 @@
 package nextmethod;
 
-// TODO
+import nextmethod.annotations.TODO;
+
+@TODO
 public final class CancellationToken {
 
 //	private final boolean canceled;
