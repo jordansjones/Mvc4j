@@ -6,6 +6,6 @@ import javax.annotation.Nonnull;
 
 interface ISyntaxTreeRewriter {
 
-	Block rewrite(@Nonnull Block input);
+	Block rewrite(@Nonnull final Block input);
 
 }

@@ -53,6 +53,23 @@ public final class TextExtensions {
 		return sb.toString();
 	}
 
+	public static String readUntil(@Nonnull final TextReader reader, final char terminator) {
+		return readUntil(reader, terminator, false);
+	}
+
+	public static String readUntil(@Nonnull final TextReader reader, final char terminator, final boolean inclusive) {
+		return readUntil(
+			reader,
+			new Predicate<Character>() {
+				@Override
+				public boolean apply(@Nullable final Character input) {
+					return input != null && input == terminator;
+				}
+			},
+			inclusive
+		);
+	}
+
 	public static String readUntil(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition) {
 		return readUntil(reader, condition, false);
 	}
@@ -82,5 +99,23 @@ public final class TextExtensions {
 				return !condition.apply(input);
 			}
 		}, inclusive);
+	}
+
+	public static String readWhiteSpace(@Nonnull final TextReader reader) {
+		return readWhile(reader, new Predicate<Character>() {
+			@Override
+			public boolean apply(@Nullable final Character input) {
+				return input != null && Character.isWhitespace(input);
+			}
+		});
+	}
+
+	public static String readUntilWhiteSpace(@Nonnull final TextReader reader) {
+		return readUntil(reader, new Predicate<Character>() {
+			@Override
+			public boolean apply(@Nullable final Character input) {
+				return input != null && Character.isWhitespace(input);
+			}
+		});
 	}
 }
