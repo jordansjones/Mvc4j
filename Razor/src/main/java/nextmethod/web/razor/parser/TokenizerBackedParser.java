@@ -20,7 +20,11 @@ import nextmethod.web.razor.utils.DisposableAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class TokenizerBackedParser<
 	TTokenizer extends Tokenizer<TSymbol, TSymbolType>,

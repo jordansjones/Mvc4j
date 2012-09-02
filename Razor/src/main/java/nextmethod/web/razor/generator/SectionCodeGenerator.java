@@ -5,7 +5,6 @@ import nextmethod.web.razor.parser.syntaxtree.Block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Objects;
 
 import static nextmethod.base.TypeHelpers.typeAs;

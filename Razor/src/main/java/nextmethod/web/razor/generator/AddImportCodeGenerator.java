@@ -5,7 +5,6 @@ import nextmethod.annotations.TODO;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;
-
 import java.util.Objects;
 
 import static nextmethod.base.TypeHelpers.typeAs;

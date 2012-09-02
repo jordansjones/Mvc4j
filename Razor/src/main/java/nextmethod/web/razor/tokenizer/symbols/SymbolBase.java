@@ -4,7 +4,6 @@ import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.SourceLocation;
 
 import javax.annotation.Nonnull;
-
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;

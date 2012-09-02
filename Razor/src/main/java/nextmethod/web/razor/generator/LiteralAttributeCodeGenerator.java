@@ -7,7 +7,6 @@ import nextmethod.web.razor.text.LocationTagged;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Objects;
 
 import static nextmethod.base.TypeHelpers.typeAs;

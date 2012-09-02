@@ -1,8 +1,8 @@
 package nextmethod.web.razor.text;
 
 import com.google.common.base.Function;
-import nextmethod.base.OutParam;
 import nextmethod.base.IDisposable;
+import nextmethod.base.OutParam;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 

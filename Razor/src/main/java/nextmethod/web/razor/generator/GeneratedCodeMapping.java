@@ -3,7 +3,6 @@ package nextmethod.web.razor.generator;
 import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
-
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
