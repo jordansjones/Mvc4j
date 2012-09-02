@@ -20,11 +20,7 @@ import nextmethod.web.razor.utils.DisposableAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class TokenizerBackedParser<
 	TTokenizer extends Tokenizer<TSymbol, TSymbolType>,
@@ -293,7 +289,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected void addMarkerSymbolIfNecessary(@Nonnull final SourceLocation location) {
-		if (getSpan().getSymbols().size() == 0 && !AcceptedCharacters.Any.equals(getContext().getLastAcceptedChars())) {
+		if (getSpan().getSymbols().size() == 0 && !AcceptedCharacters.Any.equals(getContext().getLastAcceptedCharacters())) {
 			accept(getLanguage().createMarkerSymbol(location));
 		}
 	}
@@ -404,7 +400,11 @@ public abstract class TokenizerBackedParser<
 				error = "";// TODO
 			}
 
-			getContext().onError(); // TODO
+			getContext().onError(
+				getCurrentLocation(),
+				errorBase,
+				error
+			);
 		}
 
 		return found;
@@ -421,5 +421,8 @@ public abstract class TokenizerBackedParser<
 
 	}
 
+	private void configure(@Nullable final SpanKind kind, @Nullable EnumSet<AcceptedCharacters> accepts) {
+		// TODO
+	}
 
 }

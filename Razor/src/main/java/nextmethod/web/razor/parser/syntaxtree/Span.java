@@ -43,10 +43,10 @@ public class Span extends SyntaxTreeNode {
 	}
 
 	public void replaceWith(@Nonnull final SpanBuilder builder) {
-		assert !Iterables.any(builder.symbols(), Predicates.isNull()) || Iterables.all(builder.symbols(), Predicates.notNull());
+		assert !Iterables.any(builder.getSymbols(), Predicates.isNull()) || Iterables.all(builder.getSymbols(), Predicates.notNull());
 
 		this.kind = builder.getKind();
-		this.symbols = builder.symbols();
+		this.symbols = builder.getSymbols();
 		this.editHandler = builder.getEditHandler();
 		this.codeGenerator = builder.getCodeGenerator() != null ? builder.getCodeGenerator() : SpanCodeGenerator.Null;
 		this.start = builder.getStart();

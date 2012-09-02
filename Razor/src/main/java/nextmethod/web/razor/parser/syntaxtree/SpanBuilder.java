@@ -70,7 +70,7 @@ public class SpanBuilder {
 		this.tracker.updateLocation(symbol.getContent());
 	}
 
-	public ImmutableCollection<ISymbol> symbols() {
+	public ImmutableCollection<ISymbol> getSymbols() {
 		return ImmutableList.copyOf(symbolList);
 	}
 
