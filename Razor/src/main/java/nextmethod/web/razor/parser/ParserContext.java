@@ -30,7 +30,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.base.Debug.isAssertEnabled;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
-// TODO
 public class ParserContext {
 
 	private Optional<Integer> ownerTaskId;
