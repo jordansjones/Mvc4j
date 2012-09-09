@@ -4,7 +4,7 @@ public final class SystemHelpers {
 
 	private SystemHelpers() {}
 
-	private static final String NL = System.getProperty("line.separator");
+	private static final String NL = System.lineSeparator();
 
 	public static String newLine() {
 		return NL;
