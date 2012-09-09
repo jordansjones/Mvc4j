@@ -12,12 +12,12 @@ public class KeyValue<A, B> {
 		this.value = value;
 	}
 
-	@SuppressWarnings("UnusedDeclaration")
+	@Nonnull
 	public A getKey() {
 		return key;
 	}
 
-	@SuppressWarnings("UnusedDeclaration")
+	@Nonnull
 	public B getValue() {
 		return value;
 	}
