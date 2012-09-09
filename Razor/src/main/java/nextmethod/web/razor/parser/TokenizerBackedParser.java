@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
-import nextmethod.base.Tuple;
+import nextmethod.base.KeyValue;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
@@ -253,11 +253,11 @@ public abstract class TokenizerBackedParser<
 	@Nullable
 	protected TSymbol acceptSingleWhiteSpaceCharacter() {
 		if (getLanguage().isWhiteSpace(getCurrentSymbol())) {
-			final Tuple<TSymbol,TSymbol> pair = getLanguage().splitSymbol(getCurrentSymbol(), 1, getLanguage().getKnownSymbolType(KnownSymbolType.WhiteSpace));
-			accept(pair.getItem1());
+			final KeyValue<TSymbol,TSymbol> pair = getLanguage().splitSymbol(getCurrentSymbol(), 1, getLanguage().getKnownSymbolType(KnownSymbolType.WhiteSpace));
+			accept(pair.getKey());
 			getSpan().getEditHandler().setAcceptedCharacters(EnumSet.of(AcceptedCharacters.None));
 			nextToken();
-			return pair.getItem2();
+			return pair.getValue();
 		}
 		return null;
 	}

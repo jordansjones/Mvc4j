@@ -1,7 +1,7 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Strings;
-import nextmethod.base.Tuple;
+import nextmethod.base.KeyValue;
 import nextmethod.codedom.CodeAnnotationArgument;
 import nextmethod.codedom.CodeAnnotationDeclaration;
 import nextmethod.codedom.CodePrimitiveExpression;
@@ -63,6 +63,6 @@ public class RazorDirectiveAnnotationCodeGenerator extends SpanCodeGenerator {
 
 	@Override
 	public int hashCode() {
-		return Tuple.create(name.toUpperCase(), value.toUpperCase()).hashCode();
+		return KeyValue.of(name.toUpperCase(), value.toUpperCase()).hashCode();
 	}
 }
