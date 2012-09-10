@@ -1,12 +1,14 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.collect.Lists;
+import nextmethod.base.Delegates;
 import nextmethod.base.KeyValue;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.text.SourceLocationTracker;
 import nextmethod.web.razor.tokenizer.Tokenizer;
+import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 import nextmethod.web.razor.tokenizer.symbols.KnownSymbolType;
 import nextmethod.web.razor.tokenizer.symbols.SymbolBase;
 
@@ -27,6 +29,16 @@ public abstract class LanguageCharacteristics<
 	public abstract TSymbol createMarkerSymbol(@Nonnull final SourceLocation location);
 	public abstract TSymbolType getKnownSymbolType(@Nonnull final KnownSymbolType type);
 	protected abstract TSymbol createSymbol(@Nonnull final SourceLocation location, @Nonnull final String content, @Nonnull final TSymbolType type, @Nonnull final Iterable<RazorError> errors);
+
+	@SuppressWarnings("unchecked")
+	public <XSymbol extends ISymbol> Delegates.IFunc1<String, Iterable<XSymbol>> createTokenizeStringDelegate() {
+		return new Delegates.IFunc1<String, Iterable<XSymbol>>() {
+			@Override
+			public Iterable<XSymbol> invoke(@Nullable final String tokenString) {
+				return (Iterable<XSymbol>) (tokenString == null ? Lists.<XSymbol>newArrayList() : tokenizeString(tokenString));
+			}
+		};
+	}
 
 	public Iterable<TSymbol> tokenizeString(@Nonnull final String content) {
 		return tokenizeString(SourceLocation.Zero, content);

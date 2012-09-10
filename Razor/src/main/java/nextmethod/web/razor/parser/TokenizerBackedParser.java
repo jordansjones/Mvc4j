@@ -118,7 +118,7 @@ public abstract class TokenizerBackedParser<
 
 	// Helpers
 
-	void assertSymbol(@Nonnull final TSymbolType expectedType) {
+	void doAssert(@Nonnull final TSymbolType expectedType) {
 		assert !isEndOfFile() && Objects.equals(getCurrentSymbol().getType(), expectedType);
 	}
 
@@ -567,14 +567,8 @@ public abstract class TokenizerBackedParser<
 
 	@SuppressWarnings("unchecked")
 	private void commentSpanConfig(@Nonnull final SpanBuilder span) {
-		final LanguageCharacteristics<TTokenizer, TSymbol, TSymbolType> language = getLanguage();
 		span.setCodeGenerator(SpanCodeGenerator.Null);
-		span.setEditHandler(SpanEditHandler.createDefault(((Delegates.IFunc1<String, Iterable<ISymbol>>) new Delegates.IFunc1<String, Iterable<TSymbol>>() {
-			@Override
-			public Iterable<TSymbol> invoke(@Nullable final String input1) {
-				return input1 == null ? Lists.<TSymbol>newArrayList() : language.tokenizeString(input1);
-			}
-		})));
+		span.setEditHandler(SpanEditHandler.createDefault(getLanguage().createTokenizeStringDelegate()));
 	}
 
 	private final Delegates.IAction1<SpanBuilder> commentSpanConfigDelegate = new Delegates.IAction1<SpanBuilder>() {

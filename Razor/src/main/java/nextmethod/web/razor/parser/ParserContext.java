@@ -91,6 +91,10 @@ public class ParserContext {
 		return whiteSpaceIsSignificantToAncestorBlock;
 	}
 
+	public boolean isDesignTimeMode() {
+		return designTimeMode;
+	}
+
 	public EnumSet<AcceptedCharacters> getLastAcceptedCharacters() {
 		return lastSpan == null ? AcceptedCharacters.SetOfNone : lastSpan.getEditHandler().getAcceptedCharacters();
 	}
