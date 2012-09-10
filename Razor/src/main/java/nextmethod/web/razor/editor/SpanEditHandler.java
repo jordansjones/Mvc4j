@@ -72,7 +72,7 @@ public class SpanEditHandler {
 		final int end = target.getStart().getAbsoluteIndex() + target.getLength();
 		final int changeOldEnd = change.getOldPosition() + change.getOldLength();
 		return change.getOldPosition() >= target.getStart().getAbsoluteIndex() &&
-			(changeOldEnd < end || (changeOldEnd == end && acceptedCharacters != AcceptedCharacters.setOf(AcceptedCharacters.None)));
+			(changeOldEnd < end || (changeOldEnd == end && acceptedCharacters != AcceptedCharacters.SetOfNone));
 	}
 
 	protected EnumSet<PartialParseResult> canAcceptChange(@Nonnull final Span target, @Nonnull final TextChange normalizedChange) {

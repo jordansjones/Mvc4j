@@ -7,13 +7,18 @@ import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
+import nextmethod.web.razor.editor.SpanEditHandler;
+import nextmethod.web.razor.generator.RazorCommentCodeGenerator;
+import nextmethod.web.razor.generator.SpanCodeGenerator;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.BlockType;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.Tokenizer;
 import nextmethod.web.razor.tokenizer.TokenizerView;
+import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 import nextmethod.web.razor.tokenizer.symbols.KnownSymbolType;
 import nextmethod.web.razor.tokenizer.symbols.SymbolBase;
 import nextmethod.web.razor.utils.DisposableAction;
@@ -26,10 +31,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
+import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
+
 public abstract class TokenizerBackedParser<
 	TTokenizer extends Tokenizer<TSymbol, TSymbolType>,
-	TSymbol extends SymbolBase<TSymbolType>,
-	TSymbolType
+	TSymbol extends SymbolBase<TSymbolType> & ISymbol,
+	TSymbolType extends Enum<TSymbolType>
 	> extends ParserBase {
 
 	private TokenizerView<TTokenizer, TSymbol, TSymbolType> tokenizer;
@@ -255,7 +262,7 @@ public abstract class TokenizerBackedParser<
 		if (getLanguage().isWhiteSpace(getCurrentSymbol())) {
 			final KeyValue<TSymbol,TSymbol> pair = getLanguage().splitSymbol(getCurrentSymbol(), 1, getLanguage().getKnownSymbolType(KnownSymbolType.WhiteSpace));
 			accept(pair.getKey());
-			getSpan().getEditHandler().setAcceptedCharacters(EnumSet.of(AcceptedCharacters.None));
+			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.SetOfNone);
 			nextToken();
 			return pair.getValue();
 		}
@@ -392,16 +399,16 @@ public abstract class TokenizerBackedParser<
 		if (!found && errorIfNotFound) {
 			String error;
 			if (getLanguage().isNewLine(getCurrentSymbol())) {
-				error = "";// TODO
+				error = RazorResources().getString("errorComponent.newline");
 			}
 			else if (getLanguage().isWhiteSpace(getCurrentSymbol())) {
-				error = "";// TODO
+				error = RazorResources().getString("errorComponent.whitespace");
 			}
 			else if (isEndOfFile()) {
-				error = ""; // TODO
+				error = RazorResources().getString("errorComponent.endOfFile");
 			}
 			else {
-				error = "";// TODO
+				error = String.format(RazorResources().getString("errorComponent.character"), getCurrentSymbol().getContent());
 			}
 
 			getContext().onError(
@@ -415,18 +422,216 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected boolean ensureCurrent() {
-		if (getCurrentSymbol() == null) {
-			return nextToken();
-		}
-		return true;
+		return getCurrentSymbol() != null || nextToken();
 	}
 
 	protected void acceptWhile(@Nonnull final TSymbolType type) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol input1) {
+				return input1 != null && type == input1.getType();
+			}
+		});
+	}
 
+	protected void acceptWhile(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol input1) {
+				return input1 != null && (type1 == input1.getType() || type2 == input1.getType());
+			}
+		});
+	}
+
+	protected void acceptWhile(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2, @Nonnull final TSymbolType type3) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol input1) {
+				return input1 != null && (type1 == input1.getType() || type2 == input1.getType() || type3 == input1.getType());
+			}
+		});
+	}
+
+	@SafeVarargs
+	protected final void acceptWhile(@Nonnull final TSymbolType... types) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol tSymbol) {
+				return tSymbol != null && Iterables.any(Arrays.asList(types), new Predicate<TSymbolType>() {
+					@Override
+					public boolean apply(@Nullable final TSymbolType tSymbolType) {
+						return tSymbolType != null && tSymbolType == tSymbol.getType();
+					}
+				});
+			}
+		});
+	}
+
+	protected void acceptUntil(@Nonnull final TSymbolType type) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol input1) {
+				return input1 == null || type != input1.getType();
+			}
+		});
+	}
+
+	protected void acceptUntil(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol input1) {
+				if (input1 == null) return false;
+				final TSymbolType symbolType = input1.getType();
+				return (type1 != symbolType && type2 != symbolType);
+			}
+		});
+	}
+
+	protected void acceptUntil(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2, @Nonnull final TSymbolType type3) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol input1) {
+				if (input1 == null) return false;
+				final TSymbolType symbolType = input1.getType();
+				return (type1 != symbolType && type2 != symbolType && type3 != symbolType);
+			}
+		});
+	}
+
+	protected void acceptUntil(@Nonnull final TSymbolType... types) {
+		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
+			@Override
+			public Boolean invoke(@Nullable final TSymbol tSymbol) {
+				return tSymbol == null || Iterables.any(Arrays.asList(types), new Predicate<TSymbolType>() {
+					@Override
+					public boolean apply(@Nullable final TSymbolType tSymbolType) {
+						return tSymbolType == null || tSymbolType != tSymbol.getType();
+					}
+				});
+			}
+		});
+	}
+
+	protected void acceptWhile(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
+		accept(readWhile(condition));
+	}
+
+	protected Iterable<TSymbol> readWhile(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
+		final List<TSymbol> results = Lists.newArrayList();
+		while (ensureCurrent() && Boolean.TRUE.equals(condition.invoke(getCurrentSymbol()))) {
+			results.add(getCurrentSymbol());
+			nextToken();
+		}
+		return results;
+	}
+
+	protected TSymbol acceptWhiteSpaceInLines() {
+		TSymbol lastWs = null;
+		while(getLanguage().isWhiteSpace(getCurrentSymbol()) || getLanguage().isNewLine(getCurrentSymbol())) {
+			// Capture the previous whitespace node
+			if (lastWs != null) {
+				accept(lastWs);
+			}
+			if (getLanguage().isWhiteSpace(getCurrentSymbol())) {
+				lastWs = getCurrentSymbol();
+			}
+			else if (getLanguage().isNewLine(getCurrentSymbol())) {
+				// Accept newline and reset last whitespace tracker
+				accept(getCurrentSymbol());
+				lastWs = null;
+			}
+			getTokenizer().next();
+		}
+		return lastWs;
+	}
+
+	protected boolean atIdentifier(final boolean allowKeywords) {
+		return getCurrentSymbol() != null
+			&& (getLanguage().isIdentifier(getCurrentSymbol())
+				|| (allowKeywords && getLanguage().isKeyword(getCurrentSymbol()))
+			);
 	}
 
 	private void configure(@Nullable final SpanKind kind, @Nullable EnumSet<AcceptedCharacters> accepts) {
-		// TODO
+		if (kind != null) {
+			getSpan().setKind(kind);
+		}
+		if (accepts != null) {
+			getSpan().getEditHandler().setAcceptedCharacters(accepts);
+		}
+	}
+
+	protected void outputSpanBeforeRazorComment() {
+		throw new UnsupportedOperationException(RazorResources().getString("language.does.not.support.razorComment"));
+	}
+
+	@SuppressWarnings("unchecked")
+	private void commentSpanConfig(@Nonnull final SpanBuilder span) {
+		final LanguageCharacteristics<TTokenizer, TSymbol, TSymbolType> language = getLanguage();
+		span.setCodeGenerator(SpanCodeGenerator.Null);
+		span.setEditHandler(SpanEditHandler.createDefault(((Delegates.IFunc1<String, Iterable<ISymbol>>) new Delegates.IFunc1<String, Iterable<TSymbol>>() {
+			@Override
+			public Iterable<TSymbol> invoke(@Nullable final String input1) {
+				return input1 == null ? Lists.<TSymbol>newArrayList() : language.tokenizeString(input1);
+			}
+		})));
+	}
+
+	private final Delegates.IAction1<SpanBuilder> commentSpanConfigDelegate = new Delegates.IAction1<SpanBuilder>() {
+		@Override
+		public void invoke(@Nullable final SpanBuilder input) {
+			if (input != null) {
+				commentSpanConfig(input);
+			}
+		}
+	};
+
+	protected void razorComment() {
+		if (
+			!getLanguage().knowsSymbolType(KnownSymbolType.CommentStart)
+			|| !getLanguage().knowsSymbolType(KnownSymbolType.CommentStar)
+			|| !getLanguage().knowsSymbolType(KnownSymbolType.CommentBody)
+		) {
+			throw new UnsupportedOperationException(RazorResources().getString("language.does.not.support.razorComment"));
+		}
+		outputSpanBeforeRazorComment();
+
+		try (final IDisposable pushSpanConfigDisposable = pushSpanConfig(commentSpanConfigDelegate)) {
+			try (final IDisposable startBlockDisposable = getContext().startBlock(BlockType.Comment)) {
+				getContext().getCurrentBlock().setCodeGenerator(new RazorCommentCodeGenerator());
+				final SourceLocation start = getCurrentLocation();
+
+				expected(KnownSymbolType.CommentStart);
+				output(SpanKind.Transition, AcceptedCharacters.SetOfNone);
+
+				expected(KnownSymbolType.CommentStar);
+				output(SpanKind.MetaCode, AcceptedCharacters.SetOfNone);
+
+				optional(KnownSymbolType.CommentBody);
+				addMarkerSymbolIfNecessary();
+				output(SpanKind.Comment);
+
+				boolean errorReported = false;
+				if (!optional(KnownSymbolType.CommentStar)) {
+					errorReported = true;
+					getContext().onError(start, RazorResources().getString("parseError.razorComment.not.terminated"));
+				}
+				else {
+					output(SpanKind.MetaCode, AcceptedCharacters.SetOfNone);
+				}
+
+				if (!optional(KnownSymbolType.CommentStart)) {
+					if (!errorReported) {
+						errorReported = true;
+						getContext().onError(start, RazorResources().getString("parseError.razorComment.not.terminated"));
+					}
+				}
+				else {
+					output(SpanKind.Transition, AcceptedCharacters.SetOfNone);
+				}
+			}
+		}
+		initialize(getSpan());
 	}
 
 }

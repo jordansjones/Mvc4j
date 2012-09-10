@@ -16,6 +16,8 @@ public enum AcceptedCharacters {
 	public static final EnumSet<AcceptedCharacters> NotAny = EnumSet.noneOf(AcceptedCharacters.class);
 	public static final EnumSet<AcceptedCharacters> AnyExceptNewLine = EnumSet.of(NonWhiteSpace, WhiteSpace);
 
+	public static final EnumSet<AcceptedCharacters> SetOfNone = EnumSet.of(None);
+
 	public static EnumSet<AcceptedCharacters> setOf(@Nullable final AcceptedCharacters... values) {
 		if (values == null || values.length < 1) return NotAny;
 

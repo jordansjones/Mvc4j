@@ -92,7 +92,7 @@ public class ParserContext {
 	}
 
 	public EnumSet<AcceptedCharacters> getLastAcceptedCharacters() {
-		return lastSpan == null ? EnumSet.of(AcceptedCharacters.None) : lastSpan.getEditHandler().getAcceptedCharacters();
+		return lastSpan == null ? AcceptedCharacters.SetOfNone : lastSpan.getEditHandler().getAcceptedCharacters();
 	}
 
 	public Deque<BlockBuilder> getBlockStack() {

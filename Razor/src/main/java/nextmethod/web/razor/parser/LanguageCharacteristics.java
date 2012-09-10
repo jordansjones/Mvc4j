@@ -18,7 +18,7 @@ import java.util.Objects;
 public abstract class LanguageCharacteristics<
 	TTokenizer extends Tokenizer<TSymbol, TSymbolType>,
 	TSymbol extends SymbolBase<TSymbolType>,
-	TSymbolType
+	TSymbolType extends Enum<TSymbolType>
 	> {
 
 	public abstract String getSample(@Nonnull final TSymbolType type);
