@@ -500,7 +500,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		}
 	}
 
-	private void otherParserBlock() {
+	protected void otherParserBlock() {
 		parseWithOtherParser(new Delegates.IAction1<ParserBase>() {
 			@Override
 			public void invoke(@Nullable final ParserBase input) {

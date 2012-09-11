@@ -3,7 +3,6 @@ package nextmethod.web.razor.parser;
 import com.google.common.collect.Iterables;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.generator.AddImportCodeGenerator;
 import nextmethod.web.razor.generator.ExpressionCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
@@ -21,6 +20,7 @@ import nextmethod.web.razor.tokenizer.symbols.SymbolExtensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
@@ -288,27 +288,100 @@ final class JavaCodeParserStatements {
 	};
 
 	protected void afterTryClause() {
+		// Grab whitespace
+		final Iterable<JavaSymbol> ws = skipToNextImportantToken();
 
+		// Check for a catch or finally part
+		if (parser.at(JavaKeyword.Catch)) {
+			parser.accept(ws);
+			parser.doAssert(JavaKeyword.Catch);
+			conditionalBlock(true);
+			afterTryClause();
+		}
+		else if (parser.at(JavaKeyword.Finally)) {
+			parser.accept(ws);
+			parser.doAssert(JavaKeyword.Finally);
+			unconditionalBlock();
+		}
+		else {
+			// Return whitespace and end the block
+			parser.putCurrentBack();
+			parser.putBack(ws);
+			parser.getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.Any);
+		}
 	}
 
 	protected void afterIfClause() {
+		// Grab whitespace and razor comments
+		final Iterable<JavaSymbol> ws = skipToNextImportantToken();
 
+		// Check for an else part
+		if (parser.at(JavaKeyword.Else)) {
+			parser.accept(ws);
+			parser.doAssert(JavaKeyword.Else);
+			elseClause();
+		}
+		else {
+			// No else, return whitespace
+			parser.putCurrentBack();
+			parser.putBack(ws);
+			parser.getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.Any);
+		}
 	}
 
 	protected void elseClause() {
+		if (!parser.at(JavaKeyword.Else)) {
+			return;
+		}
 
+		final Block block = new Block(parser.getCurrentSymbol());
+
+		parser.acceptAndMoveNext();
+		parser.acceptWhile(JavaCodeParser.isSpacingToken(true, true));
+		if (parser.at(JavaKeyword.If)) {
+			// ElseIf
+			block.setName(SyntaxConstants.Java.ElseIfKeyword);
+			conditionalBlock(block);
+			afterIfClause();
+		}
+		else if (!parser.isEndOfFile()) {
+			// Else
+			expectCodeBlock(block);
+		}
 	}
 
 	protected void expectCodeBlock(@Nonnull final Block block) {
+		if (!parser.isEndOfFile()) {
+			// Check for "{" to make sure we're at a block
+			if (!parser.at(JavaSymbolType.LeftBrace)) {
+				parser.getContext().onError(
+					parser.getCurrentLocation(),
+					RazorResources().getString("parseError.singleLine.controlFlowStatements.not.allowed"),
+					parser.getLanguage().getSample(JavaSymbolType.LeftBrace),
+					parser.getCurrentSymbol().getContent()
+				);
+			}
 
+			// Parse the statement and then we're done
+			statement(block);
+		}
 	}
 
 	protected void unconditionalBlock() {
-
+		parser.doAssert(JavaSymbolType.Keyword);
+		final Block block = new Block(parser.getCurrentSymbol());
+		parser.acceptAndMoveNext();
+		parser.acceptWhile(JavaCodeParser.isSpacingToken(true, true));
+		expectCodeBlock(block);
 	}
 
 	protected void conditionalBlock(final boolean topLevel) {
-
+		parser.doAssert(JavaSymbolType.Keyword);
+		final Block block = new Block(parser.getCurrentSymbol());
+		conditionalBlock(block);
+		if (topLevel) {
+			parser.completeBlock();
+		}
 	}
 	protected final Delegates.IAction1<Boolean> conditionalBlockDelegate = new Delegates.IAction1<Boolean>() {
 		@Override
@@ -318,11 +391,28 @@ final class JavaCodeParserStatements {
 	};
 
 	protected void conditionalBlock(@Nonnull final Block block) {
+		parser.acceptAndMoveNext();
+		parser.acceptWhile(JavaCodeParser.isSpacingToken(true, true));
 
+		// Parse the condition, if present (if not preset, we'll let the java compiler complain)
+		if (acceptCondition()) {
+			parser.acceptWhile(JavaCodeParser.isSpacingToken(true, true));
+			expectCodeBlock(block);
+		}
 	}
 
 	protected boolean acceptCondition() {
-		throw new NotImplementedException();
+		if (parser.at(JavaSymbolType.LeftParenthesis)) {
+			final boolean complete = parser.balance(EnumSet.of(BalancingModes.BacktrackOnFailure, BalancingModes.AllowCommentsAndTemplates));
+			if (!complete) {
+				parser.acceptUntil(JavaSymbolType.NewLine);
+			}
+			else {
+				parser.optional(JavaSymbolType.RightParenthesis);
+			}
+			return complete;
+		}
+		return true;
 	}
 
 	protected void statement() {
@@ -330,7 +420,95 @@ final class JavaCodeParserStatements {
 	}
 
 	protected void statement(@Nullable final Block block) {
+		parser.getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.Any);
 
+		// Accept whitespace but always keep the last whitespace node so we can put it back if necessary
+		final JavaSymbol lastWs = parser.acceptWhiteSpaceInLines();
+		if (Debug.isAssertEnabled()) {
+			assert lastWs == null || (lastWs.getStart().getAbsoluteIndex() + lastWs.getContent().length() == parser.getCurrentLocation().getAbsoluteIndex());
+		}
+
+		if (parser.isEndOfFile()) {
+			if (lastWs != null) {
+				parser.accept(lastWs);
+			}
+			return;
+		}
+
+		final JavaSymbolType type = parser.getCurrentSymbol().getType();
+		final SourceLocation loc = parser.getCurrentLocation();
+		final boolean isSingleLineMarkup = type == JavaSymbolType.Transition && parser.nextIs(JavaSymbolType.Colon);
+		final boolean isMarkup = isSingleLineMarkup
+			|| type == JavaSymbolType.LessThan
+			|| (type == JavaSymbolType.Transition && parser.nextIs(JavaSymbolType.LessThan));
+
+		if (parser.getContext().isDesignTimeMode() || !isMarkup) {
+			// CODE owns whitespace, MARKUP owns it ONLY in DesignTimeMode
+			if (lastWs != null) {
+				parser.accept(lastWs);
+			}
+		}
+		else {
+			// MARKUP owns whitespace EXCEPT in DesignTimeMode.
+			parser.putCurrentBack();
+			parser.putBack(lastWs);
+		}
+
+		if (isMarkup) {
+			if (type == JavaSymbolType.Transition && !isSingleLineMarkup) {
+				parser.getContext().onError(loc, RazorResources().getString("parseError.atInCode.must.be.followed.by.colon.paren.or.identifier.start"));
+			}
+
+			// Markup block
+			parser.output(SpanKind.Code);
+			if (parser.getContext().isDesignTimeMode() && parser.getCurrentSymbol() != null && (parser.getCurrentSymbol().getType() == JavaSymbolType.LessThan || parser.getCurrentSymbol().getType() == JavaSymbolType.Transition)) {
+				parser.putCurrentBack();
+			}
+			parser.otherParserBlock();
+		}
+		else {
+			// What kind of statement is this?
+			handleStatement(block, type);
+		}
+	}
+
+	protected void handleStatement(@Nullable final Block block, @Nonnull final JavaSymbolType type) {
+		switch (type) {
+			case RazorCommentTransition:
+				parser.output(SpanKind.Code);
+				parser.razorComment();
+				statement(block);
+				break;
+
+			case LeftBrace:
+				// Verbatim Block
+				parser.acceptAndMoveNext();
+				codeBlock(block != null ? block : new Block(RazorResources().getString("blockName.code"), parser.getCurrentLocation()));
+				break;
+
+			case Keyword:
+				// Keyword block
+				handleKeyword(false, standardStatementDelegate);
+				break;
+
+			case Transition:
+				// Embedded Expression block
+				embeddedExpression();
+				break;
+
+			case RightBrace:
+				// Possible end of Code Block, just run the continuation
+				break;
+
+			case Comment:
+				parser.acceptAndMoveNext();
+				break;
+
+			default:
+				// Other statement
+				standardStatement();
+				break;
+		}
 	}
 
 	protected void embeddedExpression() {
@@ -340,6 +518,12 @@ final class JavaCodeParserStatements {
 	protected void standardStatement() {
 
 	}
+	protected final Delegates.IAction1<Boolean> standardStatementDelegate = new Delegates.IAction1<Boolean>() {
+		@Override
+		public void invoke(@Nullable final Boolean input) {
+			standardStatement();
+		}
+	};
 
 	protected void codeBlock(@Nonnull final Block block) {
 
