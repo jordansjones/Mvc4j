@@ -488,7 +488,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		output(SpanKind.MetaCode);
 	}
 
-	private void template() {
+	protected void template() {
 		if (getContext().isWithin(BlockType.Template)) {
 			getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.inlineMarkup.blocks.cannot.be.nested"));
 		}
@@ -518,7 +518,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		});
 	}
 
-	private void nestedBlock() {
+	protected void nestedBlock() {
 		output(SpanKind.Code);
 		final boolean wasNested = isNested();
 		this.isNested = true;

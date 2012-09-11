@@ -20,6 +20,7 @@ import nextmethod.web.razor.tokenizer.symbols.SymbolExtensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.EnumSet;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
@@ -75,15 +76,13 @@ final class JavaCodeParserStatements {
 	};
 
 	protected void keywordBlock(final boolean topLevel) {
-		handleKeyword(topLevel, new Delegates.IAction1<Boolean>() {
+		handleKeyword(topLevel, new Delegates.IAction() {
 			@Override
-			public void invoke(@Nullable final Boolean input) {
-				if (input != null) {
-					final BlockBuilder currentBlock = parser.getContext().getCurrentBlock();
-					currentBlock.setType(BlockType.Expression);
-					currentBlock.setCodeGenerator(new ExpressionCodeGenerator());
-					parser.implicitExpression();
-				}
+			public void invoke() {
+				final BlockBuilder currentBlock = parser.getContext().getCurrentBlock();
+				currentBlock.setType(BlockType.Expression);
+				currentBlock.setCodeGenerator(new ExpressionCodeGenerator());
+				parser.implicitExpression();
 			}
 		});
 	}
@@ -512,33 +511,157 @@ final class JavaCodeParserStatements {
 	}
 
 	protected void embeddedExpression() {
+		// First, verify the type of the block
+		parser.doAssert(JavaSymbolType.Transition);
+		final JavaSymbol transition = parser.getCurrentSymbol();
+		parser.nextToken();
 
+		if (parser.at(JavaSymbolType.Transition)) {
+			// Escaped "@"
+			parser.output(SpanKind.Code);
+
+			// Output "@" as hidden span
+			parser.accept(transition);
+			parser.getSpan().setCodeGenerator(SpanCodeGenerator.Null);
+			parser.output(SpanKind.Code);
+
+			parser.doAssert(JavaSymbolType.Transition);
+			parser.acceptAndMoveNext();
+			standardStatement();
+		}
+		else {
+			// Throw errors as necessary, but continue parsing
+			if (parser.at(JavaSymbolType.Keyword)) {
+				parser.getContext().onError(
+					parser.getCurrentLocation(),
+					RazorResources().getString("parseError.unexpected.keyword.after.at"),
+					JavaLanguageCharacteristics.getKeyword(parser.getCurrentSymbol().getKeyword().get())
+				);
+			}
+			else if (parser.at(JavaSymbolType.LeftBrace)) {
+				parser.getContext().onError(
+					parser.getCurrentLocation(),
+					RazorResources().getString("parseError.unexpected.nested.codeBlock")
+				);
+			}
+
+			// @( or @foo - Nested expression, parser a child block
+			parser.putCurrentBack();
+			parser.putBack(transition);
+
+			// Before exiting, add a marker span if necessary
+			parser.addMarkerSymbolIfNecessary();
+
+			parser.nestedBlock();
+		}
 	}
 
 	protected void standardStatement() {
+		while (!parser.isEndOfFile()) {
+			final int bookmark = parser.getCurrentLocation().getAbsoluteIndex();
+			final Iterable<JavaSymbol> read = parser.readWhile(new Delegates.IFunc1<JavaSymbol, Boolean>() {
+				@Override
+				public Boolean invoke(@Nullable final JavaSymbol sym) {
+					return sym != null
+						&& sym.getType() != JavaSymbolType.Semicolon
+						&& sym.getType() != JavaSymbolType.RazorCommentTransition
+						&& sym.getType() != JavaSymbolType.Transition
+						&& sym.getType() != JavaSymbolType.LeftBrace
+						&& sym.getType() != JavaSymbolType.LeftParenthesis
+						&& sym.getType() != JavaSymbolType.LeftBracket
+						&& sym.getType() != JavaSymbolType.RightBrace;
+				}
+			});
 
-	}
-	protected final Delegates.IAction1<Boolean> standardStatementDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			standardStatement();
+			if (parser.at(JavaSymbolType.LeftBrace) || parser.at(JavaSymbolType.LeftParenthesis) || parser.at(JavaSymbolType.LeftBracket)) {
+				parser.accept(read);
+				if (parser.balance(EnumSet.of(BalancingModes.AllowCommentsAndTemplates, BalancingModes.BacktrackOnFailure))) {
+					parser.optional(JavaSymbolType.RightBrace);
+				}
+				else {
+					// Recovery
+					parser.acceptUntil(JavaSymbolType.LessThan, JavaSymbolType.RightBrace);
+					return;
+				}
+			}
+			else if (parser.at(JavaSymbolType.Transition) && (parser.nextIs(JavaSymbolType.LessThan, JavaSymbolType.Colon))) {
+				parser.accept(read);
+				parser.output(SpanKind.Code);
+				parser.template();
+			}
+			else if (parser.at(JavaSymbolType.RazorCommentTransition)) {
+				parser.accept(read);
+				parser.razorComment();
+			}
+			else if (parser.at(JavaSymbolType.Semicolon)) {
+				parser.accept(read);
+				parser.acceptAndMoveNext();
+				return;
+			}
+			else if (parser.at(JavaSymbolType.RightBrace)) {
+				parser.accept(read);
+				return;
+			}
+			else {
+				parser.getContext().getSource().setPosition(bookmark);
+				parser.nextToken();
+				parser.acceptUntil(JavaSymbolType.LessThan, JavaSymbolType.RightBrace);
+			}
 		}
+	}
+	protected final Delegates.IAction standardStatementDelegate = new Delegates.IAction() {
+		@Override
+		public void invoke() { standardStatement(); }
 	};
 
 	protected void codeBlock(@Nonnull final Block block) {
-
+		codeBlock(true, block);
 	}
 
 	protected void codeBlock(final boolean acceptTerminatingBrace, @Nonnull final Block block) {
+		parser.ensureCurrent();
+		while (!parser.isEndOfFile() && !parser.at(JavaSymbolType.RightBrace)) {
+			// Parse a statement, then return here
+			statement();
+			parser.ensureCurrent();
+		}
 
+		if (!parser.isEndOfFile()) {
+			parser.getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), '}', '{');
+		}
+		else if (acceptTerminatingBrace) {
+			parser.doAssert(JavaSymbolType.RightBrace);
+			parser.getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.SetOfNone);
+			parser.acceptAndMoveNext();
+		}
 	}
 
-	protected void handleKeyword(final boolean topLevel, @Nonnull final Delegates.IAction1<Boolean> fallback) {
+	protected void handleKeyword(final boolean topLevel, @Nonnull final Delegates.IAction fallback) {
+		if (Debug.isAssertEnabled())
+			assert (parser.getCurrentSymbol().getType() == JavaSymbolType.Keyword && parser.getCurrentSymbol().getKeyword().isPresent());
 
+		if (parser.getCurrentSymbol().getKeyword().isPresent() && parser.keywordParsers.containsKey(parser.getCurrentSymbol().getKeyword().get())) {
+			final Delegates.IAction1<Boolean> handler = parser.keywordParsers.get(parser.getCurrentSymbol().getKeyword().get());
+			handler.invoke(topLevel);
+		}
+		else {
+			fallback.invoke();
+		}
 	}
 
 	protected Iterable<JavaSymbol> skipToNextImportantToken() {
-		return null;
+		while (!parser.isEndOfFile()) {
+			final Iterable<JavaSymbol> ws = parser.readWhile(JavaCodeParser.isSpacingToken(true, true));
+			if (parser.at(JavaSymbolType.RazorCommentTransition)) {
+				parser.accept(ws);
+				parser.getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.Any);
+				parser.razorComment();
+			}
+			else {
+				return ws;
+			}
+		}
+		return Collections.emptyList();
 	}
 
 
