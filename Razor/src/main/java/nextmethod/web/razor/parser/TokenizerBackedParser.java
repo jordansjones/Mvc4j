@@ -3,7 +3,6 @@ package nextmethod.web.razor.parser;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
@@ -78,7 +77,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected TSymbol getCurrentSymbol() {
-		return tokenizer.getCurrent();
+		return getTokenizer().getCurrent();
 	}
 
 	protected SourceLocation getCurrentLocation() {
@@ -86,7 +85,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected boolean isEndOfFile() {
-		return tokenizer.isEndOfFile();
+		return getTokenizer().isEndOfFile();
 	}
 
 	protected abstract LanguageCharacteristics<TTokenizer, TSymbol, TSymbolType> getLanguage();
@@ -113,7 +112,7 @@ public abstract class TokenizerBackedParser<
 
 	protected boolean nextToken() {
 		previousSymbol = getCurrentSymbol();
-		return tokenizer.next();
+		return getTokenizer().next();
 	}
 
 	// Helpers
@@ -149,14 +148,18 @@ public abstract class TokenizerBackedParser<
 		}
 	}
 
-	@TODO
 	protected boolean balance(@Nonnull final EnumSet<BalancingModes> mode) {
 		final TSymbolType left = getCurrentSymbol().getType();
 		final TSymbolType right = getLanguage().flipBracket(left);
 		final SourceLocation start = getCurrentLocation();
 		acceptAndMoveNext();
 		if (isEndOfFile() && !mode.contains(BalancingModes.NoErrorOnFailure)) {
-//			getContext().onError(start,)
+			getContext().onError(
+				start,
+				RazorResources().getString("parseError.expected.closeBracket.before.eof"),
+				getLanguage().getSample(left),
+				getLanguage().getSample(right)
+			);
 		}
 		return balance(mode, left, right, start);
 	}
@@ -192,7 +195,12 @@ public abstract class TokenizerBackedParser<
 
 			if (nesting > 0) {
 				if (!mode.contains(BalancingModes.NoErrorOnFailure)) {
-//					getContext().onError()
+					getContext().onError(
+						start,
+						RazorResources().getString("parseError.expected.closeBracket.before.eof"),
+						getLanguage().getSample(left),
+						getLanguage().getSample(right)
+					);
 				}
 				if (mode.contains(BalancingModes.BacktrackOnFailure)) {
 					getContext().getSource().setPosition(startPosition);
@@ -421,8 +429,12 @@ public abstract class TokenizerBackedParser<
 		return found;
 	}
 
+	@SuppressWarnings("SimplifiableIfStatement")
 	protected boolean ensureCurrent() {
-		return getCurrentSymbol() != null || nextToken();
+		if (getCurrentSymbol() == null) {
+			return nextToken();
+		}
+		return true;
 	}
 
 	protected void acceptWhile(@Nonnull final TSymbolType type) {

@@ -9,6 +9,7 @@ import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.text.TextChange;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class Block extends SyntaxTreeNode {
 		}
 	}
 
-	Block(@Nonnull final BlockType type, @Nonnull final Collection<SyntaxTreeNode> contents, @Nonnull final IBlockCodeGenerator generator) {
+	Block(@Nonnull final BlockType type, @Nonnull final Collection<SyntaxTreeNode> contents, @Nullable final IBlockCodeGenerator generator) {
 		this.type = type;
 		this.name = type.name();
 		this.children = contents;

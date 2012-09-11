@@ -606,6 +606,7 @@ final class JavaCodeParserStatements {
 				parser.getContext().getSource().setPosition(bookmark);
 				parser.nextToken();
 				parser.acceptUntil(JavaSymbolType.LessThan, JavaSymbolType.RightBrace);
+				return;
 			}
 		}
 	}

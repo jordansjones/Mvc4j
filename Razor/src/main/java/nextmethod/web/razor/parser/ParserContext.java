@@ -67,6 +67,10 @@ public class ParserContext {
 		this.errors = Lists.newArrayList();
 	}
 
+	public ParserBase getActiveParser() {
+		return activeParser;
+	}
+
 	public ParserBase getMarkupParser() {
 		return this.markupParser;
 	}
@@ -93,6 +97,10 @@ public class ParserContext {
 
 	public boolean isDesignTimeMode() {
 		return designTimeMode;
+	}
+
+	public void setDesignTimeMode(final boolean designTimeMode) {
+		this.designTimeMode = designTimeMode;
 	}
 
 	public EnumSet<AcceptedCharacters> getLastAcceptedCharacters() {

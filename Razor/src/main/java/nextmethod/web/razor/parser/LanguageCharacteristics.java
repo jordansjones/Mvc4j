@@ -1,10 +1,12 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.collect.Lists;
+import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 import nextmethod.base.KeyValue;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
+import nextmethod.web.razor.text.SeekableTextReader;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.text.SourceLocationTracker;
 import nextmethod.web.razor.tokenizer.Tokenizer;
@@ -14,6 +16,7 @@ import nextmethod.web.razor.tokenizer.symbols.SymbolBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 
 // TODO
@@ -44,9 +47,18 @@ public abstract class LanguageCharacteristics<
 		return tokenizeString(SourceLocation.Zero, content);
 	}
 
+	@TODO("This should use an Iterator instead of a List")
 	public Iterable<TSymbol> tokenizeString(@Nonnull final SourceLocation start, @Nonnull final String input) {
-		// TODO
-		return null;
+		final List<TSymbol> results = Lists.newArrayList();
+		try (SeekableTextReader reader = new SeekableTextReader(input)) {
+			final TTokenizer tok = createTokenizer(reader);
+			TSymbol sym;
+			while ((sym = tok.nextSymbol()) != null) {
+				sym.offsetStart(start);
+				results.add(sym);
+			}
+		}
+		return results;
 	}
 
 	public boolean isWhiteSpace(@Nonnull final TSymbol symbol) {

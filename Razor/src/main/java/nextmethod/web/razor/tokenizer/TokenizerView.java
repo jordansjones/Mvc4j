@@ -1,5 +1,6 @@
 package nextmethod.web.razor.tokenizer;
 
+import nextmethod.base.Debug;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 import nextmethod.web.razor.tokenizer.symbols.SymbolBase;
@@ -29,21 +30,23 @@ public class TokenizerView<
 	}
 
 	public void putBack(@Nonnull final TSymbol symbol) {
-		final ITextDocument source = getSource();
-		assert source.getPosition() == symbol.getStart().getAbsoluteIndex() + symbol.getContent().length();
+		if (Debug.isAssertEnabled())
+			assert getSource().getPosition() == (symbol.getStart().getAbsoluteIndex() + symbol.getContent().length());
 
-		if (source.getPosition() != symbol.getStart().getAbsoluteIndex() + symbol.getContent().length()) {
+		if (getSource().getPosition() != symbol.getStart().getAbsoluteIndex() + symbol.getContent().length()) {
 			// Passed the symbol
 			throw new UnsupportedOperationException(String.format(
 				RazorResources().getString("tokenizerView.cannotPutBack"),
 				symbol.getStart().getAbsoluteIndex() + symbol.getContent().length(),
-				source.getPosition()
+				getSource().getPosition()
 			));
 		}
 
-		source.setPosition(source.getPosition() - symbol.getContent().length());
+		int position = getSource().getPosition();
+		position -= symbol.getContent().length();
+		getSource().setPosition(position);
 		current = null;
-		endOfFile = source.getPosition() >= source.getLength();
+		endOfFile = getSource().getPosition() >= getSource().getLength();
 		tokenizer.reset();
 	}
 

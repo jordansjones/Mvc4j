@@ -36,7 +36,7 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSymbol, JavaSymbolType> {
 
 	static final int UsingKeywordLength = 5;
-	static final ImmutableSet<String> DefaultKeywords = ImmutableSet.<String>builder()
+	public static final ImmutableSet<String> DefaultKeywords = ImmutableSet.<String>builder()
 		.add("if")
 		.add("do")
 		.add("try")
@@ -66,6 +66,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	protected final JavaCodeParserDirectives parserDirectives;
 
 	public JavaCodeParser() {
+		super();
 		this.keywords = Sets.newHashSet();
 		this.parserStatements = new JavaCodeParserStatements(this);
 		this.parserDirectives = new JavaCodeParserDirectives(this);
