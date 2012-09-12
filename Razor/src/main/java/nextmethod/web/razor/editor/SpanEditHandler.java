@@ -120,11 +120,11 @@ public class SpanEditHandler {
 	public String toString() {
 		return String.format(
 			"%s;Accepts:%s%s",
-			getClass().getName(),
+			getClass().getSimpleName(),
 			joiner.join(acceptedCharacters),
-			editorHints == EnumSet.of(EditorHints.None)
+			editorHints == null ? "" : (editorHints == EnumSet.of(EditorHints.None)
 				? ""
-				: (";Hints:" + joiner.join(editorHints))
+				: (";Hints:" + joiner.join(editorHints)))
 		);
 	}
 
@@ -134,8 +134,8 @@ public class SpanEditHandler {
 		if (!(o instanceof SpanEditHandler)) return false;
 
 		SpanEditHandler that = (SpanEditHandler) o;
-		return getAcceptedCharacters() == that.getAcceptedCharacters()
-			&& getEditorHints() == that.getEditorHints();
+		return Objects.equals(getAcceptedCharacters(), that.getAcceptedCharacters())
+			&& Objects.equals(getEditorHints(), that.getEditorHints());
 	}
 
 	@Override

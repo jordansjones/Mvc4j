@@ -74,11 +74,12 @@ public class Span extends SyntaxTreeNode {
 			.append(kind)
 			.append(String.format(" Span at %s::%d - [%s]", start, getLength(), content))
 			.append(" Edit: <")
-			.append(editHandler.toString())
+			.append(editHandler == null ? "null" : editHandler.toString())
 			.append(">")
 			.append(" Gen: <")
 			.append(codeGenerator.toString())
-			.append("> {")
+			.append("> ")
+			.append("{")
 			.append(SymbolGroupJoiner.join(getSymbolGroupCounts()))
 			.append("}")
 			.toString();
@@ -109,7 +110,7 @@ public class Span extends SyntaxTreeNode {
 		final String[] ret = new String[counts.size()];
 		int i = 0;
 		for (Multiset.Entry<Class<?>> entry : counts.entrySet()) {
-			ret[i++] = String.format("%s:%d", entry.getElement().getName(), entry.getCount());
+			ret[i++] = String.format("%s:%d", entry.getElement().getSimpleName(), entry.getCount());
 		}
 
 		return ret;
@@ -157,12 +158,22 @@ public class Span extends SyntaxTreeNode {
 		return symbols;
 	}
 
+	@Nullable
 	public Span getPrevious() {
 		return previous;
 	}
 
+	void setPrevious(@Nullable final Span s) {
+		previous = s;
+	}
+
+	@Nullable
 	public Span getNext() {
 		return next;
+	}
+
+	void setNext(@Nullable final Span s) {
+		next = s;
 	}
 
 	public SpanEditHandler getEditHandler() {

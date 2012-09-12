@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
+import nextmethod.collections.IterableIterator;
 import nextmethod.web.razor.editor.SpanEditHandler;
 import nextmethod.web.razor.generator.RazorCommentCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
@@ -340,7 +341,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected IDisposable pushSpanConfig(@Nullable final Delegates.IAction1<SpanBuilder> newConfig) {
-		return pushSpanConfig(newConfig == null ? (Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>>)null : new Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>>() {
+		return pushSpanConfig(newConfig == null ? null : new Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>>() {
 			@Override
 			public void invoke(@Nullable final SpanBuilder input1, @Nullable final Delegates.IAction1<SpanBuilder> input2) {
 				newConfig.invoke(input1);
@@ -525,16 +526,31 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected void acceptWhile(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
-		accept(readWhile(condition));
+		accept(readWhileLazy(condition));
 	}
 
 	protected Iterable<TSymbol> readWhile(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
-		final List<TSymbol> results = Lists.newArrayList();
-		while (ensureCurrent() && Boolean.TRUE.equals(condition.invoke(getCurrentSymbol()))) {
-			results.add(getCurrentSymbol());
-			nextToken();
-		}
-		return results;
+		return Lists.newArrayList(readWhileLazy(condition));
+	}
+
+	Iterable<TSymbol> readWhileLazy(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
+		return new IterableIterator<TSymbol>() {
+
+			private boolean isFirst = true;
+
+			@Override
+			protected TSymbol computeNext() {
+				while(ensureCurrent() && Boolean.TRUE.equals(condition.invoke(getCurrentSymbol()))) {
+					if (!isFirst) {
+						nextToken();
+					}
+					isFirst = false;
+					return getCurrentSymbol();
+
+				}
+				return endOfData();
+			}
+		};
 	}
 
 	protected TSymbol acceptWhiteSpaceInLines() {

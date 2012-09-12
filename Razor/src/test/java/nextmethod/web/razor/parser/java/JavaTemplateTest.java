@@ -1,6 +1,5 @@
 package nextmethod.web.razor.parser.java;
 
-import nextmethod.base.SystemHelpers;
 import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
@@ -39,7 +38,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void testParseBlockHandlesSingleLineTemplate() {
 		parseBlockTest(
-			"{ var foo = @: bar" + SystemHelpers.newLine() + "; }",
+			"{ var foo = @: bar\r\n; }",
 			new StatementBlock(
 				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
 				getFactory().code(" var foo = ").asStatement().build(),

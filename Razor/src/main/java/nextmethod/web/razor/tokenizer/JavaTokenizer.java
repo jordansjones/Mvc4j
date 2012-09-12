@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
+import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.web.razor.State;
 import nextmethod.web.razor.parser.ParserHelpers;
@@ -100,7 +101,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 			takeUntil(Predicates.not(ParserHelpers.IsWhitespacePredicate));
 			return stay(endSymbol(JavaSymbolType.WhiteSpace));
 		}
-		if (currentChar != '@' && JavaHelpers.isIdentifierStart(currentChar)) {
+		if (JavaHelpers.isIdentifierStart(currentChar)) {
 			return identifier();
 		}
 		if (Character.isDigit(currentChar)) {
@@ -400,7 +401,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 	}
 
 	private StateResult identifier() {
-		assert JavaHelpers.isIdentifierStart(getCurrentChar());
+		if (Debug.isAssertEnabled()) assert JavaHelpers.isIdentifierStart(getCurrentChar());
 		takeCurrent();
 		takeUntil(Predicates.not(JavaHelpers.IsIdentifierPartPredicate));
 		JavaSymbol sym = null;
