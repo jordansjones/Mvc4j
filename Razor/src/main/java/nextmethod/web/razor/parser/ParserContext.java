@@ -75,7 +75,11 @@ public class ParserContext {
 		return this.markupParser;
 	}
 
-	public List<RazorError> getErrors() {
+    public ParserBase getCodeParser() {
+        return codeParser;
+    }
+
+    public List<RazorError> getErrors() {
 		return this.errors;
 	}
 
@@ -93,6 +97,10 @@ public class ParserContext {
 
 	public boolean isWhiteSpaceIsSignificantToAncestorBlock() {
 		return whiteSpaceIsSignificantToAncestorBlock;
+	}
+
+	public void setWhiteSpaceIsSignificantToAncestorBlock(final boolean whiteSpaceIsSignificantToAncestorBlock) {
+		this.whiteSpaceIsSignificantToAncestorBlock = whiteSpaceIsSignificantToAncestorBlock;
 	}
 
 	public boolean isDesignTimeMode() {

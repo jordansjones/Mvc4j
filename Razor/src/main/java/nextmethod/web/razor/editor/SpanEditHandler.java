@@ -110,6 +110,10 @@ public class SpanEditHandler {
 		this.editorHints = editorHints;
 	}
 
+	public void setEditorHints(@Nonnull final EditorHints editorHint) {
+		setEditorHints(EnumSet.of(editorHint));
+	}
+
 	public Delegates.IFunc1<String, Iterable<ISymbol>> getTokenizer() {
 		return tokenizer;
 	}

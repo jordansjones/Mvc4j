@@ -1,13 +1,14 @@
 package nextmethod.base;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class KeyValue<A, B> {
 
 	private final A key;
 	private final B value;
 
-	public KeyValue(@Nonnull final A key, @Nonnull final B value) {
+	public KeyValue(@Nonnull final A key, @Nullable final B value) {
 		this.key = key;
 		this.value = value;
 	}
@@ -17,20 +18,20 @@ public class KeyValue<A, B> {
 		return key;
 	}
 
-	@Nonnull
+	@Nullable
 	public B getValue() {
 		return value;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) return true;
-		if (!(o instanceof KeyValue)) return false;
+		if (o == null || getClass() != o.getClass()) return false;
 
-		KeyValue keyValue = (KeyValue) o;
+		final KeyValue keyValue = (KeyValue) o;
 
 		if (!key.equals(keyValue.key)) return false;
-		if (!value.equals(keyValue.value)) return false;
+		if (value != null ? !value.equals(keyValue.value) : keyValue.value != null) return false;
 
 		return true;
 	}
@@ -38,7 +39,7 @@ public class KeyValue<A, B> {
 	@Override
 	public int hashCode() {
 		int result = key.hashCode();
-		result = 31 * result + value.hashCode();
+		result = 31 * result + (value != null ? value.hashCode() : 0);
 		return result;
 	}
 
@@ -47,7 +48,7 @@ public class KeyValue<A, B> {
 		return this.getClass().getSimpleName() + "{key=" + key + ", value=" + value + '}';
 	}
 
-	public static <A, B> KeyValue<A, B> of(@Nonnull final A a, @Nonnull final B b) {
+	public static <A, B> KeyValue<A, B> of(@Nonnull final A a, @Nullable final B b) {
 		return new KeyValue<>(a, b);
 	}
 

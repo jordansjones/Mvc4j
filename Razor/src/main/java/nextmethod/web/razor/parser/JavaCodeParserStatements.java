@@ -627,7 +627,7 @@ final class JavaCodeParserStatements {
 			parser.ensureCurrent();
 		}
 
-		if (!parser.isEndOfFile()) {
+		if (parser.isEndOfFile()) {
 			parser.getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), '}', '{');
 		}
 		else if (acceptTerminatingBrace) {

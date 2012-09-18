@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.syntaxtree;
 
+import nextmethod.web.razor.framework.SpanConstructor;
 import nextmethod.web.razor.generator.BlockCodeGenerator;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
 

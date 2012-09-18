@@ -81,6 +81,10 @@ public abstract class TokenizerBackedParser<
 		return getTokenizer().getCurrent();
 	}
 
+	protected boolean isCurrentSymbol(@Nonnull final TSymbolType type) {
+		return getCurrentSymbol().getType() == type;
+	}
+
 	protected SourceLocation getCurrentLocation() {
 		return (isEndOfFile() || getCurrentSymbol() == null) ? getContext().getSource().getLocation() : getCurrentSymbol().getStart();
 	}
@@ -536,16 +540,16 @@ public abstract class TokenizerBackedParser<
 	Iterable<TSymbol> readWhileLazy(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
 		return new IterableIterator<TSymbol>() {
 
-			private boolean isFirst = true;
-
-			@Override
+			@SuppressWarnings("LoopStatementThatDoesntLoop")
+            @Override
 			protected TSymbol computeNext() {
 				while(ensureCurrent() && Boolean.TRUE.equals(condition.invoke(getCurrentSymbol()))) {
-					if (!isFirst) {
-						nextToken();
-					}
-					isFirst = false;
-					return getCurrentSymbol();
+                    try {
+					    return getCurrentSymbol();
+                    }
+                    finally {
+                        nextToken();
+                    }
 
 				}
 				return endOfData();
