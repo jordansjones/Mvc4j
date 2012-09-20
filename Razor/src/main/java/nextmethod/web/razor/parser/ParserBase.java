@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser;
 
+import nextmethod.base.Delegates;
 import nextmethod.base.KeyValue;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.text.SourceLocation;
@@ -32,6 +33,15 @@ public abstract class ParserBase {
 
 	public abstract void parseBlock();
 
+	public Delegates.IAction createParseBlockDelegate() {
+		return new Delegates.IAction() {
+			@Override
+			public void invoke() {
+				parseBlock();
+			}
+		};
+	}
+
 	/**
 	 * Markup Parsers need the parseDocument method since
 	 * the markup parser is the first parser to hit the document and the
@@ -40,6 +50,15 @@ public abstract class ParserBase {
 	public void parseDocument() {
 		assert isMarkerParser();
 		throw new UnsupportedOperationException(RazorResources().getString("parserIsNotAMarkupParser"));
+	}
+
+	public Delegates.IAction createParseDocumentDelegate() {
+		return new Delegates.IAction() {
+			@Override
+			public void invoke() {
+				parseDocument();
+			}
+		};
 	}
 
 	/**
