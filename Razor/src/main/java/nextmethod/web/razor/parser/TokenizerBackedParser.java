@@ -232,7 +232,8 @@ public abstract class TokenizerBackedParser<
 		});
 	}
 
-	protected boolean nextIs(@Nonnull final TSymbolType... types) {
+	@SafeVarargs
+	protected final boolean nextIs(@Nonnull final TSymbolType... types) {
 		final List<TSymbolType> tSymbolTypes = Lists.newArrayList(types);
 		return nextIs(new Delegates.IFunc1<TSymbol, Boolean>() {
 			@Override
@@ -515,7 +516,8 @@ public abstract class TokenizerBackedParser<
 		});
 	}
 
-	protected void acceptUntil(@Nonnull final TSymbolType... types) {
+	@SafeVarargs
+	protected final void acceptUntil(@Nonnull final TSymbolType... types) {
 		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
 			@Override
 			public Boolean invoke(@Nullable final TSymbol tSymbol) {

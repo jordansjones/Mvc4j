@@ -74,10 +74,14 @@ public class SpanConstructor {
 	}
 
 	public SpanConstructor accepts(final AcceptedCharacters accepted) {
+		return accepts(EnumSet.of(accepted));
+	}
+
+	public SpanConstructor accepts(final EnumSet<AcceptedCharacters> acceptedCharacters) {
 		return this.withHandler(new Delegates.IAction1<SpanEditHandler>() {
 			@Override
 			public void invoke(SpanEditHandler input) {
-				input.setAcceptedCharacters(EnumSet.of(accepted));
+				input.setAcceptedCharacters(acceptedCharacters);
 			}
 		});
 	}

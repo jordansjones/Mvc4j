@@ -4,16 +4,14 @@ import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
 import nextmethod.web.razor.parser.JavaLanguageCharacteristics;
-import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
-import nextmethod.web.razor.parser.syntaxtree.ExpressionBlock;
-import nextmethod.web.razor.parser.syntaxtree.MarkupBlock;
-import nextmethod.web.razor.parser.syntaxtree.StatementBlock;
-import nextmethod.web.razor.parser.syntaxtree.TemplateBlock;
+import nextmethod.web.razor.parser.syntaxtree.*;
+import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
 import org.junit.Test;
 
 import java.util.EnumSet;
 
+import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 import static org.junit.Assert.fail;
 
 /**
@@ -56,7 +54,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 								getFactory().codeTransition().build(),
 								getFactory().code("item")
 									.asImplicitExpression(JavaCodeParser.DefaultKeywords)
-									.accepts(AcceptedCharacters.WhiteSpace).build()
+									.accepts(AcceptedCharacters.NonWhiteSpace).build()
 							),
 							getFactory().markup("</p>").accepts(AcceptedCharacters.None).build()
 						)
@@ -131,7 +129,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void testParseBlockHandlesSimpleTemplateInImplicitExpressionParens() {
 		parseBlockTest(
-			"Html.Repeate(10," + testTemplateCode + ")",
+			"Html.Repeat(10," + testTemplateCode + ")",
 			new ExpressionBlock(
 				getFactory().code("Html.Repeat(10, ")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords).build(),
@@ -143,4 +141,25 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		);
 	}
 
+	@Test
+	public void testParseBlockProducesErrorButCorrectlyParsesNestedTemplateInImplicitExpressionParens() {
+		parseBlockTest(
+			"Html.Repeat(10," + testNestedTemplateCode + ")",
+			new ExpressionBlock(
+				getFactory().code("Html.Repeat(10, ").asImplicitExpression(JavaCodeParser.DefaultKeywords).build(),
+				testNestedTemplate(),
+				getFactory().code(")")
+					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
+					.accepts(AcceptedCharacters.NonWhiteSpace).build()
+			),
+			getNestedTemplateError(42)
+		);
+	}
+
+	private static RazorError getNestedTemplateError(int charIndex) {
+		return new RazorError(
+			RazorResources().getString("parseError.inlineMarkup.blocks.cannot.be.nested"),
+			new SourceLocation(charIndex, 0, charIndex)
+		);
+	}
 }
