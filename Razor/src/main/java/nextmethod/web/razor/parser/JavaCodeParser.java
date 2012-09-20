@@ -199,7 +199,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 
 	@SuppressWarnings("unchecked")
 	private void afterTransition() {
-		try (final IDisposable disposable = pushSpanConfig(defaultSpanConfigDelegate)) {
+		try (final IDisposable ignored = pushSpanConfig(defaultSpanConfigDelegate)) {
 			ensureCurrent();
 			try {
 				// What type of block is this?
@@ -237,17 +237,24 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 				}
 
 				// Invalid character
-				final BlockBuilder currentBlock = getContext().getCurrentBlock();
-				currentBlock.setType(BlockType.Expression);
-				currentBlock.setCodeGenerator(new ExpressionCodeGenerator());
+				getContext().getCurrentBlock().setType(BlockType.Expression);
+				getContext().getCurrentBlock().setCodeGenerator(new ExpressionCodeGenerator());
+
 				addMarkerSymbolIfNecessary();
+
+				// Code Generator
 				getSpan().setCodeGenerator(new ExpressionCodeGenerator());
-				final ImplicitExpressionEditorHandler handler = new ImplicitExpressionEditorHandler(getLanguage().createTokenizeStringDelegate(), DefaultKeywords, true);
+				// Edit Handler
+				final ImplicitExpressionEditorHandler handler = new ImplicitExpressionEditorHandler(
+					getLanguage().createTokenizeStringDelegate(),
+					DefaultKeywords,
+					isNested()
+				);
 				handler.setAcceptedCharacters(EnumSet.of(AcceptedCharacters.NonWhiteSpace));
 				getSpan().setEditHandler(handler);
 
 				if (at(JavaSymbolType.WhiteSpace) || at(JavaSymbolType.NewLine)) {
-					getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.unexpected.character.at.start.of.codeBlock"));
+					getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.unexpected.whiteSpace.at.start.of.codeBlock"));
 				}
 				else if (isEndOfFile()) {
 					getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.unexpected.endOfFile.at.start.of.codeBlock"));
@@ -529,6 +536,30 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		initialize(getSpan());
 		this.isNested = wasNested;
 		nextToken();
+	}
+
+	@Override
+	protected boolean isAtEmbeddedTransition(boolean allowTemplatesAndComments, boolean allowTransitions) {
+		// No embedded transitions in Java, so ignore that param
+		return allowTemplatesAndComments
+			&& (
+			(
+				getLanguage().isTransition(getCurrentSymbol())
+				&& nextIs(JavaSymbolType.LessThan, JavaSymbolType.Colon)
+			)
+			|| getLanguage().isCommentStart(getCurrentSymbol())
+		);
+	}
+
+	@Override
+	protected void handleEmbeddedTransition() {
+		if (getLanguage().isTransition(getCurrentSymbol())) {
+			putCurrentBack();
+			template();
+		}
+		else if (getLanguage().isCommentStart(getCurrentSymbol())) {
+			razorComment();
+		}
 	}
 
 	private void parseWithOtherParser(@Nonnull final Delegates.IAction1<ParserBase> parserAction) {
