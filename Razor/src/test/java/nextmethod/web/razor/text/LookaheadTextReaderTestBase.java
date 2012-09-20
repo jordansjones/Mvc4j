@@ -119,7 +119,8 @@ public abstract class LookaheadTextReaderTestBase {
 		reader.cancelBacktrack();
 	}
 
-	protected Func<StringBuilder, LookaheadTextReader> lookAhead(final Func<StringBuilder, LookaheadTextReader>... readerCommands) {
+	@SafeVarargs
+	protected final Func<StringBuilder, LookaheadTextReader> lookAhead(final Func<StringBuilder, LookaheadTextReader>... readerCommands) {
 		return new Func<StringBuilder, LookaheadTextReader> () {
 			@Override
 			public void apply(@Nonnull StringBuilder builder, @Nonnull LookaheadTextReader reader) {
@@ -130,7 +131,8 @@ public abstract class LookaheadTextReaderTestBase {
 		};
 	}
 
-	protected void runLookaheadTest(final String input, final String expected, final Func<StringBuilder, LookaheadTextReader>... readerCommands) {
+	@SafeVarargs
+	protected final void runLookaheadTest(final String input, final String expected, final Func<StringBuilder, LookaheadTextReader>... readerCommands) {
 		final StringBuilder sb = new StringBuilder();
 		try(LookaheadTextReader reader = createReader(input)) {
 			runAll(readerCommands, sb, reader);
