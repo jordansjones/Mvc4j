@@ -28,7 +28,7 @@ public class DisposableActionTest {
 	}
 
 	@Test
-	public void actionIsExectuedOnImplicitDispose() {
+	public void actionIsExecutedOnImplicitDispose() {
 		final AtomicBoolean called = new AtomicBoolean(false);
 
 		try (DisposableAction action = new DisposableAction(createAction(called))) {

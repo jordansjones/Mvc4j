@@ -69,7 +69,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	}
 
 	@Test
-	public void testParseBlockHandlesSingleLineTemplate() {
+	public void parseBlockHandlesSingleLineTemplate() {
 		parseBlockTest(
 			"{ var foo = @: bar\r\n; }",
 			new StatementBlock(
@@ -91,7 +91,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	}
 
 	@Test
-	public void testParseBlockHandlesSingleLineImmediatelyFollowingStatementChar() {
+	public void parseBlockHandlesSingleLineImmediatelyFollowingStatementChar() {
 		parseBlockTest(
 			"{i@: bar\r\n}",
 			new StatementBlock(
@@ -113,7 +113,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	}
 
 	@Test
-	public void testParseBlockHandlesSimpleTemplateInExplicitExpresionParens() {
+	public void parseBlockHandlesSimpleTemplateInExplicitExpresionParens() {
 		parseBlockTest(
 			"(Html.Repeat(10," + testTemplateCode + "))",
 			new ExpressionBlock(
@@ -127,7 +127,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	}
 
 	@Test
-	public void testParseBlockHandlesSimpleTemplateInImplicitExpressionParens() {
+	public void parseBlockHandlesSimpleTemplateInImplicitExpressionParens() {
 		parseBlockTest(
 			"Html.Repeat(10," + testTemplateCode + ")",
 			new ExpressionBlock(
@@ -142,7 +142,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	}
 
 	@Test
-	public void testParseBlockProducesErrorButCorrectlyParsesNestedTemplateInImplicitExpressionParens() {
+	public void parseBlockProducesErrorButCorrectlyParsesNestedTemplateInImplicitExpressionParens() {
 		parseBlockTest(
 			"Html.Repeat(10," + testNestedTemplateCode + ")",
 			new ExpressionBlock(

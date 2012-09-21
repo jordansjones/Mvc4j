@@ -26,7 +26,7 @@ import static org.junit.Assert.assertSame;
 public class BlockTest {
 
 	@Test
-	public void testConstructorWithBlockBuilderSetsParent() {
+	public void constructorWithBlockBuilderSetsParent() {
 		final BlockBuilder blockBuilder = new BlockBuilder().setType(BlockType.Comment);
 		final Span span = new SpanBuilder().setKind(SpanKind.Code).build();
 
@@ -38,7 +38,7 @@ public class BlockTest {
 	}
 
 	@Test
-	public void testConstructorCopiesBasicValuesFromBlockBuilder() {
+	public void constructorCopiesBasicValuesFromBlockBuilder() {
 		final Block block = new BlockBuilder().setName("Foo").setType(BlockType.Helper).build();
 
 		assertEquals("Foo", block.getName());
@@ -46,7 +46,7 @@ public class BlockTest {
 	}
 
 	@Test
-	public void testConstructorTransfersInstanceOfCodeGeneratorFromBlockBuilder() {
+	public void constructorTransfersInstanceOfCodeGeneratorFromBlockBuilder() {
 		final IBlockCodeGenerator expected = new ExpressionCodeGenerator();
 		final Block block = new BlockBuilder().setType(BlockType.Helper).setCodeGenerator(expected).build();
 
@@ -54,7 +54,7 @@ public class BlockTest {
 	}
 
 	@Test
-	public void testConstructorTransfersChildrenFromBlockBuilder() {
+	public void constructorTransfersChildrenFromBlockBuilder() {
 		final Span expected = new SpanBuilder().setKind(SpanKind.Code).build();
 		final BlockBuilder blockBuilder = new BlockBuilder().setType(BlockType.Functions);
 		blockBuilder.getChildren().add(expected);
@@ -65,7 +65,7 @@ public class BlockTest {
 	}
 
 	@Test
-	public void testLocateOwnerReturnsNullIfNoSpanReturnsTrueForOwnsSpan() {
+	public void locateOwnerReturnsNullIfNoSpanReturnsTrueForOwnsSpan() {
 		final SpanFactory factory = SpanFactory.createJavaHtml();
 		final Block block = new MarkupBlock(
 			factory.markup("Foo ").build(),
@@ -84,7 +84,7 @@ public class BlockTest {
 	}
 
 	@Test
-	public void testLocateOwnerReturnsNullIfChangeCrossesMultipleSpans() {
+	public void locateOwnerReturnsNullIfChangeCrossesMultipleSpans() {
 		final SpanFactory factory = SpanFactory.createJavaHtml();
 		final Block block = new MarkupBlock(
 			factory.markup("Foo ").build(),

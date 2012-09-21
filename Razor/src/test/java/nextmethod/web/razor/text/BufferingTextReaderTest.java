@@ -14,7 +14,7 @@ public class BufferingTextReaderTest extends LookaheadTextReaderTestBase {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void constractorRequiresNonNullSourceReader() {
+	public void constructorRequiresNonNullSourceReader() {
 		new BufferingTextReader(null);
 	}
 
