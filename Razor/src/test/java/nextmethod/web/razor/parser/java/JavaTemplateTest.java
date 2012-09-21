@@ -156,6 +156,94 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		);
 	}
 
+	@Test
+	public void parseBlockHandlesSimpleTemplateInStatementWithinCodeBlock() {
+		parseBlockTest(
+			"foreach(foo in Bar) { Html.ExecuteTemplate(foo," + testTemplateCode + "); }",
+			new StatementBlock(
+				getFactory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
+				testTemplate(),
+				getFactory().code("); }")
+					.asStatement()
+					.accepts(AcceptedCharacters.None).build()
+			)
+		);
+	}
+
+	@Test
+	public void parseBlockHandlesTwoTemplatesInStatementWithinCodeBlock() {
+		parseBlockTest(
+			"foreach(foo in Bar) { Html.ExecuteTemplate(foo," + testTemplateCode + "," + testTemplateCode + "); }",
+			new StatementBlock(
+				getFactory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
+				testTemplate(),
+				getFactory().code(", ").asStatement().build(),
+				testTemplate(),
+				getFactory().code("); }")
+					.asStatement()
+					.accepts(AcceptedCharacters.None).build()
+			)
+		);
+	}
+
+	@Test
+	public void parseBlockProducesErrorButCorrectlyParsesNestedTemplateInStatementWithinCodeBlock() {
+		parseBlockTest(
+			"foreach(foo in Bar) { Html.ExecuteTemplate(foo," + testNestedTemplateCode + "); }",
+			new StatementBlock(
+				getFactory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
+				testNestedTemplate(),
+				getFactory().code("); }")
+					.asStatement()
+					.accepts(AcceptedCharacters.None).build()
+			),
+			getNestedTemplateError(74)
+		);
+	}
+
+	@Test
+	public void parseBlockHandlesSimpleTemplateInStatementWithinStatementBlock() {
+		parseBlockTest(
+			"{ var foo = bar; Html.ExecuteTemplate(foo," + testTemplateCode + "); }",
+			new StatementBlock(
+				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				getFactory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
+				testTemplate(),
+				getFactory().code("); ").asStatement().build(),
+				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+			)
+		);
+	}
+
+	@Test
+	public void parseBlockHandlessTwoTemplatesInStatementWithinStatementBlock() {
+		parseBlockTest("{ var foo = bar; Html.ExecuteTemplate(foo," + testTemplateCode + "," + testTemplateCode + "); }",
+			new StatementBlock(
+				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				getFactory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
+				testTemplate(),
+				getFactory().code(", ").asStatement().build(),
+				testTemplate(),
+				getFactory().code("); ").asStatement().build(),
+				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+			)
+		);
+	}
+
+	@Test
+	public void parseBlockProducesErrorButCorrectlyParsesNestedTemplateInStatementWithinStatementBlock() {
+		parseBlockTest("{ var foo = bar; Html.ExecuteTemplate(foo," + testNestedTemplateCode + "); }",
+			new StatementBlock(
+				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				getFactory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
+				testNestedTemplate(),
+				getFactory().code("); ").asStatement().build(),
+				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+			),
+			getNestedTemplateError(69)
+		);
+	}
+
 	private static RazorError getNestedTemplateError(int charIndex) {
 		return new RazorError(
 			RazorResources().getString("parseError.inlineMarkup.blocks.cannot.be.nested"),
