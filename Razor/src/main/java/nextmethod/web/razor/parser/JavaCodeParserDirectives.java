@@ -7,12 +7,10 @@ import nextmethod.web.razor.generator.SpanCodeGenerator;
 import javax.annotation.Nonnull;
 
 // TODO
-final class JavaCodeParserDirectives {
-
-	private final JavaCodeParser parser;
+final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 
 	JavaCodeParserDirectives(final JavaCodeParser parser) {
-		this.parser = parser;
+		super(parser);
 		setupDirectives();
 	}
 
@@ -27,8 +25,8 @@ final class JavaCodeParserDirectives {
 
 	protected void mapDirectives(final Delegates.IAction handler, final String... directives) {
 		for (String directive : directives) {
-			parser.directiveParsers.put(directive, handler);
-			parser.keywords.add(directive);
+			delegate.directiveParsers.put(directive, handler);
+			delegate.keywords.add(directive);
 		}
 	}
 
