@@ -31,6 +31,13 @@ abstract class JavaCodeParserDelegate {
 		this.delegate = delegate;
 	}
 
+	private static String getSymbolName(@Nonnull final JavaSymbol sym) {
+		if (sym.getType() == JavaSymbolType.Keyword && sym.getKeyword().isPresent()) {
+			return JavaLanguageCharacteristics.getKeyword(sym.getKeyword().get());
+		}
+		return sym.getContent();
+	}
+
 	public boolean acceptIf(@Nonnull JavaKeyword keyword) {
 		return delegate.acceptIf(keyword);
 	}
@@ -379,5 +386,32 @@ abstract class JavaCodeParserDelegate {
 
 	public boolean nextToken() {
 		return delegate.nextToken();
+	}
+
+	static class Block {
+		private String name;
+		private SourceLocation start;
+
+		public Block(@Nonnull final String name, @Nonnull final SourceLocation start) {
+			this.name = name;
+			this.start = start;
+		}
+
+		public Block(@Nonnull final JavaSymbol symbol) {
+			this(getSymbolName(symbol), symbol.getStart());
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(final String name) {
+			this.name = name;
+		}
+
+		public SourceLocation getStart() {
+			return start;
+		}
+
 	}
 }

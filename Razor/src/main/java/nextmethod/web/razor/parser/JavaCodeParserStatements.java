@@ -149,7 +149,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		else if (at(JavaSymbolType.Identifier)) {
 			// using Identifier ==> Using Declaration
 			if (!topLevel) {
-				getContext().onError(block.start, RazorResources().getString("parseError.packageImportAndTypeAlias.cannot.exist.within.codeBlock"));
+				getContext().onError(block.getStart(), RazorResources().getString("parseError.packageImportAndTypeAlias.cannot.exist.within.codeBlock"));
 				standardStatement();
 			}
 			else {
@@ -663,39 +663,5 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		return Collections.emptyList();
 	}
 
-
-	static class Block {
-		private String name;
-		private SourceLocation start;
-
-		public Block(@Nonnull final String name, @Nonnull final SourceLocation start) {
-			this.name = name;
-			this.start = start;
-		}
-
-		public Block(@Nonnull final JavaSymbol symbol) {
-			this(getSymbolName(symbol), symbol.getStart());
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(final String name) {
-			this.name = name;
-		}
-
-		public SourceLocation getStart() {
-			return start;
-		}
-
-	}
-
-	private static String getSymbolName(@Nonnull final JavaSymbol sym) {
-		if (sym.getType() == JavaSymbolType.Keyword && sym.getKeyword().isPresent()) {
-			return JavaLanguageCharacteristics.getKeyword(sym.getKeyword().get());
-		}
-		return sym.getContent();
-	}
 
 }

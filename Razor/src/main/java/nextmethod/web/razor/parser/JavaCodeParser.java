@@ -176,7 +176,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		span.setCodeGenerator(new StatementCodeGenerator());
 	}
 
-	private final Delegates.IAction1<SpanBuilder> defaultSpanConfigDelegate = new Delegates.IAction1<SpanBuilder>() {
+	protected final Delegates.IAction1<SpanBuilder> defaultSpanConfigDelegate = new Delegates.IAction1<SpanBuilder>() {
 		@Override
 		public void invoke(@Nullable final SpanBuilder input) {
 			if (input != null) {

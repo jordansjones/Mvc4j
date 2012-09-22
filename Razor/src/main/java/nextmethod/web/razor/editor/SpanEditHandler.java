@@ -102,6 +102,14 @@ public class SpanEditHandler {
 		this.acceptedCharacters = acceptedCharacters;
 	}
 
+	public void setAcceptedCharacters(@Nonnull final AcceptedCharacters first, @Nullable final AcceptedCharacters... rest) {
+		setAcceptedCharacters(
+			rest == null || rest.length < 1
+				? EnumSet.of(first)
+				: EnumSet.of(first, rest)
+		);
+	}
+
 	public EnumSet<EditorHints> getEditorHints() {
 		return editorHints;
 	}
@@ -110,8 +118,12 @@ public class SpanEditHandler {
 		this.editorHints = editorHints;
 	}
 
-	public void setEditorHints(@Nonnull final EditorHints editorHint) {
-		setEditorHints(EnumSet.of(editorHint));
+	public void setEditorHints(@Nonnull final EditorHints first, @Nullable final EditorHints... rest) {
+		setEditorHints(
+			rest == null || rest.length < 1
+				? EnumSet.of(first)
+				: EnumSet.of(first, rest)
+		);
 	}
 
 	public Delegates.IFunc1<String, Iterable<ISymbol>> getTokenizer() {
