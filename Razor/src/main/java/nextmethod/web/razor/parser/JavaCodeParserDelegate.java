@@ -388,6 +388,10 @@ abstract class JavaCodeParserDelegate {
 		return delegate.nextToken();
 	}
 
+	void sectionBlock(@Nonnull String left, @Nonnull String right, boolean caseSensitive) {
+		delegate.sectionBlock(left, right, caseSensitive);
+	}
+
 	static class Block {
 		private String name;
 		private SourceLocation start;

@@ -300,7 +300,95 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 	};
 
 	protected void sectionDirective() {
-		throw new NotImplementedException();
+		final boolean nested = getContext().isWithin(BlockType.Section);
+		boolean errorReported = false;
+
+		// Set the block and span type
+		getContext().getCurrentBlock().setType(BlockType.Section);
+
+		// Verify we're on "section" and accept
+		assertDirective(SyntaxConstants.Java.SectionKeyword);
+		acceptAndMoveNext();
+
+		if (nested) {
+			getContext().onError(
+				getCurrentLocation(),
+				String.format(
+					RazorResources().getString("parseError.sections.cannot.be.nested"),
+					RazorResources().getString("sectionExample.java")
+				)
+			);
+			errorReported = true;
+		}
+
+		Iterable<JavaSymbol> ws = readWhile(isSpacingToken(true, false));
+
+		// Get the section name
+		String sectionName = "";
+		if (!required(JavaSymbolType.Identifier, true, RazorResources().getString("parseError.unexpected.character.at.section.name.start"))) {
+			if (!errorReported) {
+				errorReported = true;
+			}
+			putCurrentBack();
+			putBack(ws);
+			acceptWhile(isSpacingToken(false, false));
+		}
+		else {
+			accept(ws);
+			sectionName = getCurrentSymbol().getContent();
+			acceptAndMoveNext();
+		}
+		getContext().getCurrentBlock().setCodeGenerator(new SectionCodeGenerator(sectionName));
+
+		final SourceLocation errorLocation = getCurrentLocation();
+		ws = readWhile(isSpacingToken(true, false));
+
+		// Get the starting brace
+		final boolean sawStartingBrace = at(JavaSymbolType.LeftBrace);
+		if (!sawStartingBrace) {
+			if (!errorReported) {
+				errorReported = true;
+				getContext().onError(errorLocation, RazorResources().getString("parseError.missingOpenBraceAfterSection"));
+			}
+			putCurrentBack();
+			putBack(ws);
+			acceptWhile(isSpacingToken(false, false));
+			optional(JavaSymbolType.NewLine);
+			output(SpanKind.MetaCode);
+			completeBlock();
+			return;
+		}
+		else {
+			accept(ws);
+		}
+
+		// Set up edit handler
+		final AutoCompleteEditHandler editHandler = new AutoCompleteEditHandler(getLanguage().createTokenizeStringDelegate());
+		editHandler.setAutoCompleteAtEndOfSpan(true);
+
+		getSpan().setEditHandler(editHandler);
+		getSpan().accept(getCurrentSymbol());
+
+		// Output Metacode then switch to section parser
+		output(SpanKind.MetaCode);
+		sectionBlock("{", "}", true);
+
+		getSpan().setCodeGenerator(SpanCodeGenerator.Null);
+
+		// Check for the terminating "}"
+		if (!optional(JavaSymbolType.RightBrace)) {
+			editHandler.setAutoCompleteString("}");
+			getContext().onError(
+				getCurrentLocation(),
+				RazorResources().getString("parseError.expected.x"),
+				getLanguage().getSample(JavaSymbolType.RightBrace)
+			);
+		}
+		else {
+			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.None);
+		}
+		completeBlock(false, true);
+		output(SpanKind.MetaCode);
 	}
 	protected final Delegates.IAction sectionDirectiveDelegate = new Delegates.IAction() {
 		@Override

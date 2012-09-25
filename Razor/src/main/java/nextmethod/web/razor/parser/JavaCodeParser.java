@@ -517,7 +517,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		});
 	}
 
-	private void sectionBlock(@Nonnull final String left, @Nonnull final String right, final boolean caseSensitive) {
+	void sectionBlock(@Nonnull final String left, @Nonnull final String right, final boolean caseSensitive) {
 		parseWithOtherParser(new Delegates.IAction1<ParserBase>() {
 			@Override
 			public void invoke(@Nullable final ParserBase input) {
