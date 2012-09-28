@@ -6,14 +6,10 @@ import com.google.common.collect.Iterables;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.generator.*;
-import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
-import nextmethod.web.razor.parser.syntaxtree.Block;
-import nextmethod.web.razor.parser.syntaxtree.BlockType;
-import nextmethod.web.razor.parser.syntaxtree.SpanKind;
+import nextmethod.web.razor.parser.syntaxtree.*;
 import nextmethod.web.razor.text.LocationTagged;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
@@ -214,7 +210,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		}
 		else {
 			final SourceLocation bracketStart = getCurrentLocation();
-			if (!balance(EnumSet.of(BalancingModes.NoErrorOnFailure), JavaSymbolType.LeftParenthesis, JavaSymbolType.RightParenthesis, bracketStart)) {
+			if (!balance(BalancingModes.NoErrorOnFailure, JavaSymbolType.LeftParenthesis, JavaSymbolType.RightParenthesis, bracketStart)) {
 				errorReported = true;
 				getContext().onError(
 					bracketErrorPos,
@@ -396,7 +392,57 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 	};
 
 	protected void functionsDirective() {
-		throw new NotImplementedException();
+		// Set the block type
+		getContext().getCurrentBlock().setType(BlockType.Functions);
+
+		// Verify we're on "functions" and accept
+		assertDirective(SyntaxConstants.Java.FunctionsKeyword);
+		final Block block = new Block(getCurrentSymbol());
+		acceptAndMoveNext();
+
+		acceptWhile(isSpacingToken(true, false));
+
+		if (!at(JavaSymbolType.LeftBrace)) {
+			getContext().onError(
+				getCurrentLocation(),
+				RazorResources().getString("parseError.expected.x"),
+				getLanguage().getSample(JavaSymbolType.LeftBrace)
+			);
+			completeBlock();
+			output(SpanKind.MetaCode);
+			return;
+		}
+		else {
+			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.None);
+		}
+
+		// Capture start point and continue
+		final SourceLocation blockStart = getCurrentLocation();
+		acceptAndMoveNext();
+
+		// Output what we've seen and continue
+		output(SpanKind.MetaCode);
+
+		final AutoCompleteEditHandler editHandler = new AutoCompleteEditHandler(getLanguage().createTokenizeStringDelegate());
+		getSpan().setEditHandler(editHandler);
+
+		balance(BalancingModes.NoErrorOnFailure, JavaSymbolType.LeftBrace, JavaSymbolType.RightBrace, blockStart);
+		getSpan().setCodeGenerator(new TypeMemberCodeGenerator());
+		if (!at(JavaSymbolType.RightBrace)) {
+			editHandler.setAutoCompleteString("}");
+			getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), block.getName(), "}", "{");
+			completeBlock();
+			output(SpanKind.Code);
+		}
+		else {
+			output(SpanKind.Code);
+			doAssert(JavaSymbolType.RightBrace);
+			getSpan().setCodeGenerator(SpanCodeGenerator.Null);
+			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.None);
+			acceptAndMoveNext();
+			completeBlock();
+			output(SpanKind.Code);
+		}
 	}
 	protected final Delegates.IAction functionsDirectiveDelegate = new Delegates.IAction() {
 		@Override
@@ -435,7 +481,45 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 	}
 
 	protected void baseTypeDirective(@Nonnull final String noTypeNameError, @Nonnull final Delegates.IFunc1<String, SpanCodeGenerator> createCodeGenerator) {
-		throw new NotImplementedException();
+		// Set the block type
+		getContext().getCurrentBlock().setType(BlockType.Directive);
+
+		// Accept whitespace
+		final JavaSymbol remainingWs = acceptSingleWhiteSpaceCharacter();
+
+		if (!getSpan().getSymbols().isEmpty()) {
+			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.None);
+		}
+
+		output(SpanKind.MetaCode);
+
+		if (remainingWs != null) {
+			accept(remainingWs);
+		}
+		acceptWhile(isSpacingToken(false, true));
+
+		if (isEndOfFile() || at(JavaSymbolType.WhiteSpace) || at(JavaSymbolType.NewLine)) {
+			getContext().onError(getCurrentLocation(), noTypeNameError);
+		}
+
+		// Parse to the end of the line
+		acceptUntil(JavaSymbolType.NewLine);
+		if (!getContext().isDesignTimeMode()) {
+			// We want the newline to be treated as code, but it causes issues at design-time.
+			optional(JavaSymbolType.WhiteSpace);
+		}
+
+		// Pull out the type name
+		final String baseType = SymbolExtensions.getContent(getSpan()).toString();
+
+		// Setup code generation
+		final SpanCodeGenerator generator = createCodeGenerator.invoke(baseType.trim());
+		assert generator != null;
+		getSpan().setCodeGenerator(generator);
+
+		// Output the span and finish the block
+		completeBlock();
+		output(SpanKind.Code);
 	}
 
 }

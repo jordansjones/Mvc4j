@@ -151,6 +151,10 @@ abstract class JavaCodeParserDelegate {
 		return delegate.acceptAll(javaSymbolTypes);
 	}
 
+	public boolean balance(@Nonnull final BalancingModes mode, @Nonnull JavaSymbolType left, @Nonnull JavaSymbolType right, @Nonnull SourceLocation start) {
+		return balance(EnumSet.of(mode), left, right, start);
+	}
+
 	public boolean balance(@Nonnull EnumSet<BalancingModes> mode, @Nonnull JavaSymbolType left, @Nonnull JavaSymbolType right, @Nonnull SourceLocation start) {
 		return delegate.balance(mode, left, right, start);
 	}
