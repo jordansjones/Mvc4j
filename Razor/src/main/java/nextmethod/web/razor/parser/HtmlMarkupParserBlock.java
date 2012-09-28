@@ -88,17 +88,6 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		}
 	}
 
-	protected void defaultMarkupSpan(@Nonnull final SpanBuilder span) {
-		span.setCodeGenerator(new MarkupCodeGenerator());
-		span.setEditHandler(new SpanEditHandler(getLanguage().createTokenizeStringDelegate(), AcceptedCharacters.Any));
-	}
-	protected final Delegates.IAction1<SpanBuilder> defaultMarkupSpanDelegate = new Delegates.IAction1<SpanBuilder>() {
-		@Override
-		public void invoke(@Nullable final SpanBuilder input) {
-			if (input != null) defaultMarkupSpan(input);
-		}
-	};
-
 	protected void afterTransition() {
 		// "@:" => Explicit Single Line Block
 		if (isCurrentSymbol(HtmlSymbolType.Text) && getCurrentSymbol().getContent().length() > 0 && getCurrentSymbol().getContent().charAt(0) == ':') {

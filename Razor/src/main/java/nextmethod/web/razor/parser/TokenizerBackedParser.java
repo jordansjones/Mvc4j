@@ -348,8 +348,8 @@ public abstract class TokenizerBackedParser<
 	protected IDisposable pushSpanConfig(@Nullable final Delegates.IAction1<SpanBuilder> newConfig) {
 		return pushSpanConfig(newConfig == null ? null : new Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>>() {
 			@Override
-			public void invoke(@Nullable final SpanBuilder input1, @Nullable final Delegates.IAction1<SpanBuilder> input2) {
-				newConfig.invoke(input1);
+			public void invoke(@Nullable final SpanBuilder span, @Nullable final Delegates.IAction1<SpanBuilder> ignored) {
+				newConfig.invoke(span);
 			}
 		});
 	}
@@ -378,8 +378,8 @@ public abstract class TokenizerBackedParser<
 		else {
 			setSpanConfig(new Delegates.IAction1<SpanBuilder>() {
 				@Override
-				public void invoke(@Nullable final SpanBuilder input) {
-					config.invoke(input, prev);
+				public void invoke(@Nullable final SpanBuilder span) {
+					config.invoke(span, prev);
 				}
 			});
 		}

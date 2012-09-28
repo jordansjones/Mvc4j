@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableSet;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
+import nextmethod.web.razor.editor.SpanEditHandler;
+import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
@@ -40,6 +42,17 @@ abstract class HtmlMarkupParserDelegate {
 	protected final HtmlMarkupParserDocument getDocumentParser() {
 		return this.delegate.documentParser;
 	}
+
+	protected void defaultMarkupSpan(@Nonnull final SpanBuilder span) {
+		span.setCodeGenerator(new MarkupCodeGenerator());
+		span.setEditHandler(new SpanEditHandler(getLanguage().createTokenizeStringDelegate(), AcceptedCharacters.Any));
+	}
+	protected final Delegates.IAction1<SpanBuilder> defaultMarkupSpanDelegate = new Delegates.IAction1<SpanBuilder>() {
+		@Override
+		public void invoke(@Nullable final SpanBuilder input) {
+			if (input != null) defaultMarkupSpan(input);
+		}
+	};
 
 	public void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content) {
 		delegate.buildSpan(span, start, content);

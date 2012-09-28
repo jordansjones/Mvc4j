@@ -36,7 +36,7 @@ class HtmlMarkupParserSection extends HtmlMarkupParserDelegate {
 			throw new UnsupportedOperationException(RazorResources().getString("parser.context.not.set"));
 		}
 
-		try (IDisposable ignored = pushSpanConfig()) {
+		try (IDisposable ignored = pushSpanConfig(defaultMarkupSpanDelegate)) {
 			try (IDisposable ignored2 = getContext().startBlock(BlockType.Markup)) {
 				nextToken();
 				this.caseSensitive = caseSensitive;
@@ -50,7 +50,7 @@ class HtmlMarkupParserSection extends HtmlMarkupParserDelegate {
 					nestingSection(nestingSequence);
 				}
 				addMarkerSymbolIfNecessary();
-				output(SpanKind.MetaCode);
+				output(SpanKind.Markup);
 			}
 		}
 	}
