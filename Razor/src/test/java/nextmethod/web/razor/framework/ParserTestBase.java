@@ -109,8 +109,32 @@ public abstract class ParserTestBase {
 		}, expectedRoot, (expectedErrors == null ? Collections.<RazorError>emptyList() : Lists.newArrayList(expectedErrors)), designTimeParser);
 	}
 
+	protected void singleSpanBlockTest(final String document, final BlockType blockType, final SpanKind spanType) {
+		singleSpanBlockTest(document, blockType, spanType, AcceptedCharacters.Any);
+	}
+
+	protected void singleSpanBlockTest(final String document, final BlockType blockType, final SpanKind spanType, final AcceptedCharacters... acceptedCharacters) {
+		final EnumSet<AcceptedCharacters> ac = EnumSet.noneOf(AcceptedCharacters.class);
+		if (acceptedCharacters != null && acceptedCharacters.length > 0) {
+			Collections.addAll(ac, acceptedCharacters);
+		}
+		singleSpanBlockTest(document, blockType, spanType, ac);
+	}
+
 	protected void singleSpanBlockTest(final String document, final BlockType blockType, final SpanKind spanType, final EnumSet<AcceptedCharacters> acceptedCharacters) {
 		singleSpanBlockTest(document, blockType, spanType, acceptedCharacters, new RazorError[0]);
+	}
+
+	protected void singleSpanBlockTest(final String document, final String spanContent, final BlockType blockType, final SpanKind spanType) {
+		singleSpanBlockTest(document, spanContent, blockType, spanType, AcceptedCharacters.Any);
+	}
+
+	protected void singleSpanBlockTest(final String document, final String spanContent, final BlockType blockType, final SpanKind spanType, final AcceptedCharacters... acceptedCharacters) {
+		final EnumSet<AcceptedCharacters> ac = EnumSet.noneOf(AcceptedCharacters.class);
+		if (acceptedCharacters != null && acceptedCharacters.length > 0) {
+			Collections.addAll(ac, acceptedCharacters);
+		}
+		singleSpanBlockTest(document, spanContent, blockType, spanType, ac);
 	}
 
 	protected void singleSpanBlockTest(final String document, final String spanContent, final BlockType blockType, final SpanKind spanType, final EnumSet<AcceptedCharacters> acceptedCharacters) {

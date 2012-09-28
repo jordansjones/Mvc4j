@@ -29,8 +29,12 @@ public abstract class CodeParserTestBase extends ParserTestBase {
 		implicitExpressionTest(input, AcceptedCharacters.NonWhiteSpace, errors);
 	}
 
+	protected void implicitExpressionTest(final String input, final EnumSet<AcceptedCharacters> acceptedCharacters, final RazorError... errors) {
+		implicitExpressionTest(input, input, acceptedCharacters, errors);
+	}
+
 	protected void implicitExpressionTest(final String input, final AcceptedCharacters acceptedCharacters, final RazorError... errors) {
-		implicitExpressionTest(input, input, AcceptedCharacters.NonWhiteSpace, errors);
+		implicitExpressionTest(input, input, acceptedCharacters, errors);
 	}
 
 	protected void implicitExpressionTest(final String input, final String expected, final RazorError... errors) {
@@ -38,12 +42,17 @@ public abstract class CodeParserTestBase extends ParserTestBase {
 	}
 
 	protected void implicitExpressionTest(final String input, final String expected, final AcceptedCharacters acceptedCharacters, final RazorError... errors) {
+		implicitExpressionTest(input, expected, EnumSet.of(acceptedCharacters), errors);
+	}
+
+
+	protected void implicitExpressionTest(final String input, final String expected, final EnumSet<AcceptedCharacters> acceptedCharacters, final RazorError... errors) {
 		final SpanFactory factory = createSpanFactory();
 		parseBlockTest(
 			SyntaxConstants.TransitionString + input,
 			new ExpressionBlock(
-				getFactory().codeTransition().build(),
-				getFactory().code(expected)
+				factory.codeTransition().build(),
+				factory.code(expected)
 					.asImplicitExpression(getKeywordSet())
 					.accepts(acceptedCharacters).build()
 			),

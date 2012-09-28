@@ -15,6 +15,7 @@ import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.EnumSet;
 
 public class SpanConstructor {
@@ -73,8 +74,12 @@ public class SpanConstructor {
 		this.builder = builder;
 	}
 
-	public SpanConstructor accepts(final AcceptedCharacters accepted) {
-		return accepts(EnumSet.of(accepted));
+	public SpanConstructor accepts(final AcceptedCharacters... accepted) {
+		final EnumSet<AcceptedCharacters> s = EnumSet.noneOf(AcceptedCharacters.class);
+		if (accepted != null && accepted.length > 0) {
+			Collections.addAll(s, accepted);
+		}
+		return accepts(s);
 	}
 
 	public SpanConstructor accepts(final EnumSet<AcceptedCharacters> acceptedCharacters) {

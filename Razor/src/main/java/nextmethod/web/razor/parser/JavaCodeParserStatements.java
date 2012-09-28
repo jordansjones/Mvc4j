@@ -663,5 +663,4 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		return Collections.emptyList();
 	}
 
-
 }

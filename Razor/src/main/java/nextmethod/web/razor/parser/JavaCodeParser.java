@@ -35,7 +35,7 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSymbol, JavaSymbolType> {
 
-	static final int UsingKeywordLength = 5;
+	public static final int UsingKeywordLength = 5;
 	public static final ImmutableSet<String> DefaultKeywords = ImmutableSet.<String>builder()
 		.add("if")
 		.add("do")
@@ -560,6 +560,12 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		else if (getLanguage().isCommentStart(getCurrentSymbol())) {
 			razorComment();
 		}
+	}
+
+	@Override
+	public void outputSpanBeforeRazorComment() {
+		addMarkerSymbolIfNecessary();
+		output(SpanKind.Code);
 	}
 
 	private void parseWithOtherParser(@Nonnull final Delegates.IAction1<ParserBase> parserAction) {
