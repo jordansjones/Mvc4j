@@ -29,6 +29,18 @@ abstract class HtmlMarkupParserDelegate {
 		this.delegate = delegate;
 	}
 
+	protected final HtmlMarkupParserBlock getBlockParser() {
+		return this.delegate.blockParser;
+	}
+
+	protected final HtmlMarkupParserSection getSectionParser() {
+		return this.delegate.sectionParser;
+	}
+
+	protected final HtmlMarkupParserDocument getDocumentParser() {
+		return this.delegate.documentParser;
+	}
+
 	public void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content) {
 		delegate.buildSpan(span, start, content);
 	}

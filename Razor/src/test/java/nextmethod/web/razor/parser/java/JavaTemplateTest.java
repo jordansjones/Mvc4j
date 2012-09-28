@@ -73,7 +73,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockHandlesSingleLineTemplate() {
 		parseBlockTest(
-			"{ var foo = @: bar\r\n; }",
+			"{ var foo = @: bar" + newLine() + "; }",
 			new StatementBlock(
 				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
 				getFactory().code(" var foo = ").asStatement().build(),
@@ -81,7 +81,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 					new MarkupBlock(
 						getFactory().markupTransition().build(),
 						getFactory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-						getFactory().markup(" bar\r\n")
+						getFactory().markup(" bar" + newLine())
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
 							.accepts(AcceptedCharacters.None).build()
 					)
@@ -95,7 +95,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockHandlesSingleLineImmediatelyFollowingStatementChar() {
 		parseBlockTest(
-			"{i@: bar\r\n}",
+			"{i@: bar" + newLine() + "}",
 			new StatementBlock(
 				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
 				getFactory().code("i").asStatement().build(),
@@ -103,7 +103,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 					new MarkupBlock(
 						getFactory().markupTransition().build(),
 						getFactory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-						getFactory().markup(" bar\r\n")
+						getFactory().markup(" bar" + newLine())
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
 							.accepts(AcceptedCharacters.None).build()
 					)

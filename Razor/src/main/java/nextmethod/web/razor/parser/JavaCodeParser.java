@@ -155,7 +155,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 				}
 
 				// Accept "@" if we see it, but if we don't, that's OK. We assume we were started for a good reason
-				if (currentSymbol.getType() == JavaSymbolType.Transition) {
+				if (currentSymbol != null && (currentSymbol.getType() == JavaSymbolType.Transition)) {
 					if (getSpan().getSymbols().size() > 0) {
 						output(SpanKind.Code);
 					}

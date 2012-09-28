@@ -19,7 +19,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-// TODO
 public abstract class LanguageCharacteristics<
 	TTokenizer extends Tokenizer<TSymbol, TSymbolType>,
 	TSymbol extends SymbolBase<TSymbolType>,

@@ -11,6 +11,8 @@ import java.util.Set;
  */
 public abstract class JavaHtmlCodeParserTestBase extends CodeParserTestBase {
 
+	protected static String newLine() { return "\r\n"; }
+
 	@Override
 	protected Set<String> getKeywordSet() {
 		return JavaCodeParser.DefaultKeywords;

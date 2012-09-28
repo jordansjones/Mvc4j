@@ -30,7 +30,6 @@ import java.util.Objects;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
-// TODO
 final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 
 	JavaCodeParserDirectives(final JavaCodeParser parser) {

@@ -3,6 +3,7 @@ package nextmethod.web.razor.parser;
 import com.google.common.collect.ImmutableSet;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.KeyValue;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
@@ -41,10 +42,12 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
 
 	protected final HtmlMarkupParserBlock blockParser;
 	protected final HtmlMarkupParserSection sectionParser;
+	protected final HtmlMarkupParserDocument documentParser;
 
 	public HtmlMarkupParser() {
 		this.blockParser = new HtmlMarkupParserBlock(this);
 		this.sectionParser = new HtmlMarkupParserSection(this);
+		this.documentParser = new HtmlMarkupParserDocument(this);
 	}
 
 	public ImmutableSet<String> getVoidElements() {
@@ -192,5 +195,15 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
 	@Override
 	public void parseBlock() {
 		this.blockParser.parseBlock();
+	}
+
+	@Override
+	public void parseDocument() {
+		this.documentParser.parseDocument();
+	}
+
+	@Override
+	public void parseSection(@Nonnull final KeyValue<String, String> nestingSequence, final boolean caseSensitive) {
+		this.sectionParser.parseSection(nestingSequence, caseSensitive);
 	}
 }
