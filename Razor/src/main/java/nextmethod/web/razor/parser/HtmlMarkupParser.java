@@ -40,9 +40,11 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
             .build();
 
 	protected final HtmlMarkupParserBlock blockParser;
+	protected final HtmlMarkupParserSection sectionParser;
 
 	public HtmlMarkupParser() {
 		this.blockParser = new HtmlMarkupParserBlock(this);
+		this.sectionParser = new HtmlMarkupParserSection(this);
 	}
 
 	public ImmutableSet<String> getVoidElements() {

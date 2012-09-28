@@ -563,11 +563,10 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	}
 
 	private void parseWithOtherParser(@Nonnull final Delegates.IAction1<ParserBase> parserAction) {
-		try(IDisposable disp = pushSpanConfig()) {
-			final ParserContext context = getContext();
-			context.switchActiveParser();
-			parserAction.invoke(context.getMarkupParser());
-			context.switchActiveParser();
+		try(IDisposable ignored = pushSpanConfig()) {
+			getContext().switchActiveParser();
+			parserAction.invoke(getContext().getMarkupParser());
+			getContext().switchActiveParser();
 		}
 		initialize(getSpan());
 		nextToken();

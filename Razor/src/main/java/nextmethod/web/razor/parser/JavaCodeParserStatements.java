@@ -626,7 +626,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		}
 
 		if (isEndOfFile()) {
-			getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), '}', '{');
+			getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), block.getName(), '}', '{');
 		}
 		else if (acceptTerminatingBrace) {
 			doAssert(JavaSymbolType.RightBrace);

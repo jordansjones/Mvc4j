@@ -8,12 +8,12 @@ public class KeyValue<A, B> {
 	private final A key;
 	private final B value;
 
-	public KeyValue(@Nonnull final A key, @Nullable final B value) {
+	public KeyValue(@Nullable final A key, @Nullable final B value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	@Nonnull
+	@Nullable
 	public A getKey() {
 		return key;
 	}
@@ -30,7 +30,7 @@ public class KeyValue<A, B> {
 
 		final KeyValue keyValue = (KeyValue) o;
 
-		if (!key.equals(keyValue.key)) return false;
+		if (key != null ? !key.equals(keyValue.key) : keyValue.key != null) return false;
 		if (value != null ? !value.equals(keyValue.value) : keyValue.value != null) return false;
 
 		return true;
@@ -38,17 +38,17 @@ public class KeyValue<A, B> {
 
 	@Override
 	public int hashCode() {
-		int result = key.hashCode();
+		int result = key != null ? key.hashCode() : 0;
 		result = 31 * result + (value != null ? value.hashCode() : 0);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "{key=" + key + ", value=" + value + '}';
+		return String.format("%s{key=%s, value=%s}", this.getClass().getSimpleName(), key, value);
 	}
 
-	public static <A, B> KeyValue<A, B> of(@Nonnull final A a, @Nullable final B b) {
+	public static <A, B> KeyValue<A, B> of(@Nullable final A a, @Nullable final B b) {
 		return new KeyValue<>(a, b);
 	}
 
