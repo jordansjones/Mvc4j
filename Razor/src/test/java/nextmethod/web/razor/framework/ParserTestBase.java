@@ -10,7 +10,16 @@ import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.generator.StatementCodeGenerator;
 import nextmethod.web.razor.parser.ParserBase;
 import nextmethod.web.razor.parser.ParserContext;
-import nextmethod.web.razor.parser.syntaxtree.*;
+import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.Block;
+import nextmethod.web.razor.parser.syntaxtree.BlockBuilder;
+import nextmethod.web.razor.parser.syntaxtree.BlockExtensions;
+import nextmethod.web.razor.parser.syntaxtree.BlockType;
+import nextmethod.web.razor.parser.syntaxtree.IgnoreOutputBlock;
+import nextmethod.web.razor.parser.syntaxtree.RazorError;
+import nextmethod.web.razor.parser.syntaxtree.Span;
+import nextmethod.web.razor.parser.syntaxtree.SpanKind;
+import nextmethod.web.razor.parser.syntaxtree.SyntaxTreeNode;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SeekableTextReader;
 
@@ -24,7 +33,11 @@ import java.util.logging.Logger;
 
 import static nextmethod.base.SystemHelpers.newLine;
 import static nextmethod.base.TypeHelpers.typeAs;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 // TODO
 public abstract class ParserTestBase {

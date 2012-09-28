@@ -4,15 +4,17 @@ import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
 import nextmethod.web.razor.parser.JavaLanguageCharacteristics;
-import nextmethod.web.razor.parser.syntaxtree.*;
+import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.ExpressionBlock;
+import nextmethod.web.razor.parser.syntaxtree.MarkupBlock;
+import nextmethod.web.razor.parser.syntaxtree.RazorError;
+import nextmethod.web.razor.parser.syntaxtree.StatementBlock;
+import nextmethod.web.razor.parser.syntaxtree.TemplateBlock;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
 import org.junit.Test;
 
-import java.util.EnumSet;
-
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
-import static org.junit.Assert.fail;
 
 /**
  *

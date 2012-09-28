@@ -2,7 +2,6 @@ package nextmethod.web.razor.tokenizer.symbols;
 
 import com.google.common.collect.Iterables;
 import nextmethod.base.Delegates;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.text.LocationTagged;
 import nextmethod.web.razor.text.SourceLocation;

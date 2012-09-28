@@ -1,9 +1,5 @@
 package nextmethod.web.razor.parser;
 
-import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
-
-import javax.annotation.Nonnull;
-
 import nextmethod.base.Debug;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
@@ -12,6 +8,10 @@ import nextmethod.web.razor.tokenizer.HtmlTokenizer;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbol;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
 import nextmethod.web.razor.tokenizer.symbols.KnownSymbolType;
+
+import javax.annotation.Nonnull;
+
+import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 /**
  *

@@ -2,14 +2,21 @@ package nextmethod.web.razor.parser;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.Iterables;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditorHints;
-import nextmethod.web.razor.generator.*;
-import nextmethod.web.razor.parser.syntaxtree.*;
+import nextmethod.web.razor.generator.HelperCodeGenerator;
+import nextmethod.web.razor.generator.RazorDirectiveAnnotationCodeGenerator;
+import nextmethod.web.razor.generator.SectionCodeGenerator;
+import nextmethod.web.razor.generator.SetBaseTypeCodeGenerator;
+import nextmethod.web.razor.generator.SetLayoutCodeGenerator;
+import nextmethod.web.razor.generator.SpanCodeGenerator;
+import nextmethod.web.razor.generator.TypeMemberCodeGenerator;
+import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.BlockType;
+import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.text.LocationTagged;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
@@ -19,8 +26,6 @@ import nextmethod.web.razor.tokenizer.symbols.SymbolExtensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import java.util.EnumSet;
 import java.util.Objects;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;

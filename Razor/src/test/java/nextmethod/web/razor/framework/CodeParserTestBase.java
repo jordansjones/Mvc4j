@@ -2,7 +2,12 @@ package nextmethod.web.razor.framework;
 
 import nextmethod.web.razor.parser.ParserBase;
 import nextmethod.web.razor.parser.SyntaxConstants;
-import nextmethod.web.razor.parser.syntaxtree.*;
+import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.Block;
+import nextmethod.web.razor.parser.syntaxtree.BlockType;
+import nextmethod.web.razor.parser.syntaxtree.ExpressionBlock;
+import nextmethod.web.razor.parser.syntaxtree.RazorError;
+import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;

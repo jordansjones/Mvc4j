@@ -1,11 +1,8 @@
 package nextmethod.web.razor.parser;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;

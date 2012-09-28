@@ -1,13 +1,11 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Queues;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
 import nextmethod.web.razor.editor.SpanEditHandler;
@@ -23,21 +21,15 @@ import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.text.LocationTagged;
 import nextmethod.web.razor.text.SourceLocation;
-import nextmethod.web.razor.tokenizer.HtmlTokenizer;
-import nextmethod.web.razor.tokenizer.TokenizerView;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbol;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
-import nextmethod.web.razor.tokenizer.symbols.KnownSymbolType;
 import nextmethod.web.razor.tokenizer.symbols.SymbolExtensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Collections;
 import java.util.Deque;
-import java.util.EnumSet;
 
-import static nextmethod.web.razor.parser.HtmlMarkupParser.isSpacingToken;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 /**
