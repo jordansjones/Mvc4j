@@ -26,7 +26,6 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 /**
  *
  */
-// TODO
 public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 
 	@Test

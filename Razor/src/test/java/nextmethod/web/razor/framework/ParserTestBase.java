@@ -39,7 +39,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-// TODO
 public abstract class ParserTestBase {
 
 	protected static Block IgnoreOutput = new IgnoreOutputBlock();
