@@ -1,5 +1,6 @@
 package nextmethod.web.razor.editor;
 
+import com.google.common.base.Strings;
 import nextmethod.base.Delegates;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.ParserHelpers;
@@ -10,6 +11,8 @@ import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
+
+import static com.google.common.base.Strings.nullToEmpty;
 
 public class AutoCompleteEditHandler extends SpanEditHandler {
 
@@ -63,7 +66,7 @@ public class AutoCompleteEditHandler extends SpanEditHandler {
 		final AutoCompleteEditHandler that = (AutoCompleteEditHandler) o;
 
 		return super.equals(that)
-			&& autoCompleteString.equals(that.autoCompleteString)
+			&& nullToEmpty(autoCompleteString).equals(nullToEmpty(that.autoCompleteString))
 			&& autoCompleteAtEndOfSpan == that.autoCompleteAtEndOfSpan;
 	}
 

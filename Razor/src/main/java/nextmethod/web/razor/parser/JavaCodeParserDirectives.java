@@ -87,7 +87,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 	};
 
 	protected void sessionStateDirectiveCore() {
-		sessionStateTypeDirective(RazorResources().getString("parseError.sessionDirectiveMissingValue"), new Delegates.IFunc2<String, String, SpanCodeGenerator>() {
+		sessionStateTypeDirective(RazorResources().getString("parserError.sessionDirectiveMissingValue"), new Delegates.IFunc2<String, String, SpanCodeGenerator>() {
 			@Override
 			public SpanCodeGenerator invoke(@Nullable String key, @Nullable String value) {
 				assert key != null;
@@ -445,7 +445,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.None);
 			acceptAndMoveNext();
 			completeBlock();
-			output(SpanKind.Code);
+			output(SpanKind.MetaCode);
 		}
 	}
 	protected final Delegates.IAction functionsDirectiveDelegate = new Delegates.IAction() {

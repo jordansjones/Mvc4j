@@ -21,7 +21,7 @@ public class RazorDirectiveAnnotationCodeGenerator extends SpanCodeGenerator {
 	private final String value;
 
 	public RazorDirectiveAnnotationCodeGenerator(@Nonnull final String name, final String value) {
-		checkArgument(Strings.isNullOrEmpty(name), CommonResources().getString("argument.cannot.be.null.or.empty"), "name");
+		checkArgument(!Strings.isNullOrEmpty(name), CommonResources().getString("argument.cannot.be.null.or.empty"), "name");
 
 		this.name = name;
 		this.value = Strings.nullToEmpty(value); // Coerce to empty string if it was null
