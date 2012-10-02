@@ -52,12 +52,12 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"if (true) { @if(false) { } }",
 			new StatementBlock(
-				getFactory().code("if (true) { ").asStatement().build(),
+				factory().code("if (true) { ").asStatement().build(),
 				new StatementBlock(
-					getFactory().codeTransition().build(),
-					getFactory().code("if(false) { }").asStatement().build()
+					factory().codeTransition().build(),
+					factory().code("if(false) { }").asStatement().build()
 				),
-				getFactory().code(" }").asStatement().build()
+				factory().code(" }").asStatement().build()
 			),
 			new RazorError(
 				String.format(RazorResources().getString("parseError.unexpected.keyword.after.at"), "if"),
@@ -242,7 +242,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		final String document = ifStatement + elseIfBranch + elseBranch + elseIfBranch;
 		final String expected = ifStatement + elseIfBranch + elseBranch;
 
-		parseBlockTest(document, new StatementBlock(getFactory().code(expected).asStatement().accepts(AcceptedCharacters.None).build()));
+		parseBlockTest(document, new StatementBlock(factory().code(expected).asStatement().accepts(AcceptedCharacters.None).build()));
 	}
 
 	@Test
@@ -312,12 +312,12 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	public void parseBlockCorrectlyParsesMarkupInDoWhileBlock() {
 		parseBlockTest("@do { var foo = bar; <p>Foo</p> foo++; } while (foo<bar>);",
 			new StatementBlock(
-				getFactory().codeTransition().build(),
-				getFactory().code("do { var foo = bar;").asStatement().build(),
+				factory().codeTransition().build(),
+				factory().code("do { var foo = bar;").asStatement().build(),
 				new MarkupBlock(
-					getFactory().markup(" <p>Foo</p> ").accepts(AcceptedCharacters.None).build()
+					factory().markup(" <p>Foo</p> ").accepts(AcceptedCharacters.None).build()
 				),
-				getFactory().code("foo++; } while (foo<bar>);").asStatement().accepts(AcceptedCharacters.None).build()
+				factory().code("foo++; } while (foo<bar>);").asStatement().accepts(AcceptedCharacters.None).build()
 			));
 	}
 
@@ -370,7 +370,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"using Foo   ",
 			new DirectiveBlock(
-				getFactory().code("using Foo")
+				factory().code("using Foo")
 					.asPackageImport(" Foo", JavaCodeParser.UsingKeywordLength)
 					.accepts(AcceptedCharacters.NonWhiteSpace, AcceptedCharacters.WhiteSpace)
 					.build()
@@ -563,14 +563,14 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		// Arrange
 		parseBlockTest("if(foo) { @foo. }",
 			new StatementBlock(
-				getFactory().code("if(foo) { ").asStatement().build(),
+				factory().code("if(foo) { ").asStatement().build(),
 				new ExpressionBlock(
-					getFactory().codeTransition().build(),
-					getFactory().code("foo.")
+					factory().codeTransition().build(),
+					factory().code("foo.")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords, true)
 						.accepts(AcceptedCharacters.NonWhiteSpace).build()
 				),
-				getFactory().code(" }").asStatement().build()
+				factory().code(" }").asStatement().build()
 			)
 		);
 	}
@@ -580,14 +580,14 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		// Arrange
 		parseBlockTest("if(foo) { @(foo + bar) }",
 			new StatementBlock(
-				getFactory().code("if(foo) { ").asStatement().build(),
+				factory().code("if(foo) { ").asStatement().build(),
 				new ExpressionBlock(
-					getFactory().codeTransition().build(),
-					getFactory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-					getFactory().code("foo + bar").asExpression().build(),
-					getFactory().metaCode(")").accepts(AcceptedCharacters.None).build()
+					factory().codeTransition().build(),
+					factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
+					factory().code("foo + bar").asExpression().build(),
+					factory().metaCode(")").accepts(AcceptedCharacters.None).build()
 				),
-				getFactory().code(" }").asStatement().build()
+				factory().code(" }").asStatement().build()
 			)
 		);
 	}
@@ -597,15 +597,15 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		// Arrange
 		parseBlockTest("if(foo) { @foo[4].bar() }",
 			new StatementBlock(
-				getFactory().code("if(foo) { ").asStatement().build(),
+				factory().code("if(foo) { ").asStatement().build(),
 				new ExpressionBlock(
-					getFactory().codeTransition().build(),
-					getFactory().code("foo[4].bar()")
+					factory().codeTransition().build(),
+					factory().code("foo[4].bar()")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords, true)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
 						.build()
 				),
-				getFactory().code(" }").asStatement().build()
+				factory().code(" }").asStatement().build()
 			)
 		);
 	}
@@ -615,9 +615,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		// Arrange
 		parseBlockTest("if(foo) { @@class.Foo() }",
 			new StatementBlock(
-				getFactory().code("if(foo) { ").asStatement().build(),
-				getFactory().code("@").hidden().build(),
-				getFactory().code("@class.Foo() }").asStatement().build()
+				factory().code("if(foo) { ").asStatement().build(),
+				factory().code("@").hidden().build(),
+				factory().code("@class.Foo() }").asStatement().build()
 			)
 		);
 	}
@@ -627,9 +627,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		// Arrange
 		parseBlockTest("if(foo) { @@@@class.Foo() }",
 			new StatementBlock(
-				getFactory().code("if(foo) { ").asStatement().build(),
-				getFactory().code("@").hidden().build(),
-				getFactory().code("@@@class.Foo() }").asStatement().build()
+				factory().code("if(foo) { ").asStatement().build(),
+				factory().code("@").hidden().build(),
+				factory().code("@@@class.Foo() }").asStatement().build()
 			)
 		);
 	}
@@ -639,7 +639,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		// Arrange
 		parseBlockTest("if(foo) { @\"Foo\".ToString(); }",
 			new StatementBlock(
-				getFactory().code("if(foo) { @\"Foo\".ToString(); }").asStatement().build()
+				factory().code("if(foo) { @\"Foo\".ToString(); }").asStatement().build()
 			)
 		);
 	}
@@ -659,53 +659,53 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 			+ "            </div>" + newLine()
 			+ "        }",
 			new StatementBlock(
-				getFactory().code("foreach(var c in db.Categories) {" + newLine()).asStatement().build(),
+				factory().code("foreach(var c in db.Categories) {" + newLine()).asStatement().build(),
 				new MarkupBlock(
-					getFactory().markup("            <div>" + newLine() + "                <h1>").build(),
+					factory().markup("            <div>" + newLine() + "                <h1>").build(),
 					new ExpressionBlock(
-						getFactory().codeTransition().build(),
-						getFactory().code("c.Name")
+						factory().codeTransition().build(),
+						factory().code("c.Name")
 							.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 							.accepts(AcceptedCharacters.NonWhiteSpace)
 							.build()
 					),
-					getFactory().markup("</h1>\r\n                <ul>" + newLine()).build(),
+					factory().markup("</h1>\r\n                <ul>" + newLine()).build(),
 					new StatementBlock(
-						getFactory().code("                    ").asStatement().build(),
-						getFactory().codeTransition().build(),
-						getFactory().code("foreach(var p in c.Products) {" + newLine()).asStatement().build(),
+						factory().code("                    ").asStatement().build(),
+						factory().codeTransition().build(),
+						factory().code("foreach(var p in c.Products) {" + newLine()).asStatement().build(),
 						new MarkupBlock(
-							getFactory().markup("                        <li><a").build(),
+							factory().markup("                        <li><a").build(),
 							new MarkupBlock(
 								new AttributeBlockCodeGenerator("href", new LocationTagged<>(" href=\"", 193, 5, 30), new LocationTagged<>("\"", 256, 5, 93)),
-								getFactory().markup(" href=\"").with(SpanCodeGenerator.Null).build(),
+								factory().markup(" href=\"").with(SpanCodeGenerator.Null).build(),
 								new MarkupBlock(
 									new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 200, 5, 37), 200, 5, 37),
 									new ExpressionBlock(
-										getFactory().codeTransition().build(),
-										getFactory().code("Html.ActionUrl(\"Products\", \"Detail\", new { id = p.Id })")
+										factory().codeTransition().build(),
+										factory().code("Html.ActionUrl(\"Products\", \"Detail\", new { id = p.Id })")
 											.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 											.accepts(AcceptedCharacters.NonWhiteSpace)
 											.build()
 									)
 								),
-								getFactory().markup("\"").with(SpanCodeGenerator.Null).build()
+								factory().markup("\"").with(SpanCodeGenerator.Null).build()
 							),
-							getFactory().markup(">").build(),
+							factory().markup(">").build(),
 							new ExpressionBlock(
-								getFactory().codeTransition().build(),
-								getFactory().code("p.Name")
+								factory().codeTransition().build(),
+								factory().code("p.Name")
 									.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 									.accepts(AcceptedCharacters.NonWhiteSpace).build()
 							),
-							getFactory().markup("</a></li>" + newLine()).accepts(AcceptedCharacters.None).build()
+							factory().markup("</a></li>" + newLine()).accepts(AcceptedCharacters.None).build()
 						),
-						getFactory().code("                    }" + newLine()).asStatement().accepts(AcceptedCharacters.None).build()
+						factory().code("                    }" + newLine()).asStatement().accepts(AcceptedCharacters.None).build()
 					),
-					getFactory().markup("                </ul>" + newLine() + "            </div>" + newLine())
+					factory().markup("                </ul>" + newLine() + "            </div>" + newLine())
 						.accepts(AcceptedCharacters.None).build()
 				),
-				getFactory().code("        }").asStatement().accepts(AcceptedCharacters.None).build()
+				factory().code("        }").asStatement().accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -722,23 +722,23 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			preComment + "@* Foo *@ @* Bar *@" + postComment,
 			new StatementBlock(
-				getFactory().code(preComment).asStatement().build(),
+				factory().code(preComment).asStatement().build(),
 				new CommentBlock(
-					getFactory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-					getFactory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
-					getFactory().comment(" Foo ", JavaSymbolType.RazorComment).build(),
-					getFactory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
-					getFactory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+					factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
+					factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
+					factory().comment(" Foo ", JavaSymbolType.RazorComment).build(),
+					factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
+					factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
 				),
-				getFactory().code(" ").asStatement().build(),
+				factory().code(" ").asStatement().build(),
 				new CommentBlock(
-					getFactory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-					getFactory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
-					getFactory().comment(" Bar ", JavaSymbolType.RazorComment).build(),
-					getFactory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
-					getFactory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+					factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
+					factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
+					factory().comment(" Bar ", JavaSymbolType.RazorComment).build(),
+					factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None).build(),
+					factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
 				),
-				getFactory().code(postComment).asStatement().accepts(acceptedCharacters).build()
+				factory().code(postComment).asStatement().accepts(acceptedCharacters).build()
 			)
 		);
 	}
@@ -750,11 +750,11 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	private void runSimpleWrappedMarkupTest(@Nonnull final String prefix, @Nonnull final String markup, @Nonnull final String suffix, @Nonnull final EnumSet<AcceptedCharacters> acceptedCharacters) {
 		parseBlockTest(prefix + markup + suffix,
 			new StatementBlock(
-				getFactory().code(prefix).asStatement().build(),
+				factory().code(prefix).asStatement().build(),
 				new MarkupBlock(
-					getFactory().markup(markup).accepts(AcceptedCharacters.None).build()
+					factory().markup(markup).accepts(AcceptedCharacters.None).build()
 				),
-				getFactory().code(suffix).asStatement().accepts(acceptedCharacters).build()
+				factory().code(suffix).asStatement().accepts(acceptedCharacters).build()
 			)
 		);
 	}
@@ -786,7 +786,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 		}
 		parseBlockTest(content,
 			new DirectiveBlock(
-				getFactory().code(content)
+				factory().code(content)
 					.asPackageImport(expectedPackage, JavaCodeParser.UsingKeywordLength)
 					.accepts(acceptedCharacters).build()
 			),

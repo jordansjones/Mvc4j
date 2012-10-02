@@ -50,10 +50,10 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@inherits " + type,
 			new DirectiveBlock(
-				getFactory().codeTransition().build(),
-				getFactory().metaCode(SyntaxConstants.Java.InheritsKeyword + " ")
+				factory().codeTransition().build(),
+				factory().metaCode(SyntaxConstants.Java.InheritsKeyword + " ")
 					.accepts(AcceptedCharacters.None).build(),
-				getFactory().code(type)
+				factory().code(type)
 					.asBaseType(type).build()
 			)
 		);
@@ -66,10 +66,10 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@sessionstate " + keyword,
 			new DirectiveBlock(
-				getFactory().codeTransition().build(),
-				getFactory().metaCode(SyntaxConstants.Java.SessionStateKeyword + " ")
+				factory().codeTransition().build(),
+				factory().metaCode(SyntaxConstants.Java.SessionStateKeyword + " ")
 					.accepts(AcceptedCharacters.None).build(),
-				getFactory().code(keyword)
+				factory().code(keyword)
 					.asRazorDirectiveAnnotation("sessionstate", keyword).build()
 			)
 		);
@@ -81,10 +81,10 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@sessionstate " + keyword,
 			new DirectiveBlock(
-				getFactory().codeTransition().build(),
-				getFactory().metaCode(SyntaxConstants.Java.SessionStateKeyword + " ")
+				factory().codeTransition().build(),
+				factory().metaCode(SyntaxConstants.Java.SessionStateKeyword + " ")
 					.accepts(AcceptedCharacters.None).build(),
-				getFactory().code(keyword)
+				factory().code(keyword)
 					.asRazorDirectiveAnnotation("sessionstate", keyword).build()
 			)
 		);
@@ -96,12 +96,12 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@functions { foo(); bar(); }",
 			new FunctionsBlock(
-				getFactory().codeTransition().build(),
-				getFactory().metaCode(SyntaxConstants.Java.FunctionsKeyword + " {")
+				factory().codeTransition().build(),
+				factory().metaCode(SyntaxConstants.Java.FunctionsKeyword + " {")
 					.accepts(AcceptedCharacters.None).build(),
-				getFactory().code(" foo(); bar(); ")
+				factory().code(" foo(); bar(); ")
 					.asFunctionsBody().build(),
-				getFactory().metaCode("}")
+				factory().metaCode("}")
 					.accepts(AcceptedCharacters.None).build()
 			)
 		);
@@ -112,12 +112,12 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@functions { }",
 			new FunctionsBlock(
-				getFactory().codeTransition().build(),
-				getFactory().metaCode(SyntaxConstants.Java.FunctionsKeyword + " {")
+				factory().codeTransition().build(),
+				factory().metaCode(SyntaxConstants.Java.FunctionsKeyword + " {")
 					.accepts(AcceptedCharacters.None).build(),
-				getFactory().code(" ")
+				factory().code(" ")
 					.asFunctionsBody().build(),
-				getFactory().metaCode("}")
+				factory().metaCode("}")
 					.accepts(AcceptedCharacters.None).build()
 			)
 		);
@@ -130,14 +130,14 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 			"@section Header { <p>F{o}o</p> }",
 			new SectionBlock(
 				new SectionCodeGenerator("Header"),
-				getFactory().codeTransition().build(),
-				getFactory().metaCode("section Header {")
+				factory().codeTransition().build(),
+				factory().metaCode("section Header {")
 					.autoCompleteWith(null, true)
 					.accepts(AcceptedCharacters.Any).build(),
 				new MarkupBlock(
-					getFactory().markup(" <p>F", "{", "o", "}", "o", "</p> ").build()
+					factory().markup(" <p>F", "{", "o", "}", "o", "</p> ").build()
 				),
-				getFactory().metaCode("}")
+				factory().metaCode("}")
 					.accepts(AcceptedCharacters.None).build()
 			)
 		);
@@ -150,18 +150,18 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 			"@helper Strong(string value) { foo(); }",
 			new HelperBlock(
 				new HelperCodeGenerator(new LocationTagged<>("Strong(string value) {", new SourceLocation(8, 0, 8)), true),
-				getFactory().codeTransition().build(),
-				getFactory().metaCode("helper ")
+				factory().codeTransition().build(),
+				factory().metaCode("helper ")
 					.accepts(AcceptedCharacters.None).build(),
-				getFactory().code("Strong(string value) {")
+				factory().code("Strong(string value) {")
 					.hidden()
 					.accepts(AcceptedCharacters.None).build(),
 				new StatementBlock(
-					getFactory().code(" foo(); ")
+					factory().code(" foo(); ")
 						.asStatement()
 						.with(new StatementCodeGenerator()).build()
 				),
-				getFactory().code("}")
+				factory().code("}")
 					.hidden()
 					.accepts(AcceptedCharacters.None).build()
 			)

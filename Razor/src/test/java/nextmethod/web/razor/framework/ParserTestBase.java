@@ -49,7 +49,7 @@ public abstract class ParserTestBase {
 		this.factory = createSpanFactory();
 	}
 
-	public SpanFactory getFactory() {
+	public SpanFactory factory() {
 		return factory;
 	}
 
@@ -159,7 +159,7 @@ public abstract class ParserTestBase {
 			document,
 			configureAndAddSpanToBlock(
 				builder,
-				getFactory().span(spanType, spanContent, spanType == SpanKind.Markup).accepts(acceptedCharacters)
+				factory().span(spanType, spanContent, spanType == SpanKind.Markup).accepts(acceptedCharacters)
 			),
 			expectedErrors != null ? expectedErrors : new RazorError[0]
 		);
@@ -452,7 +452,7 @@ public abstract class ParserTestBase {
 	protected Block createSimpleBlockAndSpan(final String spanContent, final BlockType blockType, final SpanKind spanType, EnumSet<AcceptedCharacters> acceptedCharacters) {
 		if (acceptedCharacters == null) acceptedCharacters = AcceptedCharacters.Any;
 
-		final SpanConstructor span = getFactory().span(spanType, spanContent, spanType == SpanKind.Markup).accepts(acceptedCharacters);
+		final SpanConstructor span = factory().span(spanType, spanContent, spanType == SpanKind.Markup).accepts(acceptedCharacters);
 		final BlockBuilder b = new BlockBuilder();
 		b.setType(blockType);
 		return configureAndAddSpanToBlock(b, span);

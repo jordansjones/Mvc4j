@@ -25,15 +25,15 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 
 	private TemplateBlock testTemplate() {
 		return new TemplateBlock(new MarkupBlock(
-			getFactory().markupTransition().build(),
-			getFactory().markup("<p>Foo #").build(),
+			factory().markupTransition().build(),
+			factory().markup("<p>Foo #").build(),
 			new ExpressionBlock(
-				getFactory().codeTransition().build(),
-				getFactory().code("item")
+				factory().codeTransition().build(),
+				factory().code("item")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace).build()
 			),
-			getFactory().markup("</p>").accepts(AcceptedCharacters.None).build()
+			factory().markup("</p>").accepts(AcceptedCharacters.None).build()
 		));
 	}
 
@@ -42,30 +42,30 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	private TemplateBlock testNestedTemplate() {
 		return new TemplateBlock(
 			new MarkupBlock(
-				getFactory().markupTransition().build(),
-				getFactory().markup("<p>Foo #").build(),
+				factory().markupTransition().build(),
+				factory().markup("<p>Foo #").build(),
 				new ExpressionBlock(
-					getFactory().codeTransition().build(),
-					getFactory().code("Html.Repeat(10, ")
+					factory().codeTransition().build(),
+					factory().code("Html.Repeat(10, ")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords).build(),
 					new TemplateBlock(
 						new MarkupBlock(
-							getFactory().markupTransition().build(),
-							getFactory().markup("<p>").build(),
+							factory().markupTransition().build(),
+							factory().markup("<p>").build(),
 							new ExpressionBlock(
-								getFactory().codeTransition().build(),
-								getFactory().code("item")
+								factory().codeTransition().build(),
+								factory().code("item")
 									.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 									.accepts(AcceptedCharacters.NonWhiteSpace).build()
 							),
-							getFactory().markup("</p>").accepts(AcceptedCharacters.None).build()
+							factory().markup("</p>").accepts(AcceptedCharacters.None).build()
 						)
 					),
-					getFactory().code(")")
+					factory().code(")")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace).build()
 				),
-				getFactory().markup("</p>").accepts(AcceptedCharacters.None).build()
+				factory().markup("</p>").accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -75,19 +75,19 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ var foo = @: bar" + newLine() + "; }",
 			new StatementBlock(
-				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
-				getFactory().code(" var foo = ").asStatement().build(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().code(" var foo = ").asStatement().build(),
 				new TemplateBlock(
 					new MarkupBlock(
-						getFactory().markupTransition().build(),
-						getFactory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-						getFactory().markup(" bar" + newLine())
+						factory().markupTransition().build(),
+						factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+						factory().markup(" bar" + newLine())
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
 							.accepts(AcceptedCharacters.None).build()
 					)
 				),
-				getFactory().code("; ").asStatement().build(),
-				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+				factory().code("; ").asStatement().build(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -97,19 +97,19 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{i@: bar" + newLine() + "}",
 			new StatementBlock(
-				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
-				getFactory().code("i").asStatement().build(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().code("i").asStatement().build(),
 				new TemplateBlock(
 					new MarkupBlock(
-						getFactory().markupTransition().build(),
-						getFactory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-						getFactory().markup(" bar" + newLine())
+						factory().markupTransition().build(),
+						factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+						factory().markup(" bar" + newLine())
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
 							.accepts(AcceptedCharacters.None).build()
 					)
 				),
-				getFactory().emptyJava().asStatement().build(),
-				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+				factory().emptyJava().asStatement().build(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -119,11 +119,11 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"(Html.Repeat(10," + testTemplateCode + "))",
 			new ExpressionBlock(
-				getFactory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				getFactory().code("Html.Repeat(10, ").asExpression().build(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
+				factory().code("Html.Repeat(10, ").asExpression().build(),
 				testTemplate(),
-				getFactory().code(")").asExpression().build(),
-				getFactory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().code(")").asExpression().build(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -133,10 +133,10 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"Html.Repeat(10," + testTemplateCode + ")",
 			new ExpressionBlock(
-				getFactory().code("Html.Repeat(10, ")
+				factory().code("Html.Repeat(10, ")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords).build(),
 				testTemplate(),
-				getFactory().code(")")
+				factory().code(")")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace).build()
 			)
@@ -148,9 +148,9 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"Html.Repeat(10," + testNestedTemplateCode + ")",
 			new ExpressionBlock(
-				getFactory().code("Html.Repeat(10, ").asImplicitExpression(JavaCodeParser.DefaultKeywords).build(),
+				factory().code("Html.Repeat(10, ").asImplicitExpression(JavaCodeParser.DefaultKeywords).build(),
 				testNestedTemplate(),
-				getFactory().code(")")
+				factory().code(")")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace).build()
 			),
@@ -163,9 +163,9 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"foreach(foo in Bar) { Html.ExecuteTemplate(foo," + testTemplateCode + "); }",
 			new StatementBlock(
-				getFactory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
+				factory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
 				testTemplate(),
-				getFactory().code("); }")
+				factory().code("); }")
 					.asStatement()
 					.accepts(AcceptedCharacters.None).build()
 			)
@@ -177,11 +177,11 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"foreach(foo in Bar) { Html.ExecuteTemplate(foo," + testTemplateCode + "," + testTemplateCode + "); }",
 			new StatementBlock(
-				getFactory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
+				factory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
 				testTemplate(),
-				getFactory().code(", ").asStatement().build(),
+				factory().code(", ").asStatement().build(),
 				testTemplate(),
-				getFactory().code("); }")
+				factory().code("); }")
 					.asStatement()
 					.accepts(AcceptedCharacters.None).build()
 			)
@@ -193,9 +193,9 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"foreach(foo in Bar) { Html.ExecuteTemplate(foo," + testNestedTemplateCode + "); }",
 			new StatementBlock(
-				getFactory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
+				factory().code("foreach(foo in Bar) { Html.ExecuteTemplate(foo, ").asStatement().build(),
 				testNestedTemplate(),
-				getFactory().code("); }")
+				factory().code("); }")
 					.asStatement()
 					.accepts(AcceptedCharacters.None).build()
 			),
@@ -208,11 +208,11 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ var foo = bar; Html.ExecuteTemplate(foo," + testTemplateCode + "); }",
 			new StatementBlock(
-				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
-				getFactory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
 				testTemplate(),
-				getFactory().code("); ").asStatement().build(),
-				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+				factory().code("); ").asStatement().build(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -221,13 +221,13 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	public void parseBlockHandlessTwoTemplatesInStatementWithinStatementBlock() {
 		parseBlockTest("{ var foo = bar; Html.ExecuteTemplate(foo," + testTemplateCode + "," + testTemplateCode + "); }",
 			new StatementBlock(
-				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
-				getFactory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
 				testTemplate(),
-				getFactory().code(", ").asStatement().build(),
+				factory().code(", ").asStatement().build(),
 				testTemplate(),
-				getFactory().code("); ").asStatement().build(),
-				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+				factory().code("); ").asStatement().build(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None).build()
 			)
 		);
 	}
@@ -236,11 +236,11 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	public void parseBlockProducesErrorButCorrectlyParsesNestedTemplateInStatementWithinStatementBlock() {
 		parseBlockTest("{ var foo = bar; Html.ExecuteTemplate(foo," + testNestedTemplateCode + "); }",
 			new StatementBlock(
-				getFactory().metaCode("{").accepts(AcceptedCharacters.None).build(),
-				getFactory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().code(" var foo = bar; Html.ExecuteTemplate(foo, ").asStatement().build(),
 				testNestedTemplate(),
-				getFactory().code("); ").asStatement().build(),
-				getFactory().metaCode("}").accepts(AcceptedCharacters.None).build()
+				factory().code("); ").asStatement().build(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None).build()
 			),
 			getNestedTemplateError(69)
 		);
