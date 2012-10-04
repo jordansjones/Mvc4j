@@ -1,10 +1,8 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import java.io.Serializable;
 
-@TODO
+// TODO
 public class CodeAssignStatement extends CodeStatement implements Serializable {
 
 	private static final long serialVersionUID = -1217184902214014662L;

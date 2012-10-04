@@ -1,6 +1,5 @@
 package nextmethod.web.razor.parser;
 
-import nextmethod.annotations.TODO;
 import nextmethod.threading.SendOrPostCallback;
 import nextmethod.threading.SynchronizationContext;
 import nextmethod.web.razor.parser.syntaxtree.Block;
@@ -98,7 +97,7 @@ public class CallbackVisitor extends ParserVisitor {
 		});
 	}
 
-	@TODO
+	// TODO
 	private static <T> void raiseCallback(final SynchronizationContext syncContext, final T param, final IAction1<T> callback) {
 		if (callback != null) {
 			if (syncContext != null) {

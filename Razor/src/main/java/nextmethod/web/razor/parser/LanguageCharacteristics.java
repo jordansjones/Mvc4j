@@ -1,7 +1,6 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.collect.Lists;
-import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 import nextmethod.base.KeyValue;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
@@ -46,7 +45,7 @@ public abstract class LanguageCharacteristics<
 		return tokenizeString(SourceLocation.Zero, content);
 	}
 
-	@TODO("This should use an Iterator instead of a List")
+	// TODO This should use an Iterator instead of a List
 	public Iterable<TSymbol> tokenizeString(@Nonnull final SourceLocation start, @Nonnull final String input) {
 		final List<TSymbol> results = Lists.newArrayList();
 		try (SeekableTextReader reader = new SeekableTextReader(input)) {

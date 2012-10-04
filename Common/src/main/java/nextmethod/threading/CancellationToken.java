@@ -1,8 +1,6 @@
 package nextmethod.threading;
 
-import nextmethod.annotations.TODO;
-
-@TODO
+// TODO
 public final class CancellationToken {
 
 	public static CancellationToken none() {

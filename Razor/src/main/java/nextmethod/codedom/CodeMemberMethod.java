@@ -1,8 +1,6 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
-@TODO
+// TODO
 public class CodeMemberMethod extends CodeTypeMember {
 
 	private CodeStatementCollection statements;

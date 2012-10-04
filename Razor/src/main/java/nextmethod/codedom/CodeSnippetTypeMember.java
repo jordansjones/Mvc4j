@@ -1,10 +1,8 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import java.io.Serializable;
 
-@TODO
+// TODO
 public class CodeSnippetTypeMember extends CodeTypeMember implements Serializable {
 
 	private static final long serialVersionUID = 7331691969139845195L;

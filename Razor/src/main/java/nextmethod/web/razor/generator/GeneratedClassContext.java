@@ -1,14 +1,13 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Strings;
-import nextmethod.annotations.TODO;
 
 import java.util.Objects;
 
 import static nextmethod.base.TypeHelpers.typeAs;
 import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
 
-@TODO
+// TODO
 public class GeneratedClassContext {
 
 	public static final String DefaultWriteMethodName = "Write";

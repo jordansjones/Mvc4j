@@ -2,7 +2,6 @@ package nextmethod.web.razor.generator;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 
 import javax.annotation.Nonnull;
@@ -60,7 +59,7 @@ class JavaCodeWriter extends BaseCodeWriter {
 		}
 	}
 
-	@TODO
+	// TODO
 	private void writeVerbatimStringLiteral(@Nonnull final String literal, final int length) {
 		// How to do '@"blahblah";' in Java?
 		getInnerWriter().write("@\"");

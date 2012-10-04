@@ -2,12 +2,11 @@ package nextmethod.codedom;
 
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.Lists;
-import nextmethod.annotations.TODO;
 
 import java.io.Serializable;
 import java.util.List;
 
-@TODO
+// TODO
 public class CodePackageCollection extends ForwardingList<CodePackage> implements Serializable {
 
 	private static final long serialVersionUID = 3167207761604916491L;

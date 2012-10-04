@@ -1,10 +1,8 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import java.io.Serializable;
 
-@TODO
+// TODO
 public class CodeTypeDeclaration extends CodeTypeMember implements Serializable {
 
 	private static final long serialVersionUID = 16283811121931559L;

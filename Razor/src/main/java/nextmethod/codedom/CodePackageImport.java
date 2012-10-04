@@ -1,10 +1,8 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import java.io.Serializable;
 
-@TODO
+// TODO
 public class CodePackageImport extends CodeObject implements Serializable {
 
 	private static final long serialVersionUID = 5451857111922184818L;

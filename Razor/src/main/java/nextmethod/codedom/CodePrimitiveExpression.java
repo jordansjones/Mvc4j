@@ -1,10 +1,8 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import java.io.Serializable;
 
-@TODO
+// TODO
 public class CodePrimitiveExpression extends CodeExpression implements Serializable {
 
 	private static final long serialVersionUID = 6501060541239915815L;

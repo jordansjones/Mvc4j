@@ -1,11 +1,9 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 
-@TODO
+// TODO
 public class CodeTypeMember extends CodeObject {
 
 	private String name;

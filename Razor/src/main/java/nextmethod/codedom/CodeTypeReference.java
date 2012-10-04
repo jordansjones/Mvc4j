@@ -1,12 +1,10 @@
 package nextmethod.codedom;
 
-import nextmethod.annotations.TODO;
-
 import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@TODO
+// TODO
 public class CodeTypeReference extends CodeObject implements Serializable {
 
 	private static final long serialVersionUID = 7348697595800892347L;

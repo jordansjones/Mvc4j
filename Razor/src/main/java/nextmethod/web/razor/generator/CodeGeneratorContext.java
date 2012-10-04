@@ -4,7 +4,6 @@ package nextmethod.web.razor.generator;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import nextmethod.annotations.TODO;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.codedom.CodeCompileUnit;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
-@TODO
+// TODO
 public class CodeGeneratorContext {
 
 	private static final String DesignTimeHelperMethodName = "__RazorDesignTimeHelpers__";
@@ -62,7 +61,7 @@ public class CodeGeneratorContext {
 		return create(host, null, className, rootPackage, sourceFile, shouldGenerateLinePragmas);
 	}
 
-	@TODO
+	// TODO
 	static CodeGeneratorContext create(final RazorEngineHost host, final Delegates.IFunc<CodeWriter> writerFactory, final String className, final String rootPackage, final String sourceFile, final boolean shouldGenerateLinePragmas) {
 		final CodeGeneratorContext context = new CodeGeneratorContext();
 		context.host = host;
@@ -208,7 +207,7 @@ public class CodeGeneratorContext {
 		addStatement(generatedCode, null);
 	}
 
-	@TODO
+	// TODO
 	public void addStatement(final String body, final CodeLinePragma pragma) {
 		if (statementCollector == null) {
 			final CodeSnippetStatement statement = new CodeSnippetStatement(body);
@@ -240,7 +239,7 @@ public class CodeGeneratorContext {
 		});
 	}
 
-	@TODO
+	// TODO
 	public void addContextCall(final Span contentSpan, final String methodName, final boolean isLiteral) {
 		addStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override

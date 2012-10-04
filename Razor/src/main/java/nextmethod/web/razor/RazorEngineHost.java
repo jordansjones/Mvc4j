@@ -1,17 +1,13 @@
 package nextmethod.web.razor;
 
 import com.google.common.collect.Sets;
-import nextmethod.annotations.TODO;
 import nextmethod.web.razor.generator.GeneratedClassContext;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Set;
 
-/**
- *
- */
-@TODO
+// TODO
 public class RazorEngineHost {
 
 	static final String InternalDefaultClassName = "__CompiledTemplate";

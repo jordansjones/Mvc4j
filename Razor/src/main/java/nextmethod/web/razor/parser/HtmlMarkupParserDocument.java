@@ -1,7 +1,6 @@
 package nextmethod.web.razor.parser;
 
 import nextmethod.base.IDisposable;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.parser.syntaxtree.BlockType;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;

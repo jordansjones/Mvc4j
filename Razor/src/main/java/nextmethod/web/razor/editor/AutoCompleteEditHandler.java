@@ -1,6 +1,5 @@
 package nextmethod.web.razor.editor;
 
-import com.google.common.base.Strings;
 import nextmethod.base.Delegates;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.ParserHelpers;
