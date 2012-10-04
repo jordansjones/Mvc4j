@@ -6,6 +6,7 @@ import nextmethod.base.IDisposable;
 import nextmethod.codedom.CodeLinePragma;
 import nextmethod.codedom.CodeSnippetTypeMember;
 import nextmethod.web.razor.RazorEngineHost;
+import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.text.LocationTagged;
 

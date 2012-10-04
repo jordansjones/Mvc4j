@@ -1,4 +1,4 @@
-package nextmethod.web.razor.generator;
+package nextmethod.web.razor.generator.internal;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.StringWriter;
 
-class JavaCodeWriter extends BaseCodeWriter {
+public class JavaCodeWriter extends BaseCodeWriter {
 
 	@Override
 	protected void writeStartGenerics() {

@@ -9,6 +9,7 @@ import nextmethod.codedom.CodePackageImport;
 import nextmethod.codedom.CodeTypeReference;
 import nextmethod.codedom.MemberAttributes;
 import nextmethod.web.razor.RazorEngineHost;
+import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.ParserVisitor;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.Span;
@@ -38,7 +39,7 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 		this.generateLinePragmas = Strings.isNullOrEmpty(sourceFileName);
 	}
 
-	public Delegates.IFunc<CodeWriter> getCodeWriterFactory() {
+	protected Delegates.IFunc<CodeWriter> getCodeWriterFactory() {
 		return null;
 	}
 

@@ -1,11 +1,11 @@
-package nextmethod.web.razor.generator;
+package nextmethod.web.razor.generator.internal;
 
 import nextmethod.base.Delegates;
 
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("UnusedDeclaration")
-abstract class BaseCodeWriter extends CodeWriter {
+public abstract class BaseCodeWriter extends CodeWriter {
 
 	@Override
 	public void writeSnippet(@Nonnull final String snippet) {

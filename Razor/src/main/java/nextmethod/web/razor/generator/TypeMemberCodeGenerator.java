@@ -2,6 +2,7 @@ package nextmethod.web.razor.generator;
 
 import nextmethod.base.Delegates;
 import nextmethod.codedom.CodeSnippetTypeMember;
+import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;

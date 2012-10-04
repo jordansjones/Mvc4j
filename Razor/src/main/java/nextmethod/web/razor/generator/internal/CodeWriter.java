@@ -1,4 +1,4 @@
-package nextmethod.web.razor.generator;
+package nextmethod.web.razor.generator.internal;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Closeables;
@@ -13,7 +13,7 @@ import java.io.StringWriter;
 import static nextmethod.base.SystemHelpers.newLine;
 
 @SuppressWarnings("UnusedDeclaration")
-abstract class CodeWriter implements IDisposable {
+public abstract class CodeWriter implements IDisposable {
 
 	private StringWriter writer;
 

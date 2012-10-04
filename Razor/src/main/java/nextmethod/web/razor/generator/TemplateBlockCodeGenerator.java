@@ -1,6 +1,7 @@
 package nextmethod.web.razor.generator;
 
 import nextmethod.base.Delegates;
+import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 
 import javax.annotation.Nonnull;

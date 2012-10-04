@@ -15,6 +15,7 @@ import nextmethod.codedom.CodeSnippetStatement;
 import nextmethod.codedom.CodeTypeDeclaration;
 import nextmethod.codedom.MemberAttributes;
 import nextmethod.web.razor.RazorEngineHost;
+import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.utils.DisposableAction;
