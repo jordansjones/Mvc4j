@@ -43,7 +43,7 @@ public abstract class ParserTestBase {
 
 	protected static Block IgnoreOutput = new IgnoreOutputBlock();
 
-	protected final SpanFactory factory;
+	private final SpanFactory factory;
 
 	protected ParserTestBase() {
 		this.factory = createSpanFactory();
