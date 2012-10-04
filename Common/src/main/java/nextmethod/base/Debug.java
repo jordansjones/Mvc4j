@@ -7,6 +7,10 @@ import javax.annotation.Nonnull;
  */
 public final class Debug {
 
+	public static boolean isDebugArgPresent(final String argName) {
+		return Boolean.getBoolean(argName);
+	}
+
 	/**
 	 * Emits the specified error message
 	 * @param message    Error message to emit
