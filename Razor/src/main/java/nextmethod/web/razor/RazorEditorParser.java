@@ -1,9 +1,16 @@
 package nextmethod.web.razor;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import nextmethod.base.Debug;
 import nextmethod.base.IDisposable;
+import nextmethod.base.IEventHandler;
+import nextmethod.base.NotImplementedException;
+import nextmethod.web.razor.editor.AutoCompleteEditHandler;
+import nextmethod.web.razor.editor.EditResult;
 import nextmethod.web.razor.editor.internal.BackgroundParser;
 import nextmethod.web.razor.editor.internal.RazorEditorTrace;
 import nextmethod.web.razor.parser.syntaxtree.Block;
@@ -14,7 +21,12 @@ import javax.annotation.Nonnull;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.EnumSet;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static nextmethod.base.TypeHelpers.typeAs;
+import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 /**
@@ -71,7 +83,6 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
  *     event, for the second change.
  * </p>
  */
-// TODO
 public class RazorEditorParser implements IDisposable {
 
 	private static final String DebugArg = "EDITOR_TRACING";
@@ -82,19 +93,109 @@ public class RazorEditorParser implements IDisposable {
 	private BackgroundParser parser;
 	private Block currentParseTree;
 
-	private String fileName;
+	private final RazorEngineHost host;
+	private final String fileName;
 
-	public PartialParseResult checkForStructureChanges(@Nonnull final TextChange change) {
+	private boolean lastResultProvisional;
+
+	private IEventHandler<DocumentParseCompleteEventArgs> documentParseCompleteHandler;
+
+	public RazorEditorParser(@Nonnull final RazorEngineHost host, @Nonnull final String sourceFileName) {
+		this.host = checkNotNull(host, "host");
+
+		checkArgument(Strings.isNullOrEmpty(sourceFileName) == false, CommonResources().getString("argument.cannot.be.null.or.empty"), "sourceFileName");
+		this.fileName = sourceFileName;
+
+		this.parser = new BackgroundParser(this.host, this.fileName);
+		this.parser.setResultsReadyHandler(new IEventHandler<DocumentParseCompleteEventArgs>() {
+			@Override
+			public void handleEvent(@Nonnull final Object sender, @Nonnull final DocumentParseCompleteEventArgs e) {
+				onDocumentParseComplete(e);
+			}
+		});
+		this.parser.start();
+	}
+
+	public RazorEngineHost getHost() {
+		return host;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public boolean isLastResultProvisional() {
+		return lastResultProvisional;
+	}
+
+	public Block getCurrentParseTree() {
+		return currentParseTree;
+	}
+
+	public String getAutoCompleteString() {
+		if (lastAutoCompleteSpan != null) {
+			final AutoCompleteEditHandler editHandler = typeAs(lastAutoCompleteSpan.getEditHandler(), AutoCompleteEditHandler.class);
+			if (editHandler != null) {
+				return editHandler.getAutoCompleteString();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Determines if a change will cause a structural change to the document and if not, applies it to the existing tree.
+	 * If a structural change would occur, automatically starts a reparse
+	 * <p>
+	 *     NOTE: The initial incremental parsing check and actual incremental parsing (if possible) occurs
+	 *     on the callers thread. However, if a full reparse is needed, this occurs on a background thread.
+	 * </p>
+	 *
+	 * @param change    The change to apply to the parse tree
+	 * @return a PartialParseResult value indicating the result of the incremental parse
+	 */
+	public EnumSet<PartialParseResult> checkForStructureChanges(@Nonnull final TextChange change) {
 		// Validate the change
 		Stopwatch sw = null;
 		if (Debug.isDebugArgPresent(DebugArg)) {
 			sw = new Stopwatch().start();
 		}
+		RazorEditorTrace.traceLine(
+			RazorResources().getString("trace.editorReceivedChange"),
+			getFileName(fileName),
+			change
+		);
+		if (change.getNewBuffer() == null) {
+			throw new IllegalArgumentException(
+				String.format(
+					RazorResources().getString("structure.member.cannotBeNull"),
+					"Buffer",
+					"TextChange"
+				)
+			);
+		}
 
-		PartialParseResult result = PartialParseResult.Rejected;
+		EnumSet<PartialParseResult> result = PartialParseResult.setOfRejected();
 
+		// If there isn't already a parse underway, try partial-parsing
 		String changeString = "";
-		// ...
+		try(IDisposable ignored = parser.synchronizeMainThreadState()) {
+			// Capture the string value of the change while we're synchronized
+			changeString = change.toString();
+
+			// Check if we can partial-parse
+			if (getCurrentParseTree() != null && parser.isIdle()) {
+				result = tryPartialParse(change);
+			}
+		}
+
+		// If partial parsing failed or there were outstanding parser tasks, start a full reparse
+		if (result.contains(PartialParseResult.Rejected)) {
+			parser.queueChange(change);
+		}
+
+		// Otherwise, remember if this was provisionally accepted for next partial parse
+		lastResultProvisional = result.contains(PartialParseResult.Provisional);
+		verifyFlagsAreValid(result);
 
 		if (sw != null) {
 			sw.stop();
@@ -102,10 +203,10 @@ public class RazorEditorParser implements IDisposable {
 
 		RazorEditorTrace.traceLine(
 			RazorResources().getString("trace.editorProcessedChange"),
-			FileSystems.getDefault().getPath(fileName).getFileName().toString(),
+			getFileName(fileName),
 			changeString,
 			sw != null ? sw : "?",
-			result.toString()
+			enumSetToString(result)
 		);
 
 		return result;
@@ -117,4 +218,80 @@ public class RazorEditorParser implements IDisposable {
 		parser.close();
 	}
 
+	private EnumSet<PartialParseResult> tryPartialParse(final TextChange change) {
+		EnumSet<PartialParseResult> result = PartialParseResult.setOfRejected();
+
+		// Try the last change owner
+		if (lastChangeOwner != null && lastChangeOwner.getEditHandler().ownsChange(lastChangeOwner, change)) {
+			final EditResult editResult = lastChangeOwner.getEditHandler().applyChange(lastChangeOwner, change);
+			result = editResult.getResults();
+			if (!editResult.getResults().contains(PartialParseResult.Rejected)) {
+				lastChangeOwner.replaceWith(editResult.getEditedSpan());
+			}
+
+			return result;
+		}
+
+		// Locate the span responsible for this change
+		lastChangeOwner = getCurrentParseTree().locateOwner(change);
+
+		if (lastResultProvisional) {
+			// Last change owner couldn't accept this, so we must do a full reparse
+			result = PartialParseResult.setOfRejected();
+		}
+		else if (lastChangeOwner != null) {
+			final EditResult editResult = lastChangeOwner.getEditHandler().applyChange(lastChangeOwner, change);
+			result = editResult.getResults();
+			if (!editResult.getResults().contains(PartialParseResult.Rejected)) {
+				lastChangeOwner.replaceWith(editResult.getEditedSpan());
+			}
+			if (result.contains(PartialParseResult.AutoCompleteBlock)) {
+				lastAutoCompleteSpan = lastChangeOwner;
+			}
+			else {
+				lastAutoCompleteSpan = null;
+			}
+		}
+		return result;
+	}
+
+	private void onDocumentParseComplete(final DocumentParseCompleteEventArgs args) {
+		try(IDisposable ignored = parser.synchronizeMainThreadState()) {
+			currentParseTree = args.getGeneratorResults().getDocument();
+			lastChangeOwner = null;
+		}
+
+		if (Debug.isAssertEnabled()) assert args != null;
+
+		if (documentParseCompleteHandler != null) {
+			try {
+				documentParseCompleteHandler.handleEvent(this, args);
+			}
+			catch (Throwable e) {
+				// TODO
+//				Debug.WriteLine("[RzEd] Document Parse Complete Handler Threw: " + ex.ToString());
+			}
+		}
+	}
+
+	public void setDocumentParseCompleteHandler(final IEventHandler<DocumentParseCompleteEventArgs> documentParseCompleteHandler) {
+		this.documentParseCompleteHandler = documentParseCompleteHandler;
+	}
+
+	private static void verifyFlagsAreValid(final EnumSet<PartialParseResult> result) {
+		if (Debug.isAssertEnabled()) {
+			assert result.contains(PartialParseResult.Accepted) || result.contains(PartialParseResult.Rejected) : "Partial Parse result does not have either of Accepted or Rejected";
+			assert result.contains(PartialParseResult.Rejected) || !result.contains(PartialParseResult.SpanContextChanged) : "Partial Parse result was Accepted AND had SpanContextChanged";
+			assert result.contains(PartialParseResult.Rejected) || !result.contains(PartialParseResult.AutoCompleteBlock) : "Partial Parse result was Accepted AND had AutoCompleteBlock";
+			assert result.contains(PartialParseResult.Accepted) || !result.contains(PartialParseResult.Provisional) : "Partial Parse result was Rejected AND had Provisional";
+		}
+	}
+
+	private static String getFileName(final String fileName) {
+		return FileSystems.getDefault().getPath(fileName).getFileName().toString();
+	}
+
+	private static String enumSetToString(final EnumSet<PartialParseResult> results) {
+		return Joiner.on("; ").skipNulls().join(results);
+	}
 }

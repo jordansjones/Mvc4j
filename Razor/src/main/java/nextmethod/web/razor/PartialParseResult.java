@@ -48,6 +48,10 @@ public enum PartialParseResult {
 	public static final EnumSet<PartialParseResult> Any = EnumSet.allOf(PartialParseResult.class);
 	public static final EnumSet<PartialParseResult> NotAny = EnumSet.noneOf(PartialParseResult.class);
 
+	public static EnumSet<PartialParseResult> setOfRejected() {
+		return EnumSet.of(PartialParseResult.Rejected);
+	}
+
 	public static EnumSet<PartialParseResult> setOf(@Nullable final PartialParseResult... values) {
 		if (values == null || values.length < 1) return NotAny;
 

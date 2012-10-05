@@ -3,6 +3,7 @@ package nextmethod.web.razor.text;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -172,6 +173,7 @@ public class TextChange {
 		return oldBuffer;
 	}
 
+	@Nullable
 	public ITextBuffer getNewBuffer() {
 		return newBuffer;
 	}
