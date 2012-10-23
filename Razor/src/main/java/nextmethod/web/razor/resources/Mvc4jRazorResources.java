@@ -1,6 +1,6 @@
 package nextmethod.web.razor.resources;
 
-import java.util.ResourceBundle;
+import nextmethod.i18n.ResourceBundleFactory;
 
 /**
  *
@@ -9,12 +9,12 @@ public final class Mvc4jRazorResources {
 
 	private Mvc4jRazorResources() {}
 
-	private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(String.format(
-		"%s.RazorResources",
-		Mvc4jRazorResources.class.getPackage().getName()
-	));
+	private static IRazorResources resourceBundle = null;
 
-	public static ResourceBundle RazorResources() {
+	public static IRazorResources RazorResources() {
+		if (resourceBundle == null) {
+			resourceBundle = ResourceBundleFactory.newInstance(IRazorResources.class);
+		}
 		return resourceBundle;
 	}
 }

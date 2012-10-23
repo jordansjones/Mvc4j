@@ -27,10 +27,10 @@ public class TextChange {
 	}
 
 	public TextChange(final int oldPosition, final int oldLength, @Nonnull final ITextBuffer oldBuffer, final int newPosition, final int newLength, @Nonnull final ITextBuffer newBuffer) {
-		checkArgument(oldPosition >= 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "oldPosition", "0");
-		checkArgument(newPosition >= 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "newPosition", "0");
-		checkArgument(oldLength >= 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "oldLength", "0");
-		checkArgument(newLength >= 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "newLength", "0");
+		checkArgument(oldPosition >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+		checkArgument(newPosition >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+		checkArgument(oldLength >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+		checkArgument(newLength >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
 		checkNotNull(oldBuffer);
 		checkNotNull(newBuffer);
 

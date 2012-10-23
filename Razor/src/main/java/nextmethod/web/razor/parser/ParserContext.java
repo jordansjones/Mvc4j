@@ -55,7 +55,7 @@ public class ParserContext {
 		checkNotNull(activeParser, "activeParser");
 
 		if (activeParser != codeParser && activeParser != markupParser) {
-			throw new IllegalArgumentException(RazorResources().getString("activeParser.must.be.code.or.markup.parser"));
+			throw new IllegalArgumentException(RazorResources().activeParserMustBeCodeOrMarkupParser());
 		}
 
 		captureOwnerTask();
@@ -133,7 +133,7 @@ public class ParserContext {
 	public void addSpan(@Nonnull final Span span) {
 		ensureNotTerminated();
 		if (blockStack.size() == 0) {
-			throw new UnsupportedOperationException(RazorResources().getString("parserContext.noCurrentBlock"));
+			throw new UnsupportedOperationException(RazorResources().parserContextNoCurrentBlock());
 		}
 		blockStack.peek().getChildren().add(span);
 		lastSpan = span;
@@ -180,7 +180,7 @@ public class ParserContext {
 		ensureNotTerminated();
 		assertOnOwnerTask();
 		if (blockStack.isEmpty()) {
-			throw new UnsupportedOperationException(RazorResources().getString("endBlock.called.without.matching.startBlock"));
+			throw new UnsupportedOperationException(RazorResources().endBlockCalledWithoutMatchingStartBlock());
 		}
 		if (blockStack.size() > 1) {
 			final BlockBuilder block = blockStack.pop();
@@ -229,10 +229,10 @@ public class ParserContext {
 
 	public ParserResults completeParse() {
 		if (blockStack.isEmpty()) {
-			throw new UnsupportedOperationException(RazorResources().getString("parserContext.cannotCompleteTree.noRootBlock"));
+			throw new UnsupportedOperationException(RazorResources().parserContextCannotCompleteTreeNoRootBlock());
 		}
 		if (blockStack.size() != 1) {
-			throw new UnsupportedOperationException(RazorResources().getString("parserContext.cannotCompleteTree.outstandingBlocks"));
+			throw new UnsupportedOperationException(RazorResources().parserContextCannotCompleteTreeOutstandingBlocks());
 		}
 
 		return new ParserResults(blockStack.pop().build(), errors);
@@ -262,7 +262,7 @@ public class ParserContext {
 
 	private void ensureNotTerminated() {
 		if (terminated) {
-			throw new UnsupportedOperationException(RazorResources().getString("parserContext.parseComplete"));
+			throw new UnsupportedOperationException(RazorResources().parserContextParseComplete());
 		}
 	}
 

@@ -275,7 +275,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 					}
 				}
 				else if (isEndOfFile()) {
-					getCurrentErrors().add(new RazorError(RazorResources().getString("parseError.unterminated.string.literal"), getCurrentStart()));
+					getCurrentErrors().add(new RazorError(RazorResources().parseErrorUnterminatedStringLiteral(), getCurrentStart()));
 				}
 				return transition(endSymbol(JavaSymbolType.StringLiteral), dataState);
 			}
@@ -301,7 +301,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 					return stay();
 				}
 				else if (isEndOfFile() || ParserHelpers.isNewLine(getCurrentChar())) {
-					getCurrentErrors().add(new RazorError(RazorResources().getString("parseError.unterminated.string.literal"), getCurrentStart()));
+					getCurrentErrors().add(new RazorError(RazorResources().parseErrorUnterminatedStringLiteral(), getCurrentStart()));
 				}
 				else {
 					takeCurrent(); // No-op if at EOF
@@ -317,7 +317,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 			public StateResult invoke() {
 				takeUntil(Predicates.equalTo('*'));
 				if (isEndOfFile()) {
-					getCurrentErrors().add(new RazorError(RazorResources().getString("parseError.blockComment.not.terminated"), getCurrentStart()));
+					getCurrentErrors().add(new RazorError(RazorResources().parseErrorBlockCommentNotTerminated(), getCurrentStart()));
 					return transition(endSymbol(JavaSymbolType.Comment), dataState);
 				}
 				if (getCurrentChar() == '*') {

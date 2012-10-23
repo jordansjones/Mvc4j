@@ -84,7 +84,7 @@ public class BufferingTextReader extends LookaheadTextReader {
 	@Override
 	public void cancelBacktrack() {
 		if (backtrackStack.isEmpty())
-			throw new UnsupportedOperationException(RazorResources().getString("cancelBacktrack.must.be.called.within.lookahead"));
+			throw new UnsupportedOperationException(RazorResources().cancelBacktrackMustBeCalledWithinLookahead());
 
 		// Ust pop the current backtrack context so that when the lookahead ends, it won't be backtracked
 		backtrackStack.pop();

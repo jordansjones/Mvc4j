@@ -1,0 +1,11 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+	<entry key="argument.cannot.be.null.or.empty">Value cannot be null or an empty string.</entry>
+	<entry key="argument.must.be.between">Value must be between {0} and {1}.</entry>
+	<entry key="argument.must.be.enum.member">Value must be a value from the "{0}" enumeration.</entry>
+	<entry key="argument.must.be.greaterThan">Value must be greater than {0}.</entry>
+	<entry key="argument.must.be.greaterThanOrEqualTo">Value must be greater than or equal to {0}.</entry>
+	<entry key="argument.must.be.lessThan">Value must be less than {0}.</entry>
+	<entry key="argument.must.be.lessThanOrEqualTo">Value must be less than or equal to {0}.</entry>
+	<entry key="argument.must.be.null.or.non.empty">Value cannot be an empty string. It must either be null or a non-empty string.</entry>
+</properties>

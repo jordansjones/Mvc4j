@@ -166,34 +166,34 @@ public class JavaLanguageCharacteristics extends LanguageCharacteristics<JavaTok
 		if (!symbolSamples.containsKey(type)) {
 			switch (type) {
 				case Identifier:
-					return RazorResources().getString("javaSymbol.identifier");
+					return RazorResources().javaSymbolIdentifier();
 
 				case Keyword:
-					return RazorResources().getString("javaSymbol.keyword");
+					return RazorResources().javaSymbolKeyword();
 
 				case IntegerLiteral:
-					return RazorResources().getString("javaSymbol.integerLiteral");
+					return RazorResources().javaSymbolIntegerLiteral();
 
 				case NewLine:
-					return RazorResources().getString("javaSymbol.newline");
+					return RazorResources().javaSymbolNewline();
 
 				case WhiteSpace:
-					return RazorResources().getString("javaSymbol.whitespace");
+					return RazorResources().javaSymbolWhitespace();
 
 				case Comment:
-					return RazorResources().getString("javaSymbol.comment");
+					return RazorResources().javaSymbolComment();
 
 				case RealLiteral:
-					return RazorResources().getString("javaSymbol.realLiteral");
+					return RazorResources().javaSymbolRealLiteral();
 
 				case CharacterLiteral:
-					return RazorResources().getString("javaSymbol.characterLiteral");
+					return RazorResources().javaSymbolCharacterLiteral();
 
 				case StringLiteral:
-					return RazorResources().getString("javaSymbol.stringLiteral");
+					return RazorResources().javaSymbolStringLiteral();
 
 				default:
-					return RazorResources().getString("symbol.unknown");
+					return RazorResources().symbolUnknown();
 			}
 		}
 		else {

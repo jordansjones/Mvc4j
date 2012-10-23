@@ -23,19 +23,19 @@ public class GeneratedClassContext {
 
 		if (Strings.isNullOrEmpty(executeMethodName)) {
 			throw new IllegalArgumentException(String.format(
-				CommonResources().getString("argument.cannot.be.null.or.empty"),
+				CommonResources().argumentCannotBeNullOrEmpty(),
 				"executeMethodName"
 			));
 		}
 		if (Strings.isNullOrEmpty(writeMethodName)) {
 			throw new IllegalArgumentException(String.format(
-				CommonResources().getString("argument.cannot.be.null.or.empty"),
+				CommonResources().argumentCannotBeNullOrEmpty(),
 				"writeMethodName"
 			));
 		}
 		if (Strings.isNullOrEmpty(writeLiteralMethodName)) {
 			throw new IllegalArgumentException(String.format(
-				CommonResources().getString("argument.cannot.be.null.or.empty"),
+				CommonResources().argumentCannotBeNullOrEmpty(),
 				"writeLiteralMethodName"
 			));
 		}

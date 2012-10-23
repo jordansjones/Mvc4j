@@ -161,9 +161,10 @@ public abstract class TokenizerBackedParser<
 		if (isEndOfFile() && !mode.contains(BalancingModes.NoErrorOnFailure)) {
 			getContext().onError(
 				start,
-				RazorResources().getString("parseError.expected.closeBracket.before.eof"),
-				getLanguage().getSample(left),
-				getLanguage().getSample(right)
+				RazorResources().parseErrorExpectedCloseBracketBeforeEof(
+					getLanguage().getSample(left),
+					getLanguage().getSample(right)
+				)
 			);
 		}
 		return balance(mode, left, right, start);
@@ -202,9 +203,10 @@ public abstract class TokenizerBackedParser<
 				if (!mode.contains(BalancingModes.NoErrorOnFailure)) {
 					getContext().onError(
 						start,
-						RazorResources().getString("parseError.expected.closeBracket.before.eof"),
-						getLanguage().getSample(left),
-						getLanguage().getSample(right)
+						RazorResources().parseErrorExpectedCloseBracketBeforeEof(
+							getLanguage().getSample(left),
+							getLanguage().getSample(right)
+						)
 					);
 				}
 				if (mode.contains(BalancingModes.BacktrackOnFailure)) {
@@ -413,16 +415,16 @@ public abstract class TokenizerBackedParser<
 		if (!found && errorIfNotFound) {
 			String error;
 			if (getLanguage().isNewLine(getCurrentSymbol())) {
-				error = RazorResources().getString("errorComponent.newline");
+				error = RazorResources().errorComponentNewline();
 			}
 			else if (getLanguage().isWhiteSpace(getCurrentSymbol())) {
-				error = RazorResources().getString("errorComponent.whitespace");
+				error = RazorResources().errorComponentWhitespace();
 			}
 			else if (isEndOfFile()) {
-				error = RazorResources().getString("errorComponent.endOfFile");
+				error = RazorResources().errorComponentEndOfFile();
 			}
 			else {
-				error = String.format(RazorResources().getString("errorComponent.character"), getCurrentSymbol().getContent());
+				error = RazorResources().errorComponentCharacter(getCurrentSymbol().getContent());
 			}
 
 			getContext().onError(
@@ -596,7 +598,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected void outputSpanBeforeRazorComment() {
-		throw new UnsupportedOperationException(RazorResources().getString("language.does.not.support.razorComment"));
+		throw new UnsupportedOperationException(RazorResources().languageDoesNotSupportRazorComment());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -620,7 +622,7 @@ public abstract class TokenizerBackedParser<
 			|| !getLanguage().knowsSymbolType(KnownSymbolType.CommentStar)
 			|| !getLanguage().knowsSymbolType(KnownSymbolType.CommentBody)
 		) {
-			throw new UnsupportedOperationException(RazorResources().getString("language.does.not.support.razorComment"));
+			throw new UnsupportedOperationException(RazorResources().languageDoesNotSupportRazorComment());
 		}
 		outputSpanBeforeRazorComment();
 
@@ -642,7 +644,7 @@ public abstract class TokenizerBackedParser<
 				boolean errorReported = false;
 				if (!optional(KnownSymbolType.CommentStar)) {
 					errorReported = true;
-					getContext().onError(start, RazorResources().getString("parseError.razorComment.not.terminated"));
+					getContext().onError(start, RazorResources().parseErrorRazorCommentNotTerminated());
 				}
 				else {
 					output(SpanKind.MetaCode, AcceptedCharacters.SetOfNone);
@@ -651,7 +653,7 @@ public abstract class TokenizerBackedParser<
 				if (!optional(KnownSymbolType.CommentStart)) {
 					if (!errorReported) {
 						errorReported = true;
-						getContext().onError(start, RazorResources().getString("parseError.razorComment.not.terminated"));
+						getContext().onError(start, RazorResources().parseErrorRazorCommentNotTerminated());
 					}
 				}
 				else {

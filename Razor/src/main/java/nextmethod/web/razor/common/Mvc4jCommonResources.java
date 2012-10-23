@@ -1,18 +1,17 @@
 package nextmethod.web.razor.common;
 
-import java.util.ResourceBundle;
+import nextmethod.i18n.ResourceBundleFactory;
 
 public final class Mvc4jCommonResources {
 
-	private Mvc4jCommonResources() {
-	}
+	private Mvc4jCommonResources() {}
 
-	private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(String.format(
-		"%s.CommonResources",
-		Mvc4jCommonResources.class.getPackage().getName()
-	));
+	private static ICommonResources resourceBundle = null;
 
-	public static ResourceBundle CommonResources() {
+	public static ICommonResources CommonResources() {
+		if (resourceBundle == null) {
+			resourceBundle = ResourceBundleFactory.newInstance(ICommonResources.class);
+		}
 		return resourceBundle;
 	}
 }

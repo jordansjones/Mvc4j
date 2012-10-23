@@ -27,10 +27,10 @@ public final class GeneratedCodeMapping {
 	}
 
 	public GeneratedCodeMapping(@Nonnull final Optional<Integer> startOffset, final int startLine, final int startColumn, final int startGeneratedColumn, final int codeLength) {
-		checkArgument(startLine < 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "startLine", "0");
-		checkArgument(startColumn < 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "startColumn", "0");
-		checkArgument(startGeneratedColumn < 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "startGeneratedColumn", "0");
-		checkArgument(codeLength < 0, CommonResources().getString("argument.must.be.greaterThanOrEqualTo"), "codeLength", "0");
+		checkArgument(startLine < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+		checkArgument(startColumn < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+		checkArgument(startGeneratedColumn < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+		checkArgument(codeLength < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
 
 		this.startOffset = startOffset;
 		this.startLine = startLine;

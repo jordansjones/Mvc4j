@@ -35,11 +35,12 @@ public class TokenizerView<
 
 		if (getSource().getPosition() != symbol.getStart().getAbsoluteIndex() + symbol.getContent().length()) {
 			// Passed the symbol
-			throw new UnsupportedOperationException(String.format(
-				RazorResources().getString("tokenizerView.cannotPutBack"),
-				symbol.getStart().getAbsoluteIndex() + symbol.getContent().length(),
-				getSource().getPosition()
-			));
+			throw new UnsupportedOperationException(
+				RazorResources().tokenizerViewCannotPutBack(
+					symbol.getStart().getAbsoluteIndex() + symbol.getContent().length(),
+					getSource().getPosition()
+				)
+			);
 		}
 
 		int position = getSource().getPosition();

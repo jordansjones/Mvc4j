@@ -1,14 +1,11 @@
 package nextmethod.web.razor;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import nextmethod.base.Debug;
 import nextmethod.base.IDisposable;
 import nextmethod.base.IEventHandler;
-import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditResult;
 import nextmethod.web.razor.editor.internal.BackgroundParser;
@@ -18,9 +15,7 @@ import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.text.TextChange;
 
 import javax.annotation.Nonnull;
-
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.EnumSet;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -103,7 +98,7 @@ public class RazorEditorParser implements IDisposable {
 	public RazorEditorParser(@Nonnull final RazorEngineHost host, @Nonnull final String sourceFileName) {
 		this.host = checkNotNull(host, "host");
 
-		checkArgument(Strings.isNullOrEmpty(sourceFileName) == false, CommonResources().getString("argument.cannot.be.null.or.empty"), "sourceFileName");
+		checkArgument(Strings.isNullOrEmpty(sourceFileName) == false, CommonResources().argumentCannotBeNullOrEmpty(), "sourceFileName");
 		this.fileName = sourceFileName;
 
 		this.parser = new BackgroundParser(this.host, this.fileName);
@@ -160,14 +155,14 @@ public class RazorEditorParser implements IDisposable {
 			sw = new Stopwatch().start();
 		}
 		RazorEditorTrace.traceLine(
-			RazorResources().getString("trace.editorReceivedChange"),
-			getFileName(fileName),
-			change
+			RazorResources().traceEditorReceivedChange(
+				getFileName(fileName),
+				change.toString()
+			)
 		);
 		if (change.getNewBuffer() == null) {
 			throw new IllegalArgumentException(
-				String.format(
-					RazorResources().getString("structure.member.cannotBeNull"),
+				RazorResources().structureMemberCannotBeNull(
 					"Buffer",
 					"TextChange"
 				)
@@ -202,11 +197,12 @@ public class RazorEditorParser implements IDisposable {
 		}
 
 		RazorEditorTrace.traceLine(
-			RazorResources().getString("trace.editorProcessedChange"),
-			getFileName(fileName),
-			changeString,
-			sw != null ? sw : "?",
-			enumSetToString(result)
+			RazorResources().traceEditorProcessedChange(
+				getFileName(fileName),
+				changeString,
+				sw != null ? sw.toString() : "?",
+				enumSetToString(result)
+			)
 		);
 
 		return result;

@@ -26,10 +26,7 @@ public class JavaErrorTest extends JavaHtmlCodeParserTestBase {
 					.accepts(AcceptedCharacters.NonWhiteSpace).build()
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.unexpected.character.at.start.of.codeBlock"),
-					'"'
-				),
+				RazorResources().parseErrorUnexpectedCharacterAtStartOfCodeBlock("\""),
 				1, 0, 1
 			)
 		);
@@ -58,9 +55,8 @@ public class JavaErrorTest extends JavaHtmlCodeParserTestBase {
 					}}).build()
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.expected.endOfBlock.before.eof"),
-					RazorResources().getString("blockName.code"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
+					RazorResources().blockNameCode(),
 					"}",
 					"{"
 				),

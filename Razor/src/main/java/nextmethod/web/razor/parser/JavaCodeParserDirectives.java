@@ -87,7 +87,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 	};
 
 	protected void sessionStateDirectiveCore() {
-		sessionStateTypeDirective(RazorResources().getString("parserError.sessionDirectiveMissingValue"), new Delegates.IFunc2<String, String, SpanCodeGenerator>() {
+		sessionStateTypeDirective(RazorResources().parserErrorSessionDirectiveMissingValue(), new Delegates.IFunc2<String, String, SpanCodeGenerator>() {
 			@Override
 			public SpanCodeGenerator invoke(@Nullable String key, @Nullable String value) {
 				assert key != null;
@@ -156,26 +156,25 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		acceptAndMoveNext();
 
 		if (nested) {
-			getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.helpers.cannot.be.nested"));
+			getContext().onError(getCurrentLocation(), RazorResources().parseErrorHelpersCannotBeNested());
 		}
 
 		// Accept a single whitespace character if present, if not, we should stop now
 		if (!at(JavaSymbolType.WhiteSpace)) {
 			final String error;
 			if (at(JavaSymbolType.NewLine)) {
-				error = RazorResources().getString("errorComponent.newline");
+				error = RazorResources().errorComponentNewline();
 			}
 			else if (isEndOfFile()) {
-				error = RazorResources().getString("errorComponent.endOfFile");
+				error = RazorResources().errorComponentEndOfFile();
 			}
 			else {
-				error = String.format(RazorResources().getString("errorComponent.character"), getCurrentSymbol().getContent());
+				error = String.format(RazorResources().errorComponentCharacter(getCurrentSymbol().getContent()));
 			}
 
 			getContext().onError(
 				getCurrentLocation(),
-				RazorResources().getString("parseError.unexpected.character.at.helper.name.start"),
-				error
+				RazorResources().parseErrorUnexpectedCharacterAtHelperNameStart(error)
 			);
 			putCurrentBack();
 			output(SpanKind.MetaCode);
@@ -192,7 +191,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		acceptWhile(isSpacingToken(false, true)); // Don't accept newlines.
 
 		// Expecting an identifier (helper name)
-		boolean errorReported = !required(JavaSymbolType.Identifier, true, RazorResources().getString("parseError.unexpected.character.at.helper.name.start"));
+		boolean errorReported = !required(JavaSymbolType.Identifier, true, RazorResources().parseErrorUnexpectedCharacterAtHelperNameStart());
 		if (!errorReported) {
 			doAssert(JavaSymbolType.Identifier);
 			acceptAndMoveNext();
@@ -207,8 +206,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 				errorReported = true;
 				getContext().onError(
 					getCurrentLocation(),
-					RazorResources().getString("parseError.missingCharAfterHelperName"),
-					"("
+					RazorResources().parseErrorMissingCharAfterHelperName("(")
 				);
 			}
 		}
@@ -218,7 +216,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 				errorReported = true;
 				getContext().onError(
 					bracketErrorPos,
-					RazorResources().getString("parseError.unterminatedHelperParameterList")
+					RazorResources().parseErrorUnterminatedHelperParameterList()
 				);
 			}
 			optional(JavaSymbolType.RightParenthesis);
@@ -241,8 +239,9 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 			if (!errorReported) {
 				getContext().onError(
 					errorLocation,
-					RazorResources().getString("parseError.missingCharAfterHelperParameters"),
-					getLanguage().getSample(JavaSymbolType.LeftBrace)
+					RazorResources().parseErrorMissingCharAfterHelperParameters(
+						getLanguage().getSample(JavaSymbolType.LeftBrace)
+					)
 				);
 			}
 		}
@@ -313,9 +312,8 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		if (nested) {
 			getContext().onError(
 				getCurrentLocation(),
-				String.format(
-					RazorResources().getString("parseError.sections.cannot.be.nested"),
-					RazorResources().getString("sectionExample.java")
+				RazorResources().parseErrorSectionsCannotBeNested(
+					RazorResources().sectionExample()
 				)
 			);
 			errorReported = true;
@@ -325,7 +323,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 
 		// Get the section name
 		String sectionName = "";
-		if (!required(JavaSymbolType.Identifier, true, RazorResources().getString("parseError.unexpected.character.at.section.name.start"))) {
+		if (!required(JavaSymbolType.Identifier, true, RazorResources().parseErrorUnexpectedCharacterAtSectionNameStart())) {
 			if (!errorReported) {
 				errorReported = true;
 			}
@@ -348,7 +346,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		if (!sawStartingBrace) {
 			if (!errorReported) {
 				errorReported = true;
-				getContext().onError(errorLocation, RazorResources().getString("parseError.missingOpenBraceAfterSection"));
+				getContext().onError(errorLocation, RazorResources().parseErrorMissingOpenBraceAfterSection());
 			}
 			putCurrentBack();
 			putBack(ws);
@@ -380,8 +378,9 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 			editHandler.setAutoCompleteString("}");
 			getContext().onError(
 				getCurrentLocation(),
-				RazorResources().getString("parseError.expected.x"),
-				getLanguage().getSample(JavaSymbolType.RightBrace)
+				RazorResources().parseErrorExpectedX(
+					getLanguage().getSample(JavaSymbolType.RightBrace)
+				)
 			);
 		}
 		else {
@@ -409,8 +408,9 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		if (!at(JavaSymbolType.LeftBrace)) {
 			getContext().onError(
 				getCurrentLocation(),
-				RazorResources().getString("parseError.expected.x"),
-				getLanguage().getSample(JavaSymbolType.LeftBrace)
+				RazorResources().parseErrorExpectedX(
+					getLanguage().getSample(JavaSymbolType.LeftBrace)
+				)
 			);
 			completeBlock();
 			output(SpanKind.MetaCode);
@@ -434,7 +434,14 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		getSpan().setCodeGenerator(new TypeMemberCodeGenerator());
 		if (!at(JavaSymbolType.RightBrace)) {
 			editHandler.setAutoCompleteString("}");
-			getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), block.getName(), "}", "{");
+			getContext().onError(
+				block.getStart(),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
+					block.getName(),
+					"}",
+					"{"
+				)
+			);
 			completeBlock();
 			output(SpanKind.Code);
 		}
@@ -473,7 +480,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 
 	protected void inheritsDirectiveCore() {
 		baseTypeDirective(
-			RazorResources().getString("parseError.inheritsKeyword.must.be.followed.by.typeName"),
+			RazorResources().parseErrorInheritsKeywordMustBeFollowedByTypeName(),
 			new Delegates.IFunc1<String, SpanCodeGenerator>() {
 				@Override
 				public SpanCodeGenerator invoke(@Nullable String baseType) {

@@ -19,7 +19,7 @@ class HtmlMarkupParserDocument extends HtmlMarkupParserDelegate {
 	@Override
 	public void parseDocument() {
 		if (getContext() == null) {
-			throw new UnsupportedOperationException(RazorResources().getString("parser.context.not.set"));
+			throw new UnsupportedOperationException(RazorResources().parserContextNotSet());
 		}
 
 		try (IDisposable ignored = pushSpanConfig(getBlockParser().defaultMarkupSpanDelegate)) {

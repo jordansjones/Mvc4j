@@ -43,7 +43,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 
 	protected void parseBlock() {
 		if (getContext() == null) {
-			throw new UnsupportedOperationException(RazorResources().getString("parser.context.not.set"));
+			throw new UnsupportedOperationException(RazorResources().parserContextNotSet());
 		}
 
 		try (IDisposable d = pushSpanConfig(defaultMarkupSpanDelegate)) {
@@ -78,7 +78,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 				else {
 					getContext().onError(
 						getCurrentSymbol().getStart(),
-						RazorResources().getString("parseError.markupBlock.must.start.with.tag")
+						RazorResources().parseErrorMarkupBlockMustStartWithTag()
 					);
 				}
 			}
@@ -172,7 +172,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		if (tags.isEmpty()) {
 			getContext().onError(
 				getCurrentLocation(),
-				RazorResources().getString("parseError.outerTagMissingName")
+				RazorResources().parseErrorOuterTagMissingName()
 			);
 		}
 		return false;
@@ -254,7 +254,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		if (!seenCloseAngle) {
 			getContext().onError(
 				start,
-				RazorResources().getString("parseError.textTagCannotContainAttributes")
+				RazorResources().parseErrorTextTagCannotContainAttributes()
 			);
 		}
 		else {
@@ -594,7 +594,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			if (!optional(HtmlSymbolType.CloseAngle)) {
 				getContext().getSource().setPosition(bookmark);
 				nextToken();
-				getContext().onError(tag.getValue(), RazorResources().getString("parseError.textTagCannotContainAttributes"));
+				getContext().onError(tag.getValue(), RazorResources().parseErrorTextTagCannotContainAttributes());
 			}
 			else {
 				accept(tokens);
@@ -630,7 +630,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		// Check for the '>' to determine if the tag is finished
 		final boolean seenClose = optional(HtmlSymbolType.CloseAngle);
 		if (!seenClose) {
-			getContext().onError(tag.getValue(), RazorResources().getString("parseError.unfinishedTag"), tag.getKey().getContent());
+			getContext().onError(tag.getValue(), RazorResources().parseErrorUnfinishedTag(tag.getKey().getContent()));
 		}
 		else {
 			if (!isEmpty) {
@@ -696,7 +696,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 					// </script!
 					skipToAndParseCode(HtmlSymbolType.CloseAngle);
 					if (!optional(HtmlSymbolType.CloseAngle)) {
-						getContext().onError(tagStart, RazorResources().getString("parseError.unfinishedTag"), "script");
+						getContext().onError(tagStart, RazorResources().parseErrorUnfinishedTag("script"));
 					}
 					seenEndScript = true;
 				}
@@ -729,10 +729,10 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		}
 
 		if (currentTag != null) {
-			getContext().onError(currentTag.getValue(), RazorResources().getString("parseError.missingEndTag"), currentTag.getKey().getContent());
+			getContext().onError(currentTag.getValue(), RazorResources().parseErrorMissingEndTag(currentTag.getKey().getContent()));
 		}
 		else {
-			getContext().onError(tagStart, RazorResources().getString("parseError.unexpectedEndTag"), tagName);
+			getContext().onError(tagStart, RazorResources().parseErrorUnexpectedEndTag(tagName));
 		}
 		return false;
 	}
@@ -745,7 +745,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 				tags.pop();
 			}
 			final KeyValue<HtmlSymbol, SourceLocation> tag = tags.pop();
-			getContext().onError(tag.getValue(), RazorResources().getString("parseError.missingEndTag"), tag.getKey().getContent());
+			getContext().onError(tag.getValue(), RazorResources().parseErrorMissingEndTag(tag.getKey().getContent()));
 		}
 		else if (complete) {
 			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.SetOfNone);

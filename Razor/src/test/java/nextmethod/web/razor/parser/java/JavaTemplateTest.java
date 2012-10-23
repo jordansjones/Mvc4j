@@ -248,7 +248,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 
 	private static RazorError getNestedTemplateError(int charIndex) {
 		return new RazorError(
-			RazorResources().getString("parseError.inlineMarkup.blocks.cannot.be.nested"),
+			RazorResources().parseErrorInlineMarkupBlocksCannotBeNested(),
 			new SourceLocation(charIndex, 0, charIndex)
 		);
 	}

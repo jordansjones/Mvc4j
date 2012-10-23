@@ -60,7 +60,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 				factory().code(" }").asStatement().build()
 			),
 			new RazorError(
-				String.format(RazorResources().getString("parseError.unexpected.keyword.after.at"), "if"),
+				RazorResources().parseErrorUnexpectedKeywordAfterAt("if"),
 				13, 0, 13
 			)
 		);
@@ -122,7 +122,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 			"Html.En(code()",
 			AcceptedCharacters.Any,
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.closeBracket.before.eof"), "(", ")"),
+				RazorResources().parseErrorExpectedCloseBracketBeforeEof("(", ")"),
 				8, 0, 8
 			)
 		);
@@ -397,7 +397,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 			BlockType.Statement,
 			SpanKind.Code,
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.endOfBlock.before.eof"), "foreach", '}', '{'),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("foreach", "}", "{"),
 				SourceLocation.Zero)
 		);
 	}
@@ -410,9 +410,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 			document,
 			BlockType.Statement,
 			SpanKind.Code,
-			new RazorError(RazorResources().getString("parseError.blockComment.not.terminated"), 24, 0, 24),
+			new RazorError(RazorResources().parseErrorBlockCommentNotTerminated(), 24, 0, 24),
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.endOfBlock.before.eof"), "foreach", '}', '{'),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("foreach", "}", "{"),
 				SourceLocation.Zero
 			)
 		);
@@ -427,7 +427,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 			BlockType.Statement,
 			SpanKind.Code,
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.endOfBlock.before.eof"), "foreach", '}', '{'),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("foreach", "}", "{"),
 				SourceLocation.Zero
 			)
 		);

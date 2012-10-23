@@ -42,8 +42,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 					}}).build()
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.expected.endOfBlock.before.eof"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
 					"functions",
 					"}",
 					"{"
@@ -72,8 +71,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 				)
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.expected.endOfBlock.before.eof"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
 					"helper",
 					"}",
 					"{"
@@ -96,8 +94,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 				new MarkupBlock()
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.expected.x"),
+				RazorResources().parseErrorExpectedX(
 					"}"
 				),
 				17, 0, 17
@@ -118,9 +115,8 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 					}}).build()
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.expected.endOfBlock.before.eof"),
-					RazorResources().getString("blockName.code"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
+					RazorResources().blockNameCode(),
 					"}",
 					"{"
 				),
@@ -142,7 +138,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 					}}).build()
 			),
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.endOfBlock.before.eof"), "functions", "}", "{"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("functions", "}", "{"),
 				1, 0, 1
 			)
 		);
@@ -178,7 +174,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 				)
 			),
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.endOfBlock.before.eof"), "helper", "}", "{"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("helper", "}", "{"),
 				1, 0, 1
 			)
 		);
@@ -197,7 +193,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 				new MarkupBlock(factory().markup(newLine() + "<p>Foo</p>").build())
 			),
 			new RazorError(
-				String.format(RazorResources().getString("parseError.expected.x"), "}"),
+				RazorResources().parseErrorExpectedX("}"),
 				29, 1, 10
 			)
 		);
@@ -231,9 +227,8 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 					.build()
 			),
 			new RazorError(
-				String.format(
-					RazorResources().getString("parseError.expected.endOfBlock.before.eof"),
-					RazorResources().getString("blockName.code"),
+				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
+					RazorResources().blockNameCode(),
 					"}",
 					"{"
 				),

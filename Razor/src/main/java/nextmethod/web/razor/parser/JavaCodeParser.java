@@ -134,7 +134,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	public void parseBlock() {
 		try (final IDisposable disposable1 = pushSpanConfig(defaultSpanConfigDelegate)) {
 			if (getContext() == null) {
-				throw new UnsupportedOperationException(RazorResources().getString("parser.context.not.set"));
+				throw new UnsupportedOperationException(RazorResources().parserContextNotSet());
 			}
 
 			// Unless changed, the block is a statement block
@@ -254,13 +254,13 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 				getSpan().setEditHandler(handler);
 
 				if (at(JavaSymbolType.WhiteSpace) || at(JavaSymbolType.NewLine)) {
-					getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.unexpected.whiteSpace.at.start.of.codeBlock"));
+					getContext().onError(getCurrentLocation(), RazorResources().parseErrorUnexpectedWhiteSpaceAtStartOfCodeBlock());
 				}
 				else if (isEndOfFile()) {
-					getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.unexpected.endOfFile.at.start.of.codeBlock"));
+					getContext().onError(getCurrentLocation(), RazorResources().parseErrorUnexpectedEndOfFileAtStartOfCodeBlock());
 				}
 				else {
-					getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.unexpected.character.at.start.of.codeBlock"), getCurrentSymbol().getContent());
+					getContext().onError(getCurrentLocation(), RazorResources().parseErrorUnexpectedCharacterAtStartOfCodeBlock(getCurrentSymbol().getContent()));
 				}
 			}
 			finally {
@@ -273,7 +273,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	@SuppressWarnings("unchecked")
 	private void verbatimBlock () {
 		doAssert(JavaSymbolType.LeftBrace);
-		final JavaCodeParserStatements.Block block = new JavaCodeParserStatements.Block(RazorResources().getString("blockName.code"), getCurrentLocation());
+		final JavaCodeParserStatements.Block block = new JavaCodeParserStatements.Block(RazorResources().blockNameCode(), getCurrentLocation());
 		acceptAndMoveNext();
 
 		// Set up the "{" span and output
@@ -458,7 +458,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	};
 
 	private void explicitExpression() {
-		final JavaCodeParserStatements.Block block = new JavaCodeParserStatements.Block(RazorResources().getString("blockName.explicitExpression"), getCurrentLocation());
+		final JavaCodeParserStatements.Block block = new JavaCodeParserStatements.Block(RazorResources().blockNameExplicitExpression(), getCurrentLocation());
 		doAssert(JavaSymbolType.LeftParenthesis);
 		acceptAndMoveNext();
 		getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.SetOfNone);
@@ -475,7 +475,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 
 			if (!success) {
 				acceptUntil(JavaSymbolType.LessThan);
-				getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), block.getName(), ")", "(");
+				getContext().onError(block.getStart(), RazorResources().parseErrorExpectedEndOfBlockBeforeEof(block.getName(), ")", "("));
 			}
 
 			// If necessary, put an empty-content marker symbol here
@@ -498,7 +498,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 
 	protected void template() {
 		if (getContext().isWithin(BlockType.Template)) {
-			getContext().onError(getCurrentLocation(), RazorResources().getString("parseError.inlineMarkup.blocks.cannot.be.nested"));
+			getContext().onError(getCurrentLocation(), RazorResources().parseErrorInlineMarkupBlocksCannotBeNested());
 		}
 		output(SpanKind.Code);
 		try (IDisposable disposable = getContext().startBlock(BlockType.Template)) {

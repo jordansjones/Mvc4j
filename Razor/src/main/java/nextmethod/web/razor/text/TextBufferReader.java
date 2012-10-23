@@ -71,7 +71,7 @@ public class TextBufferReader extends LookaheadTextReader {
 	@Override
 	public void cancelBacktrack() {
 		if (bookmarks.isEmpty())
-			throw new UnsupportedOperationException(RazorResources().getString("cancelBacktrack.must.be.called.within.lookahead"));
+			throw new UnsupportedOperationException(RazorResources().cancelBacktrackMustBeCalledWithinLookahead());
 
 		bookmarks.pop();
 	}

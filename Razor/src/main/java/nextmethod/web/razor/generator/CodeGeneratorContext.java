@@ -265,7 +265,7 @@ public class CodeGeneratorContext {
 	CodeWriter createCodeWriter() {
 		assert codeWriterFactory != null;
 		if (codeWriterFactory == null) {
-			throw new UnsupportedOperationException(RazorResources().getString("createCodeWriter.noCodeWriter"));
+			throw new UnsupportedOperationException(RazorResources().createCodeWriterNoCodeWriter());
 		}
 		return codeWriterFactory.invoke();
 	}

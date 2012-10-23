@@ -1,6 +1,5 @@
 package nextmethod.web.razor.editor.internal;
 
-import javafx.event.EventHandler;
 import nextmethod.base.IDisposable;
 import nextmethod.base.IEventHandler;
 import nextmethod.base.NotImplementedException;

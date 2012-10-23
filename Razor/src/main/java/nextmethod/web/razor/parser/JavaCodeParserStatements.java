@@ -57,7 +57,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 	}
 
 	protected void reservedDirective(@SuppressWarnings("UnusedParameters") final boolean topLevel) {
-		getContext().onError(getCurrentLocation(), String.format(RazorResources().getString("parseError.reservedWord"), getCurrentSymbol().getContent()));
+		getContext().onError(getCurrentLocation(), RazorResources().parseErrorReservedWord(getCurrentSymbol().getContent()));
 		acceptAndMoveNext();
 		final SpanBuilder span = getSpan();
 		span.getEditHandler().setAcceptedCharacters(AcceptedCharacters.SetOfNone);
@@ -149,7 +149,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		else if (at(JavaSymbolType.Identifier)) {
 			// using Identifier ==> Using Declaration
 			if (!topLevel) {
-				getContext().onError(block.getStart(), RazorResources().getString("parseError.packageImportAndTypeAlias.cannot.exist.within.codeBlock"));
+				getContext().onError(block.getStart(), RazorResources().parseErrorNamespaceImportAndTypeAliasCannotExistWithinCodeBlock());
 				standardStatement();
 			}
 			else {
@@ -353,9 +353,10 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			if (!at(JavaSymbolType.LeftBrace)) {
 				getContext().onError(
 					getCurrentLocation(),
-					RazorResources().getString("parseError.singleLine.controlFlowStatements.not.allowed"),
-					getLanguage().getSample(JavaSymbolType.LeftBrace),
-					getCurrentSymbol().getContent()
+					RazorResources().parseErrorSingleLineControlFlowStatementsNotAllowed(
+						getLanguage().getSample(JavaSymbolType.LeftBrace),
+						getCurrentSymbol().getContent()
+					)
 				);
 			}
 
@@ -453,7 +454,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 
 		if (isMarkup) {
 			if (type == JavaSymbolType.Transition && !isSingleLineMarkup) {
-				getContext().onError(loc, RazorResources().getString("parseError.atInCode.must.be.followed.by.colon.paren.or.identifier.start"));
+				getContext().onError(loc, RazorResources().parseErrorAtInCodeMustBeFollowedByColonParenOrIdentifierStart());
 			}
 
 			// Markup block
@@ -480,7 +481,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			case LeftBrace:
 				// Verbatim Block
 				acceptAndMoveNext();
-				codeBlock(block != null ? block : new Block(RazorResources().getString("blockName.code"), getCurrentLocation()));
+				codeBlock(block != null ? block : new Block(RazorResources().blockNameCode(), getCurrentLocation()));
 				break;
 
 			case Keyword:
@@ -532,14 +533,15 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			if (at(JavaSymbolType.Keyword)) {
 				getContext().onError(
 					getCurrentLocation(),
-					RazorResources().getString("parseError.unexpected.keyword.after.at"),
-					JavaLanguageCharacteristics.getKeyword(getCurrentSymbol().getKeyword().get())
+					RazorResources().parseErrorUnexpectedKeywordAfterAt(
+						JavaLanguageCharacteristics.getKeyword(getCurrentSymbol().getKeyword().get())
+					)
 				);
 			}
 			else if (at(JavaSymbolType.LeftBrace)) {
 				getContext().onError(
 					getCurrentLocation(),
-					RazorResources().getString("parseError.unexpected.nested.codeBlock")
+					RazorResources().parseErrorUnexpectedNestedCodeBlock()
 				);
 			}
 
@@ -626,7 +628,9 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		}
 
 		if (isEndOfFile()) {
-			getContext().onError(block.getStart(), RazorResources().getString("parseError.expected.endOfBlock.before.eof"), block.getName(), '}', '{');
+			getContext().onError(block.getStart(), RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
+				block.getName(), "}", "{"
+			));
 		}
 		else if (acceptTerminatingBrace) {
 			doAssert(JavaSymbolType.RightBrace);

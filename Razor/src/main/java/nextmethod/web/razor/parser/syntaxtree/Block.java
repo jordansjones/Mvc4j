@@ -28,7 +28,7 @@ public class Block extends SyntaxTreeNode {
 
 	public Block(@Nonnull final BlockBuilder source) {
 		if (source.getType() == null) {
-			throw new IllegalArgumentException(RazorResources().getString("block.type.not.specified"));
+			throw new IllegalArgumentException(RazorResources().blockTypeNotSpecified());
 		}
 		this.type = source.getType().get();
 		this.children = source.getChildren();

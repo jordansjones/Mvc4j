@@ -24,11 +24,11 @@ public class HtmlLanguageCharacteristics extends LanguageCharacteristics<HtmlTok
 	public String getSample(@Nonnull final HtmlSymbolType type) {
 		switch (type) {
 			case Text:
-				return RazorResources().getString("htmlSymbol.text");
+				return RazorResources().htmlSymbolText();
 			case WhiteSpace:
-				return RazorResources().getString("htmlSymbol.whiteSpace");
+				return RazorResources().htmlSymbolWhiteSpace();
 			case NewLine:
-				return RazorResources().getString("htmlSymbol.newLine");
+				return RazorResources().htmlSymbolNewLine();
 			case OpenAngle:
 				return "<";
 			case Bang:
@@ -54,13 +54,13 @@ public class HtmlLanguageCharacteristics extends LanguageCharacteristics<HtmlTok
 			case Colon:
 				return ":";
 			case RazorComment:
-				return RazorResources().getString("htmlSymbol.razorComment");
+				return RazorResources().htmlSymbolRazorComment();
 			case RazorCommentStar:
 				return "*";
 			case RazorCommentTransition:
 				return "@";
 			default:
-				return RazorResources().getString("symbol.unknown");
+				return RazorResources().symbolUnknown();
 		}
 	}
 

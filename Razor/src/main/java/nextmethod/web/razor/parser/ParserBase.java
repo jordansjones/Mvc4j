@@ -49,7 +49,7 @@ public abstract class ParserBase {
 	 */
 	public void parseDocument() {
 		assert isMarkerParser();
-		throw new UnsupportedOperationException(RazorResources().getString("parserIsNotAMarkupParser"));
+		throw new UnsupportedOperationException(RazorResources().parserIsNotAMarkupParser());
 	}
 
 	public Delegates.IAction createParseDocumentDelegate() {
@@ -68,6 +68,6 @@ public abstract class ParserBase {
 	 */
 	public void parseSection(@Nonnull final KeyValue<String, String> nestingSequence, final boolean caseSensitive) {
 		assert isMarkerParser();
-		throw new UnsupportedOperationException(RazorResources().getString("parserIsNotAMarkupParser"));
+		throw new UnsupportedOperationException(RazorResources().parserIsNotAMarkupParser());
 	}
 }

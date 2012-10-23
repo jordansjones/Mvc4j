@@ -138,7 +138,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 	protected void resumeSymbol(@Nonnull final TSymbol previous) {
 		// Verify the symbol can be resumed
 		if (previous.getStart().getAbsoluteIndex() + previous.getContent().length() != getCurrentStart().getAbsoluteIndex()) {
-			throw new UnsupportedOperationException(RazorResources().getString("tokenizer.cannotResumeSymbolUnlessIsPrevious"));
+			throw new UnsupportedOperationException(RazorResources().tokenizerCannotResumeSymbolUnlessIsPrevious());
 		}
 
 		// Reset the start point

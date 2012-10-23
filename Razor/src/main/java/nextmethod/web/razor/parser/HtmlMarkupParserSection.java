@@ -32,7 +32,7 @@ class HtmlMarkupParserSection extends HtmlMarkupParserDelegate {
 	@Override
 	public void parseSection(@Nonnull final KeyValue<String, String> nestingSequence, final boolean caseSensitive) {
 		if (getContext() == null) {
-			throw new UnsupportedOperationException(RazorResources().getString("parser.context.not.set"));
+			throw new UnsupportedOperationException(RazorResources().parserContextNotSet());
 		}
 
 		try (IDisposable ignored = pushSpanConfig(defaultMarkupSpanDelegate)) {
