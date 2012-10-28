@@ -6,6 +6,8 @@ import java.io.Reader;
 
 public class TextReader extends Reader implements IDisposable {
 
+	public static final TextReader Null = new TextReader();
+
 	public int read() {
 		return -1;
 	}
