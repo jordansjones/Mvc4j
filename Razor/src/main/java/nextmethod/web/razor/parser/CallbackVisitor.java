@@ -97,19 +97,17 @@ public class CallbackVisitor extends ParserVisitor {
 		});
 	}
 
-	// TODO
 	private static <T> void raiseCallback(final SynchronizationContext syncContext, final T param, final IAction1<T> callback) {
 		if (callback != null) {
 			if (syncContext != null) {
-				syncContext.post(new SendOrPostCallback() {
-						@SuppressWarnings("unchecked")
-						@Override
-						public void invoke(@Nullable final Object input) {
-							callback.invoke((T) input);
-						}
-					},
-					param
-				);
+				final SendOrPostCallback sendOrPostCallback = new SendOrPostCallback() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void invoke(@Nullable final Object input) {
+						callback.invoke((T) input);
+					}
+				};
+				syncContext.post(sendOrPostCallback, param);
 			}
 			else {
 				callback.invoke(param);
