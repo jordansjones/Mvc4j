@@ -26,6 +26,7 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.base.Debug.isAssertEnabled;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
@@ -53,10 +54,7 @@ public class ParserContext {
 		checkNotNull(codeParser, "codeParser");
 		checkNotNull(markupParser, "markupParser");
 		checkNotNull(activeParser, "activeParser");
-
-		if (activeParser != codeParser && activeParser != markupParser) {
-			throw new IllegalArgumentException(RazorResources().activeParserMustBeCodeOrMarkupParser());
-		}
+		checkArgument((activeParser == codeParser) || (activeParser == markupParser), RazorResources().activeParserMustBeCodeOrMarkupParser());
 
 		captureOwnerTask();
 
@@ -83,7 +81,7 @@ public class ParserContext {
 		return this.errors;
 	}
 
-	public ITextDocument getSource() {
+	public TextDocumentReader getSource() {
 		return this.source;
 	}
 
