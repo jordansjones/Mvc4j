@@ -6,6 +6,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multiset;
+import nextmethod.annotations.Internal;
 import nextmethod.web.razor.editor.SpanEditHandler;
 import nextmethod.web.razor.generator.ISpanCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
@@ -163,7 +164,8 @@ public class Span extends SyntaxTreeNode {
 		return previous;
 	}
 
-	void setPrevious(@Nullable final Span s) {
+	@Internal
+	public void setPrevious(@Nullable final Span s) {
 		previous = s;
 	}
 
@@ -172,7 +174,8 @@ public class Span extends SyntaxTreeNode {
 		return next;
 	}
 
-	void setNext(@Nullable final Span s) {
+	@Internal
+	public void setNext(@Nullable final Span s) {
 		next = s;
 	}
 

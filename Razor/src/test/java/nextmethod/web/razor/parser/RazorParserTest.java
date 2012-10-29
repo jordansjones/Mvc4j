@@ -1,0 +1,156 @@
+package nextmethod.web.razor.parser;
+
+import nextmethod.base.Delegates;
+import nextmethod.base.IDisposable;
+import nextmethod.base.KeyValue;
+import nextmethod.base.NotImplementedException;
+import nextmethod.web.razor.ParserResults;
+import nextmethod.web.razor.framework.ParserTestBase;
+import nextmethod.web.razor.framework.SpanFactory;
+import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.BlockType;
+import nextmethod.web.razor.parser.syntaxtree.ExpressionBlock;
+import nextmethod.web.razor.parser.syntaxtree.MarkupBlock;
+import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
+import nextmethod.web.razor.text.SourceLocation;
+import nextmethod.web.razor.text.StringReaderDelegate;
+import nextmethod.web.razor.text.TextReader;
+import org.junit.Test;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
+/**
+ *
+ */
+public class RazorParserTest {
+
+	@SuppressWarnings("ConstantConditions")
+	@Test(expected = NullPointerException.class)
+	public void constructorRequiresNonNullCodeParser() {
+		new RazorParser(null, new HtmlMarkupParser());
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	@Test(expected = NullPointerException.class)
+	public void constructorRequiresNonNullMarkupParser() {
+		new RazorParser(new JavaCodeParser(), null);
+	}
+
+	@Test
+	public void parseMethodCallsParseDocumentOnMarkupParserAndReturnsResults() {
+		final SpanFactory factory = SpanFactory.createJavaHtml();
+		final RazorParser parser = new RazorParser(new JavaCodeParser(), new HtmlMarkupParser());
+
+		ParserTestBase.evaluateResults(
+			parser.parse(new StringReaderDelegate("foo @bar baz")),
+			new MarkupBlock(
+				factory.markup("foo ").build(),
+				new ExpressionBlock(
+					factory.codeTransition().build(),
+					factory.code("bar")
+						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
+						.accepts(AcceptedCharacters.NonWhiteSpace).build()
+				),
+				factory.markup(" baz").build()
+			)
+		);
+	}
+
+	@Test
+	public void parseMethodUsesProvidedParserListenerIfSpecified() {
+		final SpanFactory factory = SpanFactory.createJavaHtml();
+
+		final RazorParser parser = new RazorParser(new JavaCodeParser(), new HtmlMarkupParser());
+
+		final ParserResults results = parser.parse(new StringReaderDelegate("foo @bar baz"));
+
+		ParserTestBase.evaluateResults(
+			results,
+			new MarkupBlock(
+				factory.markup("foo ").build(),
+				new ExpressionBlock(
+					factory.codeTransition().build(),
+					factory.code("bar")
+						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
+						.accepts(AcceptedCharacters.NonWhiteSpace)
+						.build()
+				),
+				factory.markup(" baz").build()
+			)
+		);
+	}
+
+	@Test
+	public void parseMethodSetsUpRunWithSpecifiedCodeParserMarkupParserAndListenerPassesToMarkupParser() {
+		runParseWithListenerTest(new Delegates.IAction2<RazorParser, TextReader>() {
+			@Override
+			public void invoke(@Nullable final RazorParser parser, @Nullable final TextReader reader) {
+				assert parser != null;
+				assert reader != null;
+				parser.parse(reader);
+			}
+		});
+	}
+
+	private void runParseWithListenerTest(final Delegates.IAction2<RazorParser, TextReader> parserAction) {
+		final MockMarkupParser markupParser = new MockMarkupParser();
+		final JavaCodeParser codeParser = new JavaCodeParser();
+		final RazorParser parser = new RazorParser(codeParser, markupParser);
+		final TextReader expectedReader = new StringReaderDelegate("foo");
+
+		parserAction.invoke(parser, expectedReader);
+
+		final ParserContext actualContext = markupParser.getContext();
+		assertNotNull(actualContext);
+		assertSame(markupParser, actualContext.getMarkupParser());
+		assertSame(markupParser, actualContext.getActiveParser());
+		assertSame(codeParser, actualContext.getCodeParser());
+	}
+
+	private static class MockMarkupParser extends ParserBase {
+
+		@Override
+		public boolean isMarkerParser() {
+			return true;
+		}
+
+		@Override
+		protected ParserBase getOtherParser() {
+			return getContext().getCodeParser();
+		}
+
+		@SuppressWarnings("EmptyTryBlock")
+		@Override
+		public void parseDocument() {
+			try (IDisposable ignored = getContext().startBlock(BlockType.Markup)) {
+
+			}
+		}
+
+		@SuppressWarnings("EmptyTryBlock")
+		@Override
+		public void parseSection(@Nonnull final KeyValue<String, String> nestingSequence, final boolean caseSensitive) {
+			try (IDisposable ignored = getContext().startBlock(BlockType.Markup)) {
+
+			}
+		}
+
+		@SuppressWarnings("EmptyTryBlock")
+		@Override
+		public void parseBlock() {
+			try (IDisposable ignored = getContext().startBlock(BlockType.Markup)) {
+
+			}
+		}
+
+		@Override
+		public void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content) {
+			throw new NotImplementedException();
+		}
+	}
+
+}

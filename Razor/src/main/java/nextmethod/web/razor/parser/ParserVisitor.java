@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  */
 public abstract class ParserVisitor {
 
-	private Optional<CancellationToken> cancelToken;
+	private Optional<CancellationToken> cancelToken = Optional.absent();
 
 	public void visitBlock(@Nonnull final Block block) {
 		visitStartBlock(block);
@@ -66,7 +66,12 @@ public abstract class ParserVisitor {
 		return cancelToken;
 	}
 
-	public void setCancelToken(@Nullable final Optional<CancellationToken> cancelToken) {
+	public ParserVisitor setCancelToken(@Nullable final Optional<CancellationToken> cancelToken) {
 		this.cancelToken = cancelToken;
+		return this;
+	}
+
+	public ParserVisitor setCancelToken(@Nullable final CancellationToken cancelToken) {
+		return setCancelToken(Optional.fromNullable(cancelToken));
 	}
 }

@@ -3,6 +3,7 @@ package nextmethod.web.razor.parser;
 import com.google.common.collect.Iterables;
 import nextmethod.base.Delegates;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
+import nextmethod.web.razor.parser.internal.MarkupRewriter;
 import nextmethod.web.razor.parser.syntaxtree.BlockBuilder;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;

@@ -119,7 +119,8 @@ public class CallbackVisitor extends ParserVisitor {
 		return synchronizationContext;
 	}
 
-	public void setSynchronizationContext(final SynchronizationContext synchronizationContext) {
+	public CallbackVisitor setSynchronizationContext(final SynchronizationContext synchronizationContext) {
 		this.synchronizationContext = synchronizationContext;
+		return this;
 	}
 }

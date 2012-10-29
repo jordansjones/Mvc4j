@@ -37,6 +37,14 @@ public final class ParserHelpers {
 		return val != null && (val.length() == 1 && isNewLine(val.charAt(0)) || "\r\n".equalsIgnoreCase(val));
 	}
 
+	public static boolean isAnyOfString(final String val, final Predicate<Character> predicate) {
+		return Iterables.any(Lists.charactersOf(val), predicate);
+	}
+
+	public static boolean isAllOfString(final String val, final Predicate<Character> predicate) {
+		return Iterables.all(Lists.charactersOf(val), predicate);
+	}
+
 	public static Predicate<Character> IsWhitespacePredicate = new Predicate<Character>() {
 		@Override
 		public boolean apply(@Nullable Character val) {

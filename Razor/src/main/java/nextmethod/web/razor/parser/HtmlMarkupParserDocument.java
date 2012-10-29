@@ -30,7 +30,7 @@ class HtmlMarkupParserDocument extends HtmlMarkupParserDelegate {
 					scanTagInDocumentContext();
 				}
 				addMarkerSymbolIfNecessary();
-				output(SpanKind.MetaCode);
+				output(SpanKind.Markup);
 			}
 		}
 	}

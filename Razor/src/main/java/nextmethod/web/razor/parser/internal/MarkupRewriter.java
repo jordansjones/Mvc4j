@@ -1,8 +1,10 @@
-package nextmethod.web.razor.parser;
+package nextmethod.web.razor.parser.internal;
 
 import com.google.common.collect.Queues;
+import nextmethod.annotations.Internal;
 import nextmethod.base.Delegates;
 import nextmethod.base.NotImplementedException;
+import nextmethod.web.razor.parser.ParserVisitor;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.BlockBuilder;
 import nextmethod.web.razor.parser.syntaxtree.Span;
@@ -14,7 +16,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Deque;
 
-abstract class MarkupRewriter extends ParserVisitor implements ISyntaxTreeRewriter {
+@Internal
+public abstract class MarkupRewriter extends ParserVisitor implements ISyntaxTreeRewriter {
 
 	private final Deque<BlockBuilder> blocks = Queues.newArrayDeque();
 	private Delegates.IAction3<SpanBuilder, SourceLocation, String> markupSpanFactory;

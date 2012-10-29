@@ -6,6 +6,7 @@ import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.text.SourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
@@ -30,6 +31,19 @@ public abstract class ParserBase {
 	protected abstract ParserBase getOtherParser();
 
 	public abstract void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content);
+
+	public Delegates.IAction3<SpanBuilder, SourceLocation, String> createBuildSpanDelegate() {
+		return new Delegates.IAction3<SpanBuilder, SourceLocation, String>() {
+			@Override
+			public void invoke(@Nullable final SpanBuilder span, @Nullable final SourceLocation start, @Nullable final String content) {
+				assert span != null;
+				assert start != null;
+				assert content != null;
+				buildSpan(span, start, content);
+			}
+		};
+	}
+
 
 	public abstract void parseBlock();
 

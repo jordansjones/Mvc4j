@@ -1,10 +1,12 @@
-package nextmethod.web.razor.parser;
+package nextmethod.web.razor.parser.internal;
 
+import nextmethod.annotations.Internal;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 
 import javax.annotation.Nonnull;
 
-interface ISyntaxTreeRewriter {
+@Internal
+public interface ISyntaxTreeRewriter {
 
 	Block rewrite(@Nonnull final Block input);
 

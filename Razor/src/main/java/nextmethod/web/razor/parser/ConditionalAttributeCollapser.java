@@ -9,6 +9,7 @@ import nextmethod.web.razor.generator.ISpanCodeGenerator;
 import nextmethod.web.razor.generator.LiteralAttributeCodeGenerator;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
+import nextmethod.web.razor.parser.internal.MarkupRewriter;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.BlockBuilder;
 import nextmethod.web.razor.parser.syntaxtree.Span;
