@@ -449,6 +449,10 @@ public abstract class ParserTestBase {
 		}
 	}
 
+	protected Block createSimpleBlockAndSpan(final String spanContent, final BlockType blockType, final SpanKind spanType) {
+		return createSimpleBlockAndSpan(spanContent, blockType, spanType, AcceptedCharacters.Any);
+	}
+
 	protected Block createSimpleBlockAndSpan(final String spanContent, final BlockType blockType, final SpanKind spanType, EnumSet<AcceptedCharacters> acceptedCharacters) {
 		if (acceptedCharacters == null) acceptedCharacters = AcceptedCharacters.Any;
 
