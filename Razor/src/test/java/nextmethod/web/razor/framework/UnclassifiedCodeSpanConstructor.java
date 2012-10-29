@@ -9,6 +9,7 @@ import nextmethod.web.razor.generator.SetBaseTypeCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
 import nextmethod.web.razor.generator.StatementCodeGenerator;
 import nextmethod.web.razor.generator.TypeMemberCodeGenerator;
+import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 
 import java.util.Set;
@@ -30,8 +31,16 @@ public class UnclassifiedCodeSpanConstructor {
 		return self.with(new StatementCodeGenerator());
 	}
 
+	public Span asStatementAndBuild() {
+		return asStatement().build();
+	}
+
 	public SpanConstructor asExpression() {
 		return self.with(new ExpressionCodeGenerator());
+	}
+
+	public Span asExpressionAndBuild() {
+		return asExpression().build();
 	}
 
 	public SpanConstructor asImplicitExpression(final Set<String> keywords) {

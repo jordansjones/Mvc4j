@@ -41,6 +41,10 @@ public class SpanConstructor {
 		return builder.build();
 	}
 
+	public Span acceptsNoneAndBuild() {
+		return accepts(AcceptedCharacters.None).build();
+	}
+
 	public SpanConstructor with(final ISpanCodeGenerator generator) {
 		builder.setCodeGenerator(generator);
 		return this;
@@ -92,7 +96,7 @@ public class SpanConstructor {
 	}
 
 	public SpanConstructor autoCompleteWith(final String autoCompleteString) {
-		return this.autoCompleteWith(autoCompleteString, true);
+		return this.autoCompleteWith(autoCompleteString, false);
 	}
 
 	public SpanConstructor autoCompleteWith(final String autoCompleteString, final boolean atEndOfSPan) {

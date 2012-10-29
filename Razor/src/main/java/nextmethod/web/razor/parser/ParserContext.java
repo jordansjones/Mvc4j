@@ -22,6 +22,7 @@ import nextmethod.web.razor.utils.DisposableAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.text.MessageFormat;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
@@ -222,7 +223,7 @@ public class ParserContext {
 	public void onError(@Nonnull final SourceLocation location, @Nonnull final String message, @Nonnull Object... args) {
 		ensureNotTerminated();
 		assertOnOwnerTask();
-		onError(location, String.format(message, args));
+		onError(location, MessageFormat.format(message, args));
 	}
 
 	public ParserResults completeParse() {

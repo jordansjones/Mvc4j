@@ -169,7 +169,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 				error = RazorResources().errorComponentEndOfFile();
 			}
 			else {
-				error = String.format(RazorResources().errorComponentCharacter(getCurrentSymbol().getContent()));
+				error = RazorResources().errorComponentCharacter(getCurrentSymbol().getContent());
 			}
 
 			getContext().onError(

@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.parser.SyntaxConstants;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
+import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SeekableTextReader;
@@ -182,6 +183,10 @@ public class SpanFactory {
 
 	public SpanConstructor codeTransition() {
 		return span(SpanKind.Transition, SyntaxConstants.TransitionString, false).accepts(AcceptedCharacters.None);
+	}
+
+	public Span codeTransitionAndBuild() {
+		return codeTransition().build();
 	}
 
 	public SpanConstructor codeTransition(final String content) {

@@ -19,6 +19,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static nextmethod.base.TypeHelpers.typeAs;
+
 /**
  *
  */
@@ -135,7 +137,7 @@ public class Span extends SyntaxTreeNode {
 	public boolean equals(@Nullable Object o) {
 		if (o == null || !(o instanceof Span)) return false;
 
-		final Span other = Span.class.cast(o);
+		final Span other = typeAs(o, Span.class);
 		return kind.equals(other.kind)
 			&& editHandler.equals(other.editHandler)
 			&& codeGenerator.equals(other.codeGenerator)
