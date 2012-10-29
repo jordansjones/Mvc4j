@@ -2,12 +2,14 @@ package nextmethod.web.razor.generator.internal;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import nextmethod.annotations.Internal;
 import nextmethod.base.Delegates;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.StringWriter;
 
+@Internal
 public class JavaCodeWriter extends BaseCodeWriter {
 
 	@Override

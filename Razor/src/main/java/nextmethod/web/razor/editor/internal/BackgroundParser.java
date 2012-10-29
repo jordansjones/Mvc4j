@@ -1,5 +1,6 @@
 package nextmethod.web.razor.editor.internal;
 
+import nextmethod.annotations.Internal;
 import nextmethod.base.IDisposable;
 import nextmethod.base.IEventHandler;
 import nextmethod.base.NotImplementedException;
@@ -10,6 +11,7 @@ import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.text.TextChange;
 
 // TODO
+@Internal
 public class BackgroundParser implements IDisposable {
 
 	private IEventHandler<DocumentParseCompleteEventArgs> resultsReadyHandler;

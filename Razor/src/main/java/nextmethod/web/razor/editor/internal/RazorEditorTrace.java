@@ -1,11 +1,11 @@
 package nextmethod.web.razor.editor.internal;
 
 import com.google.common.base.Optional;
+import nextmethod.annotations.Internal;
 import nextmethod.base.NotImplementedException;
 
-import javax.annotation.Nonnull;
-
 // TODO
+@Internal
 public final class RazorEditorTrace {
 
 	private RazorEditorTrace() {}

@@ -2,6 +2,7 @@ package nextmethod.web.razor.generator.internal;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Closeables;
+import nextmethod.annotations.Internal;
 import nextmethod.base.IDisposable;
 import nextmethod.codedom.CodeLinePragma;
 import nextmethod.web.razor.text.LocationTagged;
@@ -13,6 +14,7 @@ import java.io.StringWriter;
 import static nextmethod.base.SystemHelpers.newLine;
 
 @SuppressWarnings("UnusedDeclaration")
+@Internal
 public abstract class CodeWriter implements IDisposable {
 
 	private StringWriter writer;
