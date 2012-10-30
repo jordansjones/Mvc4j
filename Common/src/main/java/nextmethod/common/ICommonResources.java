@@ -1,5 +1,5 @@
 
-package nextmethod.web.razor.common;
+package nextmethod.common;
 
 import javax.annotation.Generated;
 import nextmethod.i18n.IResourceBundle;
@@ -8,7 +8,7 @@ import nextmethod.i18n.annotations.Bundle;
 @Generated(value = {
     "nextmethod.resourcegen.creators.MessagesI18nCreator"
 }, date = "Mon Oct 22 22:33:26 MDT 2012")
-@Bundle("nextmethod.web.razor.common.CommonResources")
+@Bundle("nextmethod.common.CommonResources")
 public interface ICommonResources
     extends IResourceBundle
 {

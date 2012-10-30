@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static nextmethod.base.TypeHelpers.typeAs;
-import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
+import static nextmethod.common.Mvc4jCommonResources.CommonResources;
 
 public class RazorDirectiveAnnotationCodeGenerator extends SpanCodeGenerator {
 

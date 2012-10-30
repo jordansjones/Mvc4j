@@ -1,4 +1,4 @@
-package nextmethod.web.razor.common;
+package nextmethod.common;
 
 import nextmethod.i18n.ResourceBundleFactory;
 

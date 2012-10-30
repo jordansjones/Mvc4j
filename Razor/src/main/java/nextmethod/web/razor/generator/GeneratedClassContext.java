@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 import java.util.Objects;
 
 import static nextmethod.base.TypeHelpers.typeAs;
-import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
+import static nextmethod.common.Mvc4jCommonResources.CommonResources;
 
 // TODO
 public class GeneratedClassContext {

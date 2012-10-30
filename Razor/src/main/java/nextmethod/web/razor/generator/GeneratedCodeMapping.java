@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static nextmethod.base.TypeHelpers.typeAs;
-import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
+import static nextmethod.common.Mvc4jCommonResources.CommonResources;
 
 @SuppressWarnings("UnusedDeclaration")
 public final class GeneratedCodeMapping {

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static nextmethod.web.razor.common.Mvc4jCommonResources.CommonResources;
+import static nextmethod.common.Mvc4jCommonResources.CommonResources;
 
 public class TextChange {
 
