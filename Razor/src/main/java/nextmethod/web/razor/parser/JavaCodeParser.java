@@ -51,6 +51,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		.add("helper")
 		.add("functions")
 		.add("package")
+		.add("namespace")
 		.add("class")
 		.add("layout")
 		.add("sessionstate")

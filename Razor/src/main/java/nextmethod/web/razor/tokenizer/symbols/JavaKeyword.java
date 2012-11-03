@@ -34,6 +34,7 @@ public enum JavaKeyword {
 	Interface("interface"),
 	Lock("lock"),
 	Long("long"),
+	Namespace("namespace"),
 	Native("native"),
 	New("new"),
 	Package("package"),

@@ -40,7 +40,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		mapKeywords(tryStatementDelegate, JavaKeyword.Try);
 		mapKeywords(usingKeywordDelegate, JavaKeyword.Using);
 		mapKeywords(doStatementDelegate, JavaKeyword.Do);
-		mapKeywords(reservedDirectiveDelegate, JavaKeyword.Package, JavaKeyword.Class);
+		mapKeywords(reservedDirectiveDelegate, JavaKeyword.Namespace, JavaKeyword.Package, JavaKeyword.Class);
 	}
 
 	private void mapKeywords(@Nonnull final Delegates.IAction1<Boolean> handler, final JavaKeyword... keywords) {
