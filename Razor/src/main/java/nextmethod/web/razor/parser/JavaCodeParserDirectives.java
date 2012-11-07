@@ -498,7 +498,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		// Accept whitespace
 		final JavaSymbol remainingWs = acceptSingleWhiteSpaceCharacter();
 
-		if (!getSpan().getSymbols().isEmpty()) {
+		if (getSpan().getSymbols().size() > 1) {
 			getSpan().getEditHandler().setAcceptedCharacters(AcceptedCharacters.None);
 		}
 
