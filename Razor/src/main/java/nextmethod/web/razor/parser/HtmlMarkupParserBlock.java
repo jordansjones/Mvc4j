@@ -81,6 +81,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 						RazorResources().parseErrorMarkupBlockMustStartWithTag()
 					);
 				}
+				output(SpanKind.Markup);
 			}
 		}
 	}

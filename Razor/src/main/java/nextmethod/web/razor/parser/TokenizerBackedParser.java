@@ -326,6 +326,10 @@ public abstract class TokenizerBackedParser<
 		output();
 	}
 
+	protected void output(@Nonnull final SpanKind kind, @Nonnull final AcceptedCharacters acceptedCharacters) {
+		output(kind, EnumSet.of(acceptedCharacters));
+	}
+
 	protected void output(@Nonnull final SpanKind kind, @Nonnull final EnumSet<AcceptedCharacters> accepts) {
 		configure(kind, accepts);
 		output();
@@ -632,10 +636,10 @@ public abstract class TokenizerBackedParser<
 				final SourceLocation start = getCurrentLocation();
 
 				expected(KnownSymbolType.CommentStart);
-				output(SpanKind.Transition, AcceptedCharacters.SetOfNone);
+				output(SpanKind.Transition, AcceptedCharacters.None);
 
 				expected(KnownSymbolType.CommentStar);
-				output(SpanKind.MetaCode, AcceptedCharacters.SetOfNone);
+				output(SpanKind.MetaCode, AcceptedCharacters.None);
 
 				optional(KnownSymbolType.CommentBody);
 				addMarkerSymbolIfNecessary();
@@ -647,7 +651,7 @@ public abstract class TokenizerBackedParser<
 					getContext().onError(start, RazorResources().parseErrorRazorCommentNotTerminated());
 				}
 				else {
-					output(SpanKind.MetaCode, AcceptedCharacters.SetOfNone);
+					output(SpanKind.MetaCode, AcceptedCharacters.None);
 				}
 
 				if (!optional(KnownSymbolType.CommentStart)) {
@@ -657,7 +661,7 @@ public abstract class TokenizerBackedParser<
 					}
 				}
 				else {
-					output(SpanKind.Transition, AcceptedCharacters.SetOfNone);
+					output(SpanKind.Transition, AcceptedCharacters.None);
 				}
 			}
 		}
