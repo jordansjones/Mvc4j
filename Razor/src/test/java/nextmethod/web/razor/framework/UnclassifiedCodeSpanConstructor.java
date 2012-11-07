@@ -59,6 +59,10 @@ public class UnclassifiedCodeSpanConstructor {
 		return self.with(new AddImportCodeGenerator(pkg, pkgKeywordLength));
 	}
 
+	public SpanConstructor asNamespaceImport(final String pkg, final int pkgKeywordLength) {
+		return asPackageImport(pkg, pkgKeywordLength);
+	}
+
 	public SpanConstructor hidden() {
 		return self.with(SpanCodeGenerator.Null);
 	}
