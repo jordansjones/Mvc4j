@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.generator.HelperCodeGenerator;
 import nextmethod.web.razor.parser.JavaCodeParser;
@@ -18,8 +19,6 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
  *
  */
 public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
-
-	private static final String NewLine = "\r\n";
 
 	@Test
 	public void parseHelperCorrectlyParsesHelperWithNoSpaceInBody() {
@@ -53,7 +52,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperCorrectlyParsesIncompleteHelperPreceedingCodeBlock() {
 		parseDocumentTest(
-			"@helper" + NewLine
+			"@helper" + Environment.NewLine
 			+ "@{}",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
@@ -178,7 +177,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementCapturesWhitespaceToEndOfLineIfHelperStatementMissingName() {
 		parseDocumentTest(
-			"@helper                       " + NewLine
+			"@helper                       " + Environment.NewLine
 			+ "    ",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
@@ -202,7 +201,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementCapturesWhitespaceToEndOfLineIfHelperStatementMissingOpenParen() {
 		parseDocumentTest(
-			"@helper Foo    " + NewLine + "    ",
+			"@helper Foo    " + Environment.NewLine + "    ",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -223,7 +222,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementCapturesAllContentToEndOfFileIfHelperStatementMissingCloseParenInParameterList() {
 		parseDocumentTest(
-			"@helper Foo(Foo Bar" + NewLine + "Biz" + NewLine + "Boz",
+			"@helper Foo(Foo Bar" + Environment.NewLine + "Biz" + Environment.NewLine + "Boz",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -243,7 +242,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementCapturesWhitespaceToEndOfLineIfHelperStatementMissingOpenBraceAfterParameterList() {
 		parseDocumentTest(
-			"@helper Foo(String foo)    " + NewLine,
+			"@helper Foo(String foo)    " + Environment.NewLine,
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -263,7 +262,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementContinuesParsingHelperUntilEOF() {
 		parseDocumentTest(
-			"@helper Foo(String foo) {    " + NewLine + "    <p>Foo</p>",
+			"@helper Foo(String foo) {    " + Environment.NewLine + "    <p>Foo</p>",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -292,7 +291,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementCorrectlyParsesHelperWithEmbeddedCode() {
 		parseDocumentTest(
-			"@helper Foo(String foo) {    " + NewLine + "    <p>@foo</p>" + NewLine + "}",
+			"@helper Foo(String foo) {    " + Environment.NewLine + "    <p>@foo</p>" + Environment.NewLine + "}",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -325,7 +324,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementCorrectlyParsesHelperWithNewlinesBetweenCloseParenAndOpenBrace() {
 		parseDocumentTest(
-			"@helper Foo(String foo)" + NewLine + NewLine + NewLine + NewLine + "{    " + NewLine + "    <p>@foo</p>" + NewLine + "}",
+			"@helper Foo(String foo)" + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + "{    " + Environment.NewLine + "    <p>@foo</p>" + Environment.NewLine + "}",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -358,7 +357,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperStatementGivesWhitespaceAfterOpenBraceToMarkupInDesignMode() {
 		parseDocumentTest(
-			"@helper Foo(String foo) {    " + NewLine + "    ",
+			"@helper Foo(String foo) {    " + Environment.NewLine + "    ",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new HelperBlock(
@@ -384,9 +383,9 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseHelperAcceptsNestedHelpersButOutputsError() {
 		parseDocumentTest(
-			"@helper Foo(String foo) {" + NewLine
-			+ "    @helper Bar(String baz) {" + NewLine
-			+ "    }" + NewLine
+			"@helper Foo(String foo) {" + Environment.NewLine
+			+ "    @helper Bar(String baz) {" + Environment.NewLine
+			+ "    }" + Environment.NewLine
 			+ "}",
 			new MarkupBlock(
 				factory().emptyHtml().build(),

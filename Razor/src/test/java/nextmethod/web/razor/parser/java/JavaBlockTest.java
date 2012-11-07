@@ -1,6 +1,7 @@
 package nextmethod.web.razor.parser.java;
 
 import com.google.common.base.Strings;
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.generator.AttributeBlockCodeGenerator;
 import nextmethod.web.razor.generator.DynamicAttributeBlockCodeGenerator;
@@ -41,7 +42,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void balancingBracketsIgnoresStringLiteralCharactersAndBracketsInsideSingleLineComments() {
 		singleSpanBlockTest(
-			"if(foo) {" + newLine() + "\t// bar } \"\"'" + newLine() + "\tzoop();" + newLine() + "}",
+			"if(foo) {" + Environment.NewLine + "\t// bar } \"\"'" + Environment.NewLine + "\tzoop();" + Environment.NewLine + "}",
 			BlockType.Statement,
 			SpanKind.Code
 		);
@@ -70,9 +71,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void balancingBracketsIgnoresStringLiteralCharactersAndBracketsInsideBlockComments() {
 		singleSpanBlockTest(
-			new StringBuilder("if(foo) {").append(newLine())
-				.append("\t").append("/* bar } ").append('"').append('"').append(" */ ' baz } '").append(newLine())
-				.append("\t").append("zoop();").append(newLine())
+			new StringBuilder("if(foo) {").append(Environment.NewLine)
+				.append("\t").append("/* bar } ").append('"').append('"').append(" */ ' baz } '").append(Environment.NewLine)
+				.append("\t").append("zoop();").append(Environment.NewLine)
 				.append("}")
 				.toString(),
 			BlockType.Statement,
@@ -162,9 +163,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenIfAndElseClause() {
 		singleSpanBlockTest(
-			new StringBuilder("if(foo) { bar(); }").append(newLine())
-				.append("// Foo").append(newLine())
-				.append("// Bar").append(newLine())
+			new StringBuilder("if(foo) { bar(); }").append(Environment.NewLine)
+				.append("// Foo").append(Environment.NewLine)
+				.append("// Bar").append(Environment.NewLine)
 				.append("else { baz(); }")
 				.toString(),
 			BlockType.Statement,
@@ -177,9 +178,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenElseIfAndElseClause() {
 		singleSpanBlockTest(
-			new StringBuilder("if(foo) { bar(); } else if(bar) { baz(); }").append(newLine())
-				.append("// Foo").append(newLine())
-				.append("// Bar").append(newLine())
+			new StringBuilder("if(foo) { bar(); } else if(bar) { baz(); }").append(Environment.NewLine)
+				.append("// Foo").append(Environment.NewLine)
+				.append("// Bar").append(Environment.NewLine)
 				.append("else { biz(); }")
 				.toString(),
 			BlockType.Statement,
@@ -192,9 +193,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenIfAndElseIfClause() {
 		singleSpanBlockTest(
-			new StringBuilder("if(foo) { bar(); }").append(newLine())
-				.append("// Foo").append(newLine())
-				.append("// Bar").append(newLine())
+			new StringBuilder("if(foo) { bar(); }").append(Environment.NewLine)
+				.append("// Foo").append(Environment.NewLine)
+				.append("// Bar").append(Environment.NewLine)
 				.append("else if(bar) { baz(); }")
 				.toString(),
 			BlockType.Statement,
@@ -204,8 +205,8 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 
 	@Test
 	public void parseBlockParsesElseIfBranchesOfIfStatement() {
-		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"foo } bar\");" + newLine() + "}";
-		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"bar } baz\");" + newLine() + "}";
+		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"foo } bar\");" + Environment.NewLine + "}";
+		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"bar } baz\");" + Environment.NewLine + "}";
 
 		final String document = ifStatement + elseIfBranch;
 
@@ -214,8 +215,8 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 
 	@Test
 	public void parseBlockParsesMultipleElseIfBranchesOfIfStatement() {
-		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"foo } bar\");" + newLine() + "}";
-		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"bar } baz\");" + newLine() + "}";
+		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"foo } bar\");" + Environment.NewLine + "}";
+		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"bar } baz\");" + Environment.NewLine + "}";
 
 		final String document = ifStatement + elseIfBranch + elseIfBranch + elseIfBranch + elseIfBranch;
 
@@ -224,8 +225,8 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 
 	@Test
 	public void parseBlockParsesMultipleElseIfBranchesOfIfStatementFollowedByOneElseBranch() {
-		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"foo } bar\");" + newLine() + "}";
-		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"bar } baz\");" + newLine() + "}";
+		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"foo } bar\");" + Environment.NewLine + "}";
+		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"bar } baz\");" + Environment.NewLine + "}";
 		final String elseBranch = " else { Debug.WriteLine(@\"bar } baz\"); }";
 
 		final String document = ifStatement + elseIfBranch + elseIfBranch + elseBranch;
@@ -235,8 +236,8 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 
 	@Test
 	public void parseBlockStopsParsingCodeAfterElseBranch() {
-		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"foo } bar\");" + newLine() + "}";
-		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"bar } baz\");" + newLine() + "}";
+		final String ifStatement = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"foo } bar\");" + Environment.NewLine + "}";
+		final String elseIfBranch = " else if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"bar } baz\");" + Environment.NewLine + "}";
 		final String elseBranch = " else { Debug.WriteLine(@\"bar } baz\"); }";
 
 		final String document = ifStatement + elseIfBranch + elseBranch + elseIfBranch;
@@ -247,7 +248,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 
 	@Test
 	public void parseBlockStopsParsingIfIfStatementNotFollowedByElse() {
-		final String document = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"foo } bar\");" + newLine() + "}";
+		final String document = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"foo } bar\");" + Environment.NewLine + "}";
 
 		singleSpanBlockTest(document, BlockType.Statement, SpanKind.Code);
 	}
@@ -255,7 +256,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockAcceptsElseIfWithNoCondition() {
 		// We don't want to be a full Java parser - If the else if is missing it's condition, the Java compiler can handle that, we have all the info we need to keep parsing
-		final String ifBranch = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + newLine() + "\tDebug.WriteLine(@\"foo } bar\");" + newLine() + "}";
+		final String ifBranch = "if(int i = 0; i < 10; new Foo { Bar = \"baz\" }) {" + Environment.NewLine + "\tDebug.WriteLine(@\"foo } bar\");" + Environment.NewLine + "}";
 		final String elseIfBranch = " else if { foo(); }";
 
 		final String document = ifBranch + elseIfBranch;
@@ -296,7 +297,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenDoAndWhileClause() {
 		singleSpanBlockTest(
-			"do { var foo = bar; }" + newLine() + "// Foo" + newLine() + "// Bar" + newLine() + "while(true);",
+			"do { var foo = bar; }" + Environment.NewLine + "// Foo" + Environment.NewLine + "// Bar" + Environment.NewLine + "while(true);",
 			BlockType.Statement,
 			SpanKind.Code,
 			AcceptedCharacters.None
@@ -326,17 +327,17 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	public void parseBlockSkipsParenthesisedExpressionAndThenBalancesBracesIfFirstIdentifierIsSwitchKeyword() {
 		singleSpanBlockTest(
 			new StringBuilder()
-				.append("switch(foo) {").append(newLine())
-				.append("\tcase 0:").append(newLine())
-				.append("\t\tbreak;").append(newLine())
-				.append("\tcase 1:").append(newLine())
-				.append("\t\t{").append(newLine())
-				.append("\t\t\tbreak;").append(newLine())
-				.append("\t\t}").append(newLine())
-				.append("\tcase 2:").append(newLine())
-				.append("\t\treturn;").append(newLine())
-				.append("\tdefault:").append(newLine())
-				.append("\t\treturn;").append(newLine())
+				.append("switch(foo) {").append(Environment.NewLine)
+				.append("\tcase 0:").append(Environment.NewLine)
+				.append("\t\tbreak;").append(Environment.NewLine)
+				.append("\tcase 1:").append(Environment.NewLine)
+				.append("\t\t{").append(Environment.NewLine)
+				.append("\t\t\tbreak;").append(Environment.NewLine)
+				.append("\t\t}").append(Environment.NewLine)
+				.append("\tcase 2:").append(Environment.NewLine)
+				.append("\t\treturn;").append(Environment.NewLine)
+				.append("\tdefault:").append(Environment.NewLine)
+				.append("\t\treturn;").append(Environment.NewLine)
 				.append("}")
 				.toString(),
 			BlockType.Statement,
@@ -466,9 +467,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenTryAndFinallyClause() {
 		singleSpanBlockTest(
-			"try { bar(); }" + newLine() +
-				"// Foo" + newLine() +
-				"// Bar" + newLine() +
+			"try { bar(); }" + Environment.NewLine +
+				"// Foo" + Environment.NewLine +
+				"// Bar" + Environment.NewLine +
 				"finally { baz(); }",
 			BlockType.Statement,
 			SpanKind.Code,
@@ -479,9 +480,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenCatchAndFinallyClause() {
 		singleSpanBlockTest(
-			"try { bar(); } catch(bar) { baz(); }" + newLine() +
-				"// Foo" + newLine() +
-				"// Bar" + newLine() +
+			"try { bar(); } catch(bar) { baz(); }" + Environment.NewLine +
+				"// Foo" + Environment.NewLine +
+				"// Bar" + Environment.NewLine +
 				"finally { biz(); }",
 			BlockType.Statement,
 			SpanKind.Code,
@@ -492,9 +493,9 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockSupportsLineCommentBetweenTryAndCatchClause() {
 		singleSpanBlockTest(
-			"try { bar(); }" + newLine() +
-				"// Foo" + newLine() +
-				"// Bar" + newLine() +
+			"try { bar(); }" + Environment.NewLine +
+				"// Foo" + Environment.NewLine +
+				"// Bar" + Environment.NewLine +
 				"catch(bar) {baz();}",
 			BlockType.Statement,
 			SpanKind.Code
@@ -648,20 +649,20 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	public void parsersCanNestRecursively() {
 		// Arrange
 		parseBlockTest(
-			"foreach(var c in db.Categories) {" + newLine()
-			+ "            <div>" + newLine()
-			+ "                <h1>@c.Name</h1>" + newLine()
-			+ "                <ul>" + newLine()
-			+ "                    @foreach(var p in c.Products) {" + newLine()
-			+ "                        <li><a href=\"@Html.ActionUrl(\"Products\", \"Detail\", new { id = p.Id })\">@p.Name</a></li>" + newLine()
-			+ "                    }" + newLine()
-			+ "                </ul>" + newLine()
-			+ "            </div>" + newLine()
+			"foreach(var c in db.Categories) {" + Environment.NewLine
+			+ "            <div>" + Environment.NewLine
+			+ "                <h1>@c.Name</h1>" + Environment.NewLine
+			+ "                <ul>" + Environment.NewLine
+			+ "                    @foreach(var p in c.Products) {" + Environment.NewLine
+			+ "                        <li><a href=\"@Html.ActionUrl(\"Products\", \"Detail\", new { id = p.Id })\">@p.Name</a></li>" + Environment.NewLine
+			+ "                    }" + Environment.NewLine
+			+ "                </ul>" + Environment.NewLine
+			+ "            </div>" + Environment.NewLine
 			+ "        }",
 			new StatementBlock(
-				factory().code("foreach(var c in db.Categories) {" + newLine()).asStatement().build(),
+				factory().code("foreach(var c in db.Categories) {" + Environment.NewLine).asStatement().build(),
 				new MarkupBlock(
-					factory().markup("            <div>" + newLine() + "                <h1>").build(),
+					factory().markup("            <div>" + Environment.NewLine + "                <h1>").build(),
 					new ExpressionBlock(
 						factory().codeTransition().build(),
 						factory().code("c.Name")
@@ -669,11 +670,11 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 							.accepts(AcceptedCharacters.NonWhiteSpace)
 							.build()
 					),
-					factory().markup("</h1>\r\n                <ul>" + newLine()).build(),
+					factory().markup("</h1>\r\n                <ul>" + Environment.NewLine).build(),
 					new StatementBlock(
 						factory().code("                    ").asStatement().build(),
 						factory().codeTransition().build(),
-						factory().code("foreach(var p in c.Products) {" + newLine()).asStatement().build(),
+						factory().code("foreach(var p in c.Products) {" + Environment.NewLine).asStatement().build(),
 						new MarkupBlock(
 							factory().markup("                        <li><a").build(),
 							new MarkupBlock(
@@ -698,11 +699,11 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 									.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 									.accepts(AcceptedCharacters.NonWhiteSpace).build()
 							),
-							factory().markup("</a></li>" + newLine()).accepts(AcceptedCharacters.None).build()
+							factory().markup("</a></li>" + Environment.NewLine).accepts(AcceptedCharacters.None).build()
 						),
-						factory().code("                    }" + newLine()).asStatement().accepts(AcceptedCharacters.None).build()
+						factory().code("                    }" + Environment.NewLine).asStatement().accepts(AcceptedCharacters.None).build()
 					),
-					factory().markup("                </ul>" + newLine() + "            </div>" + newLine())
+					factory().markup("                </ul>" + Environment.NewLine + "            </div>" + Environment.NewLine)
 						.accepts(AcceptedCharacters.None).build()
 				),
 				factory().code("        }").asStatement().accepts(AcceptedCharacters.None).build()

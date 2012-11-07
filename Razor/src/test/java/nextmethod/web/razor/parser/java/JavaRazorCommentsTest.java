@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
@@ -18,8 +19,6 @@ import org.junit.Test;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
-
-	private static final String NewLine = "\r\n";
 
 	@Test
 	public void unterminatedRazorComment() {
@@ -75,12 +74,12 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void razorCommentInImplicitExpressionMethodCall() {
 		parseDocumentTest(
-			"@foo(" + NewLine + "@**@" + NewLine,
+			"@foo(" + Environment.NewLine + "@**@" + Environment.NewLine,
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new ExpressionBlock(
 					factory().codeTransitionAndBuild(),
-					factory().code("foo(" + NewLine)
+					factory().code("foo(" + Environment.NewLine)
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.build(),
 					new CommentBlock(
@@ -97,7 +96,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
 						factory().codeTransition(JavaSymbolType.RazorCommentTransition).acceptsNoneAndBuild()
 					),
-					factory().code(NewLine).asImplicitExpression(JavaCodeParser.DefaultKeywords).build()
+					factory().code(Environment.NewLine).asImplicitExpression(JavaCodeParser.DefaultKeywords).build()
 				)
 			),
 			new RazorError(
@@ -138,17 +137,17 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void razorCommentInVerbatimBlock() {
 		parseDocumentTest(
-			"@{" + NewLine + "    <text" + NewLine + "    @**@" + NewLine + "}",
+			"@{" + Environment.NewLine + "    <text" + Environment.NewLine + "    @**@" + Environment.NewLine + "}",
 			new MarkupBlock(
 				factory().emptyHtml().build(),
 				new StatementBlock(
 					factory().codeTransitionAndBuild(),
 					factory().metaCode("{").acceptsNoneAndBuild(),
-					factory().code(NewLine).asStatementAndBuild(),
+					factory().code(Environment.NewLine).asStatementAndBuild(),
 					new MarkupBlock(
 						factory().markup("    ").build(),
 						factory().markupTransition("<text").accepts(AcceptedCharacters.Any).build(),
-						factory().markup(NewLine + "    ").build(),
+						factory().markup(Environment.NewLine + "    ").build(),
 						new CommentBlock(
 							factory().markupTransition(HtmlSymbolType.RazorCommentTransition).acceptsNoneAndBuild(),
 							factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
@@ -163,7 +162,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 							factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
 							factory().markupTransition(HtmlSymbolType.RazorCommentTransition).acceptsNoneAndBuild()
 						),
-						factory().markup(NewLine + "}").build()
+						factory().markup(Environment.NewLine + "}").build()
 					)
 				)
 			),

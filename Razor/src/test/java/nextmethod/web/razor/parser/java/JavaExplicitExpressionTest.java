@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.ExpressionBlock;
@@ -13,8 +14,6 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
  *
  */
 public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
-
-	private static final String NewLine = "\r\n";
 
 	@Test
 	public void parseBlockShouldOutputZeroLengthCodeSpanIfExplicitExpressionIsEmpty() {
@@ -91,10 +90,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockShouldAcceptMultiLineVerbatimStrings() {
 		parseBlockTest(
-			"@(@\"" + NewLine
-			+ "Foo" + NewLine
-			+ "Bar" + NewLine
-			+ "Baz" + NewLine
+			"@(@\"" + Environment.NewLine
+			+ "Foo" + Environment.NewLine
+			+ "Bar" + Environment.NewLine
+			+ "Baz" + Environment.NewLine
 			+ "\")",
 			new ExpressionBlock(
 				factory().codeTransition().build(),

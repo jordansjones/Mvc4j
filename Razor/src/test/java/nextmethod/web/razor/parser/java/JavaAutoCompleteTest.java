@@ -2,6 +2,7 @@ package nextmethod.web.razor.parser.java;
 
 import nextmethod.base.SystemHelpers;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.generator.HelperCodeGenerator;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
@@ -128,11 +129,11 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void functionsDirectiveAutoCompleteAtStartOfFile() {
 		parseBlockTest(
-			"@functions{" + SystemHelpers.newLine() + "foo",
+			"@functions{" + Environment.NewLine + "foo",
 			new FunctionsBlock(
 				factory().codeTransition("@").accepts(AcceptedCharacters.None).build(),
 				factory().metaCode("functions{").accepts(AcceptedCharacters.None).build(),
-				factory().code(SystemHelpers.newLine() + "foo").asFunctionsBody()
+				factory().code(Environment.NewLine + "foo").asFunctionsBody()
 					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 						this.setAutoCompleteString("}");
 					}}).build()
@@ -147,14 +148,14 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void helperDirectiveAutoCompleteAtStartOfFile() {
 		parseBlockTest(
-			"@helper Strong(string value) {" + newLine() + "<p></p>",
+			"@helper Strong(string value) {" + Environment.NewLine + "<p></p>",
 			new HelperBlock(
 				new HelperCodeGenerator(new LocationTagged<>("Strong(string value) {", 8, 0, 8), true),
 				factory().codeTransition().build(),
 				factory().metaCode("helper ").accepts(AcceptedCharacters.None).build(),
 				factory().code("Strong(string value) {").hidden().accepts(AcceptedCharacters.None).build(),
 				new StatementBlock(
-					factory().code(newLine()).asStatement()
+					factory().code(Environment.NewLine).asStatement()
 						.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 							this.setAutoCompleteString("}");
 						}}).build(),
@@ -183,14 +184,14 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void sectionDirectiveAutoCompleteAtStartOfFile() {
 		parseBlockTest(
-			"@section Header {" + newLine() + "<p>Foo</p>",
+			"@section Header {" + Environment.NewLine + "<p>Foo</p>",
 			new SectionBlock(
 				new SectionCodeGenerator("Header"),
 				factory().codeTransition().build(),
 				factory().metaCode("section Header {")
 					.autoCompleteWith("}", true)
 					.accepts(AcceptedCharacters.Any).build(),
-				new MarkupBlock(factory().markup(newLine() + "<p>Foo</p>").build())
+				new MarkupBlock(factory().markup(Environment.NewLine + "<p>Foo</p>").build())
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedX("}"),
@@ -202,11 +203,11 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void verbatimBlockAutoCompleteAtStartOfFile() {
 		parseBlockTest(
-			"@{" + newLine() + "<p></p>",
+			"@{" + Environment.NewLine + "<p></p>",
 			new StatementBlock(
 				factory().codeTransition().build(),
 				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
-				factory().code(newLine()).asStatement()
+				factory().code(Environment.NewLine).asStatement()
 					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{ this.setAutoCompleteString("}"); }})
 					.build(),
 				new MarkupBlock(

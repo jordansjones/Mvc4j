@@ -1,6 +1,7 @@
 package nextmethod.web.razor.parser.java;
 
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.JavaLanguageCharacteristics;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
@@ -35,9 +36,9 @@ public class JavaErrorTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockCapturesWhitespaceToEndOfLineInInvalidUsingStatementAndTreatsAsFileCode() {
 		parseBlockTest(
-			"using          " + newLine() + newLine(),
+			"using          " + Environment.NewLine + Environment.NewLine,
 			new StatementBlock(
-				factory().code("using          " + newLine()).asStatement().build()
+				factory().code("using          " + Environment.NewLine).asStatement().build()
 			)
 		);
 	}

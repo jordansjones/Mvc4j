@@ -1,6 +1,7 @@
 package nextmethod.web.razor.parser.java;
 
 import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
+import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
 import nextmethod.web.razor.parser.JavaLanguageCharacteristics;
@@ -73,7 +74,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockHandlesSingleLineTemplate() {
 		parseBlockTest(
-			"{ var foo = @: bar" + newLine() + "; }",
+			"{ var foo = @: bar" + Environment.NewLine + "; }",
 			new StatementBlock(
 				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
 				factory().code(" var foo = ").asStatement().build(),
@@ -81,7 +82,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 					new MarkupBlock(
 						factory().markupTransition().build(),
 						factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-						factory().markup(" bar" + newLine())
+						factory().markup(" bar" + Environment.NewLine)
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
 							.accepts(AcceptedCharacters.None).build()
 					)
@@ -95,7 +96,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 	@Test
 	public void parseBlockHandlesSingleLineImmediatelyFollowingStatementChar() {
 		parseBlockTest(
-			"{i@: bar" + newLine() + "}",
+			"{i@: bar" + Environment.NewLine + "}",
 			new StatementBlock(
 				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
 				factory().code("i").asStatement().build(),
@@ -103,7 +104,7 @@ public class JavaTemplateTest extends JavaHtmlCodeParserTestBase {
 					new MarkupBlock(
 						factory().markupTransition().build(),
 						factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-						factory().markup(" bar" + newLine())
+						factory().markup(" bar" + Environment.NewLine)
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
 							.accepts(AcceptedCharacters.None).build()
 					)
