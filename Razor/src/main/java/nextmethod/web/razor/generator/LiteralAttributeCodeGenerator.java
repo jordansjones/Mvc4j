@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.base.TypeHelpers.typeAs;
 
 public class LiteralAttributeCodeGenerator extends SpanCodeGenerator {
@@ -19,7 +20,7 @@ public class LiteralAttributeCodeGenerator extends SpanCodeGenerator {
 	private LocationTagged<SpanCodeGenerator> valueGenerator;
 
 	private LiteralAttributeCodeGenerator(@Nonnull final LocationTagged<String> prefix, @Nullable final LocationTagged<String> value, @Nullable final LocationTagged<SpanCodeGenerator> valueGenerator) {
-		this.prefix = prefix;
+		this.prefix = checkNotNull(prefix);
 		this.value = value;
 		this.valueGenerator = valueGenerator;
 	}

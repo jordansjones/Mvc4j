@@ -7,6 +7,7 @@ import nextmethod.threading.OperationCanceledException;
 import nextmethod.threading.SynchronizationContext;
 import nextmethod.threading.Task;
 import nextmethod.web.razor.ParserResults;
+import nextmethod.web.razor.parser.internal.ConditionalAttributeCollapser;
 import nextmethod.web.razor.parser.internal.ISyntaxTreeRewriter;
 import nextmethod.web.razor.parser.internal.WhiteSpaceRewriter;
 import nextmethod.web.razor.parser.syntaxtree.Block;

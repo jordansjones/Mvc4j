@@ -524,10 +524,11 @@ public abstract class TokenizerBackedParser<
 
 	@SafeVarargs
 	protected final void acceptUntil(@Nonnull final TSymbolType... types) {
+		final List<TSymbolType> symbolTypeList = Arrays.asList(types);
 		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
 			@Override
 			public Boolean invoke(@Nullable final TSymbol tSymbol) {
-				return tSymbol == null || Iterables.any(Arrays.asList(types), new Predicate<TSymbolType>() {
+				return tSymbol == null || Iterables.all(symbolTypeList, new Predicate<TSymbolType>() {
 					@Override
 					public boolean apply(@Nullable final TSymbolType tSymbolType) {
 						return tSymbolType == null || tSymbolType != tSymbol.getType();

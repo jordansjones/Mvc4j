@@ -1,6 +1,7 @@
-package nextmethod.web.razor.parser;
+package nextmethod.web.razor.parser.internal;
 
 import com.google.common.collect.Iterables;
+import nextmethod.annotations.Internal;
 import nextmethod.base.Delegates;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.parser.internal.MarkupRewriter;
@@ -19,7 +20,8 @@ import static nextmethod.base.TypeHelpers.typeIs;
 /**
  *
  */
-class MarkupCollapser extends MarkupRewriter {
+@Internal
+public class MarkupCollapser extends MarkupRewriter {
 
 	public MarkupCollapser(@Nonnull final Delegates.IAction3<SpanBuilder, SourceLocation, String> markupSpanFactory) {
 		super(markupSpanFactory);

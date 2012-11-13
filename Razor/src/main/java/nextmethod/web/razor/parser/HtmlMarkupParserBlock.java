@@ -379,7 +379,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			acceptAndMoveNext();
 		}
 
-		// New now have the prefix: (i.e. '      foo="')
+		// We now have the prefix: (i.e. '      foo="')
 		final LocationTagged<String> prefix = SymbolExtensions.getContent(getSpan());
 
 		if (attributeCanBeConditional) {
@@ -407,7 +407,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			getContext().getCurrentBlock().setCodeGenerator(new AttributeBlockCodeGenerator(name.getValue(), prefix, suffix));
 		}
 		else {
-			final HtmlSymbolType fQuote = quote; // This allows use to use "quote" in the following IFunc1 "delegate"
+			final HtmlSymbolType fQuote = quote; // This allows us to use "quote" in the following IFunc1 "delegate"
 			// Not a "conditional" attribute, so just read the value
 			skipToAndParseCode(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
 				@Override

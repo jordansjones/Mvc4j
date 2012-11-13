@@ -249,4 +249,12 @@ public class SpanFactory {
 		return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator());
 	}
 
+	public Span markupAndBuild(final String content) {
+		return markupAndBuild(new String[] { content });
+	}
+
+	public Span markupAndBuild(final String... content) {
+		return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator()).build();
+	}
+
 }

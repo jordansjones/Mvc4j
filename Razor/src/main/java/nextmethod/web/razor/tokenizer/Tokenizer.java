@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
+import nextmethod.base.Debug;
 import nextmethod.web.razor.State;
 import nextmethod.web.razor.StateMachine;
 import nextmethod.web.razor.parser.ParserHelpers;
@@ -84,7 +85,10 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 	@Override
 	public TSymbol nextSymbol() {
 		// Post-Condition: Buffer should be empty at the start of next()
-		assert buffer.length() == 0;
+		if (Debug.isAssertEnabled()) {
+			assert buffer.length() == 0;
+		}
+
 		startSymbol();
 
 		if (isEndOfFile())
@@ -92,7 +96,9 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 
 		final TSymbol sym = turn();
 
-		assert buffer.length() == 0;
+		if (Debug.isAssertEnabled()) {
+			assert buffer.length() == 0;
+		}
 
 		return sym;
 	}

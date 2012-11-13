@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.Deque;
 
 @Internal
-public abstract class MarkupRewriter extends ParserVisitor implements ISyntaxTreeRewriter {
+abstract class MarkupRewriter extends ParserVisitor implements ISyntaxTreeRewriter {
 
 	private final Deque<BlockBuilder> blocks = Queues.newArrayDeque();
 	private Delegates.IAction3<SpanBuilder, SourceLocation, String> markupSpanFactory;

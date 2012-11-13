@@ -1,6 +1,9 @@
 package nextmethod.web.razor.tokenizer;
 
 import com.google.common.collect.AbstractIterator;
+import nextmethod.annotations.Internal;
+import nextmethod.base.Delegates;
+import nextmethod.collections.IterableIterator;
 import nextmethod.web.razor.State;
 import nextmethod.web.razor.parser.ParserHelpers;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
@@ -9,8 +12,11 @@ import nextmethod.web.razor.text.SeekableTextReader;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbol;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
+import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.Iterator;
 
 import static nextmethod.web.razor.parser.ParserHelpers.isNewLine;
@@ -50,15 +56,30 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 		return dataState;
 	}
 
-	static Iterator<HtmlSymbol> tokenize(@Nonnull final String content) {
-		return new AbstractIterator<HtmlSymbol>() {
+	@Internal
+	public static Delegates.IFunc1<String, Iterable<ISymbol>> createTokenizeDelegate() {
+		return new Delegates.IFunc1<String, Iterable<ISymbol>>() {
+
+			@Override
+			public Iterable<ISymbol> invoke(@Nullable final String input1) {
+				if (input1 == null) {
+					return Collections.<ISymbol>emptyList();
+				}
+				return HtmlTokenizer.tokenize(input1);
+			}
+		};
+	}
+
+	@Internal
+	public static Iterable<ISymbol> tokenize(@Nonnull final String content) {
+		return new IterableIterator<ISymbol>() {
 
 			private final SeekableTextReader reader = new SeekableTextReader(content);
 			private final HtmlTokenizer tok = new HtmlTokenizer(reader);
 			private	HtmlSymbol sym;
 
 			@Override
-			protected HtmlSymbol computeNext() {
+			protected ISymbol computeNext() {
 				sym = tok.nextSymbol();
 				return sym != null
 					? sym
