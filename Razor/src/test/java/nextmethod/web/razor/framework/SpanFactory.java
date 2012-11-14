@@ -175,6 +175,10 @@ public class SpanFactory {
 			.with(new MarkupCodeGenerator());
 	}
 
+	public Span emptyHtmlAndBuild() {
+		return emptyHtml().build();
+	}
+
 	public UnclassifiedCodeSpanConstructor code(final String content) {
 		return new UnclassifiedCodeSpanConstructor(
 			span(SpanKind.Code, content, false)
