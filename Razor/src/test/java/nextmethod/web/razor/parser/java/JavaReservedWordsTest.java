@@ -31,7 +31,7 @@ public class JavaReservedWordsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			word,
 			new DirectiveBlock(
-				factory().metaCode(word).acceptsNoneAndBuild()
+				factory().metaCode(word).accepts(AcceptedCharacters.None)
 			),
 			new RazorError(
 				RazorResources().parseErrorReservedWord(word),
@@ -44,7 +44,7 @@ public class JavaReservedWordsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			word,
 			new ExpressionBlock(
-				factory().code(word).asImplicitExpression(JavaCodeParser.DefaultKeywords).accepts(AcceptedCharacters.NonWhiteSpace).build()
+				factory().code(word).asImplicitExpression(JavaCodeParser.DefaultKeywords).accepts(AcceptedCharacters.NonWhiteSpace)
 			)
 		);
 	}

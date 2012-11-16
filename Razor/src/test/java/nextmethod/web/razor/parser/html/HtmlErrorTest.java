@@ -28,9 +28,9 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<text foo bar></text>",
 			new MarkupBlock(
-				factory().markupTransition("<text").accepts(AcceptedCharacters.Any).build(),
-				factory().markupAndBuild(" foo bar>"),
-				factory().markupTransition("</text>").build()
+				factory().markupTransition("<text").accepts(AcceptedCharacters.Any),
+				factory().markup(" foo bar>"),
+				factory().markupTransition("</text>")
 			),
 			new RazorError(
 				RazorResources().parseErrorTextTagCannotContainAttributes(),
@@ -44,9 +44,9 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<text></text foo bar>",
 			new MarkupBlock(
-				factory().markupTransition("<text>").build(),
-				factory().markupTransition("</text").accepts(AcceptedCharacters.Any).build(),
-				factory().markupAndBuild(" ")
+				factory().markupTransition("<text>"),
+				factory().markupTransition("</text").accepts(AcceptedCharacters.Any),
+				factory().markup(" ")
 			),
 			new RazorError(
 				RazorResources().parseErrorTextTagCannotContainAttributes(),
@@ -73,7 +73,7 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"</foo> bar baz",
 			new MarkupBlock(
-				factory().markup("</foo> ").acceptsNoneAndBuild()
+				factory().markup("</foo> ").accepts(AcceptedCharacters.None)
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedEndTag("foo"),
@@ -87,7 +87,7 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<p><foo></bar>",
 			new MarkupBlock(
-				factory().markup("<p><foo></bar>").acceptsNoneAndBuild()
+				factory().markup("<p><foo></bar>").accepts(AcceptedCharacters.None)
 			),
 			new RazorError(
 				RazorResources().parseErrorMissingEndTag("p"),
@@ -101,7 +101,7 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo>blah blah blah blah blah",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo>blah blah blah blah blah")
+				factory().markup("<foo>blah blah blah blah blah")
 			),
 			new RazorError(
 				RazorResources().parseErrorMissingEndTag("foo"),
@@ -115,13 +115,12 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo bar=baz",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo"),
+				factory().markup("<foo"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("bar", new LocationTagged<>(" bar=", 4, 0, 4), new LocationTagged<>("", 12, 0, 12)),
-					factory().markup(" bar=").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" bar=").with(SpanCodeGenerator.Null),
 					factory().markup("baz")
 						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 9, 0, 9), new LocationTagged<String>("baz", 9, 0, 9)))
-						.build()
 				)
 			),
 			new RazorError(

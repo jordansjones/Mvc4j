@@ -25,26 +25,26 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(){@Bar()}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(){", 8, 0, 8), true),
-					factory().codeTransition().build(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(){").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(){").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
-						factory().emptyJava().asStatementAndBuild(),
+						factory().emptyJava().asStatement(),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("Bar()")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords, true)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
+								
 						),
-						factory().emptyJava().asStatementAndBuild()
+						factory().emptyJava().asStatement()
 					),
-					factory().code("}").hidden().acceptsNoneAndBuild()
+					factory().code("}").hidden().accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -55,19 +55,19 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 			"@helper" + Environment.NewLine
 			+ "@{}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper").build()
+					factory().codeTransition(),
+					factory().metaCode("helper")
 				),
-				factory().markup("\r\n").build(),
+				factory().markup("\r\n"),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("{").acceptsNoneAndBuild(),
-					factory().emptyJava().asStatementAndBuild(),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().codeTransition(),
+					factory().metaCode("{").accepts(AcceptedCharacters.None),
+					factory().emptyJava().asStatement(),
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtHelperNameStart(
@@ -83,12 +83,12 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper{",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper").build()
+					factory().codeTransition(),
+					factory().metaCode("helper")
 				),
-				factory().markup("{").build()
+				factory().markup("{")
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtHelperNameStart(
@@ -104,16 +104,16 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper () {",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("() {", 8, 0, 8), true),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("() {").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("() {").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
 						factory().emptyJava()
 							.asStatement()
-							.autoCompleteWith("}").build()
+							.autoCompleteWith("}")
 					)
 				)
 			),
@@ -137,12 +137,12 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper ",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("", 8, 0, 8), false),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().emptyJava().hidden().build()
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().emptyJava().hidden()
 				)
 			),
 			new RazorError(
@@ -159,10 +159,10 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper").accepts(AcceptedCharacters.Any).build()
+					factory().codeTransition(),
+					factory().metaCode("helper").accepts(AcceptedCharacters.Any)
 				)
 			),
 			new RazorError(
@@ -180,14 +180,14 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 			"@helper                       " + Environment.NewLine
 			+ "    ",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("                      ", 8, 0, 8), false),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("                      \r\n").hidden().build()
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("                      \r\n").hidden()
 				),
-				factory().markup("    ").build()
+				factory().markup("    ")
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtHelperNameStart(
@@ -203,14 +203,14 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo    " + Environment.NewLine + "    ",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo    ", 8, 0, 8), false),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo    \r\n").hidden().build()
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo    \r\n").hidden()
 				),
-				factory().markup("    ").build()
+				factory().markup("    ")
 			),
 			new RazorError(
 				RazorResources().parseErrorMissingCharAfterHelperName("("),
@@ -224,12 +224,12 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(Foo Bar" + Environment.NewLine + "Biz" + Environment.NewLine + "Boz",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(Foo Bar\r\nBiz\r\nBoz", 8, 0, 8), false),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(Foo Bar\r\nBiz\r\nBoz").hidden().build()
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(Foo Bar\r\nBiz\r\nBoz").hidden()
 				)
 			),
 			new RazorError(
@@ -244,12 +244,12 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(String foo)    " + Environment.NewLine,
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(String foo)    ", 8, 0, 8), false),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(String foo)    \r\n").hidden().build()
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(String foo)    \r\n").hidden()
 				)
 			),
 			new RazorError(
@@ -264,18 +264,18 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(String foo) {    " + Environment.NewLine + "    <p>Foo</p>",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(String foo) {", 8, 0, 8), true),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(String foo) {").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(String foo) {").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
-						factory().code("    \r\n").asStatement().autoCompleteWith("}").build(),
+						factory().code("    \r\n").asStatement().autoCompleteWith("}"),
 						new MarkupBlock(
-							factory().markup("    <p>Foo</p>").acceptsNoneAndBuild()
+							factory().markup("    <p>Foo</p>").accepts(AcceptedCharacters.None)
 						),
-						factory().emptyJava().asStatementAndBuild()
+						factory().emptyJava().asStatement()
 					)
 				)
 			),
@@ -293,30 +293,30 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(String foo) {    " + Environment.NewLine + "    <p>@foo</p>" + Environment.NewLine + "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(String foo) {", 8, 0, 8), true),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(String foo) {").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(String foo) {").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
-						factory().code("    \r\n").asStatementAndBuild(),
+						factory().code("    \r\n").asStatement(),
 						new MarkupBlock(
-							factory().markup("    <p>").build(),
+							factory().markup("    <p>"),
 							new ExpressionBlock(
-								factory().codeTransitionAndBuild(),
+								factory().codeTransition(),
 								factory().code("foo")
 									.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 									.accepts(AcceptedCharacters.NonWhiteSpace)
-									.build()
+									
 							),
-							factory().markup("</p>\r\n").acceptsNoneAndBuild()
+							factory().markup("</p>\r\n").accepts(AcceptedCharacters.None)
 						),
-						factory().emptyJava().asStatementAndBuild()
+						factory().emptyJava().asStatement()
 					),
-					factory().code("}").hidden().acceptsNoneAndBuild()
+					factory().code("}").hidden().accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -326,30 +326,30 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(String foo)" + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + "{    " + Environment.NewLine + "    <p>@foo</p>" + Environment.NewLine + "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(String foo)\r\n\r\n\r\n\r\n{", 8, 0, 8), true),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(String foo)\r\n\r\n\r\n\r\n{").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(String foo)\r\n\r\n\r\n\r\n{").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
-						factory().code("    \r\n").asStatementAndBuild(),
+						factory().code("    \r\n").asStatement(),
 						new MarkupBlock(
-							factory().markup("    <p>").build(),
+							factory().markup("    <p>"),
 							new ExpressionBlock(
-								factory().codeTransitionAndBuild(),
+								factory().codeTransition(),
 								factory().code("foo")
 									.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 									.accepts(AcceptedCharacters.NonWhiteSpace)
-									.build()
+									
 							),
-							factory().markup("</p>\r\n").acceptsNoneAndBuild()
+							factory().markup("</p>\r\n").accepts(AcceptedCharacters.None)
 						),
-						factory().emptyJava().asStatementAndBuild()
+						factory().emptyJava().asStatement()
 					),
-					factory().code("}").hidden().acceptsNoneAndBuild()
+					factory().code("}").hidden().accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -359,14 +359,14 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@helper Foo(String foo) {    " + Environment.NewLine + "    ",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(String foo) {", 8, 0, 8), true),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(String foo) {").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(String foo) {").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
-						factory().code("    \r\n    ").asStatement().autoCompleteWith("}").build()
+						factory().code("    \r\n    ").asStatement().autoCompleteWith("}")
 					)
 				)
 			),
@@ -388,29 +388,29 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 			+ "    }" + Environment.NewLine
 			+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new HelperBlock(
 					new HelperCodeGenerator(new LocationTagged<>("Foo(String foo) {", 8, 0, 8), true),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("helper ").acceptsNoneAndBuild(),
-					factory().code("Foo(String foo) {").hidden().acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+					factory().code("Foo(String foo) {").hidden().accepts(AcceptedCharacters.None),
 					new StatementBlock(
-						factory().code("\r\n    ").asStatementAndBuild(),
+						factory().code("\r\n    ").asStatement(),
 						new HelperBlock(
 							new HelperCodeGenerator(new LocationTagged<>("Bar(String baz) {", 39, 1, 12), true),
-							factory().codeTransitionAndBuild(),
-							factory().metaCode("helper ").acceptsNoneAndBuild(),
-							factory().code("Bar(String baz) {").hidden().acceptsNoneAndBuild(),
+							factory().codeTransition(),
+							factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+							factory().code("Bar(String baz) {").hidden().accepts(AcceptedCharacters.None),
 							new StatementBlock(
-								factory().code("\r\n    ").asStatementAndBuild()
+								factory().code("\r\n    ").asStatement()
 							),
-							factory().code("}").hidden().acceptsNoneAndBuild()
+							factory().code("}").hidden().accepts(AcceptedCharacters.None)
 						),
-						factory().code("\r\n").asStatementAndBuild()
+						factory().code("\r\n").asStatement()
 					),
-					factory().code("}").hidden().acceptsNoneAndBuild()
+					factory().code("}").hidden().accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			),
 			true, // designTimeParser
 			new RazorError(

@@ -21,10 +21,10 @@ public class JavaErrorTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@\"",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().emptyJava()
 					.asImplicitExpression(getKeywordSet())
-					.accepts(AcceptedCharacters.NonWhiteSpace).build()
+					.accepts(AcceptedCharacters.NonWhiteSpace)
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtStartOfCodeBlock("\""),
@@ -38,7 +38,7 @@ public class JavaErrorTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"using          " + Environment.NewLine + Environment.NewLine,
 			new StatementBlock(
-				factory().code("using          " + Environment.NewLine).asStatement().build()
+				factory().code("using          " + Environment.NewLine).asStatement()
 			)
 		);
 	}
@@ -48,12 +48,12 @@ public class JavaErrorTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{",
 			new StatementBlock(
-				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().emptyJava()
 					.asStatement()
 					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 						this.setAutoCompleteString("}");
-					}}).build()
+					}})
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(

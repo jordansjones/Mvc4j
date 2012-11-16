@@ -23,11 +23,11 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@* Foo Bar",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new CommentBlock(
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().comment(" Foo Bar", HtmlSymbolType.RazorComment).build()
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().comment(" Foo Bar", HtmlSymbolType.RazorComment)
 				)
 			),
 			new RazorError(
@@ -43,15 +43,15 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 			"<ul>" + Environment.NewLine
 				+ "                @* This is a block comment </ul> *@ foo",
 			new MarkupBlock(
-				factory().markup("<ul>\r\n                ").build(),
+				factory().markup("<ul>\r\n                "),
 				new CommentBlock(
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().comment(" This is a block comment </ul> ", HtmlSymbolType.RazorComment).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build()
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().comment(" This is a block comment </ul> ", HtmlSymbolType.RazorComment),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition)
 				),
-				factory().markup(" foo").build()
+				factory().markup(" foo")
 			)
 		);
 	}
@@ -62,15 +62,15 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 			"<ul>" + Environment.NewLine
 				+ "                @* This is a block comment </ul> *@ foo </ul>",
 			new MarkupBlock(
-				factory().markup("<ul>\r\n                ").build(),
+				factory().markup("<ul>\r\n                "),
 				new CommentBlock(
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().comment(" This is a block comment </ul> ", HtmlSymbolType.RazorComment).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build()
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().comment(" This is a block comment </ul> ", HtmlSymbolType.RazorComment),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition)
 				),
-				factory().markup(" foo </ul>").acceptsNoneAndBuild()
+				factory().markup(" foo </ul>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -83,18 +83,18 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 				+ "    Write(\"Hello friend!\");" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().code("if(Request.IsAuthenticated) {\r\n    ").asStatementAndBuild(),
+					factory().codeTransition(),
+					factory().code("if(Request.IsAuthenticated) {\r\n    ").asStatement(),
 					new CommentBlock(
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().comment(" User is logged in! } ", JavaSymbolType.RazorComment).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().comment(" User is logged in! } ", JavaSymbolType.RazorComment),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition)
 					),
-					factory().code("\r\n    Write(\"Hello friend!\");\r\n}").asStatementAndBuild()
+					factory().code("\r\n    Write(\"Hello friend!\");\r\n}").asStatement()
 				)
 			)
 		);
@@ -108,18 +108,18 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 				+ "    Write(\"Hello friend!\");" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().code("if(Request.IsAuthenticated) {\r\n    var foo = ").asStatementAndBuild(),
+					factory().codeTransition(),
+					factory().code("if(Request.IsAuthenticated) {\r\n    var foo = ").asStatement(),
 					new CommentBlock(
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().comment(" User is logged in! ; ", JavaSymbolType.RazorComment).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().comment(" User is logged in! ; ", JavaSymbolType.RazorComment),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition)
 					),
-					factory().code(";\r\n    Write(\"Hello friend!\");\r\n}").asStatementAndBuild()
+					factory().code(";\r\n    Write(\"Hello friend!\");\r\n}").asStatement()
 				)
 			)
 		);
@@ -133,14 +133,14 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 				+ "    Write(\"Hello friend!\");" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("if(Request.IsAuthenticated) {" + Environment.NewLine
 						+ "    var foo = \"@* User is logged in! ; *\";" + Environment.NewLine
 						+ "    Write(\"Hello friend!\");" + Environment.NewLine
 						+ "}")
-						.asStatementAndBuild()
+						.asStatement()
 				)
 			)
 		);
@@ -154,14 +154,14 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 				+ "    Write(\"Hello friend!\");" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("if(Request.IsAuthenticated) {" + Environment.NewLine
 						+ "    var foo = /*@* User is logged in! */ *@ */;" + Environment.NewLine
 						+ "    Write(\"Hello friend!\");" + Environment.NewLine
 						+ "}")
-						.asStatementAndBuild()
+						.asStatement()
 				)
 			)
 		);
@@ -175,14 +175,14 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 				+ "    Write(\"Hello friend!\");" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("if(Request.IsAuthenticated) {" + Environment.NewLine
 						+ "    var foo = //@* User is logged in! */ *@;" + Environment.NewLine
 						+ "    Write(\"Hello friend!\");" + Environment.NewLine
 						+ "}")
-						.asStatementAndBuild()
+						.asStatement()
 				)
 			)
 		);
@@ -193,23 +193,23 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@Html.Foo@*bar*@",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("Html.Foo")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new CommentBlock(
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().comment("bar", HtmlSymbolType.RazorComment).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build()
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().comment("bar", HtmlSymbolType.RazorComment),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -219,23 +219,23 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@Html.@*bar*@",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("Html")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().markup(".").build(),
+				factory().markup("."),
 				new CommentBlock(
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().comment("bar", HtmlSymbolType.RazorComment).build(),
-					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-					factory().markupTransition(HtmlSymbolType.RazorCommentTransition).build()
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().comment("bar", HtmlSymbolType.RazorComment),
+					factory().metaMarkup("*", HtmlSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+					factory().markupTransition(HtmlSymbolType.RazorCommentTransition)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -245,26 +245,26 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@Html.Foo(@*bar*@ 4)",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("Html.Foo(")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.Any)
-						.build(),
+						,
 					new CommentBlock(
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().comment("bar", JavaSymbolType.RazorComment).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().comment("bar", JavaSymbolType.RazorComment),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition)
 					),
 					factory().code(" 4)")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -274,26 +274,26 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@Html.Foo[@*bar*@ 4]",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("Html.Foo[")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.Any)
-						.build(),
+						,
 					new CommentBlock(
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().comment("bar", JavaSymbolType.RazorComment).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().comment("bar", JavaSymbolType.RazorComment),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition)
 					),
 					factory().code(" 4]")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -303,18 +303,18 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@if(@*bar*@) {}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().code("if(").asStatementAndBuild(),
+					factory().codeTransition(),
+					factory().code("if(").asStatement(),
 					new CommentBlock(
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().comment("bar", JavaSymbolType.RazorComment).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().comment("bar", JavaSymbolType.RazorComment),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition)
 					),
-					factory().code(") {}").asStatementAndBuild()
+					factory().code(") {}").asStatement()
 				)
 			)
 		);
@@ -325,22 +325,22 @@ public class JavaHtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@(1 + @*bar*@ 1)",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("(").acceptsNoneAndBuild(),
-					factory().code("1 + ").asExpressionAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("(").accepts(AcceptedCharacters.None),
+					factory().code("1 + ").asExpression(),
 					new CommentBlock(
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().comment("bar", JavaSymbolType.RazorComment).build(),
-						factory().metaCode("*", JavaSymbolType.RazorCommentStar).acceptsNoneAndBuild(),
-						factory().codeTransition(JavaSymbolType.RazorCommentTransition).build()
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().comment("bar", JavaSymbolType.RazorComment),
+						factory().metaCode("*", JavaSymbolType.RazorCommentStar).accepts(AcceptedCharacters.None),
+						factory().codeTransition(JavaSymbolType.RazorCommentTransition)
 					),
-					factory().code(" 1").asExpressionAndBuild(),
-					factory().metaCode(")").acceptsNoneAndBuild()
+					factory().code(" 1").asExpression(),
+					factory().metaCode(")").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}

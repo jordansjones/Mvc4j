@@ -17,10 +17,10 @@ public class JavaVerbatimBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@{ foo(); }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" foo(); ").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().codeTransition(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" foo(); ").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -30,17 +30,17 @@ public class JavaVerbatimBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{@}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().emptyJava().asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().emptyJava().asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().emptyJava()
 						.asImplicitExpression(getKeywordSet(), true)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().emptyJava().asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().emptyJava().asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true,
 			new RazorError(
@@ -55,17 +55,17 @@ public class JavaVerbatimBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{@.}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().emptyJava().asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().emptyJava().asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().emptyJava()
 						.asImplicitExpression(getKeywordSet(), true)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().code(".").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code(".").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true,
 			new RazorError(
@@ -80,17 +80,17 @@ public class JavaVerbatimBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{" + Environment.NewLine + "    @" + Environment.NewLine + "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code("\r\n    ").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code("\r\n    ").asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().emptyJava()
 						.asImplicitExpression(getKeywordSet(), true)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().code("\r\n").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code("\r\n").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true,
 			new RazorError(
@@ -105,17 +105,17 @@ public class JavaVerbatimBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{@foo." + Environment.NewLine + "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().emptyJava().asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().emptyJava().asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("foo.")
 						.asImplicitExpression(getKeywordSet(), true)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().code("\r\n").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code("\r\n").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -125,17 +125,17 @@ public class JavaVerbatimBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{@foo." + Environment.NewLine + "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().emptyJava().asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().emptyJava().asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("foo.")
 						.asImplicitExpression(getKeywordSet(), true)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().code("\r\n").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code("\r\n").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true
 		);

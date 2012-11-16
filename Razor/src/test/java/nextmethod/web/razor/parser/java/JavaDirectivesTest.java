@@ -50,11 +50,11 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@inherits " + type,
 			new DirectiveBlock(
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode(SyntaxConstants.Java.InheritsKeyword + " ")
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				factory().code(type)
-					.asBaseType(type).build()
+					.asBaseType(type)
 			)
 		);
 	}
@@ -66,11 +66,11 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@sessionstate " + keyword,
 			new DirectiveBlock(
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode(SyntaxConstants.Java.SessionStateKeyword + " ")
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				factory().code(keyword)
-					.asRazorDirectiveAnnotation("sessionstate", keyword).build()
+					.asRazorDirectiveAnnotation("sessionstate", keyword)
 			)
 		);
 	}
@@ -81,11 +81,11 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@sessionstate " + keyword,
 			new DirectiveBlock(
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode(SyntaxConstants.Java.SessionStateKeyword + " ")
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				factory().code(keyword)
-					.asRazorDirectiveAnnotation("sessionstate", keyword).build()
+					.asRazorDirectiveAnnotation("sessionstate", keyword)
 			)
 		);
 	}
@@ -96,13 +96,13 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@functions { foo(); bar(); }",
 			new FunctionsBlock(
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode(SyntaxConstants.Java.FunctionsKeyword + " {")
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				factory().code(" foo(); bar(); ")
-					.asFunctionsBody().build(),
+					.asFunctionsBody(),
 				factory().metaCode("}")
-					.accepts(AcceptedCharacters.None).build()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -112,13 +112,13 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@functions { }",
 			new FunctionsBlock(
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode(SyntaxConstants.Java.FunctionsKeyword + " {")
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				factory().code(" ")
-					.asFunctionsBody().build(),
+					.asFunctionsBody(),
 				factory().metaCode("}")
-					.accepts(AcceptedCharacters.None).build()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -130,15 +130,15 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 			"@section Header { <p>F{o}o</p> }",
 			new SectionBlock(
 				new SectionCodeGenerator("Header"),
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode("section Header {")
 					.autoCompleteWith(null, true)
-					.accepts(AcceptedCharacters.Any).build(),
+					.accepts(AcceptedCharacters.Any),
 				new MarkupBlock(
-					factory().markup(" <p>F", "{", "o", "}", "o", "</p> ").build()
+					factory().markup(" <p>F", "{", "o", "}", "o", "</p> ")
 				),
 				factory().metaCode("}")
-					.accepts(AcceptedCharacters.None).build()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -150,20 +150,20 @@ public class JavaDirectivesTest extends JavaHtmlCodeParserTestBase {
 			"@helper Strong(string value) { foo(); }",
 			new HelperBlock(
 				new HelperCodeGenerator(new LocationTagged<>("Strong(string value) {", new SourceLocation(8, 0, 8)), true),
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode("helper ")
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				factory().code("Strong(string value) {")
 					.hidden()
-					.accepts(AcceptedCharacters.None).build(),
+					.accepts(AcceptedCharacters.None),
 				new StatementBlock(
 					factory().code(" foo(); ")
 						.asStatement()
-						.with(new StatementCodeGenerator()).build()
+						.with(new StatementCodeGenerator())
 				),
 				factory().code("}")
 					.hidden()
-					.accepts(AcceptedCharacters.None).build()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}

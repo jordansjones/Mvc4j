@@ -11,7 +11,7 @@ public class HelperBlock extends Block {
 	private static final BlockType blockType = BlockType.Helper;
 
 	public HelperBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public HelperBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

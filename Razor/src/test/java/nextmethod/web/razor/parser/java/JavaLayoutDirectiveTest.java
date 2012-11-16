@@ -23,7 +23,7 @@ public class JavaLayoutDirectiveTest extends JavaHtmlCodeParserTestBase {
 				factory().code(word)
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			)
 		);
 	}

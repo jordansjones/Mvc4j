@@ -2,23 +2,27 @@ package nextmethod.web.razor.framework;
 
 import com.google.common.collect.Lists;
 import nextmethod.base.Delegates;
+import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.editor.SpanEditHandler;
 import nextmethod.web.razor.generator.ISpanCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
+import nextmethod.web.razor.parser.ParserVisitor;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
+import nextmethod.web.razor.parser.syntaxtree.SyntaxTreeNode;
 import nextmethod.web.razor.text.SourceLocation;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.EnumSet;
 
-public class SpanConstructor {
+public class SpanConstructor extends SyntaxTreeNode implements ISpanConstructor {
 
 	static Delegates.IFunc1<String, Iterable<ISymbol>> testTokenizer = new Delegates.IFunc1<String, Iterable<ISymbol>>() {
 		@Override
@@ -37,12 +41,9 @@ public class SpanConstructor {
 		}
 	}
 
+	@Override
 	public Span build() {
 		return builder.build();
-	}
-
-	public Span acceptsNoneAndBuild() {
-		return accepts(AcceptedCharacters.None).build();
 	}
 
 	public SpanConstructor with(final ISpanCodeGenerator generator) {
@@ -113,5 +114,30 @@ public class SpanConstructor {
 				input.setEditorHints(EnumSet.of(hints));
 			}
 		});
+	}
+
+	@Override
+	public boolean isBlock() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public int getLength() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public SourceLocation getStart() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void accept(@Nonnull final ParserVisitor visitor) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean equivalentTo(@Nonnull final SyntaxTreeNode node) {
+		throw new NotImplementedException();
 	}
 }

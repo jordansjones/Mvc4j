@@ -22,11 +22,11 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section" + Environment.NewLine,
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator(""),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section" + Environment.NewLine).build()
+					factory().codeTransition(),
+					factory().metaCode("section" + Environment.NewLine)
 				)
 			),
 			new RazorError(
@@ -43,13 +43,13 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section Foo         " + Environment.NewLine + "    ",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("Foo"),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section Foo         \r\n").build()
+					factory().codeTransition(),
+					factory().metaCode("section Foo         \r\n")
 				),
-				factory().markup("    ").build()
+				factory().markup("    ")
 			),
 			new RazorError(
 				RazorResources().parseErrorMissingOpenBraceAfterSection(),
@@ -63,13 +63,13 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section         " + Environment.NewLine + "    ",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator(""),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section         \r\n").build()
+					factory().codeTransition(),
+					factory().metaCode("section         \r\n")
 				),
-				factory().markup("    ").build()
+				factory().markup("    ")
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtSectionNameStart(
@@ -85,15 +85,15 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@Section foo",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("Section")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
+						
 				),
-				factory().markup(" foo").build()
+				factory().markup(" foo")
 			)
 		);
 	}
@@ -103,13 +103,13 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section 9 { <p>Foo</p> }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator(""),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section ").build()
+					factory().codeTransition(),
+					factory().metaCode("section ")
 				),
-				factory().markup("9 { <p>Foo</p> }").build()
+				factory().markup("9 { <p>Foo</p> }")
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtSectionNameStart(
@@ -125,13 +125,13 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo-bar { <p>Foo</p> }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section foo").build()
+					factory().codeTransition(),
+					factory().metaCode("section foo")
 				),
-				factory().markup("-bar { <p>Foo</p> }").build()
+				factory().markup("-bar { <p>Foo</p> }")
 			),
 			new RazorError(
 				RazorResources().parseErrorMissingOpenBraceAfterSection(),
@@ -145,31 +145,31 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo { @section bar { <p>Foo</p> } }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section foo {")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup(" ").build(),
+						factory().markup(" "),
 						new SectionBlock(
 							new SectionCodeGenerator("bar"),
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().metaCode("section bar {")
 								.autoCompleteWith(null, true)
-								.build(),
+								,
 							new MarkupBlock(
-								factory().markup(" <p>Foo</p> ").build()
+								factory().markup(" <p>Foo</p> ")
 							),
-							factory().metaCode("}").acceptsNoneAndBuild()
+							factory().metaCode("}").accepts(AcceptedCharacters.None)
 						),
-						factory().markup(" ").build()
+						factory().markup(" ")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			),
 			new RazorError(
 				RazorResources().parseErrorSectionsCannotBeNested(
@@ -185,11 +185,11 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo {",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section foo {").autoCompleteWith("}", true).build(),
+					factory().codeTransition(),
+					factory().metaCode("section foo {").autoCompleteWith("}", true),
 					new MarkupBlock()
 				)
 			),
@@ -205,14 +205,14 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo { <p>Foo{}</p>",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section foo {").autoCompleteWith("}", true).build(),
+					factory().codeTransition(),
+					factory().metaCode("section foo {").autoCompleteWith("}", true),
 					new MarkupBlock(
 						// Need to provide the markup span as fragments, since the parser will split the {} into separate symbols.
-						factory().markup(" <p>Foo", "{", "}", "</p>").build()
+						factory().markup(" <p>Foo", "{", "}", "</p>")
 					)
 				)
 			),
@@ -228,11 +228,11 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo      " + Environment.NewLine,
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section foo      \r\n").build()
+					factory().codeTransition(),
+					factory().metaCode("section foo      \r\n")
 				)
 			),
 			new RazorError(
@@ -255,19 +255,19 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 				+ "<p>Foo</p>" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section foo      \r\n\r\n\r\n\r\n\r\n\r\n{")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup("\r\n<p>Foo</p>\r\n").build()
+						factory().markup("\r\n<p>Foo</p>\r\n")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -277,19 +277,19 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo { <p>Foo</p> }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section foo {")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup(" <p>Foo</p> ").build()
+						factory().markup(" <p>Foo</p> ")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -299,19 +299,19 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo{ <p>Foo</p> }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section foo{")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup(" <p>Foo</p> ").build()
+						factory().markup(" <p>Foo</p> ")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -321,19 +321,19 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo { <script>(function foo() { return 1; })();</script> }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section foo {")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup(" <script>(function foo() { return 1; })();</script> ").build()
+						factory().markup(" <script>(function foo() { return 1; })();</script> ")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -343,26 +343,26 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section foo { I really want to render a close brace, so here I go: @(\"}\") }",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section foo {")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup(" I really want to render a close brace, so here I go: ").build(),
+						factory().markup(" I really want to render a close brace, so here I go: "),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
-							factory().metaCode("(").acceptsNoneAndBuild(),
-							factory().code("\"}\"").asExpressionAndBuild(),
-							factory().metaCode(")").acceptsNoneAndBuild()
+							factory().codeTransition(),
+							factory().metaCode("(").accepts(AcceptedCharacters.None),
+							factory().code("\"}\"").asExpression(),
+							factory().metaCode(")").accepts(AcceptedCharacters.None)
 						),
-						factory().markup(" ").build()
+						factory().markup(" ")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -375,23 +375,23 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 				+ "}" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtml().build(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("Foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section Foo {")
 						.autoCompleteWith(null, true)
-						.build(),
+						,
 					new MarkupBlock(
-						factory().markup("\r\n").build(),
+						factory().markup("\r\n"),
 						new StatementBlock(
-							factory().codeTransitionAndBuild(),
-							factory().code("if(true) {\r\n}\r\n").asStatementAndBuild()
+							factory().codeTransition(),
+							factory().code("if(true) {\r\n}\r\n").asStatement()
 						)
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtml().build()
+				factory().emptyHtml()
 			)
 		);
 	}

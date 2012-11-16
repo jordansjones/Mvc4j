@@ -2,6 +2,7 @@ package nextmethod.web.razor.parser.java;
 
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
+import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.MarkupBlock;
 import nextmethod.web.razor.parser.syntaxtree.StatementBlock;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
@@ -14,14 +15,14 @@ public class JavaWhitespaceHandlingTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"@: @if (true) { }" + Environment.NewLine + "}",
 			new MarkupBlock(
-				factory().markupTransition().acceptsNoneAndBuild(),
-				factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
-				factory().markup(" ").build(),
+				factory().markupTransition().accepts(AcceptedCharacters.None),
+				factory().metaMarkup(":", HtmlSymbolType.Colon),
+				factory().markup(" "),
 				new StatementBlock(
-					factory().codeTransition().acceptsNoneAndBuild(),
-					factory().code("if (true) { }").asStatementAndBuild()
+					factory().codeTransition().accepts(AcceptedCharacters.None),
+					factory().code("if (true) { }").asStatement()
 				),
-				factory().markup(Environment.NewLine).acceptsNoneAndBuild()
+				factory().markup(Environment.NewLine).accepts(AcceptedCharacters.None)
 			)
 		);
 	}

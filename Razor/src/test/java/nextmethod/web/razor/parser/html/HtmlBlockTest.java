@@ -36,13 +36,13 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@{" + Environment.NewLine + "<",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("{").acceptsNoneAndBuild(),
-					factory().code(Environment.NewLine).asStatementAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("{").accepts(AcceptedCharacters.None),
+					factory().code(Environment.NewLine).asStatement(),
 					new MarkupBlock(
-						factory().markupAndBuild("<")
+						factory().markup("<")
 					)
 				)
 			),
@@ -62,18 +62,18 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@{" + Environment.NewLine + "<" + Environment.NewLine + "</html>",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild(),
+				factory().emptyHtml(),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("{").acceptsNoneAndBuild(),
-					factory().code(Environment.NewLine).asStatementAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("{").accepts(AcceptedCharacters.None),
+					factory().code(Environment.NewLine).asStatement(),
 					new MarkupBlock(
-						factory().markupAndBuild("<" + Environment.NewLine)
+						factory().markup("<" + Environment.NewLine)
 					),
 					new MarkupBlock(
-						factory().markup("</html>").acceptsNoneAndBuild()
+						factory().markup("</html>").accepts(AcceptedCharacters.None)
 					),
-					factory().emptyJava().asStatementAndBuild()
+					factory().emptyJava().asStatement()
 				)
 			),
 			true, // DesignTimeParser
@@ -97,7 +97,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<                      " + Environment.NewLine + "   ",
 			new MarkupBlock(
-				factory().markupAndBuild("<                      \r\n   ")
+				factory().markup("<                      \r\n   ")
 			),
 			true,
 			new RazorError(
@@ -117,11 +117,10 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"@:<li>Foo Bar Baz" + Environment.NewLine + "bork",
 			new MarkupBlock(
-				factory().markupTransition().build(),
-				factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+				factory().markupTransition(),
+				factory().metaMarkup(":", HtmlSymbolType.Colon),
 				factory().markup("<li>Foo Bar Baz\r\n")
 					.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-					.build()
 			)
 		);
 	}
@@ -131,11 +130,10 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"@:foo bar",
 			new MarkupBlock(
-				factory().markupTransition().build(),
-				factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+				factory().markupTransition(),
+				factory().metaMarkup(":", HtmlSymbolType.Colon),
 				factory().markup("foo bar")
 					.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
-					.build()
 			)
 		);
 	}
@@ -170,20 +168,20 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo bar=\"baz\"><biz><boz zoop=zork/></biz></foo>",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo"),
+				factory().markup("<foo"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("bar", new LocationTagged<>(" bar=\"", 4, 0, 4), new LocationTagged<>("\"", 13, 0, 13)),
-					factory().markup(" bar=\"").with(SpanCodeGenerator.Null).build(),
-					factory().markup("baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 10, 0, 10), new LocationTagged<String>("baz", 10, 0, 10))).build(),
-					factory().markup("\"").with(SpanCodeGenerator.Null).build()
+					factory().markup(" bar=\"").with(SpanCodeGenerator.Null),
+					factory().markup("baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 10, 0, 10), new LocationTagged<String>("baz", 10, 0, 10))),
+					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
-				factory().markupAndBuild("><biz><boz"),
+				factory().markup("><biz><boz"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("zoop", new LocationTagged<>(" zoop=", 24, 0, 24), new LocationTagged<>("", 34, 0, 34)),
-					factory().markup(" zoop=").with(SpanCodeGenerator.Null).build(),
-					factory().markup("zork").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 30, 0, 30), new LocationTagged<String>("zork", 30, 0, 30))).build()
+					factory().markup(" zoop=").with(SpanCodeGenerator.Null),
+					factory().markup("zork").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 30, 0, 30), new LocationTagged<String>("zork", 30, 0, 30)))
 				),
-				factory().markup("/></biz></foo>").acceptsNoneAndBuild()
+				factory().markup("/></biz></foo>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -193,14 +191,14 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo><bar baz=\">\" /></foo>",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo><bar"),
+				factory().markup("<foo><bar"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz=\"", 9, 0, 9), new LocationTagged<>("\"", 16, 0, 16)),
-					factory().markup(" baz=\"").with(SpanCodeGenerator.Null).build(),
-					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))).build(),
-					factory().markup("\"").with(SpanCodeGenerator.Null).build()
+					factory().markup(" baz=\"").with(SpanCodeGenerator.Null),
+					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))),
+					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" /></foo>").acceptsNoneAndBuild()
+				factory().markup(" /></foo>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -210,14 +208,14 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo><bar baz=\'>\' /></foo>",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo><bar"),
+				factory().markup("<foo><bar"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz='", 9, 0, 9), new LocationTagged<>("'", 16, 0, 16)),
-					factory().markup(" baz='").with(SpanCodeGenerator.Null).build(),
-					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))).build(),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+					factory().markup(" baz='").with(SpanCodeGenerator.Null),
+					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))),
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" /></foo>").acceptsNoneAndBuild()
+				factory().markup(" /></foo>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -227,14 +225,14 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo><bar baz=\"/\"></bar></foo>",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo><bar"),
+				factory().markup("<foo><bar"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz=\"", 9, 0, 9), new LocationTagged<>("\"", 16, 0, 16)),
-					factory().markup(" baz=\"").with(SpanCodeGenerator.Null).build(),
-					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))).build(),
-					factory().markup("\"").with(SpanCodeGenerator.Null).build()
+					factory().markup(" baz=\"").with(SpanCodeGenerator.Null),
+					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))),
+					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
-				factory().markup("></bar></foo>").acceptsNoneAndBuild()
+				factory().markup("></bar></foo>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -244,14 +242,14 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo><bar baz=\'/\'></bar></foo>",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo><bar"),
+				factory().markup("<foo><bar"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz='", 9, 0, 9), new LocationTagged<>("'", 16, 0, 16)),
-					factory().markup(" baz='").with(SpanCodeGenerator.Null).build(),
-					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))).build(),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+					factory().markup(" baz='").with(SpanCodeGenerator.Null),
+					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))),
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup("></bar></foo>").acceptsNoneAndBuild()
+				factory().markup("></bar></foo>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -351,7 +349,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<text/>",
 			new MarkupBlock(
-				factory().markupTransition("<text/>").build()
+				factory().markupTransition("<text/>")
 			)
 		);
 	}
@@ -361,10 +359,10 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<text>Foo Bar <foo> Baz</text> zoop",
 			new MarkupBlock(
-				factory().markupTransition("<text>").build(),
-				factory().markupAndBuild("Foo Bar <foo> Baz"),
-				factory().markupTransition("</text>").build(),
-				factory().markup(" ").acceptsNoneAndBuild()
+				factory().markupTransition("<text>"),
+				factory().markup("Foo Bar <foo> Baz"),
+				factory().markupTransition("</text>"),
+				factory().markup(" ").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -374,10 +372,10 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<text><text>Foo Bar <foo> Baz</text></text> zoop",
 			new MarkupBlock(
-				factory().markupTransition("<text>").build(),
-				factory().markupAndBuild("<text>Foo Bar <foo> Baz</text>"),
-				factory().markupTransition("</text>").build(),
-				factory().markup(" ").acceptsNoneAndBuild()
+				factory().markupTransition("<text>"),
+				factory().markup("<text>Foo Bar <foo> Baz</text>"),
+				factory().markupTransition("</text>"),
+				factory().markup(" ").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -387,7 +385,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<foo><text><bar></bar></foo>",
 			new MarkupBlock(
-				factory().markup("<foo><text><bar></bar></foo>").acceptsNoneAndBuild()
+				factory().markup("<foo><text><bar></bar></foo>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -397,7 +395,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<br/",
 			new MarkupBlock(
-				factory().markupAndBuild("<br/")
+				factory().markup("<br/")
 			),
 			new RazorError(
 				RazorResources().parseErrorUnfinishedTag("br"),
@@ -411,12 +409,12 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<div>Foo @if(true) {} Bar</div>",
 			new MarkupBlock(
-				factory().markupAndBuild("<div>Foo "),
+				factory().markup("<div>Foo "),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().code("if(true) {}").asStatementAndBuild()
+					factory().codeTransition(),
+					factory().code("if(true) {}").asStatement()
 				),
-				factory().markup(" Bar</div>").acceptsNoneAndBuild()
+				factory().markup(" Bar</div>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -426,15 +424,14 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<script>foo<bar baz='@boz'></script>",
 			new MarkupBlock(
-				factory().markupAndBuild("<script>foo<bar baz='"),
+				factory().markup("<script>foo<bar baz='"),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("boz")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords, false)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory().markup("'></script>").acceptsNoneAndBuild()
+				factory().markup("'></script>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}

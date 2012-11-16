@@ -1,5 +1,6 @@
 package nextmethod.web.razor.framework;
 
+import nextmethod.base.NotImplementedException;
 import nextmethod.web.razor.editor.ImplicitExpressionEditorHandler;
 import nextmethod.web.razor.generator.AddImportCodeGenerator;
 import nextmethod.web.razor.generator.ExpressionCodeGenerator;
@@ -9,12 +10,16 @@ import nextmethod.web.razor.generator.SetBaseTypeCodeGenerator;
 import nextmethod.web.razor.generator.SpanCodeGenerator;
 import nextmethod.web.razor.generator.StatementCodeGenerator;
 import nextmethod.web.razor.generator.TypeMemberCodeGenerator;
+import nextmethod.web.razor.parser.ParserVisitor;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
+import nextmethod.web.razor.parser.syntaxtree.SyntaxTreeNode;
+import nextmethod.web.razor.text.SourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
-public class UnclassifiedCodeSpanConstructor {
+public class UnclassifiedCodeSpanConstructor extends SyntaxTreeNode implements ISpanConstructor {
 
 	final SpanConstructor self;
 
@@ -31,16 +36,8 @@ public class UnclassifiedCodeSpanConstructor {
 		return self.with(new StatementCodeGenerator());
 	}
 
-	public Span asStatementAndBuild() {
-		return asStatement().build();
-	}
-
 	public SpanConstructor asExpression() {
 		return self.with(new ExpressionCodeGenerator());
-	}
-
-	public Span asExpressionAndBuild() {
-		return asExpression().build();
 	}
 
 	public SpanConstructor asImplicitExpression(final Set<String> keywords) {
@@ -77,5 +74,35 @@ public class UnclassifiedCodeSpanConstructor {
 
 	public SpanConstructor as(final ISpanCodeGenerator codeGen) {
 		return self.with(codeGen);
+	}
+
+	@Override
+	public Span build() {
+		return self.build();
+	}
+
+	@Override
+	public boolean isBlock() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public int getLength() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public SourceLocation getStart() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void accept(@Nonnull final ParserVisitor visitor) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean equivalentTo(@Nonnull final SyntaxTreeNode node) {
+		throw new NotImplementedException();
 	}
 }

@@ -35,18 +35,18 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href='Foo' />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href='", 2, 0, 2),
 						new LocationTagged<>("'", 12, 0, 12)
 					),
-					factory().markup(" href='").with(SpanCodeGenerator.Null).build(),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))).build(),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+					factory().markup(" href='").with(SpanCodeGenerator.Null),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -56,20 +56,20 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href='Foo Bar Baz' />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href='", 2, 0, 2),
 						new LocationTagged<>("'", 20, 0, 20)
 					),
-					factory().markup(" href='").with(SpanCodeGenerator.Null).build(),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))).build(),
-					factory().markup(" Bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 12, 0, 12), new LocationTagged<>("Bar", 13, 0, 13))).build(),
-					factory().markup(" Baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 16, 0, 16), new LocationTagged<>("Baz", 17, 0, 17))).build(),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+					factory().markup(" href='").with(SpanCodeGenerator.Null),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
+					factory().markup(" Bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 12, 0, 12), new LocationTagged<>("Bar", 13, 0, 13))),
+					factory().markup(" Baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 16, 0, 16), new LocationTagged<>("Baz", 17, 0, 17))),
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -79,20 +79,20 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href=\"Foo Bar Baz\" />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href=\"", 2, 0, 2),
 						new LocationTagged<>("\"", 20, 0, 20)
 					),
-					factory().markup(" href=\"").with(SpanCodeGenerator.Null).build(),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))).build(),
-					factory().markup(" Bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 12, 0, 12), new LocationTagged<>("Bar", 13, 0, 13))).build(),
-					factory().markup(" Baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 16, 0, 16), new LocationTagged<>("Baz", 17, 0, 17))).build(),
-					factory().markup("\"").with(SpanCodeGenerator.Null).build()
+					factory().markup(" href=\"").with(SpanCodeGenerator.Null),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
+					factory().markup(" Bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 12, 0, 12), new LocationTagged<>("Bar", 13, 0, 13))),
+					factory().markup(" Baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 16, 0, 16), new LocationTagged<>("Baz", 17, 0, 17))),
+					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -102,17 +102,17 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href=Foo Bar Baz />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href=", 2, 0, 2),
 						new LocationTagged<>("", 11, 0, 11)
 					),
-					factory().markup(" href=").with(SpanCodeGenerator.Null).build(),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 8, 0, 8), new LocationTagged<>("Foo", 8, 0, 8))).build()
+					factory().markup(" href=").with(SpanCodeGenerator.Null),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 8, 0, 8), new LocationTagged<>("Foo", 8, 0, 8)))
 				),
-				factory().markup(" Bar Baz />").acceptsNoneAndBuild()
+				factory().markup(" Bar Baz />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -122,27 +122,26 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href='@foo' />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href='", 2, 0, 2),
 						new LocationTagged<>("'", 13, 0, 13)
 					),
-					factory().markup(" href='").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
 						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 9, 0, 9), 9, 0, 9),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("foo")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						)
 					),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -152,39 +151,37 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href='@foo bar @baz' />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href='", 2, 0, 2),
 						new LocationTagged<>("'", 22, 0, 22)
 					),
-					factory().markup(" href='").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
 						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 9, 0, 9), 9, 0, 9),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("foo")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						)
 					),
-					factory().markup(" bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 13, 0, 13), new LocationTagged<>("bar", 14, 0, 14))).build(),
+					factory().markup(" bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 13, 0, 13), new LocationTagged<>("bar", 14, 0, 14))),
 					new MarkupBlock(
 						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(" ", 17, 0, 17), 18, 0, 18),
-						factory().markup(" ").with(SpanCodeGenerator.Null).build(),
+						factory().markup(" ").with(SpanCodeGenerator.Null),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("baz")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						)
 					),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -194,30 +191,29 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<a href='@foo ~/Foo/Bar' />",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href='", 2, 0, 2),
 						new LocationTagged<>("'", 23, 0, 23)
 					),
-					factory().markup(" href='").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
 						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 9, 0, 9), 9, 0, 9),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("foo")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						)
 					),
 					factory().markup(" ~/Foo/Bar")
 						.withEditorHints(EditorHints.VirtualPath)
-						.with(LiteralAttributeCodeGenerator.fromValueGenerator(new LocationTagged<>(" ", 13, 0, 13), new LocationTagged<SpanCodeGenerator>(new ResolveUrlCodeGenerator(), 14, 0, 14))).build(),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+						.with(LiteralAttributeCodeGenerator.fromValueGenerator(new LocationTagged<>(" ", 13, 0, 13), new LocationTagged<SpanCodeGenerator>(new ResolveUrlCodeGenerator(), 14, 0, 14))),
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -227,26 +223,25 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<input value=@foo />",
 			new MarkupBlock(
-				factory().markupAndBuild("<input"),
+				factory().markup("<input"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"value",
 						new LocationTagged<>(" value=", 6, 0, 6),
 						new LocationTagged<>("", 17, 0, 17)
 					),
-					factory().markup(" value=").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" value=").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
 						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 13, 0, 13), 13, 0, 13),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("foo")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						)
 					)
 				),
-				factory().markup(" />").acceptsNoneAndBuild()
+				factory().markup(" />").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -256,26 +251,25 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<input value=@foo />",
 			new MarkupBlock(
-				factory().markupAndBuild("<input"),
+				factory().markup("<input"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"value",
 						new LocationTagged<>(" value=", 6, 0, 6),
 						new LocationTagged<>("", 17, 0, 17)
 					),
-					factory().markup(" value=").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" value=").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
 						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 13, 0, 13), 13, 0, 13),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("foo")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						)
 					)
 				),
-				factory().markupAndBuild(" />")
+				factory().markup(" />")
 			)
 		);
 	}
@@ -290,20 +284,20 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		evaluateParseTree(
 			rewritten,
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href='", 2, 0, 2),
 						new LocationTagged<>("'", 18, 0, 18)
 					),
-					factory().markup(" href='").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					factory().markup("~/Foo/Bar")
 						.withEditorHints(EditorHints.VirtualPath)
-						.with(LiteralAttributeCodeGenerator.fromValueGenerator(new LocationTagged<>("", 9, 0, 9), new LocationTagged<SpanCodeGenerator>(new ResolveUrlCodeGenerator(), 9, 0, 9))).build(),
-					factory().markup("'").with(SpanCodeGenerator.Null).build()
+						.with(LiteralAttributeCodeGenerator.fromValueGenerator(new LocationTagged<>("", 9, 0, 9), new LocationTagged<SpanCodeGenerator>(new ResolveUrlCodeGenerator(), 9, 0, 9))),
+					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
-				factory().markupAndBuild(" />")
+				factory().markup(" />")
 			)
 		);
 	}
@@ -376,7 +370,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		evaluateParseTree(
 			rewritten,
 			new MarkupBlock(
-				factory().markupAndBuild(code)
+				factory().markup(code)
 			)
 		);
 	}
@@ -386,19 +380,18 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<span data-foo='@foo'></span>",
 			new MarkupBlock(
-				factory().markupAndBuild("<span"),
+				factory().markup("<span"),
 				new MarkupBlock(
-					factory().markupAndBuild(" data-foo='"),
+					factory().markup(" data-foo='"),
 					new ExpressionBlock(
-						factory().codeTransitionAndBuild(),
+						factory().codeTransition(),
 						factory().code("foo")
 							.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 							.accepts(AcceptedCharacters.NonWhiteSpace)
-							.build()
 					),
-					factory().markupAndBuild("'")
+					factory().markup("'")
 				),
-				factory().markup("></span>").acceptsNoneAndBuild()
+				factory().markup("></span>").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -408,19 +401,18 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<span data-foo='@foo'></span>",
 			new MarkupBlock(
-				factory().markupAndBuild("<span"),
+				factory().markup("<span"),
 				new MarkupBlock(
-					factory().markupAndBuild(" data-foo='"),
+					factory().markup(" data-foo='"),
 					new ExpressionBlock(
-						factory().codeTransitionAndBuild(),
+						factory().codeTransition(),
 						factory().code("foo")
 							.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 							.accepts(AcceptedCharacters.NonWhiteSpace)
-							.build()
 					),
-					factory().markupAndBuild("'")
+					factory().markup("'")
 				),
-				factory().markupAndBuild("></span>")
+				factory().markup("></span>")
 			)
 		);
 	}

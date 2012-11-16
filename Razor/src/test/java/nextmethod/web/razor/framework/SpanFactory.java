@@ -175,10 +175,6 @@ public class SpanFactory {
 			.with(new MarkupCodeGenerator());
 	}
 
-	public Span emptyHtmlAndBuild() {
-		return emptyHtml().build();
-	}
-
 	public UnclassifiedCodeSpanConstructor code(final String content) {
 		return new UnclassifiedCodeSpanConstructor(
 			span(SpanKind.Code, content, false)
@@ -187,10 +183,6 @@ public class SpanFactory {
 
 	public SpanConstructor codeTransition() {
 		return span(SpanKind.Transition, SyntaxConstants.TransitionString, false).accepts(AcceptedCharacters.None);
-	}
-
-	public Span codeTransitionAndBuild() {
-		return codeTransition().build();
 	}
 
 	public SpanConstructor codeTransition(final String content) {
@@ -251,14 +243,6 @@ public class SpanFactory {
 
 	public SpanConstructor markup(final String... content) {
 		return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator());
-	}
-
-	public Span markupAndBuild(final String content) {
-		return markupAndBuild(new String[] { content });
-	}
-
-	public Span markupAndBuild(final String... content) {
-		return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator()).build();
 	}
 
 }

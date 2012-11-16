@@ -11,7 +11,7 @@ public class FunctionsBlock extends Block {
 	private static final BlockType blockType = BlockType.Functions;
 
 	public FunctionsBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public FunctionsBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

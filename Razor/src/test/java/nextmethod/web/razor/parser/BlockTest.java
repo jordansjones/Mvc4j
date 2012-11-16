@@ -68,12 +68,12 @@ public class BlockTest {
 	public void locateOwnerReturnsNullIfNoSpanReturnsTrueForOwnsSpan() {
 		final SpanFactory factory = SpanFactory.createJavaHtml();
 		final Block block = new MarkupBlock(
-			factory.markup("Foo ").build(),
+			factory.markup("Foo "),
 			new StatementBlock(
-				factory.codeTransition().build(),
-				factory.code("bar").asStatement().build()
+				factory.codeTransition(),
+				factory.code("bar").asStatement()
 			),
-			factory.markup(" Baz").build()
+			factory.markup(" Baz")
 		);
 
 		final TextChange change = new TextChange(128, 1, new StringTextBuffer("Foo @bar Baz"), 1, new StringTextBuffer("Foo @bor Baz"));
@@ -87,12 +87,12 @@ public class BlockTest {
 	public void locateOwnerReturnsNullIfChangeCrossesMultipleSpans() {
 		final SpanFactory factory = SpanFactory.createJavaHtml();
 		final Block block = new MarkupBlock(
-			factory.markup("Foo ").build(),
+			factory.markup("Foo "),
 			new StatementBlock(
-				factory.codeTransition().build(),
-				factory.code("bar").asStatement().build()
+				factory.codeTransition(),
+				factory.code("bar").asStatement()
 			),
-			factory.markup(" Baz").build()
+			factory.markup(" Baz")
 		);
 
 		final TextChange change = new TextChange(4, 10, new StringTextBuffer("Foo @bar Baz"), 10, new StringTextBuffer("Foo @bor Baz"));

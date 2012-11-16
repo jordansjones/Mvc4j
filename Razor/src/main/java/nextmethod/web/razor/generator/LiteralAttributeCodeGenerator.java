@@ -39,11 +39,11 @@ public class LiteralAttributeCodeGenerator extends SpanCodeGenerator {
 				assert input != null;
 
 				input.writeParameterSeparator();
-				input.writeStartMethodInvoke("Tuple.Create");
+				input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
 				input.writeLocationTaggedString(prefix);
 				input.writeParameterSeparator();
 				if (valueGenerator != null) {
-					input.writeStartMethodInvoke("Tuple.Create", "java.lang.Object", "java.lang.Integer");
+					input.writeStartMethodInvoke("nextmethod.base.KeyValue.of", "java.lang.Object", "java.lang.Integer");
 					context.setExpressionRenderingMode(ExpressionRenderingMode.InjectCode);
 				}
 				else {

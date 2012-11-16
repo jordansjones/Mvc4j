@@ -11,7 +11,7 @@ public class TemplateBlock extends Block {
 	private static final BlockType blockType = BlockType.Template;
 
 	public TemplateBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public TemplateBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

@@ -11,7 +11,7 @@ public class DirectiveBlock extends Block {
 	private static final BlockType blockType = BlockType.Directive;
 
 	public DirectiveBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public DirectiveBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

@@ -11,7 +11,7 @@ public class ExpressionBlock extends Block {
 	private static final BlockType blockType = BlockType.Expression;
 
 	public ExpressionBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public ExpressionBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

@@ -11,7 +11,7 @@ public class StatementBlock extends Block {
 	private static final BlockType blockType = BlockType.Statement;
 
 	public StatementBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public StatementBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

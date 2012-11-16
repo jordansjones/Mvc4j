@@ -35,7 +35,7 @@ public class HtmlTagsTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<p></> Bar",
 			new MarkupBlock(
-				factory().markup("<p></> ").acceptsNoneAndBuild()
+				factory().markup("<p></> ").accepts(AcceptedCharacters.None)
 			),
 			new RazorError(
 				RazorResources().parseErrorMissingEndTag("p"),
@@ -74,9 +74,9 @@ public class HtmlTagsTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			"<text>Foo</text>}",
 			new MarkupBlock(
-				factory().markupTransition("<text>").build(),
-				factory().markupAndBuild("Foo"),
-				factory().markupTransition("</text>").build()
+				factory().markupTransition("<text>"),
+				factory().markup("Foo"),
+				factory().markupTransition("</text>")
 			)
 		);
 	}
@@ -91,7 +91,7 @@ public class HtmlTagsTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<script>foo < bar && quantity.toString() !== orderQty.val()</script>",
 			new MarkupBlock(
-				factory().markupAndBuild("<script>foo < bar && quantity.toString() !== orderQty.val()</script>")
+				factory().markup("<script>foo < bar && quantity.toString() !== orderQty.val()</script>")
 			)
 		);
 	}
@@ -124,7 +124,7 @@ public class HtmlTagsTest extends JavaHtmlMarkupParserTestBase {
 			parseBlockTest(
 				exepcted,
 				new MarkupBlock(
-					factory().markup(exepcted).accepts(AcceptedCharacters.Any).build()
+					factory().markup(exepcted).accepts(AcceptedCharacters.Any)
 				)
 			);
 		}
@@ -138,7 +138,7 @@ public class HtmlTagsTest extends JavaHtmlMarkupParserTestBase {
 		parseBlockTest(
 			tag + content,
 			new MarkupBlock(
-				factory().markup(tag).acceptsNoneAndBuild()
+				factory().markup(tag).accepts(AcceptedCharacters.None)
 			)
 		);
 	}

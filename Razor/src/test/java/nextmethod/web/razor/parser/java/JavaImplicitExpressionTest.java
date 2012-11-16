@@ -27,14 +27,14 @@ public class JavaImplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"if (true) { @foo }",
 			new StatementBlock(
-				factory().code("if (true) { ").asStatementAndBuild(),
+				factory().code("if (true) { ").asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("foo")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords, true)
-						.accepts(AcceptedCharacters.NonWhiteSpace).build()
+						.accepts(AcceptedCharacters.NonWhiteSpace)
 				),
-				factory().code(" }").asStatementAndBuild()
+				factory().code(" }").asStatement()
 			)
 		);
 	}
@@ -49,8 +49,8 @@ public class JavaImplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@/",
 			new ExpressionBlock(
-				factory().codeTransitionAndBuild(),
-				factory().emptyJava().asImplicitExpression(getKeywordSet()).accepts(AcceptedCharacters.NonWhiteSpace).build()
+				factory().codeTransition(),
+				factory().emptyJava().asImplicitExpression(getKeywordSet()).accepts(AcceptedCharacters.NonWhiteSpace)
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtStartOfCodeBlock("/"),
@@ -64,11 +64,11 @@ public class JavaImplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@",
 			new ExpressionBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().emptyJava()
 					.asImplicitExpression(getKeywordSet())
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedEndOfFileAtStartOfCodeBlock(),
@@ -191,11 +191,11 @@ public class JavaImplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			SyntaxConstants.TransitionString + expr + ";",
 			new ExpressionBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code(expr)
 					.asImplicitExpression(getKeywordSet())
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			)
 		);
 	}

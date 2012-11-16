@@ -23,9 +23,9 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ List< }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" List< ").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" List< ").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -38,17 +38,17 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				factory().code("Foo(    ")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.Any)
-					.build(),
+					,
 				new TemplateBlock(
 					new MarkupBlock(
-						factory().markupTransition().build(),
-						factory().markup("<p>Foo</p>").acceptsNoneAndBuild()
+						factory().markupTransition(),
+						factory().markup("<p>Foo</p>").accepts(AcceptedCharacters.None)
 					)
 				),
 				factory().code("    )")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			),
 			true
 		);
@@ -63,20 +63,20 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 			new ExpressionBlock(
 				factory().code("Foo(    \r\n")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
-					.build(),
+					,
 				new TemplateBlock(
 					new MarkupBlock(
-						factory().markupTransition().build(),
-						factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+						factory().markupTransition(),
+						factory().metaMarkup(":", HtmlSymbolType.Colon),
 						factory().markup("<p>Foo</p>    \r\n")
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-							.build()
+							
 					)
 				),
 				factory().code(")")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			),
 			true
 		);
@@ -89,13 +89,13 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "    <p>Foo</p>    " + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code("\r\n    ").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code("\r\n    ").asStatement(),
 				new MarkupBlock(
-					factory().markup("<p>Foo</p>").acceptsNoneAndBuild()
+					factory().markup("<p>Foo</p>").accepts(AcceptedCharacters.None)
 				),
-				factory().code("    \r\n").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code("    \r\n").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true
 		);
@@ -108,14 +108,14 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "    @<p>Foo</p>    " + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code("\r\n    ").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code("\r\n    ").asStatement(),
 				new MarkupBlock(
-					factory().markupTransition().build(),
-					factory().markup("<p>Foo</p>").acceptsNoneAndBuild()
+					factory().markupTransition(),
+					factory().markup("<p>Foo</p>").accepts(AcceptedCharacters.None)
 				),
-				factory().code("    \r\n").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code("    \r\n").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true,
 			new RazorError(
@@ -132,17 +132,17 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "    @:<p>Foo</p>    " + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code("\r\n    ").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code("\r\n    ").asStatement(),
 				new MarkupBlock(
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("<p>Foo</p>    \r\n")
 						.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-						.build()
+						
 				),
-				factory().emptyJava().asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().emptyJava().asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			true
 		);
@@ -157,29 +157,29 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 			new ExpressionBlock(
 				factory().code("Repeat(10,\r\n    ")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
-					.build(),
+					,
 				new TemplateBlock(
 					new MarkupBlock(
-						factory().markupTransition().build(),
-						factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+						factory().markupTransition(),
+						factory().metaMarkup(":", HtmlSymbolType.Colon),
 						factory().markup(" ")
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()))
-							.build(),
+							,
 						new StatementBlock(
-							factory().codeTransitionAndBuild(),
-							factory().metaCode("{").acceptsNoneAndBuild(),
-							factory().emptyJava().asStatementAndBuild(),
-							factory().metaCode("}").acceptsNoneAndBuild()
+							factory().codeTransition(),
+							factory().metaCode("{").accepts(AcceptedCharacters.None),
+							factory().emptyJava().asStatement(),
+							factory().metaCode("}").accepts(AcceptedCharacters.None)
 						),
 						factory().markup("\r\n")
 							.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-							.build()
+							
 					)
 				),
 				factory().code(")")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			)
 		);
 	}
@@ -196,32 +196,32 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "@:Bar" + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().code("foreach(var file in files){\r\n\r\n\r\n").asStatementAndBuild(),
+				factory().code("foreach(var file in files){\r\n\r\n\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("Baz\r\n")
 						.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-						.build()
+						
 				),
 				new MarkupBlock(
 					factory().markup("<br/>\r\n")
-						.acceptsNoneAndBuild()
+						.accepts(AcceptedCharacters.None)
 				),
 				new MarkupBlock(
 					factory().markup("<a>Foo</a>\r\n")
-						.acceptsNoneAndBuild()
+						.accepts(AcceptedCharacters.None)
 				),
 				new MarkupBlock(
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("Bar\r\n")
 						.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-						.build()
+						
 				),
 				factory().code("}")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -239,29 +239,29 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "    var biz = boz;" + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().code("if(foo) {\r\n    var foo = \"After this statement there are 10 spaces\";          \r\n").asStatementAndBuild(),
+				factory().code("if(foo) {\r\n    var foo = \"After this statement there are 10 spaces\";          \r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("    <p>\r\n        Foo\r\n").build(),
+					factory().markup("    <p>\r\n        Foo\r\n"),
 					new ExpressionBlock(
-						factory().code("        ").asStatementAndBuild(),
-						factory().codeTransitionAndBuild(),
+						factory().code("        ").asStatement(),
+						factory().codeTransition(),
 						factory().code("bar")
 							.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 							.accepts(AcceptedCharacters.NonWhiteSpace)
-							.build()
+							
 					),
-					factory().markup("\r\n    </p>\r\n").acceptsNoneAndBuild()
+					factory().markup("\r\n    </p>\r\n").accepts(AcceptedCharacters.None)
 				),
 				new MarkupBlock(
-					factory().markup("    ").build(),
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markup("    "),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("Hello!\r\n")
 						.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-						.build()
+						
 				),
 				factory().code("    var biz = boz;\r\n}")
-					.asStatementAndBuild()
+					.asStatement()
 			)
 		);
 	}
@@ -271,21 +271,21 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"if(foo) { <p>Bar</p> } else if(bar) { <p>Baz</p> } else { <p>Boz</p> }",
 			new StatementBlock(
-				factory().code("if(foo) {").asStatementAndBuild(),
+				factory().code("if(foo) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Bar</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Bar</p> ").accepts(AcceptedCharacters.None)
 				),
-				factory().code("} else if(bar) {").asStatementAndBuild(),
+				factory().code("} else if(bar) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Baz</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Baz</p> ").accepts(AcceptedCharacters.None)
 				),
-				factory().code("} else {").asStatementAndBuild(),
+				factory().code("} else {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Boz</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Boz</p> ").accepts(AcceptedCharacters.None)
 				),
 				factory().code("}")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -295,22 +295,22 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ if(foo) { <p>Bar</p> } else if(bar) { <p>Baz</p> } else { <p>Boz</p> } }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" if(foo) {").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" if(foo) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Bar</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Bar</p> ").accepts(AcceptedCharacters.None)
 				),
-				factory().code("} else if(bar) {").asStatementAndBuild(),
+				factory().code("} else if(bar) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Baz</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Baz</p> ").accepts(AcceptedCharacters.None)
 				),
-				factory().code("} else {").asStatementAndBuild(),
+				factory().code("} else {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Boz</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Boz</p> ").accepts(AcceptedCharacters.None)
 				),
 				factory().code("} ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -334,28 +334,28 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "        <p>Biz</p>" + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().code("switch(foo) {\r\n    case 0:\r\n").asStatementAndBuild(),
+				factory().code("switch(foo) {\r\n    case 0:\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>Foo</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>Foo</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("        break;\r\n    case 1:\r\n").asStatementAndBuild(),
+				factory().code("        break;\r\n    case 1:\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>Bar</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>Bar</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("        return;\r\n    case 2:\r\n        {\r\n").asStatementAndBuild(),
+				factory().code("        return;\r\n    case 2:\r\n        {\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("            <p>Baz</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("            <p>Baz</p>\r\n").accepts(AcceptedCharacters.None)
 				),
 				new MarkupBlock(
-					factory().markup("            <p>Boz</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("            <p>Boz</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("        }\r\n    default:\r\n").asStatementAndBuild(),
+				factory().code("        }\r\n    default:\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>Biz</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>Biz</p>\r\n").accepts(AcceptedCharacters.None)
 				),
 				factory().code("}")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -379,29 +379,29 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "        <p>Biz</p>" + Environment.NewLine
 				+ "} }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" switch(foo) {\r\n    case 0:\r\n").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" switch(foo) {\r\n    case 0:\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>Foo</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>Foo</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("        break;\r\n    case 1:\r\n").asStatementAndBuild(),
+				factory().code("        break;\r\n    case 1:\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>Bar</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>Bar</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("        return;\r\n    case 2:\r\n        {\r\n").asStatementAndBuild(),
+				factory().code("        return;\r\n    case 2:\r\n        {\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("            <p>Baz</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("            <p>Baz</p>\r\n").accepts(AcceptedCharacters.None)
 				),
 				new MarkupBlock(
-					factory().markup("            <p>Boz</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("            <p>Boz</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("        }\r\n    default:\r\n").asStatementAndBuild(),
+				factory().code("        }\r\n    default:\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>Biz</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>Biz</p>\r\n").accepts(AcceptedCharacters.None)
 				),
 				factory().code("} ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -411,13 +411,13 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"for(int i = 0; i < 10; i++) { <p>Foo</p> }",
 			new StatementBlock(
-				factory().code("for(int i = 0; i < 10; i++) {").asStatementAndBuild(),
+				factory().code("for(int i = 0; i < 10; i++) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Foo</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Foo</p> ").accepts(AcceptedCharacters.None)
 				),
 				factory().code("}")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -427,14 +427,14 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ for(int i = 0; i < 10; i++) { <p>Foo</p> } }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" for(int i = 0; i < 10; i++) {").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" for(int i = 0; i < 10; i++) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" <p>Foo</p> ").acceptsNoneAndBuild()
+					factory().markup(" <p>Foo</p> ").accepts(AcceptedCharacters.None)
 				),
 				factory().code("} ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -445,17 +445,17 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 			"if(foo) { @:Bar" + Environment.NewLine
 				+ "} zoop",
 			new StatementBlock(
-				factory().code("if(foo) {").asStatementAndBuild(),
+				factory().code("if(foo) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" ").build(),
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markup(" "),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("Bar\r\n")
 						.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-						.build()
+						
 				),
 				factory().code("}")
-					.asStatementAndBuild()
+					.asStatement()
 			)
 		);
 	}
@@ -466,18 +466,18 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 			"{ if(foo) { @:Bar" + Environment.NewLine
 				+ "} } zoop",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" if(foo) {").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" if(foo) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" ").build(),
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markup(" "),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("Bar\r\n")
-						.acceptsNoneAndBuild()
+						.accepts(AcceptedCharacters.None)
 				),
 				factory().code("} ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -487,16 +487,16 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"if (i > 0) { <text>;</text> }",
 			new StatementBlock(
-				factory().code("if (i > 0) {").asStatementAndBuild(),
+				factory().code("if (i > 0) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" ").build(),
-					factory().markupTransition("<text>").acceptsNoneAndBuild(),
-					factory().markup(";").build(),
-					factory().markupTransition("</text>").acceptsNoneAndBuild(),
-					factory().markup(" ").acceptsNoneAndBuild()
+					factory().markup(" "),
+					factory().markupTransition("<text>").accepts(AcceptedCharacters.None),
+					factory().markup(";"),
+					factory().markupTransition("</text>").accepts(AcceptedCharacters.None),
+					factory().markup(" ").accepts(AcceptedCharacters.None)
 				),
 				factory().code("}")
-					.asStatementAndBuild()
+					.asStatement()
 			)
 		);
 	}
@@ -506,18 +506,18 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ if (i > 0) { <text>;</text> } }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code(" if (i > 0) {").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code(" if (i > 0) {").asStatement(),
 				new MarkupBlock(
-					factory().markup(" ").build(),
-					factory().markupTransition("<text>").acceptsNoneAndBuild(),
-					factory().markup(";").build(),
-					factory().markupTransition("</text>").acceptsNoneAndBuild(),
-					factory().markup(" ").acceptsNoneAndBuild()
+					factory().markup(" "),
+					factory().markupTransition("<text>").accepts(AcceptedCharacters.None),
+					factory().markup(";"),
+					factory().markupTransition("</text>").accepts(AcceptedCharacters.None),
+					factory().markup(" ").accepts(AcceptedCharacters.None)
 				),
 				factory().code("} ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -537,37 +537,37 @@ public class JavaToMarkupSwitchTest extends JavaHtmlCodeParserTestBase {
 				+ "    }" + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
-				factory().code("\r\n    if(true) {\r\n").asStatementAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
+				factory().code("\r\n    if(true) {\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        ").build(),
-					factory().markupTransition().build(),
-					factory().metaMarkup(":", HtmlSymbolType.Colon).build(),
+					factory().markup("        "),
+					factory().markupTransition(),
+					factory().metaMarkup(":", HtmlSymbolType.Colon),
 					factory().markup("Single Line Markup\r\n")
 						.with(new SingleLineMarkupEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate(), AcceptedCharacters.None))
-						.build()
+						
 				),
-				factory().code("    }\r\n    foreach (var p in Enumerable.Range(1, 10)) {\r\n").asStatementAndBuild(),
+				factory().code("    }\r\n    foreach (var p in Enumerable.Range(1, 10)) {\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        ").build(),
-					factory().markupTransition("<text>").acceptsNoneAndBuild(),
-					factory().markup("The number is ").build(),
+					factory().markup("        "),
+					factory().markupTransition("<text>").accepts(AcceptedCharacters.None),
+					factory().markup("The number is "),
 					new ExpressionBlock(
-						factory().codeTransitionAndBuild(),
+						factory().codeTransition(),
 						factory().code("p")
 							.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 							.accepts(AcceptedCharacters.NonWhiteSpace)
-							.build()
+							
 					),
-					factory().markupTransition("</text>").acceptsNoneAndBuild(),
-					factory().markup("\r\n").acceptsNoneAndBuild()
+					factory().markupTransition("</text>").accepts(AcceptedCharacters.None),
+					factory().markup("\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("    }\r\n    if(!false) {\r\n").asStatementAndBuild(),
+				factory().code("    }\r\n    if(!false) {\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("        <p>A real tag!</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("        <p>A real tag!</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("    }\r\n").asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+				factory().code("    }\r\n").asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}

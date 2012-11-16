@@ -48,14 +48,14 @@ public class RazorParserTest {
 		ParserTestBase.evaluateResults(
 			parser.parse(new StringReaderDelegate("foo @bar baz")),
 			new MarkupBlock(
-				factory.markup("foo ").build(),
+				factory.markup("foo "),
 				new ExpressionBlock(
-					factory.codeTransition().build(),
+					factory.codeTransition(),
 					factory.code("bar")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
-						.accepts(AcceptedCharacters.NonWhiteSpace).build()
+						.accepts(AcceptedCharacters.NonWhiteSpace)
 				),
-				factory.markup(" baz").build()
+				factory.markup(" baz")
 			)
 		);
 	}
@@ -71,15 +71,14 @@ public class RazorParserTest {
 		ParserTestBase.evaluateResults(
 			results,
 			new MarkupBlock(
-				factory.markup("foo ").build(),
+				factory.markup("foo "),
 				new ExpressionBlock(
-					factory.codeTransition().build(),
+					factory.codeTransition(),
 					factory.code("bar")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory.markup(" baz").build()
+				factory.markup(" baz")
 			)
 		);
 	}

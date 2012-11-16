@@ -34,13 +34,13 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@functions{",
 			new FunctionsBlock(
-				factory().codeTransition("@").accepts(AcceptedCharacters.None).build(),
-				factory().metaCode("functions{").accepts(AcceptedCharacters.None).build(),
+				factory().codeTransition("@").accepts(AcceptedCharacters.None),
+				factory().metaCode("functions{").accepts(AcceptedCharacters.None),
 				factory().emptyJava()
 					.asFunctionsBody()
 					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 						this.setAutoCompleteString("}");
-					}}).build()
+					}})
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
@@ -59,16 +59,16 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 			"@helper Strong(string value) {",
 			new HelperBlock(
 				new HelperCodeGenerator(new LocationTagged<>("Strong(string value) {", 8, 0, 8), true),
-				factory().codeTransition().build(),
-				factory().metaCode("helper ").accepts(AcceptedCharacters.None).build(),
+				factory().codeTransition(),
+				factory().metaCode("helper ").accepts(AcceptedCharacters.None),
 				factory().code("Strong(string value) {")
-					.hidden().accepts(AcceptedCharacters.None).build(),
+					.hidden().accepts(AcceptedCharacters.None),
 				new StatementBlock(
 					factory().emptyJava().asStatement().with(
 						new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 							this.setAutoCompleteString("}");
 						}}
-					).build()
+					)
 				)
 			),
 			new RazorError(
@@ -88,10 +88,10 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 			"@section Header {",
 			new SectionBlock(
 				new SectionCodeGenerator("Header"),
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode("section Header {")
 					.autoCompleteWith("}", true)
-					.accepts(AcceptedCharacters.Any).build(),
+					.accepts(AcceptedCharacters.Any),
 				new MarkupBlock()
 			),
 			new RazorError(
@@ -108,12 +108,12 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@{",
 			new StatementBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().codeTransition(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().emptyJava().asStatement()
 					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 						this.setAutoCompleteString("}");
-					}}).build()
+					}})
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
@@ -131,12 +131,12 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@functions{" + Environment.NewLine + "foo",
 			new FunctionsBlock(
-				factory().codeTransition("@").accepts(AcceptedCharacters.None).build(),
-				factory().metaCode("functions{").accepts(AcceptedCharacters.None).build(),
+				factory().codeTransition("@").accepts(AcceptedCharacters.None),
+				factory().metaCode("functions{").accepts(AcceptedCharacters.None),
 				factory().code(Environment.NewLine + "foo").asFunctionsBody()
 					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 						this.setAutoCompleteString("}");
-					}}).build()
+					}})
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("functions", "}", "{"),
@@ -151,18 +151,18 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 			"@helper Strong(string value) {" + Environment.NewLine + "<p></p>",
 			new HelperBlock(
 				new HelperCodeGenerator(new LocationTagged<>("Strong(string value) {", 8, 0, 8), true),
-				factory().codeTransition().build(),
-				factory().metaCode("helper ").accepts(AcceptedCharacters.None).build(),
-				factory().code("Strong(string value) {").hidden().accepts(AcceptedCharacters.None).build(),
+				factory().codeTransition(),
+				factory().metaCode("helper ").accepts(AcceptedCharacters.None),
+				factory().code("Strong(string value) {").hidden().accepts(AcceptedCharacters.None),
 				new StatementBlock(
 					factory().code(Environment.NewLine).asStatement()
 						.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{
 							this.setAutoCompleteString("}");
-						}}).build(),
+						}}),
 					new MarkupBlock(
 						factory().markup("<p></p>")
 							.with(new MarkupCodeGenerator())
-							.accepts(AcceptedCharacters.None).build()
+							.accepts(AcceptedCharacters.None)
 					),
 					factory().span(
 						SpanKind.Code,
@@ -171,7 +171,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 							"",
 							JavaSymbolType.Unknown
 						)
-					).with(new StatementCodeGenerator()).build()
+					).with(new StatementCodeGenerator())
 				)
 			),
 			new RazorError(
@@ -187,11 +187,11 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 			"@section Header {" + Environment.NewLine + "<p>Foo</p>",
 			new SectionBlock(
 				new SectionCodeGenerator("Header"),
-				factory().codeTransition().build(),
+				factory().codeTransition(),
 				factory().metaCode("section Header {")
 					.autoCompleteWith("}", true)
-					.accepts(AcceptedCharacters.Any).build(),
-				new MarkupBlock(factory().markup(Environment.NewLine + "<p>Foo</p>").build())
+					.accepts(AcceptedCharacters.Any),
+				new MarkupBlock(factory().markup(Environment.NewLine + "<p>Foo</p>"))
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedX("}"),
@@ -205,16 +205,14 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@{" + Environment.NewLine + "<p></p>",
 			new StatementBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("{").accepts(AcceptedCharacters.None).build(),
+				factory().codeTransition(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().code(Environment.NewLine).asStatement()
-					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{ this.setAutoCompleteString("}"); }})
-					.build(),
+					.with(new AutoCompleteEditHandler(JavaLanguageCharacteristics.Instance.createTokenizeStringDelegate()) {{ this.setAutoCompleteString("}"); }}),
 				new MarkupBlock(
 					factory().markup("<p></p>")
 						.with(new MarkupCodeGenerator())
 						.accepts(AcceptedCharacters.None)
-						.build()
 				),
 				factory().span(
 					SpanKind.Code,
@@ -225,7 +223,6 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 					)
 				)
 					.with(new StatementCodeGenerator())
-					.build()
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(

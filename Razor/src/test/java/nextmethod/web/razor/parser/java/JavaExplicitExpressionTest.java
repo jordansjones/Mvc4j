@@ -20,10 +20,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@()",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().emptyJava().asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().emptyJava().asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -33,9 +33,9 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().emptyJava().asExpression().build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().emptyJava().asExpression()
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof(
@@ -53,10 +53,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(\"\\\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("\"\\\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("\"\\\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -66,10 +66,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(@\"\"\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("@\"\"\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("@\"\"\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -79,10 +79,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(@\"\"\"\"\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("@\"\"\"\"\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("@\"\"\"\"\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -96,10 +96,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 			+ "Baz" + Environment.NewLine
 			+ "\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("@\"\r\nFoo\r\nBar\r\nBaz\r\n\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("@\"\r\nFoo\r\nBar\r\nBaz\r\n\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -109,10 +109,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(\"\\\"hello, world\\\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("\"\\\"hello, world\\\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("\"\\\"hello, world\\\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -122,10 +122,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(@\"\"\"hello, world\"\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("@\"\"\"hello, world\"\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("@\"\"\"hello, world\"\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -135,10 +135,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(\"\\\"\\\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("\"\\\"\\\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("\"\\\"\\\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -148,10 +148,10 @@ public class JavaExplicitExpressionTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@(@\"\"\"\"\"\")",
 			new ExpressionBlock(
-				factory().codeTransition().build(),
-				factory().metaCode("(").accepts(AcceptedCharacters.None).build(),
-				factory().code("@\"\"\"\"\"\"").asExpression().build(),
-				factory().metaCode(")").accepts(AcceptedCharacters.None).build()
+				factory().codeTransition(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
+				factory().code("@\"\"\"\"\"\"").asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}

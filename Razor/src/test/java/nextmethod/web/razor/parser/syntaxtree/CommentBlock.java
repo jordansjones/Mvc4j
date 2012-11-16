@@ -11,7 +11,7 @@ public class CommentBlock extends Block {
 	private static final BlockType blockType = BlockType.Comment;
 
 	public CommentBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public CommentBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

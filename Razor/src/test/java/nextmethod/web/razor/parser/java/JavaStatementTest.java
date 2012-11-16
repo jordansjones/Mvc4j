@@ -84,11 +84,11 @@ public class JavaStatementTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@using StringDictionary = System.Collections.Generic.Dictionary<string, string>",
 			new DirectiveBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code("using StringDictionary = System.Collections.Generic.Dictionary<string, string>")
 					.asPackageImport(" StringDictionary = System.Collections.Generic.Dictionary<string, string>", 5)
 					.accepts(AcceptedCharacters.AnyExceptNewLine)
-					.build()
+					
 			)
 		);
 	}
@@ -98,11 +98,11 @@ public class JavaStatementTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@using System.Text.Encoding.ASCIIEncoding",
 			new DirectiveBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code("using System.Text.Encoding.ASCIIEncoding")
 					.asPackageImport(" System.Text.Encoding.ASCIIEncoding", 5)
 					.accepts(AcceptedCharacters.AnyExceptNewLine)
-					.build()
+					
 			)
 		);
 	}
@@ -118,11 +118,11 @@ public class JavaStatementTest extends JavaHtmlCodeParserTestBase {
 			"@is foo",
 			new ExpressionBlock(
 				new ExpressionCodeGenerator(),
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code("is")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			)
 		);
 	}
@@ -131,9 +131,9 @@ public class JavaStatementTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@" + code,
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code(code)
-					.asStatementAndBuild()
+					.asStatement()
 			)
 		);
 	}
@@ -142,10 +142,10 @@ public class JavaStatementTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@" + code,
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code(code)
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}

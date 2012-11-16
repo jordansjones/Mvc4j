@@ -22,7 +22,7 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"inherits",
 			new DirectiveBlock(
-				factory().metaCode("inherits").accepts(AcceptedCharacters.Any).build()
+				factory().metaCode("inherits").accepts(AcceptedCharacters.Any)
 			),
 			new RazorError(
 				RazorResources().parseErrorInheritsKeywordMustBeFollowedByTypeName(),
@@ -36,10 +36,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"inherits Foo.Bar<Biz<Qux>, string, int>.Baz",
 			new DirectiveBlock(
-				factory().metaCode("inherits ").acceptsNoneAndBuild(),
+				factory().metaCode("inherits ").accepts(AcceptedCharacters.None),
 				factory().code("Foo.Bar<Biz<Qux>, string, int>.Baz")
 					.asBaseType("Foo.Bar<Biz<Qux>, string, int>.Baz")
-					.build()
+					
 			)
 		);
 	}
@@ -49,10 +49,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"inherits                " + Environment.NewLine + "foo",
 			new DirectiveBlock(
-				factory().metaCode("inherits ").acceptsNoneAndBuild(),
+				factory().metaCode("inherits ").accepts(AcceptedCharacters.None),
 				factory().code("               \r\n")
 					.asBaseType("")
-					.build()
+					
 			),
 			new RazorError(
 				RazorResources().parseErrorInheritsKeywordMustBeFollowedByTypeName(),
@@ -66,10 +66,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ using Foo.Bar.Baz; var foo = bar; }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().code(" using Foo.Bar.Baz; var foo = bar; ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			new RazorError(
 				RazorResources().parseErrorNamespaceImportAndTypeAliasCannotExistWithinCodeBlock(),
@@ -83,10 +83,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ using Foo = Bar.Baz; var foo = bar; }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().code(" using Foo = Bar.Baz; var foo = bar; ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			),
 			new RazorError(
 				RazorResources().parseErrorNamespaceImportAndTypeAliasCannotExistWithinCodeBlock(),
@@ -100,10 +100,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{ functions Foo; }",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().code(" functions Foo; ")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -115,10 +115,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 			+ "    List<dynamic> photos = gallery.Photo.ToList();" + Environment.NewLine
 			+ "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().code("\r\n    List<dynamic> photos = gallery.Photo.ToList();\r\n")
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -130,10 +130,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"{" + code + "}",
 			new StatementBlock(
-				factory().metaCode("{").acceptsNoneAndBuild(),
+				factory().metaCode("{").accepts(AcceptedCharacters.None),
 				factory().code(code)
-					.asStatementAndBuild(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					.asStatement(),
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -145,10 +145,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"(" + code + ")",
 			new ExpressionBlock(
-				factory().metaCode("(").acceptsNoneAndBuild(),
+				factory().metaCode("(").accepts(AcceptedCharacters.None),
 				factory().code(code)
-					.asExpressionAndBuild(),
-				factory().metaCode(")").acceptsNoneAndBuild()
+					.asExpression(),
+				factory().metaCode(")").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -160,11 +160,11 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"functions {" + code + "} zoop",
 			new FunctionsBlock(
-				factory().metaCode("functions {").acceptsNoneAndBuild(),
+				factory().metaCode("functions {").accepts(AcceptedCharacters.None),
 				factory().code(code)
 					.asFunctionsBody()
-					.build(),
-				factory().metaCode("}").acceptsNoneAndBuild()
+					,
+				factory().metaCode("}").accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -174,10 +174,10 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"functions { { { { { } zoop",
 			new FunctionsBlock(
-				factory().metaCode("functions {").acceptsNoneAndBuild(),
+				factory().metaCode("functions {").accepts(AcceptedCharacters.None),
 				factory().code(" { { { { } zoop")
 					.asFunctionsBody()
-					.build()
+					
 			),
 			new RazorError(
 				RazorResources().parseErrorExpectedEndOfBlockBeforeEof("functions", "}", "{"),
@@ -194,7 +194,7 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 				factory().code("Functions")
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			)
 		);
 	}
@@ -204,11 +204,11 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@/ foo",
 			new ExpressionBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().emptyJava()
 					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 					.accepts(AcceptedCharacters.NonWhiteSpace)
-					.build()
+					
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedCharacterAtStartOfCodeBlock("/"),
@@ -225,11 +225,11 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 				+ "\t<p>A real tag!</p>" + Environment.NewLine
 				+ "}",
 			new StatementBlock(
-				factory().code("if(!false) {\r\n    // Foo\r\n").asStatementAndBuild(),
+				factory().code("if(!false) {\r\n    // Foo\r\n").asStatement(),
 				new MarkupBlock(
-					factory().markup("\t<p>A real tag!</p>\r\n").acceptsNoneAndBuild()
+					factory().markup("\t<p>A real tag!</p>\r\n").accepts(AcceptedCharacters.None)
 				),
-				factory().code("}").asStatementAndBuild()
+				factory().code("}").asStatement()
 			)
 		);
 	}

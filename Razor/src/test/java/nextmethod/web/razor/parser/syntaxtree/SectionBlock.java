@@ -11,7 +11,7 @@ public class SectionBlock extends Block {
 	private static final BlockType blockType = BlockType.Section;
 
 	public SectionBlock(final IBlockCodeGenerator codeGenerator, final Collection<SyntaxTreeNode> children) {
-		super(blockType, children, codeGenerator);
+		super(blockType, BlockExtensions.buildSpanConstructors(children), codeGenerator);
 	}
 
 	public SectionBlock(final IBlockCodeGenerator codeGenerator, final SyntaxTreeNode... nodes) {

@@ -16,10 +16,10 @@ public class JavaNestedStatementsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@while(true) { foo(); }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code("while(true) { foo(); }")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -29,10 +29,10 @@ public class JavaNestedStatementsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@while(true) { for(int i = 0; i < 10; i++) { foo(); } }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code("while(true) { for(int i = 0; i < 10; i++) { foo(); } }")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -42,10 +42,10 @@ public class JavaNestedStatementsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@while(true) { { { { foo(); } } } }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
+				factory().codeTransition(),
 				factory().code("while(true) { { { { foo(); } } } }")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -55,17 +55,17 @@ public class JavaNestedStatementsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@while(true) { @foo }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
-				factory().code("while(true) { ").asStatementAndBuild(),
+				factory().codeTransition(),
+				factory().code("while(true) { ").asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("foo")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords, true)
-						.accepts(AcceptedCharacters.NonWhiteSpace).build()
+						.accepts(AcceptedCharacters.NonWhiteSpace)
 				),
 				factory().code(" }")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -75,18 +75,18 @@ public class JavaNestedStatementsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@while(true) { @(foo) }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
-				factory().code("while(true) { ").asStatementAndBuild(),
+				factory().codeTransition(),
+				factory().code("while(true) { ").asStatement(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("(").acceptsNoneAndBuild(),
+					factory().codeTransition(),
+					factory().metaCode("(").accepts(AcceptedCharacters.None),
 					factory().code("foo")
-						.asExpressionAndBuild(),
-					factory().metaCode(")").acceptsNoneAndBuild()
+						.asExpression(),
+					factory().metaCode(")").accepts(AcceptedCharacters.None)
 				),
 				factory().code(" }")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}
@@ -96,16 +96,16 @@ public class JavaNestedStatementsTest extends JavaHtmlCodeParserTestBase {
 		parseBlockTest(
 			"@while(true) { <p>Hello</p> }",
 			new StatementBlock(
-				factory().codeTransitionAndBuild(),
-				factory().code("while(true) {").asStatementAndBuild(),
+				factory().codeTransition(),
+				factory().code("while(true) {").asStatement(),
 				new MarkupBlock(
 					factory().markup(" <p>Hello</p> ")
 						.with(new MarkupCodeGenerator())
-						.acceptsNoneAndBuild()
+						.accepts(AcceptedCharacters.None)
 				),
 				factory().code("}")
 					.asStatement()
-					.acceptsNoneAndBuild()
+					.accepts(AcceptedCharacters.None)
 			)
 		);
 	}

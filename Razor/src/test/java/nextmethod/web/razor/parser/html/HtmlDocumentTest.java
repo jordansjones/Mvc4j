@@ -50,7 +50,7 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -65,15 +65,14 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().emptyJava()
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory().emptyHtmlAndBuild()
+				factory().emptyHtml()
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedEndOfFileAtStartOfCodeBlock(),
@@ -87,12 +86,12 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<div>Foo @if(true) {} Bar</div>",
 			new MarkupBlock(
-				factory().markupAndBuild("<div>Foo "),
+				factory().markup("<div>Foo "),
 				new StatementBlock(
-					factory().codeTransitionAndBuild(),
-					factory().code("if(true) {}").asStatementAndBuild()
+					factory().codeTransition(),
+					factory().code("if(true) {}").asStatement()
 				),
-				factory().markupAndBuild(" Bar</div>")
+				factory().markup(" Bar</div>")
 			)
 		);
 	}
@@ -104,19 +103,18 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 				+ "    <html></html>" + Environment.NewLine
 				+ "}",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("Foo"),
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().metaCode("section Foo {")
-						.autoCompleteWith(null, true)
-						.build(),
+						.autoCompleteWith(null, true),
 					new MarkupBlock(
-						factory().markupAndBuild("\r\n    <html></html>\r\n")
+						factory().markup("\r\n    <html></html>\r\n")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtmlAndBuild()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -131,15 +129,14 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"foo @bar baz",
 			new MarkupBlock(
-				factory().markupAndBuild("foo "),
+				factory().markup("foo "),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("bar")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory().markupAndBuild(" baz")
+				factory().markup(" baz")
 			)
 		);
 	}
@@ -149,15 +146,14 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"foo @",
 			new MarkupBlock(
-				factory().markupAndBuild("foo "),
+				factory().markup("foo "),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().emptyJava()
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory().emptyHtmlAndBuild()
+				factory().emptyHtml()
 			),
 			new RazorError(
 				RazorResources().parseErrorUnexpectedEndOfFileAtStartOfCodeBlock(),
@@ -171,15 +167,14 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@bar",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild(),
+				factory().emptyHtml(),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("bar")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory().emptyHtmlAndBuild()
+				factory().emptyHtml()
 			)
 		);
 	}
@@ -194,16 +189,15 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<a href=\"mailto:anurse@microsoft.com\">Email me</a>",
 			new MarkupBlock(
-				factory().markupAndBuild("<a"),
+				factory().markup("<a"),
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("href", new LocationTagged<>(" href=\"", 2, 0, 2), new LocationTagged<>("\"", 36, 0, 36)),
-					factory().markup(" href=\"").with(SpanCodeGenerator.Null).build(),
+					factory().markup(" href=\"").with(SpanCodeGenerator.Null),
 					factory().markup("mailto:anurse@microsoft.com")
-						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 9, 0, 9), new LocationTagged<String>("mailto:anurse@microsoft.com", 9, 0, 9)))
-						.build(),
-					factory().markup("\"").with(SpanCodeGenerator.Null).build()
+						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 9, 0, 9), new LocationTagged<String>("mailto:anurse@microsoft.com", 9, 0, 9))),
+					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
-				factory().markupAndBuild(">Email me</a>")
+				factory().markup(">Email me</a>")
 			)
 		);
 	}
@@ -233,7 +227,7 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<foo>${bar}</foo>",
 			new MarkupBlock(
-				factory().markupAndBuild("<foo>${bar}</foo>")
+				factory().markup("<foo>${bar}</foo>")
 			)
 		);
 	}
@@ -243,15 +237,14 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"<script>foo<bar baz='@boz'></script>",
 			new MarkupBlock(
-				factory().markupAndBuild("<script>foo<bar baz='"),
+				factory().markup("<script>foo<bar baz='"),
 				new ExpressionBlock(
-					factory().codeTransitionAndBuild(),
+					factory().codeTransition(),
 					factory().code("boz")
 						.asImplicitExpression(JavaCodeParser.DefaultKeywords, false)
 						.accepts(AcceptedCharacters.NonWhiteSpace)
-						.build()
 				),
-				factory().markupAndBuild("'></script>")
+				factory().markup("'></script>")
 			)
 		);
 	}
@@ -261,25 +254,24 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 		parseDocumentTest(
 			"@section Foo { <script>foo<bar baz='@boz'></script> }",
 			new MarkupBlock(
-				factory().emptyHtmlAndBuild(),
+				factory().emptyHtml(),
 				new SectionBlock(
 					new SectionCodeGenerator("Foo"),
-					factory().codeTransitionAndBuild(),
-					factory().metaCode("section Foo {").build(),
+					factory().codeTransition(),
+					factory().metaCode("section Foo {"),
 					new MarkupBlock(
-						factory().markupAndBuild(" <script>foo<bar baz='"),
+						factory().markup(" <script>foo<bar baz='"),
 						new ExpressionBlock(
-							factory().codeTransitionAndBuild(),
+							factory().codeTransition(),
 							factory().code("boz")
 								.asImplicitExpression(JavaCodeParser.DefaultKeywords, false)
 								.accepts(AcceptedCharacters.NonWhiteSpace)
-								.build()
 						),
-						factory().markupAndBuild("'></script> ")
+						factory().markup("'></script> ")
 					),
-					factory().metaCode("}").acceptsNoneAndBuild()
+					factory().metaCode("}").accepts(AcceptedCharacters.None)
 				),
-				factory().emptyHtmlAndBuild()
+				factory().emptyHtml()
 			)
 		);
 	}
