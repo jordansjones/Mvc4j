@@ -107,11 +107,18 @@ public class SpanConstructor extends SyntaxTreeNode implements ISpanConstructor 
 		return this.with(autoCompleteEditHandler);
 	}
 
-	public SpanConstructor withEditorHints(final EditorHints hints) {
+	public SpanConstructor withEditorHints(final EditorHints hint, final EditorHints... hints) {
+		final EnumSet<EditorHints> editorHints;
+		if (hints == null || hints.length == 0) {
+			editorHints = EnumSet.of(hint);
+		}
+		else {
+			editorHints = EnumSet.of(hint, hints);
+		}
 		return this.withHandler(new Delegates.IAction1<SpanEditHandler>() {
 			@Override
 			public void invoke(SpanEditHandler input) {
-				input.setEditorHints(EnumSet.of(hints));
+				input.setEditorHints(editorHints);
 			}
 		});
 	}
