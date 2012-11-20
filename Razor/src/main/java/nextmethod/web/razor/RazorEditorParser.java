@@ -80,7 +80,7 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
  */
 public class RazorEditorParser implements IDisposable {
 
-	private static final String DebugArg = "EDITOR_TRACING";
+	public static final String DebugArg = "EDITOR_TRACING";
 
 	// Lock for this document
 	private Span lastChangeOwner;

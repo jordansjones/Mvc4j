@@ -15,8 +15,12 @@ import nextmethod.web.razor.text.TextChange;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage> {
 
@@ -86,21 +90,21 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		return host;
 	}
 
-	// TODO
 	protected class TestParserManager {
 
-		public RazorEditorParser parser;
-//		public ManualResetEventSlim
-		public int parseCount;
+		public final RazorEditorParser parser;
+		public final CountDownLatch parserComplete;
+		public final AtomicInteger parseCount = new AtomicInteger(0);
 
 		public TestParserManager(final RazorEditorParser parser) {
-			this.parseCount = 0;
 			this.parser = parser;
+			this.parserComplete = new CountDownLatch(1);
 
 			parser.setDocumentParseCompleteHandler(new IEventHandler<DocumentParseCompleteEventArgs>() {
 				@Override
 				public void handleEvent(@Nonnull final Object sender, @Nonnull final DocumentParseCompleteEventArgs e) {
-
+					parseCount.incrementAndGet();
+					parserComplete.countDown();
 				}
 			});
 		}
@@ -118,7 +122,10 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		}
 
 		public void waitForParse() {
-
+			try {
+				// Wait for parse to finish
+				assertTrue(parserComplete.await(1, TimeUnit.SECONDS));
+			} catch (InterruptedException ignored) {}
 		}
 	}
 }
