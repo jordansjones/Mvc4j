@@ -80,8 +80,6 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
  */
 public class RazorEditorParser implements IDisposable {
 
-	public static final String DebugArg = "EDITOR_TRACING";
-
 	// Lock for this document
 	private Span lastChangeOwner;
 	private Span lastAutoCompleteSpan;
@@ -151,7 +149,7 @@ public class RazorEditorParser implements IDisposable {
 	public EnumSet<PartialParseResult> checkForStructureChanges(@Nonnull final TextChange change) {
 		// Validate the change
 		Stopwatch sw = null;
-		if (Debug.isDebugArgPresent(DebugArg)) {
+		if (Debug.isDebugArgPresent(DebugArgs.EditorTracing)) {
 			sw = new Stopwatch().start();
 		}
 		RazorEditorTrace.traceLine(

@@ -1164,7 +1164,7 @@ public interface IRazorResources
      *     translated "[P][{0}] {3} Change in {2} milliseconds: {1}"
      */
     @nextmethod.i18n.annotations.Key("trace.editorProcessedChange")
-    @nextmethod.i18n.annotations.DefaultMessage("[P][{0}] {3} Change in {2} milliseconds: {1}")
+    @nextmethod.i18n.annotations.DefaultMessage("[P][{0}] {3} Change in {2}: {1}")
     public String traceEditorProcessedChange(final CharSequence arg0, final CharSequence arg1, final CharSequence arg2, final CharSequence arg3);
 
     /**
@@ -1174,7 +1174,7 @@ public interface IRazorResources
      *     translated "[P][{0}] {3} Change in {2} milliseconds: {1}"
      */
     @nextmethod.i18n.annotations.Key("trace.editorProcessedChange")
-    @nextmethod.i18n.annotations.DefaultMessage("[P][{0}] {3} Change in {2} milliseconds: {1}")
+    @nextmethod.i18n.annotations.DefaultMessage("[P][{0}] {3} Change in {2}: {1}")
     public String traceEditorProcessedChange();
 
     /**
@@ -1260,7 +1260,7 @@ public interface IRazorResources
      *     translated "[BG][{0}] Parse Complete in {1} milliseconds"
      */
     @nextmethod.i18n.annotations.Key("trace.parseComplete")
-    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Parse Complete in {1} milliseconds")
+    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Parse Complete in {1}")
     public String traceParseComplete(final CharSequence arg0, final CharSequence arg1);
 
     /**
@@ -1270,7 +1270,7 @@ public interface IRazorResources
      *     translated "[BG][{0}] Parse Complete in {1} milliseconds"
      */
     @nextmethod.i18n.annotations.Key("trace.parseComplete")
-    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Parse Complete in {1} milliseconds")
+    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Parse Complete in {1}")
     public String traceParseComplete();
 
     /**
@@ -1326,7 +1326,7 @@ public interface IRazorResources
      *     translated "[BG][{0}] Trees Compared in {1} milliseconds. Different = {2}"
      */
     @nextmethod.i18n.annotations.Key("trace.treesCompared")
-    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Trees Compared in {1} milliseconds. Different = {2}")
+    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Trees Compared in {1}. Different = {2}")
     public String traceTreesCompared(final CharSequence arg0, final CharSequence arg1, final CharSequence arg2);
 
     /**
@@ -1336,7 +1336,7 @@ public interface IRazorResources
      *     translated "[BG][{0}] Trees Compared in {1} milliseconds. Different = {2}"
      */
     @nextmethod.i18n.annotations.Key("trace.treesCompared")
-    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Trees Compared in {1} milliseconds. Different = {2}")
+    @nextmethod.i18n.annotations.DefaultMessage("[BG][{0}] Trees Compared in {1}. Different = {2}")
     public String traceTreesCompared();
 
 }

@@ -45,17 +45,17 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 
 	@Override
 	public void visitStartBlock(@Nonnull final Block block) {
-		block.getCodeGenerator().generateStartBlockCode(block, context);
+		block.getCodeGenerator().generateStartBlockCode(block, getContext());
 	}
 
 	@Override
 	public void visitEndBlock(@Nonnull final Block block) {
-		block.getCodeGenerator().generateEndBlockCode(block, context);
+		block.getCodeGenerator().generateEndBlockCode(block, getContext());
 	}
 
 	@Override
 	public void visitSpan(@Nonnull final Span span) {
-		span.getCodeGenerator().generateCode(span, context);
+		span.getCodeGenerator().generateCode(span, getContext());
 	}
 
 	@Override

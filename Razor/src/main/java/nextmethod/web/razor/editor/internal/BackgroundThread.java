@@ -10,9 +10,9 @@ import nextmethod.io.Filesystem;
 import nextmethod.threading.CancellationToken;
 import nextmethod.threading.CancellationTokenSource;
 import nextmethod.threading.OperationCanceledException;
+import nextmethod.web.razor.DebugArgs;
 import nextmethod.web.razor.DocumentParseCompleteEventArgs;
 import nextmethod.web.razor.GeneratorResults;
-import nextmethod.web.razor.RazorEditorParser;
 import nextmethod.web.razor.RazorEngineHost;
 import nextmethod.web.razor.RazorTemplateEngine;
 import nextmethod.web.razor.parser.syntaxtree.Block;
@@ -28,8 +28,6 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 @Internal
 final class BackgroundThread extends BaseThreadState {
-
-	private static final String DebugArgCheckTree = "CHECK_TREE";
 
 	private final MainThreadState main;
 	private Thread backgroundThread;
@@ -62,7 +60,7 @@ final class BackgroundThread extends BaseThreadState {
 	}
 
 	private void workerLoop() {
-		final boolean isEditorTracing = Debug.isDebugArgPresent(RazorEditorParser.DebugArg);
+		final boolean isEditorTracing = Debug.isDebugArgPresent(DebugArgs.EditorTracing);
 		final String fileNameOnly = Filesystem.getFileName(fileName);
 
 		Stopwatch sw = null;
@@ -137,7 +135,7 @@ final class BackgroundThread extends BaseThreadState {
 										previouslyDiscarded = Lists.newArrayList(allChanges);
 									}
 
-									if (Debug.isDebugArgPresent(DebugArgCheckTree) && args != null) {
+									if (Debug.isDebugArgPresent(DebugArgs.CheckTree) && args != null) {
 										// Rewind the buffer and sanity check the line mappings
 										finalChange.getNewBuffer().setPosition(0);
 										// TODO

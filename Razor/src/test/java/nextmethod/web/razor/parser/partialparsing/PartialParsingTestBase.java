@@ -1,6 +1,7 @@
 package nextmethod.web.razor.parser.partialparsing;
 
 import nextmethod.base.IEventHandler;
+import nextmethod.threading.ManualResetEvent;
 import nextmethod.web.razor.DocumentParseCompleteEventArgs;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.RazorCodeLanguage;
@@ -15,7 +16,6 @@ import nextmethod.web.razor.text.TextChange;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,11 +39,25 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		final EnumSet<PartialParseResult> result = manager.checkForStructureChangesAndWait(change);
 
 		assertEquals(expected, result);
-		assertEquals(2, manager.parseCount);
+		assertEquals(2, manager.parseCount.get());
 	}
 
 	protected void runPartialParseTest(final TextChange change, final Block newTreeRoot) {
 		runPartialParseTest(change, newTreeRoot, EnumSet.noneOf(PartialParseResult.class));
+	}
+
+	protected void runPartialParseTest(final TextChange change, final Block newTreeRoot, final PartialParseResult... additionalFlags) {
+		final EnumSet<PartialParseResult> enumSet;
+		if (additionalFlags.length == 1) {
+			enumSet = EnumSet.of(additionalFlags[0]);
+		}
+		else {
+			enumSet = EnumSet.noneOf(PartialParseResult.class);
+			for (PartialParseResult flag : additionalFlags) {
+				enumSet.add(flag);
+			}
+		}
+		runPartialParseTest(change, newTreeRoot, enumSet);
 	}
 
 	protected void runPartialParseTest(final TextChange change, final Block newTreeRoot, final EnumSet<PartialParseResult> additionalFlags) {
@@ -55,7 +69,7 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		final EnumSet<PartialParseResult> results = manager.checkForStructureChangesAndWait(change);
 
 		assertEquals(expected, results);
-		assertEquals(1, manager.parseCount);
+		assertEquals(1, manager.parseCount.get());
 		ParserTestBase.evaluateParseTree(manager.parser.getCurrentParseTree(), newTreeRoot);
 	}
 
@@ -93,18 +107,18 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 	protected class TestParserManager {
 
 		public final RazorEditorParser parser;
-		public final CountDownLatch parserComplete;
+		public final ManualResetEvent parserComplete;
 		public final AtomicInteger parseCount = new AtomicInteger(0);
 
 		public TestParserManager(final RazorEditorParser parser) {
 			this.parser = parser;
-			this.parserComplete = new CountDownLatch(1);
+			this.parserComplete = new ManualResetEvent();
 
 			parser.setDocumentParseCompleteHandler(new IEventHandler<DocumentParseCompleteEventArgs>() {
 				@Override
 				public void handleEvent(@Nonnull final Object sender, @Nonnull final DocumentParseCompleteEventArgs e) {
 					parseCount.incrementAndGet();
-					parserComplete.countDown();
+					parserComplete.set();
 				}
 			});
 		}
@@ -122,10 +136,8 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		}
 
 		public void waitForParse() {
-			try {
-				// Wait for parse to finish
-				assertTrue(parserComplete.await(1, TimeUnit.SECONDS));
-			} catch (InterruptedException ignored) {}
+			// Wait for parse to finish
+			assertTrue(parserComplete.waitFor(1, TimeUnit.SECONDS));
 		}
 	}
 }

@@ -69,10 +69,10 @@ public class TextChange {
 	public String applyChange(@Nonnull final String content, final int changeOffset) {
 		final int relPos = oldPosition - changeOffset;
 		assert relPos >= 0;
-		return content.replace(
-			content.substring(relPos, (relPos + oldLength)),
-			getNewText()
-		);
+		return new StringBuilder(content)
+			.delete(relPos, (relPos + oldLength))
+			.insert(relPos, getNewText())
+			.toString();
 	}
 
 	public String applyChange(@Nonnull final Span span) {

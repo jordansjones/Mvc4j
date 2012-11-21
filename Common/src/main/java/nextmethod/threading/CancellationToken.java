@@ -1,6 +1,11 @@
 package nextmethod.threading;
 
 import nextmethod.annotations.Internal;
+import nextmethod.base.Delegates;
+
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 // TODO
 public final class CancellationToken {
@@ -36,6 +41,18 @@ public final class CancellationToken {
 		if (source().isCancellationRequested()) {
 			throw new OperationCanceledException(this);
 		}
+	}
+
+	public ManualResetEvent getWaitHandle() {
+		return source().getWaitHandle();
+	}
+
+	public CancellationTokenRegistration register(@Nonnull final Delegates.IAction callback) {
+		return register(callback, false);
+	}
+
+	public CancellationTokenRegistration register(@Nonnull final Delegates.IAction callback, final boolean useSynchronizationContext) {
+		return source().register(checkNotNull(callback), useSynchronizationContext);
 	}
 
 }

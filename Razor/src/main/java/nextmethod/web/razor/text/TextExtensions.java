@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class TextExtensions {
 
 	private TextExtensions() {}
@@ -33,6 +35,7 @@ public final class TextExtensions {
 	}
 
 	public static String readToEnd(@Nonnull final ITextBuffer buffer) {
+		checkNotNull(buffer);
 		final StringBuilder builder = new StringBuilder();
 		int read;
 		while ((read = buffer.read()) != -1) {
@@ -42,6 +45,7 @@ public final class TextExtensions {
 	}
 
 	public static String readToEnd(@Nonnull final Reader reader) {
+		checkNotNull(reader);
 		final StringBuilder sb = new StringBuilder();
 		try {
 			int read;

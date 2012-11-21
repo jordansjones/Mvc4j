@@ -1,22 +1,51 @@
 package nextmethod.web.razor.editor.internal;
 
-import com.google.common.base.Optional;
 import nextmethod.annotations.Internal;
-import nextmethod.base.NotImplementedException;
+import nextmethod.base.Debug;
+import nextmethod.web.razor.DebugArgs;
 
-// TODO
+import java.text.MessageFormat;
+
+import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
+
+// TODO: Use something better than System.out
 @Internal
 public final class RazorEditorTrace {
 
 	private RazorEditorTrace() {}
 
-	private static Optional<Boolean> enabled = Optional.absent();
+	private static final Object lockObj = new Object();
+	private static Boolean enabled;
+
+	static {
+		synchronized (lockObj) {
+			if (enabled == null) {
+				final boolean isEnabled;
+				if (Debug.isDebugArgPresent(DebugArgs.RazorEditorTrace)) {
+					isEnabled = true;
+				}
+				else {
+					isEnabled = false;
+				}
+				System.out.println(
+					RazorResources().traceStartup(
+						isEnabled ? RazorResources().traceEnabled() : RazorResources().traceDisabled()
+					)
+				);
+				enabled = isEnabled;
+			}
+		}
+	}
 
 	private static boolean isEnabled() {
-		throw new NotImplementedException();
+		return enabled;
 	}
 
 	public static void traceLine(final String format, final Object... args) {
-		throw new NotImplementedException();
+		if (isEnabled() && Debug.isDebugArgPresent(DebugArgs.EditorTracing)) {
+			System.out.println(RazorResources().traceFormat(
+				MessageFormat.format(format, args)
+			));
+		}
 	}
 }

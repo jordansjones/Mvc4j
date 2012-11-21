@@ -124,13 +124,13 @@ Instead, wrap the contents of the block in "'{''}'":
 	<entry key="trace.changesDiscarded">[BG][{0}] Discarded {1} changes</entry>
 	<entry key="trace.collectedDiscardedChanges">[BG][{0}] Collecting {1} discarded changes</entry>
 	<entry key="trace.disabled">Disabled</entry>
-	<entry key="trace.editorProcessedChange">[P][{0}] {3} Change in {2} milliseconds: {1}</entry>
+	<entry key="trace.editorProcessedChange">[P][{0}] {3} Change in {2}: {1}</entry>
 	<entry key="trace.editorReceivedChange">[P][{0}] Received Change: {1}</entry>
 	<entry key="trace.enabled">Enabled</entry>
 	<entry key="trace.format">[Razor] {0}</entry>
 	<entry key="trace.noChangesArrived">[BG][{0}] no changes arrived?</entry>
-	<entry key="trace.parseComplete">[BG][{0}] Parse Complete in {1} milliseconds</entry>
+	<entry key="trace.parseComplete">[BG][{0}] Parse Complete in {1}</entry>
 	<entry key="trace.queuingParse">[M][{0}] Queuing Parse for: {1}</entry>
 	<entry key="trace.startup">[Razor] Editor Tracing {0}</entry>
-	<entry key="trace.treesCompared">[BG][{0}] Trees Compared in {1} milliseconds. Different = {2}</entry>
+	<entry key="trace.treesCompared">[BG][{0}] Trees Compared in {1}. Different = {2}</entry>
 </properties>

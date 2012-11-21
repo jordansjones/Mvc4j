@@ -58,12 +58,14 @@ public class SpanEditHandler {
 	public EditResult applyChange(@Nonnull final Span target, @Nonnull final TextChange change, final boolean force) {
 		EnumSet<PartialParseResult> result = EnumSet.of(PartialParseResult.Accepted);
 		final TextChange normalized = change.normalize();
-		if (!force)
+		if (!force) {
 			result = canAcceptChange(target, normalized);
+		}
 
 		// If the change is accepted then apply the change
-		if (result.contains(PartialParseResult.Accepted))
+		if (result.contains(PartialParseResult.Accepted)) {
 			return new EditResult(updateSpan(target, normalized), result);
+		}
 
 		return new EditResult(new SpanBuilder(target), result);
 	}
