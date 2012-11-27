@@ -48,7 +48,7 @@ public abstract class ParserVisitor {
 	}
 
 	public void throwIfCanceled() {
-		if (cancelToken.isPresent() && cancelToken.get().isCancellationRequested()) {
+		if (cancelToken != null && cancelToken.isPresent() && cancelToken.get().isCancellationRequested()) {
 			throw new OperationCanceledException();
 		}
 	}
