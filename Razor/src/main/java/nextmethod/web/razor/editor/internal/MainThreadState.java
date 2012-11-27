@@ -27,7 +27,7 @@ final class MainThreadState extends BaseThreadState implements IDisposable {
 	private final Monitor.Guard hasParcel = new Monitor.Guard(stateLock) {
 		@Override
 		public boolean isSatisfied() {
-			return changes.isEmpty() == false;
+			return !changes.isEmpty();
 		}
 	};
 

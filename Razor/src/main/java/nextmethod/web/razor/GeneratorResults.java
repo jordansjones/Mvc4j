@@ -8,8 +8,8 @@ import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GeneratorResults extends ParserResults {
@@ -62,5 +62,14 @@ public class GeneratorResults extends ParserResults {
 	 */
 	public Map<Integer, GeneratedCodeMapping> getDesignTimeLineMappings() {
 		return designTimeLineMappings;
+	}
+
+	/**
+	 * If design-time mode was used in the Code Generator, this will contain the entries
+	 * of design-time generated code mappings
+	 * @return generated code mappings if design-time mode was enabled
+	 */
+	public Set<Map.Entry<Integer, GeneratedCodeMapping>> getDesignTimeLineMappingEntries() {
+		return designTimeLineMappings.entrySet();
 	}
 }

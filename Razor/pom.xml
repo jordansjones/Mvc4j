@@ -20,6 +20,17 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<!-- Logging API -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- Fantastic Google Libraries -->
 		<dependency>
 			<groupId>com.google.guava</groupId>

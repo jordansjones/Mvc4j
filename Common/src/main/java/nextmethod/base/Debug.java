@@ -1,11 +1,22 @@
 package nextmethod.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Nonnull;
 
 /**
  *
  */
 public final class Debug {
+
+	private static final Logger logger = LoggerFactory.getLogger(Debug.class);
+
+	public static void doAssert(final boolean expression, final String message) {
+		if (isAssertEnabled && !expression && logger.isDebugEnabled()) {
+			logger.debug(message);
+		}
+	}
 
 	public static boolean isDebugArgPresent(final String argName) {
 		return Boolean.getBoolean(argName);
@@ -17,8 +28,7 @@ public final class Debug {
 	 */
 	public static void fail(@Nonnull final String message) {
 		if (isAssertEnabled) {
-			System.err.println("---- DEBUG ASSERTION FAILED ----");
-			System.err.println(message);
+			logger.error("---- DEBUG ASSERTION FAILED ----" + System.lineSeparator() + message);
 		}
 	}
 

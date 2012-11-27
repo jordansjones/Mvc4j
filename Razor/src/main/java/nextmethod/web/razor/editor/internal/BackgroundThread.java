@@ -1,6 +1,9 @@
 package nextmethod.web.razor.editor.internal;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -15,13 +18,18 @@ import nextmethod.web.razor.DocumentParseCompleteEventArgs;
 import nextmethod.web.razor.GeneratorResults;
 import nextmethod.web.razor.RazorEngineHost;
 import nextmethod.web.razor.RazorTemplateEngine;
+import nextmethod.web.razor.generator.GeneratedCodeMapping;
 import nextmethod.web.razor.parser.syntaxtree.Block;
+import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.text.ITextBuffer;
 import nextmethod.web.razor.text.TextChange;
+import nextmethod.web.razor.text.TextExtensions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
@@ -84,12 +92,12 @@ final class BackgroundThread extends BaseThreadState {
 								if (isEditorTracing && previouslyDiscarded != null && !previouslyDiscarded.isEmpty()) {
 									RazorEditorTrace.traceLine(RazorResources().traceCollectedDiscardedChanges(fileNameOnly, String.valueOf(parcel.getChanges().size())));
 								}
-								final Iterable<TextChange> allChanges = Iterables.<TextChange>concat(
+								final Iterable<TextChange> allChanges = Iterables.concat(
 									previouslyDiscarded != null ? previouslyDiscarded : Collections.<TextChange>emptyList(),
 									parcel.getChanges()
 								);
 
-								final TextChange finalChange = Iterables.<TextChange>getLast(allChanges, null);
+								final TextChange finalChange = Iterables.getLast(allChanges, null);
 								if (finalChange != null) {
 									if (isEditorTracing) {
 										sw.reset().start();
@@ -138,7 +146,27 @@ final class BackgroundThread extends BaseThreadState {
 									if (Debug.isDebugArgPresent(DebugArgs.CheckTree) && args != null) {
 										// Rewind the buffer and sanity check the line mappings
 										finalChange.getNewBuffer().setPosition(0);
-										// TODO
+										final String buffer = TextExtensions.readToEnd(finalChange.getNewBuffer());
+										final int lineCount = Iterables.size(Splitter.on(CharMatcher.anyOf("\r\n")).split(buffer));
+										Debug.doAssert(
+											!Iterables.any(args.getGeneratorResults().getDesignTimeLineMappingEntries(), new Predicate<Map.Entry<Integer, GeneratedCodeMapping>>() {
+												@Override
+												public boolean apply(@Nullable final Map.Entry<Integer, GeneratedCodeMapping> input) {
+													return input != null && input.getValue().getStartLine() > lineCount;
+												}
+											}),
+											"Found a design-time line mapping referring to a line outside the source file!"
+										);
+
+										Debug.doAssert(
+											!Iterables.any(args.getGeneratorResults().getDocument().flatten(), new Predicate<Span>() {
+												@Override
+												public boolean apply(@Nullable final Span input) {
+													return input != null && input.getStart().getLineIndex() > lineCount;
+												}
+											}),
+											"Found a span with a line number outside the source file"
+										);
 									}
 								}
 							}

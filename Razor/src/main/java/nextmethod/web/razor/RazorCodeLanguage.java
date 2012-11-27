@@ -15,7 +15,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Represents a code language in Razor. By default only Java is defined (.rzhtml)
  */
-// TODO
 public abstract class RazorCodeLanguage<T extends CodeDomProvider> {
 
 	private static Map<String, RazorCodeLanguage> services = MapBuilder.<String, RazorCodeLanguage>of(
@@ -49,7 +48,7 @@ public abstract class RazorCodeLanguage<T extends CodeDomProvider> {
 	 */
 	@Nullable
 	public static RazorCodeLanguage getLanguageByExtension(@Nonnull String fileExtension) {
-		checkArgument(Strings.isNullOrEmpty(fileExtension) == false);
+		checkArgument(!Strings.isNullOrEmpty(fileExtension));
 
 		RazorCodeLanguage language = null;
 		if (fileExtension.charAt(0) == '.') {
