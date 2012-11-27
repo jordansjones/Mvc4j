@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static nextmethod.base.TypeHelpers.typeAs;
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
@@ -27,9 +28,7 @@ public class Block extends SyntaxTreeNode {
 	private final String name;
 
 	public Block(@Nonnull final BlockBuilder source) {
-		if (source.getType() == null) {
-			throw new IllegalArgumentException(RazorResources().blockTypeNotSpecified());
-		}
+		checkArgument(source.getType().isPresent(), RazorResources().blockTypeNotSpecified());
 		this.type = source.getType().get();
 		this.children = source.getChildren();
 		this.name = source.getName();
