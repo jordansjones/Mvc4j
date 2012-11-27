@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public abstract class RazorCodeLanguage<T extends CodeDomProvider> {
 
 	private static Map<String, RazorCodeLanguage> services = MapBuilder.<String, RazorCodeLanguage>of(
-		"rzhtml", new JavaRazorCodeLanguage()
+		JavaRazorCodeLanguage.RazorFileExtension, new JavaRazorCodeLanguage()
 	).build();
 
 	/**

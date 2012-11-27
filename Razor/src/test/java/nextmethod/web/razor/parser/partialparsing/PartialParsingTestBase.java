@@ -1,7 +1,5 @@
 package nextmethod.web.razor.parser.partialparsing;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Monitor;
 import nextmethod.base.Delegates;
 import nextmethod.base.IEventHandler;
@@ -20,19 +18,25 @@ import nextmethod.web.razor.utils.MiscUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static junit.framework.Assert.assertEquals;
+import static nextmethod.web.razor.utils.MiscUtils.createTestFilePath;
 
 public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage> {
 
-	private static final String TestLinePragmaFileName = createTestLinePragmaFileName();
+	private static final String TestLinePragmaFileName = createTestFilePath(
+		"This",
+		"Path",
+		"Is",
+		"Just",
+		"For",
+		"Line",
+		"Pragmas.rzhtml"
+	);
 
 	protected void runFullReparseTest(final TextChange change) {
 		runFullReparseTest(change, EnumSet.noneOf(PartialParseResult.class));
@@ -177,19 +181,4 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		}
 	}
 
-	private static String createTestLinePragmaFileName() {
-//		"C:\\This\\Path\\Is\\Just\\For\\Line\\Pragmas.rzhtml"
-		final FileSystem fileSystem = FileSystems.getDefault();
-		Path first = Iterables.getFirst(fileSystem.getRootDirectories(), null);
-		return Joiner.on(fileSystem.getSeparator()).join(new String[] {
-			first != null ? first.toString() : "",
-			"This",
-			"Path",
-			"Is",
-			"Just",
-			"For",
-			"Line",
-			"Pragmas.rzhtml"
-		});
-	}
 }

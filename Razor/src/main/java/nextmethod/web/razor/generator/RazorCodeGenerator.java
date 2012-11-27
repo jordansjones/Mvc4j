@@ -17,6 +17,10 @@ import nextmethod.web.razor.parser.syntaxtree.Span;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static nextmethod.common.Mvc4jCommonResources.CommonResources;
+
 public abstract class RazorCodeGenerator extends ParserVisitor {
 
 	private CodeGeneratorContext context;
@@ -32,10 +36,11 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 	private boolean designTimeMode;
 
 	protected RazorCodeGenerator(@Nonnull final String className, @Nonnull final String rootPackageName, @Nonnull final String sourceFileName, @Nonnull final RazorEngineHost host) {
+		checkArgument(!Strings.isNullOrEmpty(className), CommonResources().argumentCannotBeNullOrEmpty());
 		this.className = className;
-		this.rootPackageName = rootPackageName;
+		this.rootPackageName = checkNotNull(rootPackageName);
 		this.sourceFileName = sourceFileName;
-		this.host = host;
+		this.host = checkNotNull(host);
 		this.generateLinePragmas = Strings.isNullOrEmpty(sourceFileName);
 	}
 

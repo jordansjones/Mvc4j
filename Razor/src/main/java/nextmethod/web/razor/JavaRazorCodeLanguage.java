@@ -8,7 +8,9 @@ import nextmethod.web.razor.parser.ParserBase;
 
 public class JavaRazorCodeLanguage extends RazorCodeLanguage<JavaCodeProvider> {
 
-	private static final String LanguageName = "java";
+	public static final String RazorFileExtension = "rzhtml";
+	public static final String LanguageFileExtension = "java";
+	public static final String LanguageName = "java";
 
 
 	/**
