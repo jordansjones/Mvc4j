@@ -9,6 +9,7 @@ import com.google.common.collect.Queues;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.threading.Task;
 import nextmethod.web.razor.ParserResults;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.BlockBuilder;
@@ -26,6 +27,7 @@ import java.text.MessageFormat;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -239,17 +241,15 @@ public class ParserContext {
 
 	void captureOwnerTask() {
 		if (Debug.isAssertEnabled()) {
-			// TODO
-//			if (Task.CurrentId != null) {
-//				ownerTaskId = Task.CurrentId
-//			}
+			if (Task.getCurrentId().isPresent()) {
+				ownerTaskId = Task.getCurrentId();
+			}
 		}
 	}
 
 	void assertOnOwnerTask() {
-		if (Debug.isAssertEnabled()) {
-			// TODO
-//			assert ownerTaskId == Task.CurrentId;
+		if (Debug.isAssertEnabled() && ownerTaskId != null) {
+			assert Objects.equals(ownerTaskId, Task.getCurrentId());
 		}
 	}
 
@@ -269,8 +269,9 @@ public class ParserContext {
 	private DebugParserContext debugParserContext = null;
 
 	private boolean checkInfiniteLoop() {
-		if (debugParserContext == null)
+		if (debugParserContext == null) {
 			debugParserContext = new DebugParserContext(this);
+		}
 
 		return debugParserContext.checkInfiniteLoop();
 	}

@@ -1,5 +1,6 @@
 package nextmethod.threading;
 
+import com.google.common.base.Optional;
 import nextmethod.base.Delegates;
 
 /**
@@ -9,5 +10,10 @@ import nextmethod.base.Delegates;
 public class Task {
 
 	public Task(Delegates.IAction action) {}
+
+	// TODO
+	public static Optional<Integer> getCurrentId() {
+		return Optional.absent();
+	}
 
 }
