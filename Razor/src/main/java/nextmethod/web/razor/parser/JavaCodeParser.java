@@ -45,6 +45,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		.add("while")
 		.add("switch")
 		.add("lock")
+		.add("synchronized")
 		.add("using")
 		.add("section")
 		.add("inherits")

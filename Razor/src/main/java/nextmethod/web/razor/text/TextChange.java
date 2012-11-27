@@ -116,7 +116,7 @@ public class TextChange {
 	}
 
 	public TextChange normalize() {
-		if (oldBuffer != null && isReplace() && newLength > oldLength && newText.startsWith(oldText) && newPosition == oldPosition) {
+		if (oldBuffer != null && isReplace() && newLength > oldLength && getNewText().startsWith(getOldText()) && newPosition == oldPosition) {
 			// Normalize the change into an insertion of the uncommon suffix (i.e. stop out the common prefix)
 			return new TextChange(
 				oldPosition + oldLength,

@@ -34,7 +34,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 	}
 
 	private void setupKeywords() {
-		mapKeywords(conditionalBlockDelegate, JavaKeyword.For, JavaKeyword.Foreach, JavaKeyword.While, JavaKeyword.Switch, JavaKeyword.Lock);
+		mapKeywords(conditionalBlockDelegate, JavaKeyword.For, JavaKeyword.Foreach, JavaKeyword.While, JavaKeyword.Switch, JavaKeyword.Lock, JavaKeyword.Synchronized);
 		mapKeywords(caseStatementDelegate, false, JavaKeyword.Case, JavaKeyword.Default);
 		mapKeywords(ifStatementDelegate, JavaKeyword.If);
 		mapKeywords(tryStatementDelegate, JavaKeyword.Try);

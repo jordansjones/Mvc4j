@@ -10,7 +10,6 @@ import nextmethod.base.IEventHandler;
 import nextmethod.io.Filesystem;
 import nextmethod.threading.CancellationToken;
 import nextmethod.threading.CancellationTokenSource;
-import nextmethod.threading.ManualResetEvent;
 import nextmethod.web.razor.DocumentParseCompleteEventArgs;
 import nextmethod.web.razor.text.TextChange;
 import nextmethod.web.razor.utils.DisposableAction;
@@ -24,14 +23,20 @@ import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 @Internal
 final class MainThreadState extends BaseThreadState implements IDisposable {
 
+	private final Monitor stateLock = new Monitor();
+	private final Monitor.Guard hasParcel = new Monitor.Guard(stateLock) {
+		@Override
+		public boolean isSatisfied() {
+			return changes.isEmpty() == false;
+		}
+	};
+
 
 	private final CancellationTokenSource cancelSource = new CancellationTokenSource();
-	private final ManualResetEvent hasParcel = new ManualResetEvent(false);
 	private CancellationTokenSource currentParcelCancelSource;
 
 	private String fileName;
-	private final Monitor stateLock = new Monitor();
-	private List<TextChange> changes = Lists.newArrayList();
+	private volatile List<TextChange> changes = Lists.newArrayList();
 	private IEventHandler<DocumentParseCompleteEventArgs> resultsReadyHandler;
 
 	MainThreadState(@Nonnull final String fileName) {
@@ -79,7 +84,6 @@ final class MainThreadState extends BaseThreadState implements IDisposable {
 				currentParcelCancelSource.cancel();
 			}
 			changes.add(change);
-			hasParcel.set();
 		}
 		finally {
 			stateLock.leave();
@@ -88,10 +92,7 @@ final class MainThreadState extends BaseThreadState implements IDisposable {
 
 	public WorkParcel getParcel() {
 		ensureNotOnThread(); // Only the background thread can get a parcel
-		hasParcel.waitFor(cancelSource.getToken());
-		hasParcel.reset();
-
-		stateLock.enter();
+		stateLock.enterWhenUninterruptibly(hasParcel);
 		try {
 			// Create a cancellation source for this parcel
 			currentParcelCancelSource = new CancellationTokenSource();
@@ -99,8 +100,7 @@ final class MainThreadState extends BaseThreadState implements IDisposable {
 			final ImmutableList<TextChange> textChanges = ImmutableList.copyOf(changes);
 			this.changes = Lists.newArrayList();
 			return new WorkParcel(textChanges, currentParcelCancelSource.getToken());
-		}
-		finally {
+		} finally {
 			stateLock.leave();
 		}
 	}
@@ -140,7 +140,6 @@ final class MainThreadState extends BaseThreadState implements IDisposable {
 				currentParcelCancelSource = null;
 			}
 			cancelSource.close();
-			hasParcel.close();
 		}
 	}
 

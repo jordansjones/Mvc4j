@@ -21,6 +21,7 @@ public final class SyntaxConstants {
 		public static final String HelperKeyword = "helper";
 		public static final String ElseIfKeyword = "else if";
 		public static final String PackageKeyword = "package";
+		public static final String NamespaceKeyword = "namespace";
 		public static final String ClassKeyword = "class";
 		public static final String LayoutKeyword = "layout";
 		public static final String SessionStateKeyword = "sessionstate";

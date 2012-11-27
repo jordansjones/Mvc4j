@@ -81,12 +81,12 @@ public final class ParserHelpers {
 	}
 
 	public static boolean isIdentifier(@Nonnull final String val, final boolean requireIdentifierStart) {
-		Iterable<Character> identifierPart = Lists.newArrayList(Lists.charactersOf(val));
+		Character[] identifierPart = nextmethod.collections.Arrays.asCharacterArray(val);
 		if (requireIdentifierStart) {
-			identifierPart = Iterables.skip(identifierPart, 1);
+			identifierPart = java.util.Arrays.copyOfRange(identifierPart, 1, identifierPart.length);
 		}
-		return (!requireIdentifierStart || isIdentifierStart(Iterables.getFirst(identifierPart, null)))
-			&& Iterables.all(identifierPart, IsIdentifierPartPredicate);
+		return (!requireIdentifierStart || isIdentifierStart(val.charAt(0)))
+			&& nextmethod.collections.Arrays.all(identifierPart, IsIdentifierPartPredicate);
 	}
 
 	public static boolean isHexDigit(final char val) {

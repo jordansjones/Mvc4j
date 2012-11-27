@@ -1,7 +1,8 @@
 package nextmethod.web.razor.parser.partialparsing;
 
+import com.google.common.util.concurrent.Monitor;
+import nextmethod.base.Delegates;
 import nextmethod.base.IEventHandler;
-import nextmethod.threading.ManualResetEvent;
 import nextmethod.web.razor.DocumentParseCompleteEventArgs;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.RazorCodeLanguage;
@@ -13,14 +14,16 @@ import nextmethod.web.razor.generator.GeneratedClassContext;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.text.ITextBuffer;
 import nextmethod.web.razor.text.TextChange;
+import nextmethod.web.razor.utils.MiscUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage> {
 
@@ -106,19 +109,32 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 
 	protected class TestParserManager {
 
+		private final Monitor parserMonitor = new Monitor();
+		private final Monitor.Guard parserComplete = new Monitor.Guard(parserMonitor) {
+			@Override
+			public boolean isSatisfied() {
+				return parseComplete.get();
+			}
+		};
 		public final RazorEditorParser parser;
-		public final ManualResetEvent parserComplete;
+		public final AtomicBoolean parseComplete;
 		public final AtomicInteger parseCount = new AtomicInteger(0);
 
 		public TestParserManager(final RazorEditorParser parser) {
 			this.parser = parser;
-			this.parserComplete = new ManualResetEvent();
+			this.parseComplete = new AtomicBoolean(false);
 
 			parser.setDocumentParseCompleteHandler(new IEventHandler<DocumentParseCompleteEventArgs>() {
 				@Override
 				public void handleEvent(@Nonnull final Object sender, @Nonnull final DocumentParseCompleteEventArgs e) {
-					parseCount.incrementAndGet();
-					parserComplete.set();
+					parserMonitor.enter();
+					try {
+						parseCount.incrementAndGet();
+						parseComplete.set(true);
+					}
+					finally {
+						parserMonitor.leave();
+					}
 				}
 			});
 		}
@@ -137,7 +153,23 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 
 		public void waitForParse() {
 			// Wait for parse to finish
-			assertTrue(parserComplete.waitFor(1, TimeUnit.SECONDS));
+			MiscUtils.DoWithTimeoutIfNotDebugging(new Delegates.IFunc1<Long, Boolean>() {
+				@Override
+				public Boolean invoke(@Nullable final Long timeoutInMillis) {
+					boolean wasSignaled = false;
+					parserMonitor.enter();
+					try {
+						wasSignaled = parserMonitor.waitForUninterruptibly(parserComplete, timeoutInMillis, TimeUnit.MILLISECONDS);
+						parseComplete.set(false);
+					}
+					finally {
+						if (parserMonitor.isOccupiedByCurrentThread()) {
+							parserMonitor.leave();
+						}
+					}
+					return wasSignaled;
+				}
+			});
 		}
 	}
 }

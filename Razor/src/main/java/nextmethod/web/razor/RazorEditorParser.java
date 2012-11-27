@@ -84,7 +84,7 @@ public class RazorEditorParser implements IDisposable {
 	private Span lastChangeOwner;
 	private Span lastAutoCompleteSpan;
 	private BackgroundParser parser;
-	private Block currentParseTree;
+	private volatile Block currentParseTree;
 
 	private final RazorEngineHost host;
 	private final String fileName;

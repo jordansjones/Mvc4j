@@ -7,6 +7,7 @@ public final class DebugArgs {
 
 	private DebugArgs() {}
 
+	public static final String DebuggerIsAttached = "DEBUGGER_IS_ATTACHED";
 	public static final String RazorEditorTrace = "RAZOR_EDITOR_TRACE";
 	public static final String EditorTracing = "EDITOR_TRACING";
 	public static final String CheckTree = "CHECK_TREE";

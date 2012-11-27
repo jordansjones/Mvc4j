@@ -44,7 +44,7 @@ public final class RazorEditorTrace {
 	public static void traceLine(final String format, final Object... args) {
 		if (isEnabled() && Debug.isDebugArgPresent(DebugArgs.EditorTracing)) {
 			System.out.println(RazorResources().traceFormat(
-				MessageFormat.format(format, args)
+				args != null && args.length > 0 ? MessageFormat.format(format, args) : format
 			));
 		}
 	}

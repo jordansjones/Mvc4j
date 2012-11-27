@@ -7,11 +7,11 @@ import nextmethod.base.AggregateException;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.NotImplementedException;
+import nextmethod.base.ObjectDisposedException;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,9 +32,9 @@ public class CancellationTokenSource implements IDisposable {
 	private AtomicInteger currentId = new AtomicInteger(Integer.MIN_VALUE);
 
 	ConcurrentMap<CancellationTokenRegistration, Delegates.IAction> callbacks;
-	CopyOnWriteArrayList<CancellationTokenRegistration> linkedTokens;
+	CancellationTokenRegistration[] linkedTokens;
 
-	private ManualResetEvent handle;
+	private EventWaitHandle handle;
 
 	private final Object lockObject = new Object();
 
@@ -44,7 +44,7 @@ public class CancellationTokenSource implements IDisposable {
 
 	public CancellationTokenSource() {
 		this.callbacks = new MapMaker().makeMap();
-		this.handle = new ManualResetEvent(false);
+		this.handle = new EventWaitHandle(false);
 	}
 
 	public CancellationTokenSource(final long delay, @Nonnull final TimeUnit timeUnit) {
@@ -138,12 +138,6 @@ public class CancellationTokenSource implements IDisposable {
 		throw new NotImplementedException();
 	}
 
-	@Internal
-	public ManualResetEvent getWaitHandle() {
-		checkDisposed();
-		return handle;
-	}
-
 
 	@Override
 	public void close() {
@@ -215,21 +209,21 @@ public class CancellationTokenSource implements IDisposable {
 		final CancellationTokenSource src = new CancellationTokenSource();
 		final Delegates.IAction action = src.createSafeLinkedCancel();
 
-		final CopyOnWriteArrayList<CancellationTokenRegistration> registrations = Lists.<CancellationTokenRegistration>newCopyOnWriteArrayList();
+		final List<CancellationTokenRegistration> registrations = Lists.<CancellationTokenRegistration>newArrayList();
 
 		for (CancellationToken token : tokens) {
 			if (token.canBeCanceled()) {
 				registrations.add(token.register(action));
 			}
 		}
-		src.linkedTokens = registrations;
+		src.linkedTokens = registrations.toArray(new CancellationTokenRegistration[registrations.size()]);
 
 		return src;
 	}
 
 	void checkDisposed() {
 		if (disposed) {
-			throw new IllegalStateException("Object is Disposed");
+			throw new ObjectDisposedException(getClass().getName());
 		}
 	}
 }

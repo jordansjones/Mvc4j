@@ -43,10 +43,6 @@ public final class CancellationToken {
 		}
 	}
 
-	public ManualResetEvent getWaitHandle() {
-		return source().getWaitHandle();
-	}
-
 	public CancellationTokenRegistration register(@Nonnull final Delegates.IAction callback) {
 		return register(callback, false);
 	}

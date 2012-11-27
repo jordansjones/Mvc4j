@@ -1,10 +1,9 @@
 package nextmethod.web.razor.editor;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import nextmethod.base.Delegates;
+import nextmethod.collections.Arrays;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.ParserHelpers;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
@@ -156,7 +155,10 @@ public class ImplicitExpressionEditorHandler extends SpanEditHandler {
 	}
 
 	private static boolean isAllIdentifierPart(final String content) {
-		return Iterables.all(Lists.charactersOf(content.substring(0, content.length() - 1)), ParserHelpers.IsIdentifierPartPredicate);
+		return Arrays.all(
+			Arrays.asCharacterArray(content.substring(0, content.length() - 1)),
+			ParserHelpers.IsIdentifierPartPredicate
+		);
 	}
 
 	private EnumSet<PartialParseResult> tryAcceptChange(final Span target, final TextChange change) {
