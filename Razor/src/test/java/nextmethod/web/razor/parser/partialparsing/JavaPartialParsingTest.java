@@ -19,7 +19,7 @@ import java.util.EnumSet;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 
-// TODO
+
 public class JavaPartialParsingTest extends PartialParsingTestBase<JavaRazorCodeLanguage> {
 
 	@Override

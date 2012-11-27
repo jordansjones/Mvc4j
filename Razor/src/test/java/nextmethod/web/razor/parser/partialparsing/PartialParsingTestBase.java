@@ -110,7 +110,7 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 	protected class TestParserManager {
 
 		private final Monitor parserMonitor = new Monitor();
-		private final Monitor.Guard parserComplete = new Monitor.Guard(parserMonitor) {
+		private final Monitor.Guard parseCompleteGuard = new Monitor.Guard(parserMonitor) {
 			@Override
 			public boolean isSatisfied() {
 				return parseComplete.get();
@@ -156,10 +156,9 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 			MiscUtils.DoWithTimeoutIfNotDebugging(new Delegates.IFunc1<Long, Boolean>() {
 				@Override
 				public Boolean invoke(@Nullable final Long timeoutInMillis) {
-					boolean wasSignaled = false;
-					parserMonitor.enter();
+					assert timeoutInMillis != null;
+					boolean wasSignaled = parserMonitor.enterWhenUninterruptibly(parseCompleteGuard, timeoutInMillis, TimeUnit.MILLISECONDS);
 					try {
-						wasSignaled = parserMonitor.waitForUninterruptibly(parserComplete, timeoutInMillis, TimeUnit.MILLISECONDS);
 						parseComplete.set(false);
 					}
 					finally {
