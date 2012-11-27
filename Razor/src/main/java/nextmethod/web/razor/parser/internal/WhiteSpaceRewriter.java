@@ -14,7 +14,6 @@ import nextmethod.web.razor.parser.syntaxtree.SyntaxTreeNode;
 import nextmethod.web.razor.text.SourceLocation;
 
 import javax.annotation.Nonnull;
-
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,17 +35,12 @@ public class WhiteSpaceRewriter extends MarkupRewriter {
 	}
 
 	@Override
-	public Block rewrite(@Nonnull final Block input) {
-		return super.rewrite(input);
-	}
-
-	@Override
 	protected SyntaxTreeNode rewriteBlock(@Nonnull final BlockBuilder parent, @Nonnull final Block block) {
 		final BlockBuilder newBlock = new BlockBuilder(checkNotNull(block));
 		newBlock.getChildren().clear();
-		final Span ws = typeAs(Iterables.getFirst(newBlock.getChildren(), null), Span.class);
+		final Span ws = typeAs(Iterables.getFirst(block.getChildren(), null), Span.class);
 		Collection<SyntaxTreeNode> newNodes = block.getChildren();
-		if (ws != null && ParserHelpers.isAnyOfString(ws.getContent(), ParserHelpers.IsWhitespacePredicate)) {
+		if (ws != null && ParserHelpers.isAllOfString(ws.getContent(), ParserHelpers.IsWhitespacePredicate)) {
 			// Add this node to the parent
 			final SpanBuilder builder = new SpanBuilder(ws);
 			builder.clearSymbols();

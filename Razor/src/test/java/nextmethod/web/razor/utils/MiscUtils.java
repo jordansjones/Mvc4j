@@ -15,6 +15,7 @@ public final class MiscUtils {
 
 	public static final int TimeoutInSeconds = 1;
 
+	@SuppressWarnings("ConstantConditions")
 	public static void DoWithTimeoutIfNotDebugging(@Nonnull Delegates.IFunc1<Long, Boolean> withTimeout) {
 		if (Debug.isDebugArgPresent(DebugArgs.DebuggerIsAttached)) {
 			withTimeout.invoke(Long.MAX_VALUE);

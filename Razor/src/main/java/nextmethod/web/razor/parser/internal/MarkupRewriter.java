@@ -16,6 +16,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Deque;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Internal
 abstract class MarkupRewriter extends ParserVisitor implements ISyntaxTreeRewriter {
 
@@ -23,7 +25,7 @@ abstract class MarkupRewriter extends ParserVisitor implements ISyntaxTreeRewrit
 	private Delegates.IAction3<SpanBuilder, SourceLocation, String> markupSpanFactory;
 
 	protected MarkupRewriter(@Nonnull final Delegates.IAction3<SpanBuilder, SourceLocation, String> markupSpanFactory) {
-		this.markupSpanFactory = markupSpanFactory;
+		this.markupSpanFactory = checkNotNull(markupSpanFactory);
 	}
 
 	@Nullable
