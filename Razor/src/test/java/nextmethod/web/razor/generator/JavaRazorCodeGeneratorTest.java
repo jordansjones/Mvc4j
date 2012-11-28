@@ -41,7 +41,30 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 
 	@Test
 	public void javaCodeGeneratorCorrectlyGeneratesRuntimeCode() {
-		for (String testType : new String[] { "NestedCodeBlocks" }) {
+		final String[] testTypes = {
+			"NestedCodeBlocks",
+			"CodeBlock",
+			"ExplicitExpression",
+			"MarkupInCodeBlock",
+			"Blocks",
+			"ImplicitExpression",
+			"Imports",
+			"ExpressionsInCode",
+			"FunctionsBlock",
+			"Templates",
+			"Sections",
+			"RazorComments",
+			"Helpers",
+			"HelpersMissingCloseParen",
+			"HelpersMissingOpenBrace",
+			"HelpersMissingOpenParen",
+			"NestedHelpers",
+			"InlineBlocks",
+			"LayoutDirective",
+			"ConditionalAttributes",
+			"ResolveUrl"
+		};
+		for (String testType : testTypes) {
 			testJavaCodeGeneratorCorrectlyGeneratesRuntimeCode(testType);
 		}
 	}

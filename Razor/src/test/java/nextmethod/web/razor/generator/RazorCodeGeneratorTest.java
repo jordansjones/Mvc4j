@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
-import com.google.common.io.CharStreams;
 import com.google.common.primitives.Ints;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
@@ -23,7 +22,8 @@ import nextmethod.web.razor.utils.TestFile;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -122,14 +122,16 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 		options.setBlankLinesBetweenMembers(false);
 		options.setIndentString("");
 
-		final StringBuilder output = new StringBuilder();
-		try (Writer writer = CharStreams.asWriter(output)) {
-			codeDomProvider.generateCodeFromCompileUnit(compileUnit, writer, options);
-		} catch (IOException e) {
-			Throwables.propagate(e);
+		String generatedOutput = null;
+		try (StringWriter swriter = new StringWriter()) {
+			try (PrintWriter writer = new PrintWriter(swriter)) {
+				codeDomProvider.generateCodeFromCompileUnit(compileUnit, writer, options);
+			}
+			generatedOutput = swriter.toString();
 		}
-
-		final String generatedOutput = output.toString();
+		catch (IOException e) {
+			throw Throwables.propagate(e);
+		}
 
 		writeBaseLine(
 			String.format(

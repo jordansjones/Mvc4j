@@ -12,6 +12,10 @@ public class CodeTypeDeclaration extends CodeTypeMember implements Serializable 
 	private CodeTypeReferenceCollection baseTypes;
 	private CodeTypeMemberCollection members;
 
+	private int attributes = TypeAttributes.Public.getModifier();
+
+	private boolean isEnum;
+
 	public CodeTypeDeclaration() {
 	}
 
@@ -21,20 +25,27 @@ public class CodeTypeDeclaration extends CodeTypeMember implements Serializable 
 
 
 	public boolean isClass() {
-		throw new NotImplementedException();
+		if ((attributes & TypeAttributes.Interface.getModifier()) != 0) return false;
+		if (isEnum) return false;
+		return true;
 	}
 
 	public void setIsClass(final boolean isClass) {
-		throw new NotImplementedException();
+		if (isClass) {
+			attributes &= ~TypeAttributes.Interface.getModifier();
+			isEnum = false;
+		}
 	}
 
 
 	public boolean isEnum() {
-		throw new NotImplementedException();
+		return isEnum;
 	}
 
 	public void setIsEnum(final boolean isEnum) {
-		throw new NotImplementedException();
+		if (isEnum) {
+			this.isEnum = true;
+		}
 	}
 
 
