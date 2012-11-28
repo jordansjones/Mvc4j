@@ -13,6 +13,13 @@
 	<description>Java port of Microsoft's ASP.Net MVC Web stack</description>
 	<url>https://github.com/jordansjones/Mvc4j</url>
 	<inceptionYear>2011</inceptionYear>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<scm>
 		<connection>scm:git:git://github.com/jordansjones/Mvc4j.git</connection>
@@ -29,12 +36,19 @@
 			<id>earaya</id>
 			<name>Esteban Araya</name>
 			<email>esteban.araya@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
 			<timezone>-7</timezone>
 		</developer>
 		<developer>
 			<id>jordansjones</id>
 			<name>Jordan S. Jones</name>
 			<email>jordansjones@gmail.com</email>
+			<roles>
+				<role>owner</role>
+				<role>developer</role>
+			</roles>
 			<timezone>-7</timezone>
 		</developer>
 	</developers>
