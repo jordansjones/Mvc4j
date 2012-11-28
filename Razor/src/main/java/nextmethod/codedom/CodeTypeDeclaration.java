@@ -1,5 +1,7 @@
 package nextmethod.codedom;
 
+import nextmethod.base.NotImplementedException;
+
 import java.io.Serializable;
 
 // TODO
@@ -9,7 +11,6 @@ public class CodeTypeDeclaration extends CodeTypeMember implements Serializable 
 
 	private CodeTypeReferenceCollection baseTypes;
 	private CodeTypeMemberCollection members;
-	private boolean isEnum;
 
 	public CodeTypeDeclaration() {
 	}
@@ -20,12 +21,31 @@ public class CodeTypeDeclaration extends CodeTypeMember implements Serializable 
 
 
 	public boolean isClass() {
-		return true;
+		throw new NotImplementedException();
 	}
 
 	public void setIsClass(final boolean isClass) {
-
+		throw new NotImplementedException();
 	}
+
+
+	public boolean isEnum() {
+		throw new NotImplementedException();
+	}
+
+	public void setIsEnum(final boolean isEnum) {
+		throw new NotImplementedException();
+	}
+
+
+	public boolean isInterface() {
+		throw new NotImplementedException();
+	}
+
+	public void setIsInterface(final boolean isInterface) {
+		throw new NotImplementedException();
+	}
+
 
 	public CodeTypeReferenceCollection getBaseTypes() {
 		if (baseTypes == null) {

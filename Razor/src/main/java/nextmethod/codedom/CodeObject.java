@@ -1,5 +1,6 @@
 package nextmethod.codedom;
 
+import nextmethod.annotations.Internal;
 import nextmethod.base.NotImplementedException;
 
 import javax.annotation.Nonnull;
@@ -18,6 +19,7 @@ public class CodeObject implements Serializable {
 		return userData;
 	}
 
+	@Internal
 	void accept(@Nonnull final ICodeDomVisitor visitor) {
 		throw new NotImplementedException();
 	}

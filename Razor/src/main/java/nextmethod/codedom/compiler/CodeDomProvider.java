@@ -9,6 +9,8 @@ import java.io.Writer;
 // TODO
 public abstract class CodeDomProvider {
 
+
+
 	public void generateCodeFromCompileUnit(@Nonnull final CodeCompileUnit compileUnit, @Nonnull final Writer writer, @Nonnull final CodeGeneratorOptions options) {
 		throw new NotImplementedException();
 	}
