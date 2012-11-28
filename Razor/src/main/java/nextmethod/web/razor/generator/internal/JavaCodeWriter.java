@@ -9,6 +9,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.StringWriter;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Internal
 public class JavaCodeWriter extends BaseCodeWriter {
 
@@ -49,7 +51,7 @@ public class JavaCodeWriter extends BaseCodeWriter {
 
 	@Override
 	public void writeStringLiteral(@Nonnull final String literal) {
-		final int length = literal.length();
+		final int length = checkNotNull(literal).length();
 		// If the string is short, use C style quoting (e.g. "\r\n")
 		// Also do it if it is too long to fit in one line
 		// If the string contains '\0', verbatim style won't work
@@ -61,9 +63,8 @@ public class JavaCodeWriter extends BaseCodeWriter {
 		}
 	}
 
-	// TODO
 	private void writeVerbatimStringLiteral(@Nonnull final String literal, final int length) {
-		// How to do '@"blahblah";' in Java?
+		// TODO: How to do '@"blahblah";' in Java?
 		getInnerWriter().write("@\"");
 		for (int i = 0; i < length; i++) {
 			final char c = literal.charAt(i);

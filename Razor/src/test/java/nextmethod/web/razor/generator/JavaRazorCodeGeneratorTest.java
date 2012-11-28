@@ -11,6 +11,7 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 	private static final String TestVirtualPath = "~/Foo/Bar.rzhtml";
 
 
+	@SuppressWarnings("ConstantConditions")
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorRequiresNonNullClassName() {
 		new JavaRazorCodeGenerator(null, TestRootNamespaceName, TestPhysicalPath, createHost());
@@ -21,6 +22,7 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 		new JavaRazorCodeGenerator("", TestRootNamespaceName, TestPhysicalPath, createHost());
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Test(expected = NullPointerException.class)
 	public void constructorRequiresNonNullRootNamespaceName() {
 		new JavaRazorCodeGenerator("Foo", null, TestPhysicalPath, createHost());
@@ -31,6 +33,7 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 		new JavaRazorCodeGenerator("Foo", "", TestPhysicalPath, createHost());
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Test(expected = NullPointerException.class)
 	public void constructorRequiresNonNullHost() {
 		new JavaRazorCodeGenerator("Foo", TestRootNamespaceName, TestPhysicalPath, null);
@@ -38,7 +41,9 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 
 	@Test
 	public void javaCodeGeneratorCorrectlyGeneratesRuntimeCode() {
-//		for ()
+		for (String testType : new String[] { "NestedCodeBlocks" }) {
+			testJavaCodeGeneratorCorrectlyGeneratesRuntimeCode(testType);
+		}
 	}
 
 	private void testJavaCodeGeneratorCorrectlyGeneratesRuntimeCode(final String testType) {
@@ -59,7 +64,7 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 
 	@Override
 	protected String getBaselineExtension() {
-		return JavaRazorCodeLanguage.LanguageFileExtension;
+		return "rzjava";
 	}
 
 	@Override

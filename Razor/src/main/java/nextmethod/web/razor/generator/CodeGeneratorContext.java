@@ -240,17 +240,16 @@ public class CodeGeneratorContext {
 		});
 	}
 
-	// TODO
 	public void addContextCall(final Span contentSpan, final String methodName, final boolean isLiteral) {
 		addStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
 			@Override
 			public void invoke(final CodeWriter input) {
 				input.writeStartMethodInvoke(methodName);
-				if (!Strings.isNullOrEmpty(targetWriterName)) {
-					input.writeSnippet(targetWriterName);
+				if (!Strings.isNullOrEmpty(getTargetWriterName())) {
+					input.writeSnippet(getTargetWriterName());
 					input.writeParameterSeparator();
 				}
-				input.writeStringLiteral(host.getInstrumentedSourceFilePath());
+				input.writeStringLiteral(getHost().getInstrumentedSourceFilePath());
 				input.writeParameterSeparator();
 				input.writeSnippet(String.valueOf(contentSpan.getContent().length()));
 				input.writeParameterSeparator();

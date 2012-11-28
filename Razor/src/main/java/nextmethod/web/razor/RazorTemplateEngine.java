@@ -63,7 +63,7 @@ public class RazorTemplateEngine {
 	}
 
 	public GeneratorResults generateCode(@Nonnull final ITextBuffer input) {
-		return generateCode(input, null, null, null, null);
+		return generateCode(input, null, null, null, Optional.<CancellationToken>absent());
 	}
 
 	public GeneratorResults generateCode(@Nonnull final ITextBuffer input, @Nonnull final Optional<CancellationToken> cancelToken) {
@@ -71,7 +71,7 @@ public class RazorTemplateEngine {
 	}
 
 	public GeneratorResults generateCode(@Nonnull final ITextBuffer input, @Nullable final String className, @Nullable final String rootNamespace, @Nullable final String sourceFileName) {
-		return generateCode(input, className, rootNamespace, sourceFileName, null);
+		return generateCode(input, className, rootNamespace, sourceFileName, Optional.<CancellationToken>absent());
 	}
 
 	public GeneratorResults generateCode(@Nonnull final ITextBuffer input, @Nullable final String className, @Nullable final String rootNamespace, @Nullable final String sourceFileName, @Nonnull final Optional<CancellationToken> cancelToken) {
@@ -79,11 +79,11 @@ public class RazorTemplateEngine {
 	}
 
 	public GeneratorResults generateCode(@Nonnull final TextReader input) {
-		return generateCode(input, null, null, null, null);
+		return generateCode(input, null, null, null, Optional.<CancellationToken>absent());
 	}
 
 	public GeneratorResults generateCode(@Nonnull final TextReader input, @Nullable final String className, @Nullable final String rootNamespace, @Nullable final String sourceFileName) {
-		return generateCode(input, className, rootNamespace, sourceFileName, null);
+		return generateCode(input, className, rootNamespace, sourceFileName, Optional.<CancellationToken>absent());
 	}
 
 	public GeneratorResults generateCode(@Nonnull final TextReader input, @Nullable final String className, @Nullable final String rootNamespace, @Nullable final String sourceFileName, @Nonnull final Optional<CancellationToken> cancelToken) {

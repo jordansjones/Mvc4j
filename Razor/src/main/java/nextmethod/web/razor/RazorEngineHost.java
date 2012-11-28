@@ -39,7 +39,7 @@ public class RazorEngineHost {
 	protected boolean designTimeMode;
 	protected boolean instrumentationActive;
 	protected GeneratedClassContext generatedClassContext;
-	protected String instrumentedSourceFilePath;
+	protected String instrumentedSourceFilePath = "";
 	protected final Set<String> packageImports;
 	protected String defaultBaseClass;
 	protected String defaultPackage;

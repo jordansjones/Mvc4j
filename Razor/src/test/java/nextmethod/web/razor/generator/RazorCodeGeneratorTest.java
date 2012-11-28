@@ -71,8 +71,8 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 			baselineName = name;
 		}
 
-		final String source = TestFile.create(String.format("codeGenerator.%s.source.%s.%s", getLanguageName(), name, getFileExtension())).readAllText();
-		final String expectedOutput = TestFile.create(String.format("codeGenerator.%s.output.%s.%s", getLanguageName(), baselineName, getBaselineExtension())).readAllText();
+		final String source = TestFile.create(String.format("codeGenerator/%s/source/%s.%s", getLanguageName(), name, getFileExtension())).readAllText();
+		final String expectedOutput = TestFile.create(String.format("codeGenerator/%s/output/%s.%s", getLanguageName(), baselineName, getBaselineExtension())).readAllText();
 
 		// Setup the host and engine
 		final RazorEngineHost host = createHost();
