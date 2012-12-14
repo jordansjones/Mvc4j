@@ -9,7 +9,7 @@ import org.junit.rules.ExpectedException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public abstract class LookaheadTextReaderTestBase {
 
