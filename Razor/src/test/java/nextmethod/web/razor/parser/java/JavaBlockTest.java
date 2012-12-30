@@ -1,6 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
-import com.google.common.base.Strings;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.generator.AttributeBlockCodeGenerator;
@@ -679,7 +679,7 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 								new AttributeBlockCodeGenerator("href", new LocationTagged<>(" href=\"", 193, 5, 30), new LocationTagged<>("\"", 256, 5, 93)),
 								factory().markup(" href=\"").with(SpanCodeGenerator.Null),
 								new MarkupBlock(
-									new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 200, 5, 37), 200, 5, 37),
+									new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(Strings.Empty, 200, 5, 37), 200, 5, 37),
 									new ExpressionBlock(
 										factory().codeTransition(),
 										factory().code("Html.ActionUrl(\"Products\", \"Detail\", new { id = p.Id })")
@@ -759,11 +759,11 @@ public class JavaBlockTest extends JavaHtmlCodeParserTestBase {
 	}
 
 	private void packageImportTest(@Nonnull final String content, @Nonnull final String expectedPackage, @Nonnull final AcceptedCharacters... acceptedCharacters) {
-		packageImportTest(content, expectedPackage, "", null, acceptedCharacters);
+		packageImportTest(content, expectedPackage, Strings.Empty, null, acceptedCharacters);
 	}
 
 	private void packageImportTest(@Nonnull final String content, @Nonnull final String expectedPackage, @Nullable SourceLocation location, @Nonnull final AcceptedCharacters... acceptedCharacters) {
-		packageImportTest(content, expectedPackage, "", location, acceptedCharacters);
+		packageImportTest(content, expectedPackage, Strings.Empty, location, acceptedCharacters);
 	}
 
 	private void packageImportTest(@Nonnull final String content, @Nonnull final String expectedPackage, @Nullable String errorMessage, @Nullable SourceLocation location, @Nonnull final AcceptedCharacters... acceptedCharacters) {

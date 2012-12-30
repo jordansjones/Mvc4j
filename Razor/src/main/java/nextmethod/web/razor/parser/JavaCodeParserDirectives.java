@@ -1,10 +1,10 @@
 package nextmethod.web.razor.parser;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableCollection;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.generator.HelperCodeGenerator;
@@ -322,7 +322,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		Iterable<JavaSymbol> ws = readWhile(isSpacingToken(true, false));
 
 		// Get the section name
-		String sectionName = "";
+		String sectionName = Strings.Empty;
 		if (!required(JavaSymbolType.Identifier, true, RazorResources().parseErrorUnexpectedCharacterAtSectionNameStart())) {
 			if (!errorReported) {
 				errorReported = true;

@@ -1,8 +1,8 @@
 package nextmethod.web.razor.generator;
 
-import com.google.common.base.Strings;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeLinePragma;
 import nextmethod.codedom.CodeSnippetTypeMember;
 import nextmethod.web.razor.RazorEngineHost;

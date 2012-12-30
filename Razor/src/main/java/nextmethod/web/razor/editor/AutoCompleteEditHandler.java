@@ -11,7 +11,7 @@ import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 
-import static com.google.common.base.Strings.nullToEmpty;
+import static nextmethod.base.Strings.nullToEmpty;
 
 public class AutoCompleteEditHandler extends SpanEditHandler {
 

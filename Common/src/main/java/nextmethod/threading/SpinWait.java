@@ -60,7 +60,7 @@ public final class SpinWait {
 		final Stopwatch stopwatch = new Stopwatch().start();
 
 		while(!condition.invoke()) {
-			if (stopwatch.elapsedTime(timeUnit) > amount) {
+			if (stopwatch.elapsed(timeUnit) > amount) {
 				return false;
 			}
 			spinWait.spinOnce();

@@ -2,10 +2,10 @@ package nextmethod.web.razor;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Strings;
 import nextmethod.base.Debug;
 import nextmethod.base.IDisposable;
 import nextmethod.base.IEventHandler;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.EditResult;
 import nextmethod.web.razor.editor.internal.BackgroundParser;
@@ -170,7 +170,7 @@ public class RazorEditorParser implements IDisposable {
 		EnumSet<PartialParseResult> result = PartialParseResult.setOfRejected();
 
 		// If there isn't already a parse underway, try partial-parsing
-		String changeString = "";
+		String changeString = Strings.Empty;
 		try(IDisposable ignored = parser.synchronizeMainThreadState()) {
 			// Capture the string value of the change while we're synchronized
 			changeString = change.toString();

@@ -1,5 +1,7 @@
 package nextmethod.web.razor;
 
+import nextmethod.base.Strings;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,6 +11,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RazorDirectiveAnnotation {
 
-	String name() default "";
-	String value() default "";
+	String name() default Strings.Empty;
+	String value() default Strings.Empty;
 }

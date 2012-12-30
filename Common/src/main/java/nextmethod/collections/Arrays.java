@@ -1,7 +1,7 @@
 package nextmethod.collections;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
+import nextmethod.base.Strings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

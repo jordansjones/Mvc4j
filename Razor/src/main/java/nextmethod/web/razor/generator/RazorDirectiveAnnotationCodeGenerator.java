@@ -1,7 +1,7 @@
 package nextmethod.web.razor.generator;
 
-import com.google.common.base.Strings;
 import nextmethod.base.KeyValue;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeAnnotationArgument;
 import nextmethod.codedom.CodeAnnotationDeclaration;
 import nextmethod.codedom.CodePrimitiveExpression;

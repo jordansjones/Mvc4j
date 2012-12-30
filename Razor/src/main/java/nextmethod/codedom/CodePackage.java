@@ -1,5 +1,7 @@
 package nextmethod.codedom;
 
+import nextmethod.base.Strings;
+
 import java.io.Serializable;
 
 // TODO
@@ -35,7 +37,7 @@ public class CodePackage extends CodeObject implements Serializable {
 	}
 
 	public String getName() {
-		return name == null ? "" : name;
+		return name == null ? Strings.Empty : name;
 	}
 
 	public void setName(final String name) {

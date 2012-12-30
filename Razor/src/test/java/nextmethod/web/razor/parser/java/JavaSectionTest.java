@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.generator.SectionCodeGenerator;
@@ -13,7 +14,6 @@ import nextmethod.web.razor.parser.syntaxtree.StatementBlock;
 import org.junit.Test;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
-import static org.junit.Assert.fail;
 
 public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 
@@ -24,7 +24,7 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 			new MarkupBlock(
 				factory().emptyHtml(),
 				new SectionBlock(
-					new SectionCodeGenerator(""),
+					new SectionCodeGenerator(Strings.Empty),
 					factory().codeTransition(),
 					factory().metaCode("section" + Environment.NewLine)
 				)
@@ -65,7 +65,7 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 			new MarkupBlock(
 				factory().emptyHtml(),
 				new SectionBlock(
-					new SectionCodeGenerator(""),
+					new SectionCodeGenerator(Strings.Empty),
 					factory().codeTransition(),
 					factory().metaCode("section         \r\n")
 				),
@@ -105,7 +105,7 @@ public class JavaSectionTest extends JavaHtmlMarkupParserTestBase {
 			new MarkupBlock(
 				factory().emptyHtml(),
 				new SectionBlock(
-					new SectionCodeGenerator(""),
+					new SectionCodeGenerator(Strings.Empty),
 					factory().codeTransition(),
 					factory().metaCode("section ")
 				),

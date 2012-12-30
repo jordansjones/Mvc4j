@@ -1,6 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
-import nextmethod.base.SystemHelpers;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
@@ -168,7 +168,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 						SpanKind.Code,
 						new JavaSymbol(
 							factory().getLocationTracker().getCurrentLocation(),
-							"",
+							Strings.Empty,
 							JavaSymbolType.Unknown
 						)
 					).with(new StatementCodeGenerator())
@@ -218,7 +218,7 @@ public class JavaAutoCompleteTest extends JavaHtmlCodeParserTestBase {
 					SpanKind.Code,
 					new JavaSymbol(
 						factory().getLocationTracker().getCurrentLocation(),
-						"",
+						Strings.Empty,
 						JavaSymbolType.Unknown
 					)
 				)

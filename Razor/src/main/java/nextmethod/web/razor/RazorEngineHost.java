@@ -2,6 +2,7 @@ package nextmethod.web.razor;
 
 import com.google.common.collect.Sets;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.CodeMemberMethod;
 import nextmethod.codedom.CodePackage;
@@ -39,7 +40,7 @@ public class RazorEngineHost {
 	protected boolean designTimeMode;
 	protected boolean instrumentationActive;
 	protected GeneratedClassContext generatedClassContext;
-	protected String instrumentedSourceFilePath = "";
+	protected String instrumentedSourceFilePath = Strings.Empty;
 	protected final Set<String> packageImports;
 	protected String defaultBaseClass;
 	protected String defaultPackage;

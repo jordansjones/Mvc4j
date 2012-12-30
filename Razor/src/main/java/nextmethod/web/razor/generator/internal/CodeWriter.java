@@ -9,6 +9,7 @@ import nextmethod.web.razor.text.LocationTagged;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.StringWriter;
 
 import static nextmethod.base.SystemHelpers.newLine;
@@ -190,7 +191,10 @@ public abstract class CodeWriter implements IDisposable {
 
 	protected void dispose(final boolean disposing) {
 		if (disposing && writer != null) {
-			Closeables.closeQuietly(writer);
+			try {
+				Closeables.close(writer, true);
+			}
+			catch (IOException ignored) {}
 		}
 	}
 }

@@ -1,9 +1,9 @@
 package nextmethod.web.razor.editor;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
 import nextmethod.web.razor.parser.syntaxtree.Span;
@@ -140,8 +140,8 @@ public class SpanEditHandler {
 			"%s;Accepts:%s%s",
 			getClass().getSimpleName(),
 			joiner.join(acceptedCharacters),
-			editorHints == null ? "" : (editorHints == EnumSet.of(EditorHints.None)
-				? ""
+			editorHints == null ? Strings.Empty : (editorHints == EnumSet.of(EditorHints.None)
+				? Strings.Empty
 				: (";Hints:" + joiner.join(editorHints)))
 		);
 	}

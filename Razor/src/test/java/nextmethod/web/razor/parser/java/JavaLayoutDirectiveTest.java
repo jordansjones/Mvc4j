@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
@@ -55,7 +56,7 @@ public class JavaLayoutDirectiveTest extends JavaHtmlCodeParserTestBase {
 				factory().metaCode("layout ").accepts(AcceptedCharacters.None),
 				factory().emptyJava()
 					.asMetaCode()
-					.with(new SetLayoutCodeGenerator(""))
+					.with(new SetLayoutCodeGenerator(Strings.Empty))
 					.withEditorHints(EditorHints.VirtualPath, EditorHints.LayoutPage)
 			)
 		);

@@ -2,6 +2,7 @@ package nextmethod.web.razor.tokenizer.symbols;
 
 import com.google.common.collect.Iterables;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.parser.syntaxtree.SpanBuilder;
 import nextmethod.web.razor.text.LocationTagged;
 import nextmethod.web.razor.text.SourceLocation;
@@ -28,7 +29,7 @@ public final class SymbolExtensions {
 
 	public static LocationTagged<String> getContent(@Nullable final Iterable<? extends ISymbol> symbols, @Nonnull final SourceLocation spanStart) {
 		if (symbols == null || Iterables.isEmpty(symbols)) {
-			return new LocationTagged<>("", spanStart);
+			return new LocationTagged<>(Strings.Empty, spanStart);
 		}
 		else {
 			final ISymbol first = Iterables.getFirst(symbols, null);

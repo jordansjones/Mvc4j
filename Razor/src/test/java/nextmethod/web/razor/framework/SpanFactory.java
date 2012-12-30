@@ -3,10 +3,10 @@ package nextmethod.web.razor.framework;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
 import nextmethod.web.razor.parser.SyntaxConstants;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
-import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SeekableTextReader;
@@ -166,12 +166,12 @@ public class SpanFactory {
 
 	public UnclassifiedCodeSpanConstructor emptyJava() {
 		return new UnclassifiedCodeSpanConstructor(
-			span(SpanKind.Code, new JavaSymbol(locationTracker.getCurrentLocation(), "", JavaSymbolType.Unknown))
+			span(SpanKind.Code, new JavaSymbol(locationTracker.getCurrentLocation(), Strings.Empty, JavaSymbolType.Unknown))
 		);
 	}
 
 	public SpanConstructor emptyHtml() {
-		return span(SpanKind.Markup, new HtmlSymbol(locationTracker.getCurrentLocation(), "", HtmlSymbolType.Unknown))
+		return span(SpanKind.Markup, new HtmlSymbol(locationTracker.getCurrentLocation(), Strings.Empty, HtmlSymbolType.Unknown))
 			.with(new MarkupCodeGenerator());
 	}
 

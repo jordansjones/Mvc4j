@@ -1,8 +1,8 @@
 package nextmethod.web.razor.tokenizer;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.tokenizer.symbols.JavaKeyword;
 
 import javax.annotation.Nullable;

@@ -1,9 +1,9 @@
 package nextmethod.web.razor.generator.internal;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import nextmethod.annotations.Internal;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

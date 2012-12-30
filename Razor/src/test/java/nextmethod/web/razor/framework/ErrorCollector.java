@@ -1,8 +1,8 @@
 package nextmethod.web.razor.framework;
 
-import com.google.common.base.Strings;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.utils.DisposableAction;
 
 import static nextmethod.base.SystemHelpers.newLine;

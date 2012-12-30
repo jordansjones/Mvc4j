@@ -1,11 +1,11 @@
 package nextmethod.web.razor.parser;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Queues;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
 import nextmethod.web.razor.generator.AttributeBlockCodeGenerator;
@@ -221,7 +221,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			accept(solidus);
 			return false;
 		}
-		String tagName = "";
+		String tagName = Strings.Empty;
 		if (at(HtmlSymbolType.Text)) {
 			tagName = getCurrentSymbol().getContent();
 		}
@@ -392,7 +392,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			}
 
 			// Capture the suffix
-			LocationTagged<String> suffix = new LocationTagged<String>("", getCurrentLocation());
+			LocationTagged<String> suffix = new LocationTagged<String>(Strings.Empty, getCurrentLocation());
 			if (quote != HtmlSymbolType.Unknown && at(quote)) {
 				suffix = SymbolExtensions.getContent(getCurrentSymbol());
 				acceptAndMoveNext();
@@ -567,7 +567,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			tagName = getCurrentSymbol();
 		}
 		else {
-			tagName = new HtmlSymbol(getCurrentLocation(), "", HtmlSymbolType.Unknown);
+			tagName = new HtmlSymbol(getCurrentLocation(), Strings.Empty, HtmlSymbolType.Unknown);
 		}
 
 		final KeyValue<HtmlSymbol, SourceLocation> tag = KeyValue.of(tagName, lastTagStart);

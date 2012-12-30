@@ -1,13 +1,13 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.compiler.CodeDomProvider;
 import nextmethod.codedom.compiler.CodeGeneratorOptions;
@@ -120,7 +120,7 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 
 		final CodeGeneratorOptions options = new CodeGeneratorOptions();
 		options.setBlankLinesBetweenMembers(false);
-		options.setIndentString("");
+		options.setIndentString(Strings.Empty);
 
 		String generatedOutput = null;
 		try (StringWriter swriter = new StringWriter()) {

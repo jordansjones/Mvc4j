@@ -1,6 +1,7 @@
 package nextmethod.web.razor.parser;
 
 import nextmethod.base.Debug;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SourceLocation;
@@ -88,7 +89,7 @@ public class HtmlLanguageCharacteristics extends LanguageCharacteristics<HtmlTok
 
 	@Override
 	public HtmlSymbol createMarkerSymbol(@Nonnull final SourceLocation location) {
-		return new HtmlSymbol(location, "", HtmlSymbolType.Unknown);
+		return new HtmlSymbol(location, Strings.Empty, HtmlSymbolType.Unknown);
 	}
 
 	@Override

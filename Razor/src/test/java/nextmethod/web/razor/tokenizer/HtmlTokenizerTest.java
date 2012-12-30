@@ -1,5 +1,6 @@
 package nextmethod.web.razor.tokenizer;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbol;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
 import org.junit.Test;
@@ -14,7 +15,7 @@ public class HtmlTokenizerTest extends HtmlTokenizerTestBase {
 
 	@Test
 	public void nextReturnsNullWhenEOFReached() {
-		testTokenizer("");
+		testTokenizer(Strings.Empty);
 	}
 
 	@Test

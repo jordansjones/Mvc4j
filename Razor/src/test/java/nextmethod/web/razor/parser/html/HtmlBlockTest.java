@@ -1,6 +1,6 @@
 package nextmethod.web.razor.parser.html;
 
-import nextmethod.base.NotImplementedException;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.SingleLineMarkupEditHandler;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
@@ -101,7 +101,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 			),
 			true,
 			new RazorError(
-				RazorResources().parseErrorUnfinishedTag(""),
+				RazorResources().parseErrorUnfinishedTag(Strings.Empty),
 				SourceLocation.Zero
 			)
 		);
@@ -172,14 +172,14 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("bar", new LocationTagged<>(" bar=\"", 4, 0, 4), new LocationTagged<>("\"", 13, 0, 13)),
 					factory().markup(" bar=\"").with(SpanCodeGenerator.Null),
-					factory().markup("baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 10, 0, 10), new LocationTagged<String>("baz", 10, 0, 10))),
+					factory().markup("baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 10, 0, 10), new LocationTagged<String>("baz", 10, 0, 10))),
 					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
 				factory().markup("><biz><boz"),
 				new MarkupBlock(
-					new AttributeBlockCodeGenerator("zoop", new LocationTagged<>(" zoop=", 24, 0, 24), new LocationTagged<>("", 34, 0, 34)),
+					new AttributeBlockCodeGenerator("zoop", new LocationTagged<>(" zoop=", 24, 0, 24), new LocationTagged<>(Strings.Empty, 34, 0, 34)),
 					factory().markup(" zoop=").with(SpanCodeGenerator.Null),
-					factory().markup("zork").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 30, 0, 30), new LocationTagged<String>("zork", 30, 0, 30)))
+					factory().markup("zork").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>(Strings.Empty, 30, 0, 30), new LocationTagged<String>("zork", 30, 0, 30)))
 				),
 				factory().markup("/></biz></foo>").accepts(AcceptedCharacters.None)
 			)
@@ -195,7 +195,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz=\"", 9, 0, 9), new LocationTagged<>("\"", 16, 0, 16)),
 					factory().markup(" baz=\"").with(SpanCodeGenerator.Null),
-					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))),
+					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))),
 					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
 				factory().markup(" /></foo>").accepts(AcceptedCharacters.None)
@@ -212,7 +212,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz='", 9, 0, 9), new LocationTagged<>("'", 16, 0, 16)),
 					factory().markup(" baz='").with(SpanCodeGenerator.Null),
-					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))),
+					factory().markup(">").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 15, 0, 15), new LocationTagged<String>(">", 15, 0, 15))),
 					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
 				factory().markup(" /></foo>").accepts(AcceptedCharacters.None)
@@ -229,7 +229,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz=\"", 9, 0, 9), new LocationTagged<>("\"", 16, 0, 16)),
 					factory().markup(" baz=\"").with(SpanCodeGenerator.Null),
-					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))),
+					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))),
 					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
 				factory().markup("></bar></foo>").accepts(AcceptedCharacters.None)
@@ -246,7 +246,7 @@ public class HtmlBlockTest extends JavaHtmlMarkupParserTestBase {
 				new MarkupBlock(
 					new AttributeBlockCodeGenerator("baz", new LocationTagged<>(" baz='", 9, 0, 9), new LocationTagged<>("'", 16, 0, 16)),
 					factory().markup(" baz='").with(SpanCodeGenerator.Null),
-					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))),
+					factory().markup("/").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 15, 0, 15), new LocationTagged<String>("/", 15, 0, 15))),
 					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
 				factory().markup("></bar></foo>").accepts(AcceptedCharacters.None)

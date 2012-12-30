@@ -1,6 +1,6 @@
 package nextmethod.web.razor.parser.html;
 
-import nextmethod.base.NotImplementedException;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.generator.AttributeBlockCodeGenerator;
 import nextmethod.web.razor.generator.LiteralAttributeCodeGenerator;
@@ -117,10 +117,10 @@ public class HtmlErrorTest extends JavaHtmlMarkupParserTestBase {
 			new MarkupBlock(
 				factory().markup("<foo"),
 				new MarkupBlock(
-					new AttributeBlockCodeGenerator("bar", new LocationTagged<>(" bar=", 4, 0, 4), new LocationTagged<>("", 12, 0, 12)),
+					new AttributeBlockCodeGenerator("bar", new LocationTagged<>(" bar=", 4, 0, 4), new LocationTagged<>(Strings.Empty, 12, 0, 12)),
 					factory().markup(" bar=").with(SpanCodeGenerator.Null),
 					factory().markup("baz")
-						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 9, 0, 9), new LocationTagged<String>("baz", 9, 0, 9)))
+						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>(Strings.Empty, 9, 0, 9), new LocationTagged<String>("baz", 9, 0, 9)))
 				)
 			),
 			new RazorError(

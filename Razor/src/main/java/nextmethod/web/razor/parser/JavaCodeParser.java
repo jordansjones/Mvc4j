@@ -8,6 +8,7 @@ import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
 import nextmethod.base.OutParam;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.editor.AutoCompleteEditHandler;
 import nextmethod.web.razor.editor.ImplicitExpressionEditorHandler;
 import nextmethod.web.razor.editor.SpanEditHandler;
@@ -482,7 +483,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 
 			// If necessary, put an empty-content marker symbol here
 			if (getSpan().getSymbols().isEmpty()) {
-				accept(new JavaSymbol(getCurrentLocation(), "", JavaSymbolType.Unknown));
+				accept(new JavaSymbol(getCurrentLocation(), Strings.Empty, JavaSymbolType.Unknown));
 			}
 
 			// Output the content span and then capture the ")"

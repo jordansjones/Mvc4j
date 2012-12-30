@@ -1,10 +1,10 @@
 package nextmethod.web.razor;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import nextmethod.annotations.Internal;
 import nextmethod.base.Debug;
+import nextmethod.base.Strings;
 import nextmethod.threading.CancellationToken;
 import nextmethod.web.razor.generator.GeneratedCodeMapping;
 import nextmethod.web.razor.generator.RazorCodeGenerator;
@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class RazorTemplateEngine {
 
 	public static final String DefaultClassName = "Template";
-	public static final String DefaultPackage = "";
+	public static final String DefaultPackage = Strings.Empty;
 
 	private final RazorEngineHost host;
 

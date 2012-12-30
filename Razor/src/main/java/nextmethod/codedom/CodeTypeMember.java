@@ -1,5 +1,7 @@
 package nextmethod.codedom;
 
+import nextmethod.base.Strings;
+
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 
@@ -29,7 +31,7 @@ public class CodeTypeMember extends CodeObject {
 	}
 
 	public String getName() {
-		return name == null ? "" : name;
+		return name == null ? Strings.Empty : name;
 	}
 
 	public void setName(final String name) {

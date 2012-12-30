@@ -1,11 +1,13 @@
 package nextmethod.web.razor.tokenizer;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.tokenizer.symbols.JavaSymbol;
 import nextmethod.web.razor.tokenizer.symbols.JavaSymbolType;
 import org.junit.Test;
 
 public class JavaTokenizerTest extends JavaTokenizerTestBase {
 
+	@SuppressWarnings("ConstantConditions")
 	@Test(expected = NullPointerException.class)
 	public void constructorThrowsArgNullIfNullSourceProvided() {
 		new JavaTokenizer(null);
@@ -13,7 +15,7 @@ public class JavaTokenizerTest extends JavaTokenizerTestBase {
 
 	@Test
 	public void NextReturnsNullWhenEOFReached() {
-		testTokenizer("");
+		testTokenizer(Strings.Empty);
 	}
 
 	@Test

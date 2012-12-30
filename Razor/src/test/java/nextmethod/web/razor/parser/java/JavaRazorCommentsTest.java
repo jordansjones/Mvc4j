@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
@@ -33,7 +34,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 						SpanKind.Comment,
 						new HtmlSymbol(
 							factory().getLocationTracker().getCurrentLocation(),
-							"",
+							Strings.Empty,
 							HtmlSymbolType.Unknown
 						)
 					).accepts(AcceptedCharacters.Any)
@@ -59,7 +60,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 						SpanKind.Comment,
 						new HtmlSymbol(
 							factory().getLocationTracker().getCurrentLocation(),
-							"",
+							Strings.Empty,
 							HtmlSymbolType.Unknown
 						)
 					).accepts(AcceptedCharacters.Any),
@@ -89,7 +90,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 							SpanKind.Comment,
 							new JavaSymbol(
 								factory().getLocationTracker().getCurrentLocation(),
-								"",
+								Strings.Empty,
 								JavaSymbolType.Unknown
 							)
 						).accepts(AcceptedCharacters.Any),
@@ -122,7 +123,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 							SpanKind.Comment,
 							new JavaSymbol(
 								factory().getLocationTracker().getCurrentLocation(),
-								"",
+								Strings.Empty,
 								JavaSymbolType.Unknown
 							)
 						).accepts(AcceptedCharacters.Any)
@@ -155,7 +156,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 								SpanKind.Comment,
 								new HtmlSymbol(
 									factory().getLocationTracker().getCurrentLocation(),
-									"",
+									Strings.Empty,
 									HtmlSymbolType.Unknown
 								)
 							).accepts(AcceptedCharacters.Any),
@@ -189,7 +190,7 @@ public class JavaRazorCommentsTest extends JavaHtmlMarkupParserTestBase {
 							SpanKind.Comment,
 							new JavaSymbol(
 								factory().getLocationTracker().getCurrentLocation(),
-								"",
+								Strings.Empty,
 								JavaSymbolType.Unknown
 							)
 						).accepts(AcceptedCharacters.Any)

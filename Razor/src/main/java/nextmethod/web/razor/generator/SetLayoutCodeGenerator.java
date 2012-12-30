@@ -1,7 +1,7 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeAssignStatement;
 import nextmethod.codedom.CodePrimitiveExpression;
 import nextmethod.codedom.CodePropertyReferenceExpression;

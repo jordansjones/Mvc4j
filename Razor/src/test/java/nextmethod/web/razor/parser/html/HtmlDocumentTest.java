@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.html;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.generator.AttributeBlockCodeGenerator;
@@ -48,7 +49,7 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseDocumentOutputsEmptyBlockWithEmptyMarkupSpanIfContentIsEmptyString() {
 		parseDocumentTest(
-			"",
+			Strings.Empty,
 			new MarkupBlock(
 				factory().emptyHtml()
 			)
@@ -181,20 +182,20 @@ public class HtmlDocumentTest extends JavaHtmlMarkupParserTestBase {
 
 	@Test
 	public void parseDocumentDoesNotSwitchToCodeOnEmailAddressInText() {
-		singleSpanDocumentTest("<foo>anurse@microsoft.com</foo>", BlockType.Markup, SpanKind.Markup);
+		singleSpanDocumentTest("<foo>jordansjones@gmail.com</foo>", BlockType.Markup, SpanKind.Markup);
 	}
 
 	@Test
 	public void parseDocumentDoesNotSwitchToCodeOnEmailAddressInAttribute() {
 		parseDocumentTest(
-			"<a href=\"mailto:anurse@microsoft.com\">Email me</a>",
+			"<a href=\"mailto:jordansjones@gmail.com\">Email me</a>",
 			new MarkupBlock(
 				factory().markup("<a"),
 				new MarkupBlock(
-					new AttributeBlockCodeGenerator("href", new LocationTagged<>(" href=\"", 2, 0, 2), new LocationTagged<>("\"", 36, 0, 36)),
+					new AttributeBlockCodeGenerator("href", new LocationTagged<>(" href=\"", 2, 0, 2), new LocationTagged<>("\"", 38, 0, 38)),
 					factory().markup(" href=\"").with(SpanCodeGenerator.Null),
-					factory().markup("mailto:anurse@microsoft.com")
-						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<String>("", 9, 0, 9), new LocationTagged<String>("mailto:anurse@microsoft.com", 9, 0, 9))),
+					factory().markup("mailto:jordansjones@gmail.com")
+						.with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 9, 0, 9), new LocationTagged<>("mailto:jordansjones@gmail.com", 9, 0, 9))),
 					factory().markup("\"").with(SpanCodeGenerator.Null)
 				),
 				factory().markup(">Email me</a>")

@@ -1,9 +1,9 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeConstructor;
 import nextmethod.codedom.CodePackageImport;
 import nextmethod.codedom.CodeTypeReference;

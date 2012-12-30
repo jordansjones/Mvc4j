@@ -1,5 +1,7 @@
 package nextmethod.codedom;
 
+import nextmethod.base.Strings;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -56,7 +58,7 @@ public class CodeAnnotationDeclaration implements Serializable {
 	}
 
 	public String getName() {
-		return name == null ? "" : name;
+		return name == null ? Strings.Empty : name;
 	}
 
 	public void setName(final String name) {

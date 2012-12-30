@@ -1,6 +1,6 @@
 package nextmethod.i18n;
 
-import com.google.common.base.Strings;
+import nextmethod.base.Strings;
 import nextmethod.i18n.annotations.Bundle;
 import nextmethod.i18n.annotations.DefaultMessage;
 import nextmethod.i18n.annotations.Key;

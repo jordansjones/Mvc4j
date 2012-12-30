@@ -2,10 +2,10 @@ package nextmethod.web.razor.generator;
 
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.Strings;
 import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.CodeLinePragma;
 import nextmethod.codedom.CodeMemberField;
@@ -55,7 +55,7 @@ public class CodeGeneratorContext {
 	private CodeMemberMethod targetMethod;
 
 	public String getCurrentBufferedStatement() {
-		return currentBuffer == null ? "" : currentBuffer.getBuilder().toString();
+		return currentBuffer == null ? Strings.Empty : currentBuffer.getBuilder().toString();
 	}
 
 	public static CodeGeneratorContext create(final RazorEngineHost host, final String className, final String rootPackage, final String sourceFile, final boolean shouldGenerateLinePragmas) {

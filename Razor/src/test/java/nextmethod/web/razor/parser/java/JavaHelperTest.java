@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
 import nextmethod.web.razor.generator.HelperCodeGenerator;
@@ -139,7 +140,7 @@ public class JavaHelperTest extends JavaHtmlMarkupParserTestBase {
 			new MarkupBlock(
 				factory().emptyHtml(),
 				new HelperBlock(
-					new HelperCodeGenerator(new LocationTagged<>("", 8, 0, 8), false),
+					new HelperCodeGenerator(new LocationTagged<>(Strings.Empty, 8, 0, 8), false),
 					factory().codeTransition(),
 					factory().metaCode("helper ").accepts(AcceptedCharacters.None),
 					factory().emptyJava().hidden()

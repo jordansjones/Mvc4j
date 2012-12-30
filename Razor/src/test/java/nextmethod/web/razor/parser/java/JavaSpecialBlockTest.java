@@ -1,5 +1,6 @@
 package nextmethod.web.razor.parser.java;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.framework.Environment;
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
 import nextmethod.web.razor.parser.JavaCodeParser;
@@ -51,7 +52,7 @@ public class JavaSpecialBlockTest extends JavaHtmlCodeParserTestBase {
 			new DirectiveBlock(
 				factory().metaCode("inherits ").accepts(AcceptedCharacters.None),
 				factory().code("               \r\n")
-					.asBaseType("")
+					.asBaseType(Strings.Empty)
 					
 			),
 			new RazorError(

@@ -1,9 +1,9 @@
 package nextmethod.web.razor.framework;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.ParserResults;
 import nextmethod.web.razor.generator.ExpressionCodeGenerator;
 import nextmethod.web.razor.generator.MarkupCodeGenerator;
@@ -33,11 +33,7 @@ import java.util.logging.Logger;
 
 import static nextmethod.base.SystemHelpers.newLine;
 import static nextmethod.base.TypeHelpers.typeAs;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public abstract class ParserTestBase {
 
@@ -283,7 +279,7 @@ public abstract class ParserTestBase {
 		}
 		finally {
 			if (results != null && results.getDocument() != null) {
-				writeTraceLine("");
+				writeTraceLine(Strings.Empty);
 				writeTraceLine("Actual Parse Tree:");
 				writeNode(0, results.getDocument());
 			}

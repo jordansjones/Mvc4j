@@ -1,7 +1,7 @@
 package nextmethod.web.razor.generator;
 
-import com.google.common.base.Strings;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 

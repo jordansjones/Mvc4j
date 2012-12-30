@@ -2,12 +2,12 @@ package nextmethod.web.razor.parser;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
 import nextmethod.base.KeyValue;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.parser.syntaxtree.BlockType;
 import nextmethod.web.razor.parser.syntaxtree.SpanKind;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbol;

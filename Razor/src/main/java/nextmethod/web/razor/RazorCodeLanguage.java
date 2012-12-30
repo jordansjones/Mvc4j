@@ -1,6 +1,6 @@
 package nextmethod.web.razor;
 
-import com.google.common.base.Strings;
+import nextmethod.base.Strings;
 import nextmethod.codedom.compiler.CodeDomProvider;
 import nextmethod.collections.MapBuilder;
 import nextmethod.web.razor.generator.RazorCodeGenerator;

@@ -1,9 +1,9 @@
 package nextmethod.web.razor.parser;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import nextmethod.base.Strings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,5 +1,6 @@
 package nextmethod.web.razor.generator;
 
+import nextmethod.base.Strings;
 import nextmethod.web.razor.JavaRazorCodeLanguage;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorRequiresNonEmptyClassName() {
-		new JavaRazorCodeGenerator("", TestRootNamespaceName, TestPhysicalPath, createHost());
+		new JavaRazorCodeGenerator(Strings.Empty, TestRootNamespaceName, TestPhysicalPath, createHost());
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -30,7 +31,7 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 
 	@Test
 	public void constructorAllowsEmptyRootNamespaceName() {
-		new JavaRazorCodeGenerator("Foo", "", TestPhysicalPath, createHost());
+		new JavaRazorCodeGenerator("Foo", Strings.Empty, TestPhysicalPath, createHost());
 	}
 
 	@SuppressWarnings("ConstantConditions")

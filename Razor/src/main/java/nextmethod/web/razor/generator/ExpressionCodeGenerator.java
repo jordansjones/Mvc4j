@@ -1,9 +1,9 @@
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import nextmethod.base.Delegates;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.Span;

@@ -1,6 +1,6 @@
 package nextmethod.web.razor.parser.html;
 
-import nextmethod.base.NotImplementedException;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.ParserResults;
 import nextmethod.web.razor.editor.EditorHints;
 import nextmethod.web.razor.framework.JavaHtmlMarkupParserTestBase;
@@ -18,15 +18,9 @@ import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.ExpressionBlock;
 import nextmethod.web.razor.parser.syntaxtree.MarkupBlock;
 import nextmethod.web.razor.text.LocationTagged;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.Console;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 
 public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 
@@ -43,7 +37,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 						new LocationTagged<>("'", 12, 0, 12)
 					),
 					factory().markup(" href='").with(SpanCodeGenerator.Null),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
 					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
 				factory().markup(" />").accepts(AcceptedCharacters.None)
@@ -64,7 +58,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 						new LocationTagged<>("'", 20, 0, 20)
 					),
 					factory().markup(" href='").with(SpanCodeGenerator.Null),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
 					factory().markup(" Bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 12, 0, 12), new LocationTagged<>("Bar", 13, 0, 13))),
 					factory().markup(" Baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 16, 0, 16), new LocationTagged<>("Baz", 17, 0, 17))),
 					factory().markup("'").with(SpanCodeGenerator.Null)
@@ -87,7 +81,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 						new LocationTagged<>("\"", 20, 0, 20)
 					),
 					factory().markup(" href=\"").with(SpanCodeGenerator.Null),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 9, 0, 9), new LocationTagged<>("Foo", 9, 0, 9))),
 					factory().markup(" Bar").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 12, 0, 12), new LocationTagged<>("Bar", 13, 0, 13))),
 					factory().markup(" Baz").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(" ", 16, 0, 16), new LocationTagged<>("Baz", 17, 0, 17))),
 					factory().markup("\"").with(SpanCodeGenerator.Null)
@@ -107,10 +101,10 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					new AttributeBlockCodeGenerator(
 						"href",
 						new LocationTagged<>(" href=", 2, 0, 2),
-						new LocationTagged<>("", 11, 0, 11)
+						new LocationTagged<>(Strings.Empty, 11, 0, 11)
 					),
 					factory().markup(" href=").with(SpanCodeGenerator.Null),
-					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>("", 8, 0, 8), new LocationTagged<>("Foo", 8, 0, 8)))
+					factory().markup("Foo").with(LiteralAttributeCodeGenerator.fromValue(new LocationTagged<>(Strings.Empty, 8, 0, 8), new LocationTagged<>("Foo", 8, 0, 8)))
 				),
 				factory().markup(" Bar Baz />").accepts(AcceptedCharacters.None)
 			)
@@ -131,7 +125,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					),
 					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
-						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 9, 0, 9), 9, 0, 9),
+						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(Strings.Empty, 9, 0, 9), 9, 0, 9),
 						new ExpressionBlock(
 							factory().codeTransition(),
 							factory().code("foo")
@@ -160,7 +154,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					),
 					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
-						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 9, 0, 9), 9, 0, 9),
+						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(Strings.Empty, 9, 0, 9), 9, 0, 9),
 						new ExpressionBlock(
 							factory().codeTransition(),
 							factory().code("foo")
@@ -200,7 +194,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					),
 					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
-						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 9, 0, 9), 9, 0, 9),
+						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(Strings.Empty, 9, 0, 9), 9, 0, 9),
 						new ExpressionBlock(
 							factory().codeTransition(),
 							factory().code("foo")
@@ -228,11 +222,11 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					new AttributeBlockCodeGenerator(
 						"value",
 						new LocationTagged<>(" value=", 6, 0, 6),
-						new LocationTagged<>("", 17, 0, 17)
+						new LocationTagged<>(Strings.Empty, 17, 0, 17)
 					),
 					factory().markup(" value=").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
-						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 13, 0, 13), 13, 0, 13),
+						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(Strings.Empty, 13, 0, 13), 13, 0, 13),
 						new ExpressionBlock(
 							factory().codeTransition(),
 							factory().code("foo")
@@ -256,11 +250,11 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					new AttributeBlockCodeGenerator(
 						"value",
 						new LocationTagged<>(" value=", 6, 0, 6),
-						new LocationTagged<>("", 17, 0, 17)
+						new LocationTagged<>(Strings.Empty, 17, 0, 17)
 					),
 					factory().markup(" value=").with(SpanCodeGenerator.Null),
 					new MarkupBlock(
-						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>("", 13, 0, 13), 13, 0, 13),
+						new DynamicAttributeBlockCodeGenerator(new LocationTagged<>(Strings.Empty, 13, 0, 13), 13, 0, 13),
 						new ExpressionBlock(
 							factory().codeTransition(),
 							factory().code("foo")
@@ -294,7 +288,7 @@ public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 					factory().markup(" href='").with(SpanCodeGenerator.Null),
 					factory().markup("~/Foo/Bar")
 						.withEditorHints(EditorHints.VirtualPath)
-						.with(LiteralAttributeCodeGenerator.fromValueGenerator(new LocationTagged<>("", 9, 0, 9), new LocationTagged<SpanCodeGenerator>(new ResolveUrlCodeGenerator(), 9, 0, 9))),
+						.with(LiteralAttributeCodeGenerator.fromValueGenerator(new LocationTagged<>(Strings.Empty, 9, 0, 9), new LocationTagged<SpanCodeGenerator>(new ResolveUrlCodeGenerator(), 9, 0, 9))),
 					factory().markup("'").with(SpanCodeGenerator.Null)
 				),
 				factory().markup(" />")

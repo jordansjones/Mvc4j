@@ -2,6 +2,7 @@ package nextmethod.web.razor.parser;
 
 import com.google.common.collect.ImmutableMap;
 import nextmethod.base.Debug;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SourceLocation;
@@ -117,7 +118,7 @@ public class JavaLanguageCharacteristics extends LanguageCharacteristics<JavaTok
 
 	@Override
 	public JavaSymbol createMarkerSymbol(@Nonnull final SourceLocation location) {
-		return new JavaSymbol(location, "", JavaSymbolType.Unknown);
+		return new JavaSymbol(location, Strings.Empty, JavaSymbolType.Unknown);
 	}
 
 	@Override

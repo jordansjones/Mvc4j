@@ -1,6 +1,6 @@
 package nextmethod.web.razor.generator;
 
-import com.google.common.base.Strings;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;

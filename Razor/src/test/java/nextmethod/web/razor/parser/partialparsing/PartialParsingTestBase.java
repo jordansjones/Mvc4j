@@ -3,6 +3,7 @@ package nextmethod.web.razor.parser.partialparsing;
 import com.google.common.util.concurrent.Monitor;
 import nextmethod.base.Delegates;
 import nextmethod.base.IEventHandler;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.DocumentParseCompleteEventArgs;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.RazorCodeLanguage;
@@ -149,7 +150,7 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 		}
 
 		public void initializeWithDocument(final ITextBuffer startDocument) {
-			checkForStructureChangesAndWait(new TextChange(0, 0, new StringTextBuffer(""), startDocument.getLength(), startDocument));
+			checkForStructureChangesAndWait(new TextChange(0, 0, new StringTextBuffer(Strings.Empty), startDocument.getLength(), startDocument));
 		}
 
 		public EnumSet<PartialParseResult> checkForStructureChangesAndWait(final TextChange change) {
