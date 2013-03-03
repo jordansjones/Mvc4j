@@ -54,8 +54,8 @@
 	</developers>
 
 	<modules>
-		<module>razor</module>
-		<module>common</module>
+		<module>Razor</module>
+		<module>Common</module>
 	</modules>
 
 	<prerequisites>
