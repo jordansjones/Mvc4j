@@ -16,12 +16,22 @@
 
 package nextmethod.codedom;
 
-import java.io.Serializable;
+import com.google.common.collect.ForwardingList;
+import com.google.common.collect.Lists;
+import nextmethod.annotations.Internal;
+
+import java.util.List;
 
 /**
  *
  */
-public class CodeExpressionCollection extends BaseCodeCollection<CodeExpression> implements Serializable {
+@Internal
+abstract class BaseCodeCollection<T> extends ForwardingList<T> {
 
-	private static final long serialVersionUID = 5724984308676023105L;
+	private final List<T> listDelegate = Lists.newArrayList();
+
+	@Override
+	protected List<T> delegate() {
+		return this.listDelegate;
+	}
 }

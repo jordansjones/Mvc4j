@@ -1,12 +1,37 @@
+/*
+ * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.codedom.compiler;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFormatter;
 import nextmethod.base.NotImplementedException;
+import nextmethod.base.Strings;
 import nextmethod.codedom.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static nextmethod.base.TypeHelpers.typeAs;
 import static nextmethod.base.TypeHelpers.typeIs;
 
 /**
@@ -15,9 +40,14 @@ import static nextmethod.base.TypeHelpers.typeIs;
 public abstract class CodeGenerator implements ICodeGenerator {
 
 	private final Visitor visitor;
+	private PrintWriter output;
 	private CodeGeneratorOptions options;
+	private JCodeModel codeModel;
+	private JFormatter formatter;
 	private CodeTypeMember currentMember;
 	private CodeTypeDeclaration currentType;
+
+	private int indentLevel;
 
 
 	protected CodeGenerator() {
@@ -45,11 +75,18 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected int getIndent() {
-		throw new NotImplementedException();
+		return indentLevel;
 	}
 
 	protected void setIndent(final int indent) {
-		throw new NotImplementedException();
+		final int prevLevel = this.indentLevel;
+		this.indentLevel = indent;
+		while (prevLevel > 0) {
+			this.formatter.o();
+		}
+		for (int i = 0; i < indent; i++) {
+			this.formatter.i();
+		}
 	}
 
 	protected boolean isCurrentClass() {
@@ -79,11 +116,19 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected PrintWriter getOutput() {
-		throw new NotImplementedException();
+		return this.output;
+	}
+
+	protected JFormatter getFormatter() {
+		return formatter;
+	}
+
+	protected JCodeModel getCodeModel() {
+		return this.codeModel;
 	}
 
 	protected void continueOnNewLine(@Nonnull final String st) {
-		getOutput().println(st);
+		formatter.p(st).nl();
 	}
 
 	//
@@ -106,7 +151,13 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateBaseReferenceExpression(@Nonnull final CodeBaseReferenceExpression e);
 
 	protected void generateBinaryOperatorExpression(@Nonnull final CodeBinaryOperatorExpression e) {
-		throw new NotImplementedException();
+		formatter.p('(');
+		generateExpression(e.getLeft());
+		formatter.p(' ');
+		outputOperator(e.getOp());
+		formatter.p(' ');
+		generateExpression(e.getRight());
+		formatter.p(')');
 	}
 
 
@@ -119,23 +170,45 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateComment(@Nonnull final CodeComment comment);
 
 	protected void generateCommentStatement(@Nonnull final CodeCommentStatement statement) {
-		throw new NotImplementedException();
+		generateComment(statement.getComment());
 	}
 
 	protected void generateCommentStatements(@Nonnull final CodeCommentStatementCollection statements) {
-		throw new NotImplementedException();
+		for (CodeCommentStatement commentStatement : statements) {
+			generateCommentStatement(commentStatement);
+		}
 	}
 
 	protected void generateCompileUnit(@Nonnull final CodeCompileUnit compileUnit) {
-		throw new NotImplementedException();
+		generateCompileUnitStart(compileUnit);
+		for (CodePackage codePackage : compileUnit.getPackages()) {
+			if (Strings.isNullOrEmpty(codePackage.getName())) {
+				generateNamespace(codePackage);
+			}
+		}
+
+		// TODO: AssemblyCustomAttributes?
+
+		for (CodePackage codePackage : compileUnit.getPackages()) {
+			if (!Strings.isNullOrEmpty(codePackage.getName())) {
+				generateNamespace(codePackage);
+			}
+		}
+
+		generateCompileUnitEnd(compileUnit);
 	}
 
 	protected void generateCompileUnitEnd(@Nonnull final CodeCompileUnit compileUnit) {
-		throw new NotImplementedException();
+		if (!compileUnit.getEndDirectives().isEmpty()) {
+			generateDirectives(compileUnit.getEndDirectives());
+		}
 	}
 
 	protected void generateCompileUnitStart(@Nonnull final CodeCompileUnit compileUnit) {
-		throw new NotImplementedException();
+		if (!compileUnit.getStartDirectives().isEmpty()) {
+			generateDirectives(compileUnit.getStartDirectives());
+			formatter.nl();
+		}
 	}
 
 	protected abstract void generateConditionStatement(@Nonnull final CodeConditionStatement s);
@@ -143,7 +216,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateConstructor(@Nonnull final CodeConstructor x, @Nonnull final CodeTypeDeclaration d);
 
 	protected void generateDecimalValue(@Nonnull final BigDecimal d) {
-		throw new NotImplementedException();
+		JExpr.lit(d.toString()).generate(formatter);
 	}
 
 
@@ -156,11 +229,11 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateDelegateInvokeExpression(@Nonnull final CodeDelegateInvokeExpression e);
 
 	protected void generateDirectionExpression(@Nonnull final CodeDirectionExpression e) {
-		throw new NotImplementedException();
+		generateExpression(e);
 	}
 
 	protected void generateDoubleValue(@Nonnull final Double d) {
-		throw new NotImplementedException();
+		JExpr.lit(d).generate(formatter);
 	}
 
 	protected abstract void generateEntryPointMethod(@Nonnull final CodeEntryPointMethod m, @Nonnull final CodeTypeDeclaration d);
@@ -170,7 +243,14 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateEventReferenceExpression(@Nonnull final CodeEventReferenceExpression e);
 
 	protected void generateExpression(@Nonnull final CodeExpression e) {
-		throw new NotImplementedException();
+		checkArgument(e != null);
+
+		try {
+			e.accept(visitor);
+		}
+		catch (NotImplementedException nie) {
+			throw new IllegalArgumentException("Element type is not supported: " + e.getClass().getName());
+		}
 	}
 
 	protected abstract void generateExpressionStatement(@Nonnull final CodeExpressionStatement statement);
@@ -200,21 +280,56 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateMethodReturnStatement(@Nonnull final CodeMethodReturnStatement e);
 
 	protected void generateNamespace(@Nonnull final CodePackage ns) {
-		throw new NotImplementedException();
+		for (CodeCommentStatement statement : ns.getComments()) {
+			generateCommentStatement(statement);
+		}
+
+		generatePackageStart(ns);
+
+		for (CodePackageImport anImport : ns.getImports()) {
+			final CodeLinePragma linePragma = anImport.getLinePragma();
+			if (linePragma != null) {
+				generateLinePragmaStart(linePragma);
+			}
+			generatePackageImport(anImport);
+
+			if (linePragma != null) {
+				generateLinePragmaEnd(linePragma);
+			}
+		}
+
+		formatter.nl();
+
+		generateTypes(ns);
+
+		generatePackageEnd(ns);
 	}
 
-	protected abstract void generateNamespaceStart(@Nonnull final CodePackage ns);
+	protected abstract void generatePackageStart(@Nonnull final CodePackage ns);
 
-	protected abstract void generateNamespaceEnd(@Nonnull final CodePackage ns);
+	protected abstract void generatePackageEnd(@Nonnull final CodePackage ns);
 
-	protected abstract void generateNamespaceImport(@Nonnull final CodePackageImport i);
+	protected abstract void generatePackageImport(@Nonnull final CodePackageImport i);
 
-	protected void generateNamespaceImports(@Nonnull final CodePackage e) {
-		throw new NotImplementedException();
+	protected void generatePackageImports(@Nonnull final CodePackage e) {
+		for (CodePackageImport codePackageImport : e.getImports()) {
+			CodeLinePragma linePragma = codePackageImport.getLinePragma();
+			if (linePragma != null) {
+				generateLinePragmaStart(linePragma);
+			}
+
+			generatePackageImport(codePackageImport);
+
+			if (linePragma != null) {
+				generateLinePragmaEnd(linePragma);
+			}
+		}
 	}
 
-	protected void generateNamespaces(@Nonnull final CodeCompileUnit e) {
-		throw new NotImplementedException();
+	protected void generatePackages(@Nonnull final CodeCompileUnit e) {
+		for (CodePackage codePackage : e.getPackages()) {
+			generateNamespace(codePackage);
+		}
 	}
 
 	protected abstract void generateObjectCreateExpression(@Nonnull final CodeObjectCreateExpression e);
@@ -236,12 +351,21 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateRemoveEventStatement(@Nonnull final CodeRemoveEventStatement statement);
 
 	protected void generateSingleFloatValue(@Nonnull final Float s) {
-		throw new NotImplementedException();
+		JExpr.lit(s).generate(this.formatter);
 	}
 
 	protected void generateSnippetCompileUnit(@Nonnull final CodeSnippetCompileUnit e) {
-		throw new NotImplementedException();
+		final CodeLinePragma linePragma = checkNotNull(e).getLinePragma();
 
+		if (linePragma != null) {
+			generateLinePragmaStart(linePragma);
+		}
+
+		formatter.p(e.getValue()).nl();
+
+		if (linePragma != null) {
+			generateLinePragmaEnd(linePragma);
+		}
 	}
 
 	protected abstract void generateSnippetExpression(@Nonnull final CodeSnippetExpression e);
@@ -249,15 +373,53 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateSnippetMember(@Nonnull final CodeSnippetTypeMember m);
 
 	protected void generateSnippetStatement(@Nonnull final CodeSnippetStatement s) {
-		throw new NotImplementedException();
+		formatter.p(s.getValue()).nl();
 	}
 
 	protected void generateStatement(@Nonnull final CodeStatement s) {
-		throw new NotImplementedException();
+		final CodeLinePragma linePragma = s.getLinePragma();
+
+		if (!s.getStartDirectives().isEmpty()) {
+			generateDirectives(s.getStartDirectives());
+		}
+
+		if (linePragma != null) {
+			generateLinePragmaStart(linePragma);
+		}
+
+		final CodeSnippetStatement snippet = typeAs(s, CodeSnippetStatement.class);
+		if (snippet != null) {
+			final int indent = getIndent();
+			try {
+				setIndent(0);
+				generateSnippetStatement(snippet);
+			}
+			finally {
+				setIndent(indent);
+			}
+		}
+		else {
+			try {
+				s.accept(visitor);
+			}
+			catch (NotImplementedException nie) {
+				throw new IllegalArgumentException("Element type is not supported: " + s.getClass().getName());
+			}
+		}
+
+		if (linePragma != null) {
+			generateLinePragmaEnd(linePragma);
+		}
+
+		if (!s.getEndDirectives().isEmpty()) {
+			generateDirectives(s.getEndDirectives());
+		}
 	}
 
 	protected void generateStatements(@Nonnull final CodeStatementCollection c) {
-		throw new NotImplementedException();
+		for (CodeStatement statement : c) {
+			generateStatement(statement);
+		}
 	}
 
 	protected abstract void generateThisReferenceExpression(@Nonnull final CodeThisReferenceExpression e);
@@ -275,11 +437,16 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void generateTypeReferenceExpression(@Nonnull final CodeTypeReferenceExpression e) {
-		throw new NotImplementedException();
+		outputType(e.getType());
 	}
 
 	protected void generateTypes(@Nonnull final CodePackage e) {
-		throw new NotImplementedException();
+		for (CodeTypeDeclaration typeDeclaration : e.getTypes()) {
+			if (options.isBlankLinesBetweenMembers()) {
+				formatter.nl();
+			}
+			generateType(typeDeclaration);
+		}
 	}
 
 	protected abstract void generateTypeStart(@Nonnull final CodeTypeDeclaration declaration);
@@ -309,7 +476,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void outputExpressionList(@Nonnull final CodeExpressionCollection expressions) {
-		throw new NotImplementedException();
+		outputExpressionList(expressions, false);
 	}
 
 	protected void outputExpressionList(@Nonnull final CodeExpressionCollection expressions, boolean newLineBetweenItems) {
@@ -352,41 +519,164 @@ public abstract class CodeGenerator implements ICodeGenerator {
 
 	protected abstract String quoteSnippetString(@Nonnull final String value);
 
-	protected void initOutput(@Nonnull final PrintWriter output, @Nonnull final CodeGeneratorOptions options) {
-		throw new NotImplementedException();
+	protected void initOutput(@Nonnull final Writer output, @Nullable CodeGeneratorOptions options) {
+
+		if (options == null) {
+			options = new CodeGeneratorOptions();
+		}
+		this.output = new PrintWriter(checkNotNull(output));
+		this.options = options;
+		this.codeModel = new JCodeModel();
+		this.formatter = new JFormatter(this.output, this.options.getIndentString());
 	}
 
-	protected void generateCodeFromCompileUnit(@Nonnull final CodeCompileUnit compileUnit, @Nonnull final PrintWriter output, @Nonnull final CodeGeneratorOptions options) {
-		throw new NotImplementedException();
+	@Override
+	public void generateCodeFromCompileUnit(@Nonnull final CodeCompileUnit compileUnit, @Nonnull final Writer output, @Nonnull final CodeGeneratorOptions options) {
+		initOutput(output, options);
+
+		if (typeIs(compileUnit, CodeSnippetCompileUnit.class)) {
+			generateSnippetCompileUnit((CodeSnippetCompileUnit) compileUnit);
+		}
+		else {
+			generateCompileUnit(compileUnit);
+		}
 	}
 
-	protected void generateCodeFromExpression(@Nonnull final CodeExpression expression, @Nonnull final PrintWriter output, @Nonnull final CodeGeneratorOptions options) {
-		throw new NotImplementedException();
+	@Override
+	public void generateCodeFromExpression(@Nonnull final CodeExpression expression, @Nonnull final Writer output, @Nonnull final CodeGeneratorOptions options) {
+		initOutput(output, options);
+		generateExpression(expression);
 	}
 
-	protected void generateCodeFromNamespace(@Nonnull final CodePackage pkg, @Nonnull final PrintWriter output, @Nonnull final CodeGeneratorOptions options) {
-		throw new NotImplementedException();
+	@Override
+	public void generateCodeFromPackage(@Nonnull final CodePackage codePackage, @Nonnull final Writer writer, @Nonnull final CodeGeneratorOptions options) {
+		initOutput(output, options);
+		generateNamespace(codePackage);
 	}
 
-	protected void generateCodeFromStatement(@Nonnull final CodeStatement statement, @Nonnull final PrintWriter output, @Nonnull final CodeGeneratorOptions options) {
-		throw new NotImplementedException();
+	@Override
+	public void generateCodeFromStatement(@Nonnull final CodeStatement statement, @Nonnull final Writer output, @Nonnull final CodeGeneratorOptions options) {
+		initOutput(output, options);
+		generateStatement(statement);
 	}
 
-	protected void generateCodeFromType(@Nonnull final CodeTypeDeclaration type, @Nonnull final PrintWriter output, @Nonnull final CodeGeneratorOptions options) {
-		throw new NotImplementedException();
+	@Override
+	public void generateCodeFromType(@Nonnull final CodeTypeDeclaration type, @Nonnull final Writer output, @Nonnull final CodeGeneratorOptions options) {
+		initOutput(output, options);
+		generateType(type);
 	}
 
 	protected void generateType(@Nonnull final CodeTypeDeclaration type) {
-		throw new NotImplementedException();
+		this.currentType = type;
+		this.currentMember = null;
+
+		if (!type.getStartDirectives().isEmpty()) {
+			generateDirectives(type.getStartDirectives());
+		}
+		for (CodeCommentStatement statement : type.getComments()) {
+			generateCommentStatement(statement);
+		}
+
+		if (type.getLinePragma() != null) {
+			generateLinePragmaStart(type.getLinePragma());
+		}
+
+		generateTypeStart(type);
+
+		final CodeTypeMemberCollection typeMembers = type.getMembers();
+		final CodeTypeMember[] members = new CodeTypeMember[typeMembers.size()];
+		typeMembers.copyTo(members, 0);
+
+		if (!options.isVerbatimOrder()) {
+//			TODO: Does this matter?
+//			final int[] order = new int[members.length];
+//			for (int n = 0; n < members.length; n++) {
+//				order[n] = Arrays.binarySearch(memberTypes, members[n].getClass()) * members.length + n;
+//			}
+//
+//			Arrays.sort();
+		}
+
+		CodeTypeDeclaration subtype = null;
+		for (CodeTypeMember member : members) {
+			CodeTypeMember prevMember = this.currentMember;
+			this.currentMember = member;
+
+			if (prevMember != null && subtype == null) {
+				if (prevMember.getLinePragma() != null) {
+					generateLinePragmaEnd(prevMember.getLinePragma());
+				}
+				if (!prevMember.getEndDirectives().isEmpty()) {
+					generateDirectives(prevMember.getEndDirectives());
+				}
+			}
+
+			if (options.isBlankLinesBetweenMembers()) {
+				formatter.nl();
+			}
+
+			subtype = typeAs(member, CodeTypeDeclaration.class);
+			if (subtype != null) {
+				generateType(subtype);
+				this.currentType = type;
+				continue;
+			}
+
+			if (!currentMember.getStartDirectives().isEmpty()) {
+				generateDirectives(currentMember.getStartDirectives());
+			}
+			for (CodeCommentStatement statement : member.getComments()) {
+				generateCommentStatement(statement);
+			}
+
+			if (member.getLinePragma() != null) {
+				generateLinePragmaStart(member.getLinePragma());
+			}
+
+			try {
+				member.accept(visitor);
+			}
+			catch (NotImplementedException ne) {
+				throw new IllegalArgumentException("Element type " + member.getClass() + " is not supported.");
+			}
+		}
+
+		// Hack because of previous continue usage
+		if (currentMember != null && !typeIs(currentMember, CodeTypeDeclaration.class)) {
+			if (currentMember.getLinePragma() != null) {
+				generateLinePragmaEnd(currentMember.getLinePragma());
+			}
+			if (!currentMember.getEndDirectives().isEmpty()) {
+				generateDirectives(currentMember.getEndDirectives());
+			}
+		}
+
+		this.currentType = type;
+		generateTypeEnd(type);
+
+		if (type.getLinePragma() != null) {
+			generateLinePragmaEnd(type.getLinePragma());
+		}
+		if (!type.getEndDirectives().isEmpty()) {
+			generateDirectives(type.getEndDirectives());
+		}
 	}
 
 	public static boolean isValidLanguageIndependentIdentifier(@Nonnull final String value) {
-		throw new NotImplementedException();
+		if (value == null || value.equals(Strings.Empty)) {
+			return false;
+		}
+
+		// TODO
+
+		return true;
 	}
 
 	@Override
 	public void validateIdentifier(@Nonnull final String value) {
-		throw new NotImplementedException();
+		if (!isValidIdentifier(value)) {
+			throw new IllegalArgumentException("Identifier is invalid: " + value);
+		}
 	}
 
 
@@ -409,7 +699,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	};
 
 	protected void generateDirectives(@Nonnull final CodeDirectiveCollection directives) {
-		throw new NotImplementedException();
+		// Intentionally left empty
 	}
 
 }

@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package nextmethod.codedom;
+package nextmethod.codedom.compiler;
 
-import java.io.Serializable;
+import nextmethod.codedom.CodeCompileUnit;
+
+import java.io.Reader;
 
 /**
  *
  */
-public class CodeExpressionCollection extends BaseCodeCollection<CodeExpression> implements Serializable {
+public interface ICodeParser {
 
-	private static final long serialVersionUID = 5724984308676023105L;
+	CodeCompileUnit parse(final Reader codeStream);
+
 }

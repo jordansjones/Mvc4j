@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package nextmethod.codedom;
+package nextmethod.codedom.java;
 
-import java.io.Serializable;
+import nextmethod.annotations.Internal;
+import nextmethod.codedom.compiler.ICodeCompiler;
+
+import java.util.Map;
 
 /**
  *
  */
-public class CodeExpressionCollection extends BaseCodeCollection<CodeExpression> implements Serializable {
+@Internal
+class JavaCodeCompiler extends JavaCodeGenerator implements ICodeCompiler {
 
-	private static final long serialVersionUID = 5724984308676023105L;
+	public JavaCodeCompiler() {
+		super();
+	}
+
+	public JavaCodeCompiler(final Map<String, String> providerOptions) {
+		super(providerOptions);
+	}
 }
