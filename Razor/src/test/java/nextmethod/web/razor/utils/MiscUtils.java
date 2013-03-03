@@ -2,6 +2,7 @@ package nextmethod.web.razor.utils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.web.razor.DebugArgs;
@@ -10,7 +11,6 @@ import javax.annotation.Nonnull;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,12 +35,20 @@ public final class MiscUtils {
 
 
 	public static String createTestFilePath(final String... parts) {
-		final List<String> pathParts = Arrays.asList(parts);
+		final List<String> pathParts = Lists.newArrayList(parts);
 		final FileSystem fileSystem = FileSystems.getDefault();
-		Path first = Iterables.getFirst(fileSystem.getRootDirectories(), null);
-		if (first != null && !first.toString().equalsIgnoreCase(fileSystem.getSeparator())) {
-			pathParts.add(first.toString());
+		String first = pathAsString(Iterables.getFirst(fileSystem.getRootDirectories(), null));
+		if (first != null && !first.startsWith(fileSystem.getSeparator())) {
+			// Strip the last character if it equals the filesystem separator
+			if (first.length() > 1 && first.endsWith(fileSystem.getSeparator())) {
+				first = first.substring(0, first.length() - 1);
+			}
+			pathParts.add(0, first);
 		}
 		return Joiner.on(fileSystem.getSeparator()).join(pathParts);
+	}
+
+	private static String pathAsString(final Path path) {
+		return path != null ? path.toString() : null;
 	}
 }
