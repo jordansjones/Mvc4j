@@ -19,18 +19,8 @@ package nextmethod.codedom;
 import java.io.Serializable;
 
 // TODO
-public class CodeTypeReferenceCollection extends BaseCodeCollection<CodeTypeReference> implements Serializable {
+public class CodeTypeParameterCollection extends BaseCodeCollection<CodeTypeParameter> implements Serializable {
 
-	private static final long serialVersionUID = 960552001815328968L;
-
-
-	// region Methods
-
-	public boolean add(final String element) {
-		return super.add(new CodeTypeReference(element));
-	}
-
-
-	// endregion
+	private static final long serialVersionUID = -2652479275575263686L;
 
 }

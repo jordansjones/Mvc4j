@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 
 public class JavaRazorCodeGenerator extends RazorCodeGenerator {
 
-	private static final String HiddenLinePragma = "#line hidden";
+	private static final String HiddenLinePragma = "//#line hidden";
 
 
 	public JavaRazorCodeGenerator(@Nonnull final String className, @Nonnull final String rootPackageName, @Nonnull final String sourceFileName, @Nonnull final RazorEngineHost host) {

@@ -2,7 +2,6 @@ package nextmethod.web.razor.generator;
 
 import nextmethod.base.Strings;
 import nextmethod.web.razor.JavaRazorCodeLanguage;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static nextmethod.web.razor.utils.MiscUtils.createTestFilePath;
@@ -42,7 +41,6 @@ public class JavaRazorCodeGeneratorTest extends RazorCodeGeneratorTest<JavaRazor
 	}
 
 	@Test
-	@Ignore
 	public void javaCodeGeneratorCorrectlyGeneratesRuntimeCode() {
 		final String[] testTypes = {
 			"NestedCodeBlocks",

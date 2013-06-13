@@ -35,7 +35,7 @@ public class RazorDirectiveAnnotationCodeGenerator extends SpanCodeGenerator {
 			new CodeAnnotationArgument(new CodePrimitiveExpression(name)),
 			new CodeAnnotationArgument(new CodePrimitiveExpression(value))
 		);
-		context.getGeneratedClass().getCustomAttributes().add(attributeDeclaration);
+		context.getGeneratedClass().getCustomAnnotations().add(attributeDeclaration);
 	}
 
 	public String getName() {

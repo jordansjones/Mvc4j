@@ -20,7 +20,8 @@ import nextmethod.web.razor.parser.syntaxtree.MarkupBlock;
 import nextmethod.web.razor.text.LocationTagged;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+
 
 public class HtmlAttributeTest extends JavaHtmlMarkupParserTestBase {
 

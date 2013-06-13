@@ -195,7 +195,7 @@ public class JavaCodeWriter extends BaseCodeWriter {
 		final StringWriter innerWriter = getInnerWriter();
 		writeLine();
 		if (lineNumber.isPresent()) {
-			innerWriter.write("#line ");
+			innerWriter.write("//#line ");
 			innerWriter.write(lineNumber.get());
 			innerWriter.write(" \"");
 			innerWriter.write(fileName);
@@ -203,14 +203,14 @@ public class JavaCodeWriter extends BaseCodeWriter {
 			writeLine();
 		}
 		else {
-			innerWriter.write("#line default");
-			innerWriter.write("#line hidden");
+			innerWriter.write("//#line default");
+			innerWriter.write("//#line hidden");
 		}
 	}
 
 	@Override
 	public void writeHiddenLinePragma() {
-		getInnerWriter().write("#line hidden");
+		getInnerWriter().write("//#line hidden");
 	}
 
 	@Override

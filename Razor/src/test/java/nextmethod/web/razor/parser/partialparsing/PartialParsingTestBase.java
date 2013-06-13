@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static junit.framework.Assert.assertEquals;
 import static nextmethod.web.razor.utils.MiscUtils.createTestFilePath;
+import static org.junit.Assert.assertEquals;
 
 public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage> {
 

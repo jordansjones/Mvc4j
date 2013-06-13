@@ -18,19 +18,16 @@ package nextmethod.codedom;
 
 import java.io.Serializable;
 
-// TODO
-public class CodeTypeReferenceCollection extends BaseCodeCollection<CodeTypeReference> implements Serializable {
+public class CodeTypeReferenceOptions implements Serializable {
 
-	private static final long serialVersionUID = 960552001815328968L;
+	private static final long serialVersionUID = -2322501788454782250L;
 
+	public static final CodeTypeReferenceOptions GlobalReference = new CodeTypeReferenceOptions(1);
+	public static final CodeTypeReferenceOptions GenericTypeParameter = new CodeTypeReferenceOptions(1 << 1);
 
-	// region Methods
+	public final int val;
 
-	public boolean add(final String element) {
-		return super.add(new CodeTypeReference(element));
+	public CodeTypeReferenceOptions(final int val) {
+		this.val = val;
 	}
-
-
-	// endregion
-
 }

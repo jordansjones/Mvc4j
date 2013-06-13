@@ -18,34 +18,26 @@ package nextmethod.codedom;
 
 import nextmethod.base.Strings;
 
-import javax.annotation.Nonnull;
-import java.util.EnumSet;
-
 public class CodeTypeMember extends CodeObject {
 
 	private String name;
-	private EnumSet<MemberAttributes> attributes;
+	private MemberAttributes attributes;
 	private CodeCommentStatementCollection comments;
-	private CodeAnnotationDeclarationCollection customAttributes;
+	private CodeAnnotationDeclarationCollection customAnnotations;
 	private CodeLinePragma linePragma;
 	CodeDirectiveCollection endDirectives;
 	CodeDirectiveCollection startDirectives;
 
 	public CodeTypeMember() {
-		this.attributes = MemberAttributes.setOf(MemberAttributes.Private, MemberAttributes.Final);
+		this.attributes = MemberAttributes.valueOf(MemberAttributes.Private.val | MemberAttributes.Final.val);
 	}
 
-	@Nonnull
-	public EnumSet<MemberAttributes> getAttributes() {
+	public MemberAttributes getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(@Nonnull final EnumSet<MemberAttributes> attributes) {
-		this.attributes = attributes;
-	}
-
-	public void setAttributes(final MemberAttributes... attributes) {
-		setAttributes(MemberAttributes.setOf(attributes));
+	public void setAttributes(final MemberAttributes value) {
+		attributes = value;
 	}
 
 	public CodeCommentStatementCollection getComments() {
@@ -71,15 +63,15 @@ public class CodeTypeMember extends CodeObject {
 		this.linePragma = linePragma;
 	}
 
-	public CodeAnnotationDeclarationCollection getCustomAttributes() {
-		if (customAttributes == null) {
-			customAttributes = new CodeAnnotationDeclarationCollection();
+	public CodeAnnotationDeclarationCollection getCustomAnnotations() {
+		if (customAnnotations == null) {
+			customAnnotations = new CodeAnnotationDeclarationCollection();
 		}
-		return customAttributes;
+		return customAnnotations;
 	}
 
-	public void setCustomAttributes(final CodeAnnotationDeclarationCollection customAttributes) {
-		this.customAttributes = customAttributes;
+	public void setCustomAnnotations(final CodeAnnotationDeclarationCollection customAnnotations) {
+		this.customAnnotations = customAnnotations;
 	}
 
 	public CodeDirectiveCollection getEndDirectives() {

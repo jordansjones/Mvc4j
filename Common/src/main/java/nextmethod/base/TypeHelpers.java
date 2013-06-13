@@ -16,7 +16,11 @@
 
 package nextmethod.base;
 
+import com.google.common.collect.Iterables;
+
 import javax.annotation.Nonnull;
+
+import java.lang.reflect.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -43,6 +47,21 @@ public final class TypeHelpers {
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> typeOf(@Nonnull final T o) {
 		return (Class<T>) checkNotNull(o).getClass();
+	}
+
+	public static boolean isGenericType(@Nonnull final Class<?> cls) {
+		final TypeVariable<? extends Class<?>>[] typeVariables = checkNotNull(cls).getTypeParameters();
+		return typeVariables.length > 0;
+	}
+
+	public static int getArrayDimensionCount(@Nonnull final Class<?> cls) {
+		int count = 0;
+		Class arrayClass = cls;
+		while(arrayClass.isArray()) {
+			count++;
+			arrayClass = arrayClass.getComponentType();
+		}
+		return count;
 	}
 
 }

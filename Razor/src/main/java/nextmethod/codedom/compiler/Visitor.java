@@ -1,6 +1,5 @@
 package nextmethod.codedom.compiler;
 
-import nextmethod.base.NotImplementedException;
 import nextmethod.codedom.*;
 
 /**
@@ -16,232 +15,239 @@ class Visitor implements ICodeDomVisitor {
 
 	@Override
 	public void visit(final CodeArgumentReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateArgumentReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeArrayCreateExpression o) {
-		throw new NotImplementedException();
+		cg.generateArrayCreateExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeArrayIndexerExpression o) {
-		throw new NotImplementedException();
+		cg.generateArrayIndexerExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeBaseReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateBaseReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeBinaryOperatorExpression o) {
-		throw new NotImplementedException();
+		cg.generateBinaryOperatorExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeCastExpression o) {
-		throw new NotImplementedException();
+		cg.generateCastExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeDefaultValueExpression o) {
-		throw new NotImplementedException();
+		cg.generateDefaultValueExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeDelegateCreateExpression o) {
-		throw new NotImplementedException();
+		cg.generateDelegateCreateExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeDelegateInvokeExpression o) {
-		throw new NotImplementedException();
+		cg.generateDelegateInvokeExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeDirectionExpression o) {
-		throw new NotImplementedException();
+		cg.generateDirectionExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeEventReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateEventReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeFieldReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateFieldReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeIndexerExpression o) {
-		throw new NotImplementedException();
+		cg.generateIndexerExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeMethodInvokeExpression o) {
-		throw new NotImplementedException();
+		cg.generateMethodInvokeExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeMethodReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateMethodReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeObjectCreateExpression o) {
-		throw new NotImplementedException();
+		cg.generateObjectCreateExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeParameterDeclarationExpression o) {
-		throw new NotImplementedException();
+		cg.generateParameterDeclarationExpression(o);
 	}
 
 	@Override
 	public void visit(final CodePrimitiveExpression o) {
-		throw new NotImplementedException();
+		cg.generatePrimitiveExpression(o);
 	}
 
 	@Override
 	public void visit(final CodePropertyReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generatePropertyReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodePropertySetValueReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generatePropertySetValueReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeSnippetExpression o) {
-		throw new NotImplementedException();
+		cg.generateSnippetExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeThisReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateThisReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeTypeOfExpression o) {
-		throw new NotImplementedException();
+		cg.generateTypeOfExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeTypeReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateTypeReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeVariableReferenceExpression o) {
-		throw new NotImplementedException();
+		cg.generateVariableReferenceExpression(o);
 	}
 
 	@Override
 	public void visit(final CodeAssignStatement o) {
-		throw new NotImplementedException();
+		cg.generateAssignStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeAttachEventStatement o) {
-		throw new NotImplementedException();
+		cg.generateAttachEventStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeCommentStatement o) {
-		throw new NotImplementedException();
+		cg.generateCommentStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeConditionStatement o) {
-		throw new NotImplementedException();
+		cg.generateConditionStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeExpressionStatement o) {
-		throw new NotImplementedException();
+		cg.generateExpressionStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeGotoStatement o) {
-		throw new NotImplementedException();
+		cg.generateGotoStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeIterationStatement o) {
-		throw new NotImplementedException();
+		cg.generateIterationStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeLabeledStatement o) {
-		throw new NotImplementedException();
+		cg.generateLabeledStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeMethodReturnStatement o) {
-		throw new NotImplementedException();
+		cg.generateMethodReturnStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeRemoveEventStatement o) {
-		throw new NotImplementedException();
+		cg.generateRemoveEventStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeThrowExceptionStatement o) {
-		throw new NotImplementedException();
+		cg.generateThrowExceptionStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeTryCatchFinallyStatement o) {
-		throw new NotImplementedException();
+		cg.generateTryCatchFinallyStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeVariableDeclarationStatement o) {
-		throw new NotImplementedException();
+		cg.generateVariableDeclarationStatement(o);
 	}
 
 	@Override
 	public void visit(final CodeConstructor o) {
-		throw new NotImplementedException();
+		cg.generateConstructor(o, cg.getCurrentClass());
 	}
 
 	@Override
 	public void visit(final CodeEntryPointMethod o) {
-		throw new NotImplementedException();
+		cg.generateEntryPointMethod(o, cg.getCurrentClass());
 	}
 
 	@Override
 	public void visit(final CodeMemberEvent o) {
-		throw new NotImplementedException();
+		cg.generateEvent(o, cg.getCurrentClass());
 	}
 
 	@Override
 	public void visit(final CodeMemberField o) {
-		throw new NotImplementedException();
+		cg.generateField(o);
 	}
 
 	@Override
 	public void visit(final CodeMemberMethod o) {
-		throw new NotImplementedException();
+		cg.generateMethod(o, cg.getCurrentClass());
 	}
 
 	@Override
 	public void visit(final CodeMemberProperty o) {
-		throw new NotImplementedException();
+		cg.generateProperty(o, cg.getCurrentClass());
 	}
 
 	@Override
 	public void visit(final CodeSnippetTypeMember o) {
-		throw new NotImplementedException();
+		int indent = cg.getIndent();
+		cg.setIndent(0);
+		cg.generateSnippetMember(o);
+
+		if (cg.getOptions().isVerbatimOrder()) {
+			cg.getOutput().println();
+		}
+		cg.setIndent(indent);
 	}
 
 	@Override
 	public void visit(final CodeTypeConstructor o) {
-		throw new NotImplementedException();
+		cg.generateTypeConstructor(o);
 	}
 
 }

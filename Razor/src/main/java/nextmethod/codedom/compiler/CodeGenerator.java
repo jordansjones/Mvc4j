@@ -16,9 +16,6 @@
 
 package nextmethod.codedom.compiler;
 
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFormatter;
 import nextmethod.base.NotImplementedException;
 import nextmethod.base.Strings;
 import nextmethod.codedom.*;
@@ -40,14 +37,10 @@ import static nextmethod.base.TypeHelpers.typeIs;
 public abstract class CodeGenerator implements ICodeGenerator {
 
 	private final Visitor visitor;
-	private PrintWriter output;
+	private IndentingPrintWriter output;
 	private CodeGeneratorOptions options;
-	private JCodeModel codeModel;
-	private JFormatter formatter;
 	private CodeTypeMember currentMember;
 	private CodeTypeDeclaration currentType;
-
-	private int indentLevel;
 
 
 	protected CodeGenerator() {
@@ -75,18 +68,23 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected int getIndent() {
-		return indentLevel;
+		return output.getIndent();
 	}
 
 	protected void setIndent(final int indent) {
-		final int prevLevel = this.indentLevel;
-		this.indentLevel = indent;
-		while (prevLevel > 0) {
-			this.formatter.o();
-		}
-		for (int i = 0; i < indent; i++) {
-			this.formatter.i();
-		}
+		output.setIndent(indent);
+	}
+
+	protected int incrementIndent() {
+		int indent = getIndent() + 1;
+		setIndent(indent);
+		return indent;
+	}
+
+	protected int decrementIndent() {
+		int indent = getIndent() - 1;
+		setIndent(indent);
+		return indent;
 	}
 
 	protected boolean isCurrentClass() {
@@ -115,20 +113,12 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		return options;
 	}
 
-	protected PrintWriter getOutput() {
+	protected IndentingPrintWriter getOutput() {
 		return this.output;
 	}
 
-	protected JFormatter getFormatter() {
-		return formatter;
-	}
-
-	protected JCodeModel getCodeModel() {
-		return this.codeModel;
-	}
-
 	protected void continueOnNewLine(@Nonnull final String st) {
-		formatter.p(st).nl();
+		getOutput().println(st);
 	}
 
 	//
@@ -151,13 +141,13 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateBaseReferenceExpression(@Nonnull final CodeBaseReferenceExpression e);
 
 	protected void generateBinaryOperatorExpression(@Nonnull final CodeBinaryOperatorExpression e) {
-		formatter.p('(');
+		getOutput().write('(');
 		generateExpression(e.getLeft());
-		formatter.p(' ');
+		getOutput().write(' ');
 		outputOperator(e.getOp());
-		formatter.p(' ');
+		getOutput().write(' ');
 		generateExpression(e.getRight());
-		formatter.p(')');
+		getOutput().write(')');
 	}
 
 
@@ -207,7 +197,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected void generateCompileUnitStart(@Nonnull final CodeCompileUnit compileUnit) {
 		if (!compileUnit.getStartDirectives().isEmpty()) {
 			generateDirectives(compileUnit.getStartDirectives());
-			formatter.nl();
+			getOutput().println();
 		}
 	}
 
@@ -216,7 +206,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateConstructor(@Nonnull final CodeConstructor x, @Nonnull final CodeTypeDeclaration d);
 
 	protected void generateDecimalValue(@Nonnull final BigDecimal d) {
-		JExpr.lit(d.toString()).generate(formatter);
+		getOutput().write(d.toString());
 	}
 
 
@@ -233,7 +223,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void generateDoubleValue(@Nonnull final Double d) {
-		JExpr.lit(d).generate(formatter);
+		getOutput().write(d.toString());
 	}
 
 	protected abstract void generateEntryPointMethod(@Nonnull final CodeEntryPointMethod m, @Nonnull final CodeTypeDeclaration d);
@@ -298,7 +288,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 			}
 		}
 
-		formatter.nl();
+		getOutput().println();
 
 		generateTypes(ns);
 
@@ -351,7 +341,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateRemoveEventStatement(@Nonnull final CodeRemoveEventStatement statement);
 
 	protected void generateSingleFloatValue(@Nonnull final Float s) {
-		JExpr.lit(s).generate(this.formatter);
+		getOutput().write(s.toString());
 	}
 
 	protected void generateSnippetCompileUnit(@Nonnull final CodeSnippetCompileUnit e) {
@@ -361,7 +351,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 			generateLinePragmaStart(linePragma);
 		}
 
-		formatter.p(e.getValue()).nl();
+		getOutput().println(e.getValue());
 
 		if (linePragma != null) {
 			generateLinePragmaEnd(linePragma);
@@ -373,7 +363,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateSnippetMember(@Nonnull final CodeSnippetTypeMember m);
 
 	protected void generateSnippetStatement(@Nonnull final CodeSnippetStatement s) {
-		formatter.p(s.getValue()).nl();
+		getOutput().println(s.getValue());
 	}
 
 	protected void generateStatement(@Nonnull final CodeStatement s) {
@@ -443,7 +433,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected void generateTypes(@Nonnull final CodePackage e) {
 		for (CodeTypeDeclaration typeDeclaration : e.getTypes()) {
 			if (options.isBlankLinesBetweenMembers()) {
-				formatter.nl();
+				getOutput().println();
 			}
 			generateType(typeDeclaration);
 		}
@@ -492,11 +482,29 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void outputMemberAccessModifier(@Nonnull final MemberAttributes attributes) {
-		throw new NotImplementedException();
+		final int attr = attributes.val & MemberAttributes.AccessMask.val;
+		if (attr == MemberAttributes.Protected.val) {
+			getOutput().write("protected ");
+		}
+		else if (attr == MemberAttributes.Private.val) {
+			getOutput().write("private ");
+		}
+		else if (attr == MemberAttributes.Public.val) {
+			getOutput().write("public ");
+		}
 	}
 
 	protected void outputMemberScopeModifier(@Nonnull final MemberAttributes attributes) {
-		throw new NotImplementedException();
+		final int attr = attributes.val & MemberAttributes.ScopeMask.val;
+		if (attr == MemberAttributes.Abstract.val) {
+			output.write("abstract ");
+		}
+		else if (attr == MemberAttributes.Final.val) {
+			output.write("final ");
+		}
+		else if (attr == MemberAttributes.Static.val) {
+			output.write("static ");
+		}
 	}
 
 	protected void outputOperator(@Nonnull final CodeBinaryOperatorType op) {
@@ -504,7 +512,16 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void outputParameters(@Nonnull final CodeParameterDeclarationExpressionCollection parameters) {
-		throw new NotImplementedException();
+		boolean first = true;
+		for (CodeParameterDeclarationExpression expr : parameters) {
+			if (first) {
+				first = false;
+			}
+			else {
+				output.write(", ");
+			}
+			generateExpression(expr);
+		}
 	}
 
 	protected abstract void outputType(@Nonnull final CodeTypeReference t);
@@ -524,10 +541,8 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		if (options == null) {
 			options = new CodeGeneratorOptions();
 		}
-		this.output = new PrintWriter(checkNotNull(output));
+		this.output = new IndentingPrintWriter(new PrintWriter(checkNotNull(output)));
 		this.options = options;
-		this.codeModel = new JCodeModel();
-		this.formatter = new JFormatter(this.output, this.options.getIndentString());
 	}
 
 	@Override
@@ -549,7 +564,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	@Override
-	public void generateCodeFromPackage(@Nonnull final CodePackage codePackage, @Nonnull final Writer writer, @Nonnull final CodeGeneratorOptions options) {
+	public void generateCodeFromPackage(@Nonnull final CodePackage codePackage, @Nonnull final Writer output, @Nonnull final CodeGeneratorOptions options) {
 		initOutput(output, options);
 		generateNamespace(codePackage);
 	}
@@ -609,10 +624,13 @@ public abstract class CodeGenerator implements ICodeGenerator {
 				if (!prevMember.getEndDirectives().isEmpty()) {
 					generateDirectives(prevMember.getEndDirectives());
 				}
+				if (!getOptions().isVerbatimOrder() && typeIs(prevMember, CodeSnippetTypeMember.class) && !typeIs(member, CodeSnippetTypeMember.class)) {
+					getOutput().println();
+				}
 			}
 
 			if (options.isBlankLinesBetweenMembers()) {
-				formatter.nl();
+				getOutput().println();
 			}
 
 			subtype = typeAs(member, CodeTypeDeclaration.class);
@@ -637,7 +655,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 				member.accept(visitor);
 			}
 			catch (NotImplementedException ne) {
-				throw new IllegalArgumentException("Element type " + member.getClass() + " is not supported.");
+				throw new IllegalArgumentException("Element type " + member.getClass() + " is not supported.", ne);
 			}
 		}
 
@@ -648,6 +666,9 @@ public abstract class CodeGenerator implements ICodeGenerator {
 			}
 			if (!currentMember.getEndDirectives().isEmpty()) {
 				generateDirectives(currentMember.getEndDirectives());
+			}
+			if (!getOptions().isVerbatimOrder() && typeIs(currentMember, CodeSnippetTypeMember.class)) {
+				getOutput().println();
 			}
 		}
 

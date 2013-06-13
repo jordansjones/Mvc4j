@@ -1,36 +1,32 @@
 package nextmethod.codedom;
 
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.EnumSet;
 
-public enum MemberAttributes {
+public class MemberAttributes implements Serializable {
 
-	Abstract(Modifier.ABSTRACT),
-	Final(Modifier.FINAL),
-	Private(Modifier.PRIVATE),
-	Public(Modifier.PRIVATE),
-	Static(Modifier.STATIC),
-	Transient(Modifier.TRANSIENT),
-	Volatile(Modifier.VOLATILE)
-	;
+	private static final long serialVersionUID = 3039744525780381022L;
 
-	private final int modifier;
+	public static final MemberAttributes Abstract = new MemberAttributes(Modifier.ABSTRACT);
+	public static final MemberAttributes Final = new MemberAttributes(Modifier.FINAL);
+	public static final MemberAttributes Private = new MemberAttributes(Modifier.PRIVATE);
+	public static final MemberAttributes Protected = new MemberAttributes(Modifier.PROTECTED);
+	public static final MemberAttributes Public = new MemberAttributes(Modifier.PUBLIC);
+	public static final MemberAttributes Static = new MemberAttributes(Modifier.STATIC);
+	public static final MemberAttributes Transient = new MemberAttributes(Modifier.TRANSIENT);
+	public static final MemberAttributes Volatile = new MemberAttributes(Modifier.VOLATILE);
+
+	public static final MemberAttributes ScopeMask = new MemberAttributes(Modifier.constructorModifiers() | Modifier.fieldModifiers() | Modifier.methodModifiers());
+	public static final MemberAttributes AccessMask = new MemberAttributes(Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC);
+
+	public static MemberAttributes valueOf(final int val) {
+		return new MemberAttributes(val);
+	}
+
+	public final int val;
 
 	private MemberAttributes(final int modifier) {
-		this.modifier = modifier;
-	}
-
-	public int getModifier() {
-		return modifier;
-	}
-
-
-	public static EnumSet<MemberAttributes> setOf(final MemberAttributes... attributes) {
-		if (attributes == null || attributes.length < 1) {
-			return EnumSet.noneOf(MemberAttributes.class);
-		}
-		return EnumSet.copyOf(Arrays.asList(attributes));
+		this.val = modifier;
 	}
 
 }

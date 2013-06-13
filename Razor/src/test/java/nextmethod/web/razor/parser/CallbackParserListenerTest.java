@@ -17,9 +17,9 @@ import org.mockito.stubbing.Answer;
 
 import javax.annotation.Nullable;
 
-import static junit.framework.Assert.assertNotSame;
-import static junit.framework.Assert.assertSame;
 import static nextmethod.base.TypeHelpers.typeAs;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doAnswer;

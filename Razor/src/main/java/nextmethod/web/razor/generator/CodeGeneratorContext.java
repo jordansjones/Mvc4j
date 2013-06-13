@@ -223,7 +223,7 @@ public class CodeGeneratorContext {
 	public void ensureExpressionHelperVariable() {
 		if (!expressionHelperVariableWritten) {
 			final CodeMemberField field = new CodeMemberField(Object.class, "__o");
-			field.setAttributes(MemberAttributes.Private, MemberAttributes.Static);
+			field.setAttributes(MemberAttributes.valueOf(MemberAttributes.Private.val | MemberAttributes.Static.val));
 			generatedClass.getMembers().add(0, field);
 			expressionHelperVariableWritten = true;
 		}
