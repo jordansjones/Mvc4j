@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.threading;
 
 import com.google.common.base.Stopwatch;
@@ -12,30 +28,30 @@ public final class SpinWait {
 	private static final int maxTime = 200;
 	private static final boolean isSingleCpu = (Runtime.getRuntime().availableProcessors() == 1);
 
-	private int ntime;
+	private int nTime;
 
 	public void spinOnce() {
-		ntime += 1;
+		nTime += 1;
 		if (nextSpinWillYield()) {
 			// Spinning does no good on single cpus
 			Thread.yield();
 		}
 		else {
 			// Multi-CPU system
-			spin(Math.min(ntime, maxTime) << 1);
+			spin(Math.min(nTime, maxTime) << 1);
 		}
 	}
 
 	public void reset() {
-		ntime = 0;
+		nTime = 0;
 	}
 
 	public boolean nextSpinWillYield() {
-		return isSingleCpu ? true : ntime % step == 0;
+		return isSingleCpu || nTime % step == 0;
 	}
 
 	public int count() {
-		return ntime;
+		return nTime;
 	}
 	
 	private void spin(int iterations) {
@@ -44,7 +60,7 @@ public final class SpinWait {
 		}
 		while (iterations-- > 0) {
 			// Nop
-			assert Boolean.TRUE;
+			assert true;
 		}
 	}
 
@@ -57,7 +73,7 @@ public final class SpinWait {
 	
 	public static boolean spinUntil(final Delegates.IFunc<Boolean> condition, final long amount, final TimeUnit timeUnit) {
 		final SpinWait spinWait = new SpinWait();
-		final Stopwatch stopwatch = Stopwatch.createUnstarted().start();
+		final Stopwatch stopwatch = Stopwatch.createStarted();
 
 		while(!condition.invoke()) {
 			if (stopwatch.elapsed(timeUnit) > amount) {

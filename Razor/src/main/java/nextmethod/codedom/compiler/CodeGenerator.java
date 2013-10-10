@@ -605,6 +605,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 				.collect(Collectors.toList()),
 				CodeTypeMember.class
 			);
+
 		}
 
 		CodeTypeDeclaration subtype = null;
@@ -711,6 +712,15 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		CodeTypeDeclaration.class,
 		CodeEntryPointMethod.class
 	);
+
+	private static int searchArray(Class<?>[] arr, Class<?> cls)
+	{
+		for (int i = 0; i < arr.length; i++)
+		{
+			if (arr[i] == cls) return i;
+		}
+		return -1;
+	}
 
 	protected void generateDirectives(@Nonnull final CodeDirectiveCollection directives) {
 		// Intentionally left empty

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.generator;
 
 import com.google.common.base.Function;
@@ -13,12 +29,8 @@ import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.compiler.CodeDomProvider;
 import nextmethod.codedom.compiler.CodeGeneratorOptions;
 import nextmethod.io.Filesystem;
-import nextmethod.web.razor.DebugArgs;
-import nextmethod.web.razor.GeneratorResults;
-import nextmethod.web.razor.RazorCodeLanguage;
-import nextmethod.web.razor.RazorEngineHost;
-import nextmethod.web.razor.RazorTemplateEngine;
-import nextmethod.web.razor.StringTextBuffer;
+import nextmethod.web.razor.*;
+import nextmethod.web.razor.utils.MiscUtils;
 import nextmethod.web.razor.utils.TestFile;
 
 import javax.annotation.Nullable;
@@ -29,9 +41,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
@@ -159,7 +169,7 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 
 		// Verify code against baseline
 		if (!Debug.isDebugArgPresent(DebugArgs.GenerateBaselines)) {
-			assertEquals(expectedOutput, generatedOutput);
+			assertEquals(expectedOutput, MiscUtils.stripRuntimeVersion(generatedOutput));
 		}
 
 		// Verify design-time pragmas

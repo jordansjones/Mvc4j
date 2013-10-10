@@ -53,6 +53,10 @@ public class CodePackage extends CodeObject implements Serializable {
 		return imports;
 	}
 
+	public void setImports(final CodePackageImportCollection imports) {
+		this.imports = imports;
+	}
+
 	public CodeTypeDeclarationCollection getTypes() {
 		if (classes == null) {
 			classes = new CodeTypeDeclarationCollection();

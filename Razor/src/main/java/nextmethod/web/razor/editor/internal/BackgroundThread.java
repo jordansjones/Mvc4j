@@ -1,10 +1,22 @@
+/*
+ * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.editor.internal;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.base.Stopwatch;
+import com.google.common.base.*;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import nextmethod.annotations.Internal;
@@ -13,11 +25,7 @@ import nextmethod.io.Filesystem;
 import nextmethod.threading.CancellationToken;
 import nextmethod.threading.CancellationTokenSource;
 import nextmethod.threading.OperationCanceledException;
-import nextmethod.web.razor.DebugArgs;
-import nextmethod.web.razor.DocumentParseCompleteEventArgs;
-import nextmethod.web.razor.GeneratorResults;
-import nextmethod.web.razor.RazorEngineHost;
-import nextmethod.web.razor.RazorTemplateEngine;
+import nextmethod.web.razor.*;
 import nextmethod.web.razor.generator.GeneratedCodeMapping;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.Span;
