@@ -15,13 +15,10 @@ public class TemplateBlockCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		final String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(final CodeWriter input) {
-				input.writeStartLambdaExpression(ItemParameterName);
-				input.writeStartConstructor(context.getHost().getGeneratedClassContext().getTemplateTypeName());
-				input.writeStartLambdaDelegate(TemplateWriterName);
-			}
+		final String generatedCode = context.buildCodeString(input -> {
+			input.writeStartLambdaExpression(ItemParameterName);
+			input.writeStartConstructor(context.getHost().getGeneratedClassContext().getTemplateTypeName());
+			input.writeStartLambdaDelegate(TemplateWriterName);
 		});
 
 		context.markEndOfGeneratedCode();
@@ -34,13 +31,10 @@ public class TemplateBlockCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateEndBlockCode(@Nonnull Block target, @Nonnull CodeGeneratorContext context) {
-		final String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(final CodeWriter input) {
-				input.writeEndLambdaDelegate();
-				input.writeEndConstructor();
-				input.writeEndLambdaExpression();
-			}
+		final String generatedCode = context.buildCodeString(input -> {
+			input.writeEndLambdaDelegate();
+			input.writeEndConstructor();
+			input.writeEndLambdaExpression();
 		});
 
 		context.bufferStatementFragment(generatedCode);

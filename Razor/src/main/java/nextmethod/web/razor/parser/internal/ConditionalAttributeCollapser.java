@@ -70,25 +70,22 @@ public class ConditionalAttributeCollapser extends MarkupRewriter {
 		return stringBuilder.toString();
 	}
 
-	private final Predicate<SyntaxTreeNode> isLiteralAttributeValuePredicate = new Predicate<SyntaxTreeNode>() {
-		@Override
-		public boolean apply(@Nullable final SyntaxTreeNode node) {
-			if (node == null) return false;
-			if (node.isBlock()) return false;
+	private final Predicate<SyntaxTreeNode> isLiteralAttributeValuePredicate = node -> {
+		if (node == null) return false;
+		if (node.isBlock()) return false;
 
-			final Span span = typeAs(node, Span.class);
-			if (Debug.isAssertEnabled()) assert span != null;
+		final Span span = typeAs(node, Span.class);
+		if (Debug.isAssertEnabled()) assert span != null;
 
-			if (span == null)
-				return false;
+		if (span == null)
+			return false;
 
-			final ISpanCodeGenerator codeGen = span.getCodeGenerator();
+		final ISpanCodeGenerator codeGen = span.getCodeGenerator();
 
-			final LiteralAttributeCodeGenerator litGen = typeAs(codeGen, LiteralAttributeCodeGenerator.class);
+		final LiteralAttributeCodeGenerator litGen = typeAs(codeGen, LiteralAttributeCodeGenerator.class);
 
-			return (litGen != null && litGen.getValueGenerator() == null)
-				|| codeGen == SpanCodeGenerator.Null
-				|| typeIs(codeGen, MarkupCodeGenerator.class);
-		}
+		return (litGen != null && litGen.getValueGenerator() == null)
+			|| codeGen == SpanCodeGenerator.Null
+			|| typeIs(codeGen, MarkupCodeGenerator.class);
 	};
 }

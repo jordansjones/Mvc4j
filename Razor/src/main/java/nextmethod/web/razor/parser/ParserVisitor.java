@@ -55,9 +55,7 @@ public abstract class ParserVisitor {
 
 	public void visit(@Nonnull final ParserResults result) {
 		result.getDocument().accept(this);
-		for (RazorError error : result.getParserErrors()) {
-			visitError(error);
-		}
+		result.getParserErrors().forEach(this::visitError);
 		onComplete();
 	}
 

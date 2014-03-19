@@ -33,14 +33,11 @@ public abstract class ParserBase {
 	public abstract void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content);
 
 	public Delegates.IAction3<SpanBuilder, SourceLocation, String> createBuildSpanDelegate() {
-		return new Delegates.IAction3<SpanBuilder, SourceLocation, String>() {
-			@Override
-			public void invoke(@Nullable final SpanBuilder span, @Nullable final SourceLocation start, @Nullable final String content) {
-				assert span != null;
-				assert start != null;
-				assert content != null;
-				buildSpan(span, start, content);
-			}
+		return (span, start, content) -> {
+			assert span != null;
+			assert start != null;
+			assert content != null;
+			buildSpan(span, start, content);
 		};
 	}
 
@@ -48,12 +45,7 @@ public abstract class ParserBase {
 	public abstract void parseBlock();
 
 	public Delegates.IAction createParseBlockDelegate() {
-		return new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				parseBlock();
-			}
-		};
+		return this::parseBlock;
 	}
 
 	/**
@@ -67,12 +59,7 @@ public abstract class ParserBase {
 	}
 
 	public Delegates.IAction createParseDocumentDelegate() {
-		return new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				parseDocument();
-			}
-		};
+		return this::parseDocument;
 	}
 
 	/**

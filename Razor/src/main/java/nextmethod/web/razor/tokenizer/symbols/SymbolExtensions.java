@@ -15,12 +15,7 @@ public final class SymbolExtensions {
 	private SymbolExtensions() {}
 
 	public static LocationTagged<String> getContent(@Nonnull final SpanBuilder spanBuilder) {
-		return getContent(spanBuilder, new Delegates.IFunc1<Iterable<ISymbol>, Iterable<ISymbol>>() {
-			@Override
-			public Iterable<ISymbol> invoke(@Nullable final Iterable<ISymbol> input1) {
-				return input1;
-			}
-		});
+		return getContent(spanBuilder, input1 -> input1);
 	}
 
 	public static LocationTagged<String> getContent(@Nonnull final SpanBuilder spanBuilder, @Nonnull final Delegates.IFunc1<Iterable<ISymbol>, Iterable<ISymbol>> filter) {

@@ -164,26 +164,16 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void generateCommentStatements(@Nonnull final CodeCommentStatementCollection statements) {
-		for (CodeCommentStatement commentStatement : statements) {
-			generateCommentStatement(commentStatement);
-		}
+		statements.forEach(this::generateCommentStatement);
 	}
 
 	protected void generateCompileUnit(@Nonnull final CodeCompileUnit compileUnit) {
 		generateCompileUnitStart(compileUnit);
-		for (CodePackage codePackage : compileUnit.getPackages()) {
-			if (Strings.isNullOrEmpty(codePackage.getName())) {
-				generateNamespace(codePackage);
-			}
-		}
+		compileUnit.getPackages().stream().filter(codePackage -> Strings.isNullOrEmpty(codePackage.getName())).forEach(this::generateNamespace);
 
 		// TODO: AssemblyCustomAttributes?
 
-		for (CodePackage codePackage : compileUnit.getPackages()) {
-			if (!Strings.isNullOrEmpty(codePackage.getName())) {
-				generateNamespace(codePackage);
-			}
-		}
+		compileUnit.getPackages().stream().filter(codePackage -> !Strings.isNullOrEmpty(codePackage.getName())).forEach(this::generateNamespace);
 
 		generateCompileUnitEnd(compileUnit);
 	}
@@ -270,9 +260,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	protected abstract void generateMethodReturnStatement(@Nonnull final CodeMethodReturnStatement e);
 
 	protected void generateNamespace(@Nonnull final CodePackage ns) {
-		for (CodeCommentStatement statement : ns.getComments()) {
-			generateCommentStatement(statement);
-		}
+		ns.getComments().forEach(this::generateCommentStatement);
 
 		generatePackageStart(ns);
 
@@ -317,9 +305,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void generatePackages(@Nonnull final CodeCompileUnit e) {
-		for (CodePackage codePackage : e.getPackages()) {
-			generateNamespace(codePackage);
-		}
+		e.getPackages().forEach(this::generateNamespace);
 	}
 
 	protected abstract void generateObjectCreateExpression(@Nonnull final CodeObjectCreateExpression e);
@@ -407,9 +393,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void generateStatements(@Nonnull final CodeStatementCollection c) {
-		for (CodeStatement statement : c) {
-			generateStatement(statement);
-		}
+		c.forEach(this::generateStatement);
 	}
 
 	protected abstract void generateThisReferenceExpression(@Nonnull final CodeThisReferenceExpression e);
@@ -588,9 +572,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		if (!type.getStartDirectives().isEmpty()) {
 			generateDirectives(type.getStartDirectives());
 		}
-		for (CodeCommentStatement statement : type.getComments()) {
-			generateCommentStatement(statement);
-		}
+		type.getComments().forEach(this::generateCommentStatement);
 
 		if (type.getLinePragma() != null) {
 			generateLinePragmaStart(type.getLinePragma());
@@ -643,9 +625,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 			if (!currentMember.getStartDirectives().isEmpty()) {
 				generateDirectives(currentMember.getStartDirectives());
 			}
-			for (CodeCommentStatement statement : member.getComments()) {
-				generateCommentStatement(statement);
-			}
+			member.getComments().forEach(this::generateCommentStatement);
 
 			if (member.getLinePragma() != null) {
 				generateLinePragmaStart(member.getLinePragma());

@@ -24,33 +24,21 @@ public class CallbackVisitor extends ParserVisitor {
 	private SynchronizationContext synchronizationContext;
 
 	public CallbackVisitor(@Nonnull final IAction1<Span> spanCallback) {
-		this(spanCallback, new IAction1<RazorError> () {
-			@Override
-			public void invoke(@Nullable final RazorError input) {
-			}
+		this(spanCallback, input -> {
 		});
 	}
 
 	public CallbackVisitor(@Nonnull final IAction1<Span> spanCallback, @Nonnull final IAction1<RazorError> errorCallback) {
 		this(spanCallback, errorCallback,
-			new IAction1<BlockType>() {
-				@Override
-				public void invoke(@Nullable final BlockType input) {
-				}
+			input -> {
 			},
-			new IAction1<BlockType>() {
-				@Override
-				public void invoke(@Nullable final BlockType input) {
-				}
+			input -> {
 			}
 		);
 	}
 
 	public CallbackVisitor(@Nonnull final IAction1<Span> spanCallback, @Nonnull final IAction1<RazorError> errorCallback, @Nonnull final IAction1<BlockType> startBlockCallback, @Nonnull final IAction1<BlockType> endBlockCallback) {
-		this(spanCallback, errorCallback, startBlockCallback, endBlockCallback, new IAction() {
-			@Override
-			public void invoke() {
-			}
+		this(spanCallback, errorCallback, startBlockCallback, endBlockCallback, () -> {
 		});
 	}
 
@@ -89,12 +77,7 @@ public class CallbackVisitor extends ParserVisitor {
 	@Override
 	public void onComplete() {
 		super.onComplete();
-		raiseCallback(synchronizationContext, Object.class.cast(null), new IAction1<Object>() {
-			@Override
-			public void invoke(@Nullable final Object input) {
-				completeCallback.invoke();
-			}
-		});
+		raiseCallback(synchronizationContext, Object.class.cast(null), input -> completeCallback.invoke());
 	}
 
 	private static <T> void raiseCallback(final SynchronizationContext syncContext, final T param, final IAction1<T> callback) {

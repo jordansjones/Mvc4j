@@ -178,20 +178,10 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 	}
 
 	private Comparator<Map.Entry<Integer, GeneratedCodeMapping>> createGeneratedCodeMappingComparator() {
-		return new Comparator<Map.Entry<Integer, GeneratedCodeMapping>>() {
-			@Override
-			public int compare(final Map.Entry<Integer, GeneratedCodeMapping> o1, final Map.Entry<Integer, GeneratedCodeMapping> o2) {
-				return Ints.compare(o1.getKey(), o2.getKey());
-			}
-		};
+		return (o1, o2) -> Ints.compare(o1.getKey(), o2.getKey());
 	}
 
 	protected Function<Map.Entry<Integer, GeneratedCodeMapping>, GeneratedCodeMapping> createSelectGeneratedCodeMappingFunction() {
-		return new Function<Map.Entry<Integer, GeneratedCodeMapping>, GeneratedCodeMapping>() {
-			@Override
-			public GeneratedCodeMapping apply(@Nullable final Map.Entry<Integer, GeneratedCodeMapping> input) {
-				return input.getValue();
-			}
-		};
+		return Map.Entry<Integer, GeneratedCodeMapping>::getValue;
 	}
 }

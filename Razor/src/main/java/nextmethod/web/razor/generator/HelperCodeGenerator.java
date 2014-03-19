@@ -40,13 +40,10 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
 		final RazorEngineHost host = context.getHost();
 		final GeneratedClassContext generatedClassContext = host.getGeneratedClassContext();
 
-		final String prefix = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(@Nullable final CodeWriter input) {
-				assert input != null;
+		final String prefix = context.buildCodeString(input -> {
+			assert input != null;
 
-				input.writeHelperHeaderPrefix(generatedClassContext.getTemplateTypeName(), host.isStaticHelpers());
-			}
+			input.writeHelperHeaderPrefix(generatedClassContext.getTemplateTypeName(), host.isStaticHelpers());
 		});
 
 		writer.writeLinePragma(context.generateLinePragma(signature.getLocation(), prefix.length(), signature.getValue().length()));
@@ -86,19 +83,16 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
 		context.setTargetWriterName(oldWriter);
 	}
 
-	private Delegates.IAction2<String, CodeLinePragma> addStatementToHelperAction = new Delegates.IAction2<String, CodeLinePragma>() {
-		@Override
-		public void invoke(@Nullable final String statement, @Nullable final CodeLinePragma pragma) {
-			assert statement != null;
+	private Delegates.IAction2<String, CodeLinePragma> addStatementToHelperAction = (statement, pragma) -> {
+		assert statement != null;
 
-			if (pragma != null) {
-				writer.writeLinePragma(pragma);
-			}
-			writer.writeSnippet(statement);
-			writer.writeLine(); // CodeDOM normally inserts an extra line so we need to do so here.
-			if (pragma != null) {
-				writer.writeLinePragma(pragma);
-			}
+		if (pragma != null) {
+			writer.writeLinePragma(pragma);
+		}
+		writer.writeSnippet(statement);
+		writer.writeLine(); // CodeDOM normally inserts an extra line so we need to do so here.
+		if (pragma != null) {
+			writer.writeLinePragma(pragma);
 		}
 	};
 

@@ -19,12 +19,7 @@ public class JavaRazorCodeGenerator extends RazorCodeGenerator {
 
 	@Override
 	protected Delegates.IFunc<CodeWriter> getCodeWriterFactory() {
-		return new Delegates.IFunc<CodeWriter>() {
-			@Override
-			public CodeWriter invoke() {
-				return new JavaCodeWriter();
-			}
-		};
+		return JavaCodeWriter::new;
 	}
 
 	@Override

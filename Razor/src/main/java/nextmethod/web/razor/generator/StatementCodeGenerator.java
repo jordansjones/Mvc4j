@@ -1,6 +1,7 @@
 package nextmethod.web.razor.generator;
 
 import nextmethod.base.Delegates;
+import nextmethod.base.OutParam;
 import nextmethod.base.Strings;
 import nextmethod.web.razor.generator.internal.CodeWriter;
 import nextmethod.web.razor.parser.SyntaxConstants;
@@ -16,28 +17,14 @@ public class StatementCodeGenerator extends SpanCodeGenerator {
 	@Override
 	public void generateCode(@Nonnull final Span target, @Nonnull final CodeGeneratorContext context) {
 		context.flushBufferedStatement();
-		String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(CodeWriter input) {
-				input.writeSnippet(target.getContent());
-			}
+		String generatedCode = context.buildCodeString(input -> {
+			input.writeSnippet(target.getContent());
 		});
-		int startGeneratedCode = target.getStart().getCharacterIndex();
-		generatedCode = pad(generatedCode, target);
+		final OutParam<Integer> startGeneratedCode = OutParam.of(target.getStart().getCharacterIndex());
+		final OutParam<Integer> paddingCharCount = OutParam.of();
+		generatedCode = CodeGeneratorPaddingHelper.padStatement(context.getHost(), generatedCode, target, startGeneratedCode, paddingCharCount);
 
-		// Is this the span immediately following "@"?
-		if (context.getHost().isDesignTimeMode()
-			&& !Strings.isNullOrEmpty(generatedCode)
-			&& Character.isWhitespace(generatedCode.charAt(0))
-			&& target.getPrevious() != null
-			&& target.getPrevious().getKind() == SpanKind.Transition
-			&& SyntaxConstants.TransitionString.equals(target.getPrevious().getContent())
-		) {
-			generatedCode = generatedCode.substring(1);
-			startGeneratedCode--;
-		}
-
-		context.addStatement(generatedCode, context.generateLinePragma(target, startGeneratedCode));
+		context.addStatement(generatedCode, context.generateLinePragma(target, paddingCharCount.value()));
 	}
 
 	@Override

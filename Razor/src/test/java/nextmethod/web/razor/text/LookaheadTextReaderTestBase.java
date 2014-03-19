@@ -24,12 +24,9 @@ public abstract class LookaheadTextReaderTestBase {
 	}
 
 	protected void runSourceLocationTest(@Nonnull final String input, @Nonnull final SourceLocation expected, final int checkAt) {
-		runSourceLocationTest(input, expected, new Function<LookaheadTextReader, LookaheadTextReader>() {
-			@Override
-			public LookaheadTextReader apply(@Nullable LookaheadTextReader input) {
-				advanceReader(checkAt, input);
-				return input;
-			}
+		runSourceLocationTest(input, expected, input1 -> {
+			advanceReader(checkAt, input1);
+			return input1;
 		});
 	}
 
@@ -49,20 +46,14 @@ public abstract class LookaheadTextReaderTestBase {
 			"abc\r\ndef\r\nghi",
 			null,
 			read(6),
-			captureSourceLocation(new Function<SourceLocation, SourceLocation>() {
-				@Override
-				public SourceLocation apply(@Nullable SourceLocation input) {
-					expectedLocation.set(input);
-					return input;
-				}
+			captureSourceLocation(input -> {
+				expectedLocation.set(input);
+				return input;
 			}),
 			lookAhead(read(6)),
-			captureSourceLocation(new Function<SourceLocation, SourceLocation>() {
-				@Override
-				public SourceLocation apply(@Nullable SourceLocation input) {
-					actualLocation.set(input);
-					return input;
-				}
+			captureSourceLocation(input -> {
+				actualLocation.set(input);
+				return input;
 			})
 		);
 
@@ -88,21 +79,15 @@ public abstract class LookaheadTextReaderTestBase {
 	}
 
 	protected Func<StringBuilder, LookaheadTextReader> captureSourceLocation(@Nonnull final Function<SourceLocation, SourceLocation> capture) {
-		return new Func<StringBuilder, LookaheadTextReader>() {
-			@Override
-			public void apply(@Nonnull StringBuilder inputOne, @Nonnull LookaheadTextReader inputTwo) {
-				capture.apply(inputTwo.getCurrentLocation());
-			}
+		return (inputOne, inputTwo) -> {
+			capture.apply(inputTwo.getCurrentLocation());
 		};
 	}
 
 	protected Func<StringBuilder, LookaheadTextReader> read(final int count) {
-		return new Func<StringBuilder, LookaheadTextReader>() {
-			@Override
-			public void apply(@Nonnull StringBuilder inputOne, @Nonnull LookaheadTextReader inputTwo) {
-				for (int i = 0; i < count; i++) {
-					read(inputOne, inputTwo);
-				}
+		return (inputOne, inputTwo) -> {
+			for (int i = 0; i < count; i++) {
+				read(inputOne, inputTwo);
 			}
 		};
 	}
@@ -121,12 +106,9 @@ public abstract class LookaheadTextReaderTestBase {
 
 	@SafeVarargs
 	protected final Func<StringBuilder, LookaheadTextReader> lookAhead(final Func<StringBuilder, LookaheadTextReader>... readerCommands) {
-		return new Func<StringBuilder, LookaheadTextReader> () {
-			@Override
-			public void apply(@Nonnull StringBuilder builder, @Nonnull LookaheadTextReader reader) {
-				try (final IDisposable la = reader.beginLookahead()) {
-					runAll(readerCommands, builder, reader);
-				}
+		return (builder, reader) -> {
+			try (final IDisposable la = reader.beginLookahead()) {
+				runAll(readerCommands, builder, reader);
 			}
 		};
 	}

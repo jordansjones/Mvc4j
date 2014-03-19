@@ -66,22 +66,16 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		completeBlock();
 		output(SpanKind.MetaCode);
 	}
-	protected final Delegates.IAction1<Boolean> reservedDirectiveDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) reservedDirective(input);
-		}
+	protected final Delegates.IAction1<Boolean> reservedDirectiveDelegate = input -> {
+		if (input != null) reservedDirective(input);
 	};
 
 	protected void keywordBlock(final boolean topLevel) {
-		handleKeyword(topLevel, new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				final BlockBuilder currentBlock = getContext().getCurrentBlock();
-				currentBlock.setType(BlockType.Expression);
-				currentBlock.setCodeGenerator(new ExpressionCodeGenerator());
-				implicitExpression();
-			}
+		handleKeyword(topLevel, () -> {
+			final BlockBuilder currentBlock = getContext().getCurrentBlock();
+			currentBlock.setType(BlockType.Expression);
+			currentBlock.setCodeGenerator(new ExpressionCodeGenerator());
+			implicitExpression();
 		});
 	}
 
@@ -96,11 +90,8 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		acceptUntil(JavaSymbolType.Colon);
 		optional(JavaSymbolType.Colon);
 	}
-	protected final Delegates.IAction1<Boolean> caseStatementDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) caseStatement(input);
-		}
+	protected final Delegates.IAction1<Boolean> caseStatementDelegate = input -> {
+		if (input != null) caseStatement(input);
 	};
 
 	protected void doStatement(final boolean topLevel) {
@@ -111,11 +102,8 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			completeBlock();
 		}
 	}
-	protected final Delegates.IAction1<Boolean> doStatementDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) doStatement(input);
-		}
+	protected final Delegates.IAction1<Boolean> doStatementDelegate = input -> {
+		if (input != null) doStatement(input);
 	};
 
 	protected void whileClause() {
@@ -161,11 +149,8 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			completeBlock();
 		}
 	}
-	protected final Delegates.IAction1<Boolean> usingKeywordDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) usingKeyword(input);
-		}
+	protected final Delegates.IAction1<Boolean> usingKeywordDelegate = input -> {
+		if (input != null) usingKeyword(input);
 	};
 
 	protected void usingDeclaration() {
@@ -196,12 +181,9 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		span.getEditHandler().setAcceptedCharacters(AcceptedCharacters.AnyExceptNewLine);
 		span.setCodeGenerator(
 			new AddImportCodeGenerator(
-				SymbolExtensions.getContent(span, new Delegates.IFunc1<Iterable<ISymbol>, Iterable<ISymbol>>() {
-					@Override
-					public Iterable<ISymbol> invoke(@Nullable final Iterable<ISymbol> input1) {
-						if (input1 == null) return null;
-						return Iterables.skip(input1, 1);
-					}
+				SymbolExtensions.getContent(span, input1 -> {
+					if (input1 == null) return null;
+					return Iterables.skip(input1, 1);
 				}).toString(),
 				SyntaxConstants.Java.UsingKeywordLength
 			)
@@ -262,11 +244,8 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			completeBlock();
 		}
 	}
-	protected final Delegates.IAction1<Boolean> tryStatementDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) tryStatement(input);
-		}
+	protected final Delegates.IAction1<Boolean> tryStatementDelegate = input -> {
+		if (input != null) tryStatement(input);
 	};
 
 	protected void ifStatement(final boolean topLevel) {
@@ -277,11 +256,8 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			completeBlock();
 		}
 	}
-	protected final Delegates.IAction1<Boolean> ifStatementDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) ifStatement(input);
-		}
+	protected final Delegates.IAction1<Boolean> ifStatementDelegate = input -> {
+		if (input != null) ifStatement(input);
 	};
 
 	protected void afterTryClause() {
@@ -381,11 +357,8 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			completeBlock();
 		}
 	}
-	protected final Delegates.IAction1<Boolean> conditionalBlockDelegate = new Delegates.IAction1<Boolean>() {
-		@Override
-		public void invoke(@Nullable final Boolean input) {
-			if (input != null) conditionalBlock(input);
-		}
+	protected final Delegates.IAction1<Boolean> conditionalBlockDelegate = input -> {
+		if (input != null) conditionalBlock(input);
 	};
 
 	protected void conditionalBlock(@Nonnull final Block block) {
@@ -559,19 +532,14 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 	protected void standardStatement() {
 		while (!isEndOfFile()) {
 			final int bookmark = getCurrentLocation().getAbsoluteIndex();
-			final Iterable<JavaSymbol> read = readWhile(new Delegates.IFunc1<JavaSymbol, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final JavaSymbol sym) {
-					return sym != null
-						&& sym.getType() != JavaSymbolType.Semicolon
-						&& sym.getType() != JavaSymbolType.RazorCommentTransition
-						&& sym.getType() != JavaSymbolType.Transition
-						&& sym.getType() != JavaSymbolType.LeftBrace
-						&& sym.getType() != JavaSymbolType.LeftParenthesis
-						&& sym.getType() != JavaSymbolType.LeftBracket
-						&& sym.getType() != JavaSymbolType.RightBrace;
-				}
-			});
+			final Iterable<JavaSymbol> read = readWhile(sym -> sym != null
+				&& sym.getType() != JavaSymbolType.Semicolon
+				&& sym.getType() != JavaSymbolType.RazorCommentTransition
+				&& sym.getType() != JavaSymbolType.Transition
+				&& sym.getType() != JavaSymbolType.LeftBrace
+				&& sym.getType() != JavaSymbolType.LeftParenthesis
+				&& sym.getType() != JavaSymbolType.LeftBracket
+				&& sym.getType() != JavaSymbolType.RightBrace);
 
 			if (at(JavaSymbolType.LeftBrace) || at(JavaSymbolType.LeftParenthesis) || at(JavaSymbolType.LeftBracket)) {
 				accept(read);
@@ -610,10 +578,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 			}
 		}
 	}
-	protected final Delegates.IAction standardStatementDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { standardStatement(); }
-	};
+	protected final Delegates.IAction standardStatementDelegate = this::standardStatement;
 
 	protected void codeBlock(@Nonnull final Block block) {
 		codeBlock(true, block);

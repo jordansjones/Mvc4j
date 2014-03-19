@@ -10,18 +10,13 @@ import javax.annotation.Nullable;
 
 public final class ParserHelpers {
 
-	public static final Predicate<Character> IsIdentifierPartPredicate = new Predicate<Character>() {
-		@Override
-		public boolean apply(@Nullable Character val) {
-			return val != null && (
-				isLetter(val) ||
-				isDecimalDigit(val) ||
-				isConnecting(val) ||
-				isCombining(val) ||
-				isFormatting(val)
-			);
-		}
-	};
+	public static final Predicate<Character> IsIdentifierPartPredicate = val -> val != null && (
+		isLetter(val) ||
+		isDecimalDigit(val) ||
+		isConnecting(val) ||
+		isCombining(val) ||
+		isFormatting(val)
+	);
 
 	private ParserHelpers() {}
 
@@ -45,18 +40,13 @@ public final class ParserHelpers {
 		return Iterables.all(Lists.charactersOf(val), predicate);
 	}
 
-	public static Predicate<Character> IsWhitespacePredicate = new Predicate<Character>() {
-		@Override
-		public boolean apply(@Nullable Character val) {
-			return val != null && (
-					val == ' ' ||
-					val == '\f' ||
-					val == '\t' ||
-					val == '\u000B' || // Vertical Tab
-					Character.getType(val) == Character.SPACE_SEPARATOR
-				);
-		}
-	};
+	public static Predicate<Character> IsWhitespacePredicate = val -> val != null && (
+			val == ' ' ||
+			val == '\f' ||
+			val == '\t' ||
+			val == '\u000B' || // Vertical Tab
+			Character.getType(val) == Character.SPACE_SEPARATOR
+		);
 
 	public static boolean isNullOrWhitespace(final String val) {
 		if (Strings.isNullOrEmpty(val)) return true;

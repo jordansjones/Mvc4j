@@ -65,12 +65,7 @@ final class MainThreadState extends BaseThreadState implements IDisposable {
 
 	public IDisposable lock() {
 		stateLock.enter();
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				stateLock.leave();
-			}
-		});
+		return new DisposableAction(stateLock::leave);
 	}
 
 	public void queueChange(@Nonnull final TextChange change) {

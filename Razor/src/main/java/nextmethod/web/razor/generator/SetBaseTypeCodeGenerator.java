@@ -28,14 +28,11 @@ public class SetBaseTypeCodeGenerator extends SpanCodeGenerator {
 
 		if (context.getHost().isDesignTimeMode()) {
 			final AtomicInteger generatedCodeStart = new AtomicInteger(0);
-			final String code = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			final String code = context.buildCodeString(input -> {
+				assert input != null;
 
-					generatedCodeStart.set(input.writeVariableDeclaration(target.getContent(), "__inheritsHelper", null));
-					input.writeEndStatement();
-				}
+				generatedCodeStart.set(input.writeVariableDeclaration(target.getContent(), "__inheritsHelper", null));
+				input.writeEndStatement();
 			});
 
 			int padding = calculatePadding(target, generatedCodeStart.get());

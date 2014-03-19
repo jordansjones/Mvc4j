@@ -111,14 +111,11 @@ public class RazorParser {
 	}
 
 	public Task createParseTask(@Nonnull final TextReader input, @Nonnull final ParserVisitor consumer) {
-		return new Task(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				try {
-					parse(input, consumer);
-				}
-				catch (OperationCanceledException ignored) {}
+		return new Task(() -> {
+			try {
+				parse(input, consumer);
 			}
+			catch (OperationCanceledException ignored) {}
 		});
 	}
 

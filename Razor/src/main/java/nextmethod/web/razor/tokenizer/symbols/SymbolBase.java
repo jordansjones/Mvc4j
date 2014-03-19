@@ -54,12 +54,7 @@ public abstract class SymbolBase<TType> implements ISymbol {
 
 	@SafeVarargs
 	public final boolean isTypeOr(@Nonnull final TType... testTypes) {
-		return Iterables.any(Arrays.asList(testTypes), new Predicate<TType>() {
-			@Override
-			public boolean apply(@Nullable final TType input) {
-				return input != null && getType() == input;
-			}
-		});
+		return Iterables.any(Arrays.asList(testTypes), input -> input != null && getType() == input);
 	}
 
 	public Iterable<RazorError> getErrors() {

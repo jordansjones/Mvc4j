@@ -40,12 +40,7 @@ public class ErrorCollector {
 
 	public IDisposable indent() {
 		indent++;
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				unindent();
-			}
-		});
+		return new DisposableAction(this::unindent);
 	}
 
 	public void unindent() {

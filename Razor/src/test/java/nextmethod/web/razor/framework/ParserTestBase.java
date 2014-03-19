@@ -89,17 +89,9 @@ public abstract class ParserTestBase {
 	}
 
 	protected void parseBlockTest(@Nonnull final String document, final Block expectedRoot, final boolean designTimeParser, final RazorError... expectedErrors) {
-		runParseTest(document, new Delegates.IFunc1<ParserBase, Delegates.IAction>() {
-			@Override
-			public Delegates.IAction invoke(@Nullable final ParserBase parser) {
-				return new Delegates.IAction() {
-					@Override
-					public void invoke() {
-						if (parser != null) {
-							parser.parseBlock();
-						}
-					}
-				};
+		runParseTest(document, parser -> () -> {
+			if (parser != null) {
+				parser.parseBlock();
 			}
 		}, expectedRoot, (expectedErrors == null ? Collections.<RazorError>emptyList() : Lists.newArrayList(expectedErrors)), designTimeParser);
 	}
@@ -184,22 +176,16 @@ public abstract class ParserTestBase {
 	protected void parseDocumentTest(final String document, final Block expectedRoot, final boolean designTimeParser, final RazorError... expectedErrors) {
 		runParseTest(
 			document,
-			new Delegates.IFunc1<ParserBase, Delegates.IAction>() {
-				@Override
-				public Delegates.IAction invoke(@Nullable ParserBase parserBase) {
-					assert parserBase != null;
-					return parserBase.createParseDocumentDelegate();
-				}
+			parserBase -> {
+				assert parserBase != null;
+				return parserBase.createParseDocumentDelegate();
 			},
 			expectedRoot,
 			expectedErrors != null ? Lists.newArrayList(expectedErrors) : Collections.<RazorError>emptyList(),
 			designTimeParser,
-			new Delegates.IFunc1<ParserContext, ParserBase>() {
-				@Override
-				public ParserBase invoke(@Nullable ParserContext context) {
-					assert context != null;
-					return context.getMarkupParser();
-				}
+			context -> {
+				assert context != null;
+				return context.getMarkupParser();
 			}
 		);
 	}
@@ -211,20 +197,14 @@ public abstract class ParserTestBase {
 	protected ParserResults parseDocument(final String document, final boolean designTimeParser) {
 		return runParse(
 			document,
-			new Delegates.IFunc1<ParserBase, Delegates.IAction>() {
-				@Override
-				public Delegates.IAction invoke(@Nullable ParserBase parserBase) {
-					assert parserBase != null;
-					return parserBase.createParseDocumentDelegate();
-				}
+			parserBase -> {
+				assert parserBase != null;
+				return parserBase.createParseDocumentDelegate();
 			},
 			designTimeParser,
-			new Delegates.IFunc1<ParserContext, ParserBase>() {
-				@Override
-				public ParserBase invoke(@Nullable ParserContext context) {
-					assert context != null;
-					return context.getMarkupParser();
-				}
+			context -> {
+				assert context != null;
+				return context.getMarkupParser();
 			}
 		);
 	}
@@ -236,12 +216,9 @@ public abstract class ParserTestBase {
 	protected ParserResults parseBlock(final String document, final boolean designTimeParser) {
 		return runParse(
 			document,
-			new Delegates.IFunc1<ParserBase, Delegates.IAction>() {
-				@Override
-				public Delegates.IAction invoke(@Nullable ParserBase parserBase) {
-					assert parserBase != null;
-					return parserBase.createParseBlockDelegate();
-				}
+			parserBase -> {
+				assert parserBase != null;
+				return parserBase.createParseBlockDelegate();
 			},
 			designTimeParser
 		);
@@ -252,12 +229,7 @@ public abstract class ParserTestBase {
 	}
 
 	protected ParserResults runParse(final String document, Delegates.IFunc1<ParserBase, Delegates.IAction> parserActionSelector, final boolean designTimeParser, Delegates.IFunc1<ParserContext, ParserBase> parserSelector) {
-		parserSelector = parserSelector != null ? parserSelector : new Delegates.IFunc1<ParserContext, ParserBase>() {
-			@Override
-			public ParserBase invoke(@Nullable final ParserContext c) {
-				return c == null ? null : c.getActiveParser();
-			}
-		};
+		parserSelector = parserSelector != null ? parserSelector : c -> c == null ? null : c.getActiveParser();
 
 		// Create the source
 		ParserResults results = null;

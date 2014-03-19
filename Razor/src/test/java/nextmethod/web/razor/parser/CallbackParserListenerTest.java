@@ -32,12 +32,9 @@ public class CallbackParserListenerTest {
 
 	@Test
 	public void listenerConstructedWithSpanCallbackCallsCallbackOnEndSpan() {
-		runOnEndSpanTest(new Delegates.IFunc1<Delegates.IAction1<Span>, CallbackVisitor>() {
-			@Override
-			public CallbackVisitor invoke(@Nullable final Delegates.IAction1<Span> callback) {
-				assert callback != null;
-				return new CallbackVisitor(callback);
-			}
+		runOnEndSpanTest(callback -> {
+			assert callback != null;
+			return new CallbackVisitor(callback);
 		});
 	}
 
@@ -54,46 +51,37 @@ public class CallbackParserListenerTest {
 
 	@Test
 	public void listenerConstructedWithSpanAndErrorCallbackCallsCallbackOnEndSpan() {
-		runOnEndSpanTest(new Delegates.IFunc1<Delegates.IAction1<Span>, CallbackVisitor>() {
-			@Override
-			public CallbackVisitor invoke(@Nullable final Delegates.IAction1<Span> input1) {
-				assert input1 != null;
-				return new CallbackVisitor(
-					input1,
-					createNopAction(RazorError.class)
-				);
-			}
+		runOnEndSpanTest(input1 -> {
+			assert input1 != null;
+			return new CallbackVisitor(
+				input1,
+				createNopAction(RazorError.class)
+			);
 		});
 	}
 
 	@Test
 	public void listenerConstructedWithSpanAndErrorCallbackCallsCallbackOnError() {
-		runOnErrorTest(new Delegates.IFunc1<Delegates.IAction1<RazorError>, CallbackVisitor>() {
-			@Override
-			public CallbackVisitor invoke(@Nullable final Delegates.IAction1<RazorError> input1) {
-				assert input1 != null;
-				return new CallbackVisitor(
-					createNopAction(Span.class),
-					input1
-				);
-			}
+		runOnErrorTest(input1 -> {
+			assert input1 != null;
+			return new CallbackVisitor(
+				createNopAction(Span.class),
+				input1
+			);
 		});
 	}
 
 	@Test
 	public void listenerConstructedWithAllCallbacksCallsCallbackOnEndSpan() {
 		runOnEndSpanTest(
-			new Delegates.IFunc1<Delegates.IAction1<Span>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<Span> input1) {
-					assert input1 != null;
-					return new CallbackVisitor(
-						input1,
-						createNopAction(RazorError.class),
-						createNopAction(BlockType.class),
-						createNopAction(BlockType.class)
-					);
-				}
+			input1 -> {
+				assert input1 != null;
+				return new CallbackVisitor(
+					input1,
+					createNopAction(RazorError.class),
+					createNopAction(BlockType.class),
+					createNopAction(BlockType.class)
+				);
 			}
 		);
 	}
@@ -101,17 +89,14 @@ public class CallbackParserListenerTest {
 	@Test
 	public void listenerConstructedWithAllCallbacksCallsCallbackOnError() {
 		runOnErrorTest(
-			new Delegates.IFunc1<Delegates.IAction1<RazorError>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<RazorError> input1) {
-					assert input1 != null;
-					return new CallbackVisitor(
-						createNopAction(Span.class),
-						input1,
-						createNopAction(BlockType.class),
-						createNopAction(BlockType.class)
-					);
-				}
+			input1 -> {
+				assert input1 != null;
+				return new CallbackVisitor(
+					createNopAction(Span.class),
+					input1,
+					createNopAction(BlockType.class),
+					createNopAction(BlockType.class)
+				);
 			}
 		);
 	}
@@ -119,17 +104,14 @@ public class CallbackParserListenerTest {
 	@Test
 	public void listenerConstructedWithAllCallbacksCallsCallbackOnStartBlock() {
 		runOnStartBlockTest(
-			new Delegates.IFunc1<Delegates.IAction1<BlockType>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<BlockType> input1) {
-					assert input1 != null;
-					return new CallbackVisitor(
-						createNopAction(Span.class),
-						createNopAction(RazorError.class),
-						input1,
-						createNopAction(BlockType.class)
-					);
-				}
+			input1 -> {
+				assert input1 != null;
+				return new CallbackVisitor(
+					createNopAction(Span.class),
+					createNopAction(RazorError.class),
+					input1,
+					createNopAction(BlockType.class)
+				);
 			}
 		);
 	}
@@ -137,17 +119,14 @@ public class CallbackParserListenerTest {
 	@Test
 	public void listenerConstructedWithAllCallbacksCallsCallbackOnEndBlock() {
 		runOnEndBlockTest(
-			new Delegates.IFunc1<Delegates.IAction1<BlockType>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<BlockType> input1) {
-					assert input1 != null;
-					return new CallbackVisitor(
-						createNopAction(Span.class),
-						createNopAction(RazorError.class),
-						createNopAction(BlockType.class),
-						input1
-					);
-				}
+			input1 -> {
+				assert input1 != null;
+				return new CallbackVisitor(
+					createNopAction(Span.class),
+					createNopAction(RazorError.class),
+					createNopAction(BlockType.class),
+					input1
+				);
 			}
 		);
 	}
@@ -157,25 +136,19 @@ public class CallbackParserListenerTest {
 		runSyncContextTest(
 			new SpanBuilder().build(),
 			new SpanBuilder().build(),
-			new Delegates.IFunc1<Delegates.IAction1<Span>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<Span> spanCallback) {
-					assert spanCallback != null;
-					return new CallbackVisitor(
-						spanCallback,
-						createNopAction(RazorError.class),
-						createNopAction(BlockType.class),
-						createNopAction(BlockType.class)
-					);
-				}
+			spanCallback -> {
+				assert spanCallback != null;
+				return new CallbackVisitor(
+					spanCallback,
+					createNopAction(RazorError.class),
+					createNopAction(BlockType.class),
+					createNopAction(BlockType.class)
+				);
 			},
-			new Delegates.IAction2<CallbackVisitor, Span>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final Span expected) {
-					assert listener != null;
-					assert expected != null;
-					listener.visitSpan(expected);
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				assert expected != null;
+				listener.visitSpan(expected);
 			}
 		);
 	}
@@ -185,24 +158,18 @@ public class CallbackParserListenerTest {
 		runSyncContextTest(
 			BlockType.values()[0],
 			BlockType.Template,
-			new Delegates.IFunc1<Delegates.IAction1<BlockType>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<BlockType> startBlockCall) {
-					assert startBlockCall != null;
-					return new CallbackVisitor(
-						createNopAction(Span.class),
-						createNopAction(RazorError.class),
-						startBlockCall,
-						createNopAction(BlockType.class)
-					);
-				}
+			startBlockCall -> {
+				assert startBlockCall != null;
+				return new CallbackVisitor(
+					createNopAction(Span.class),
+					createNopAction(RazorError.class),
+					startBlockCall,
+					createNopAction(BlockType.class)
+				);
 			},
-			new Delegates.IAction2<CallbackVisitor, BlockType>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final BlockType expected) {
-					assert listener != null;
-					listener.visitStartBlock(new BlockBuilder().setType(expected).build());
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				listener.visitStartBlock(new BlockBuilder().setType(expected).build());
 			}
 		);
 	}
@@ -212,24 +179,18 @@ public class CallbackParserListenerTest {
 		runSyncContextTest(
 			BlockType.values()[0],
 			BlockType.Template,
-			new Delegates.IFunc1<Delegates.IAction1<BlockType>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<BlockType> endBlockCallback) {
-					assert endBlockCallback != null;
-					return new CallbackVisitor(
-						createNopAction(Span.class),
-						createNopAction(RazorError.class),
-						createNopAction(BlockType.class),
-						endBlockCallback
-					);
-				}
+			endBlockCallback -> {
+				assert endBlockCallback != null;
+				return new CallbackVisitor(
+					createNopAction(Span.class),
+					createNopAction(RazorError.class),
+					createNopAction(BlockType.class),
+					endBlockCallback
+				);
 			},
-			new Delegates.IAction2<CallbackVisitor, BlockType>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final BlockType expected) {
-					assert listener != null;
-					listener.visitEndBlock(new BlockBuilder().setType(expected).build());
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				listener.visitEndBlock(new BlockBuilder().setType(expected).build());
 			}
 		);
 	}
@@ -239,25 +200,19 @@ public class CallbackParserListenerTest {
 		runSyncContextTest(
 			new RazorError("Foo", SourceLocation.Zero),
 			new RazorError("Bar", 42, 42, 42),
-			new Delegates.IFunc1<Delegates.IAction1<RazorError>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<RazorError> errorCallback) {
-					assert errorCallback != null;
-					return new CallbackVisitor(
-						createNopAction(Span.class),
-						errorCallback,
-						createNopAction(BlockType.class),
-						createNopAction(BlockType.class)
-					);
-				}
+			errorCallback -> {
+				assert errorCallback != null;
+				return new CallbackVisitor(
+					createNopAction(Span.class),
+					errorCallback,
+					createNopAction(BlockType.class),
+					createNopAction(BlockType.class)
+				);
 			},
-			new Delegates.IAction2<CallbackVisitor, RazorError>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final RazorError expected) {
-					assert listener != null;
-					assert expected != null;
-					listener.visitError(expected);
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				assert expected != null;
+				listener.visitError(expected);
 			}
 		);
 	}
@@ -265,36 +220,27 @@ public class CallbackParserListenerTest {
 	@SuppressWarnings("unchecked")
 	private static <T> void runSyncContextTest(final T defaultValue, final T expected, final Delegates.IFunc1<Delegates.IAction1<T>, CallbackVisitor> ctor, final Delegates.IAction2<CallbackVisitor, T> call) {
 		final SynchronizationContext mockContext = mock(SynchronizationContext.class);
-		doAnswer(new Answer<Void>() {
-			@Override
-			public Void answer(final InvocationOnMock invocation) throws Throwable {
-				final Object[] arguments = invocation.getArguments();
-				assert arguments.length == 2;
-				final SendOrPostCallback sendOrPostCallback = typeAs(arguments[0], SendOrPostCallback.class);
-				sendOrPostCallback.invoke(expected);
+		doAnswer(invocation -> {
+			final Object[] arguments = invocation.getArguments();
+			assert arguments.length == 2;
+			final SendOrPostCallback sendOrPostCallback = typeAs(arguments[0], SendOrPostCallback.class);
+			sendOrPostCallback.invoke(expected);
 
-				return null;
-			}
+			return null;
 		}).when(mockContext).post(any(SendOrPostCallback.class), anyObject());
 
 		runCallbackTest(
 			defaultValue,
-			new Delegates.IFunc1<Delegates.IAction1<T>, CallbackVisitor>() {
-				@Override
-				public CallbackVisitor invoke(@Nullable final Delegates.IAction1<T> callback) {
-					final CallbackVisitor listener = ctor.invoke(callback);
-					assert listener != null;
-					listener.setSynchronizationContext(mockContext);
-					return listener;
-				}
+			callback -> {
+				final CallbackVisitor listener = ctor.invoke(callback);
+				assert listener != null;
+				listener.setSynchronizationContext(mockContext);
+				return listener;
 			},
 			call,
-			new Delegates.IAction2<T, T>() {
-				@Override
-				public void invoke(@Nullable final T original, @Nullable final T actual) {
-					assertNotSame(original, actual);
-					assertSame(expected, actual);
-				}
+			(original, actual) -> {
+				assertNotSame(original, actual);
+				assertSame(expected, actual);
 			}
 		);
 	}
@@ -307,13 +253,10 @@ public class CallbackParserListenerTest {
 		runCallbackTest(
 			BlockType.Markup,
 			ctor,
-			new Delegates.IAction2<CallbackVisitor, BlockType>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final BlockType expected) {
-					assert listener != null;
-					assert expected != null;
-					listener.visitStartBlock(new BlockBuilder().setType(expected).build());
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				assert expected != null;
+				listener.visitStartBlock(new BlockBuilder().setType(expected).build());
 			},
 			verifyResults
 		);
@@ -327,13 +270,10 @@ public class CallbackParserListenerTest {
 		runCallbackTest(
 			BlockType.Markup,
 			ctor,
-			new Delegates.IAction2<CallbackVisitor, BlockType>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final BlockType expected) {
-					assert listener != null;
-					assert expected != null;
-					listener.visitEndBlock(new BlockBuilder().setType(expected).build());
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				assert expected != null;
+				listener.visitEndBlock(new BlockBuilder().setType(expected).build());
 			},
 			verifyResults
 		);
@@ -347,13 +287,10 @@ public class CallbackParserListenerTest {
 		runCallbackTest(
 			new RazorError("Foo", SourceLocation.Zero),
 			ctor,
-			new Delegates.IAction2<CallbackVisitor, RazorError>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final RazorError expected) {
-					assert listener != null;
-					assert expected != null;
-					listener.visitError(expected);
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				assert expected != null;
+				listener.visitError(expected);
 			},
 			verifyResults
 		);
@@ -367,13 +304,10 @@ public class CallbackParserListenerTest {
 		runCallbackTest(
 			new SpanBuilder().build(),
 			ctor,
-			new Delegates.IAction2<CallbackVisitor, Span>() {
-				@Override
-				public void invoke(@Nullable final CallbackVisitor listener, @Nullable final Span expected) {
-					assert listener != null;
-					assert expected != null;
-					listener.visitSpan(expected);
-				}
+			(listener, expected) -> {
+				assert listener != null;
+				assert expected != null;
+				listener.visitSpan(expected);
 			},
 			verifyResults
 		);
@@ -385,12 +319,7 @@ public class CallbackParserListenerTest {
 
 	private static <T> void runCallbackTest(final T expected, final Delegates.IFunc1<Delegates.IAction1<T>, CallbackVisitor> ctor, final Delegates.IAction2<CallbackVisitor, T> call, final Delegates.IAction2<T, T> verifyResults) {
 		final OutParam<T> actual = OutParam.of();
-		final Delegates.IAction1<T> callback = new Delegates.IAction1<T>() {
-			@Override
-			public void invoke(@Nullable final T input) {
-				actual.set(input);
-			}
-		};
+		final Delegates.IAction1<T> callback = actual::set;
 
 		final CallbackVisitor listener = ctor.invoke(callback);
 
@@ -405,18 +334,12 @@ public class CallbackParserListenerTest {
 	}
 
 	private static <T> Delegates.IAction1<T> createNopAction() {
-		return new Delegates.IAction1<T>() {
-			@Override
-			public void invoke(@Nullable final T input) {
-			}
+		return input -> {
 		};
 	}
 
 	private static <T> Delegates.IAction1<T> createNopAction(final Class<T> ignored) {
-		return new Delegates.IAction1<T>() {
-			@Override
-			public void invoke(@Nullable final T input) {
-			}
+		return input -> {
 		};
 	}
 }

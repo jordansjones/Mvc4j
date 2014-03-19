@@ -51,12 +51,7 @@ final class BackgroundThread extends BaseThreadState {
 		this.fileName = checkNotNull(fileName);
 
 		this.shutdownToken = main.getCancelToken();
-		this.backgroundThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				workerLoop();
-			}
-		});
+		this.backgroundThread = new Thread(this::workerLoop);
 		this.backgroundThread.setDaemon(true);
 		this.backgroundThread.setName(BackgroundParser.class.getSimpleName() + " Thread");
 
@@ -73,7 +68,7 @@ final class BackgroundThread extends BaseThreadState {
 
 		Stopwatch sw = null;
 		if (isEditorTracing) {
-			sw = new Stopwatch();
+			sw = Stopwatch.createUnstarted();
 		}
 
 		try {
@@ -149,22 +144,12 @@ final class BackgroundThread extends BaseThreadState {
 										final String buffer = TextExtensions.readToEnd(finalChange.getNewBuffer());
 										final int lineCount = Iterables.size(Splitter.on(CharMatcher.anyOf("\r\n")).split(buffer));
 										Debug.doAssert(
-											!Iterables.any(args.getGeneratorResults().getDesignTimeLineMappingEntries(), new Predicate<Map.Entry<Integer, GeneratedCodeMapping>>() {
-												@Override
-												public boolean apply(@Nullable final Map.Entry<Integer, GeneratedCodeMapping> input) {
-													return input != null && input.getValue().getStartLine() > lineCount;
-												}
-											}),
+											!Iterables.any(args.getGeneratorResults().getDesignTimeLineMappingEntries(), input -> input != null && input.getValue().getStartLine() > lineCount),
 											"Found a design-time line mapping referring to a line outside the source file!"
 										);
 
 										Debug.doAssert(
-											!Iterables.any(args.getGeneratorResults().getDocument().flatten(), new Predicate<Span>() {
-												@Override
-												public boolean apply(@Nullable final Span input) {
-													return input != null && input.getStart().getLineIndex() > lineCount;
-												}
-											}),
+											!Iterables.any(args.getGeneratorResults().getDocument().flatten(), input -> input != null && input.getStart().getLineIndex() > lineCount),
 											"Found a span with a line number outside the source file"
 										);
 									}

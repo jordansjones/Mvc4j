@@ -25,12 +25,9 @@ public final class TextExtensions {
 
 	public static LookaheadToken beginLookahead(@Nonnull final ITextBuffer buffer) {
 		final int start = buffer.getPosition();
-		return new LookaheadToken(new Delegates.IFunc<Void>() {
-			@Override
-			public Void invoke() {
-				buffer.setPosition(start);
-				return null;
-			}
+		return new LookaheadToken(() -> {
+			buffer.setPosition(start);
+			return null;
 		});
 	}
 
@@ -64,12 +61,7 @@ public final class TextExtensions {
 	public static String readUntil(@Nonnull final TextReader reader, final char terminator, final boolean inclusive) {
 		return readUntil(
 			reader,
-			new Predicate<Character>() {
-				@Override
-				public boolean apply(@Nullable final Character input) {
-					return input != null && input == terminator;
-				}
-			},
+			input -> input != null && input == terminator,
 			inclusive
 		);
 	}
@@ -97,29 +89,14 @@ public final class TextExtensions {
 	}
 
 	public static String readWhile(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition, final boolean inclusive) {
-		return readUntil(reader, new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable final Character input) {
-				return !condition.apply(input);
-			}
-		}, inclusive);
+		return readUntil(reader, input -> !condition.apply(input), inclusive);
 	}
 
 	public static String readWhiteSpace(@Nonnull final TextReader reader) {
-		return readWhile(reader, new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable final Character input) {
-				return input != null && Character.isWhitespace(input);
-			}
-		});
+		return readWhile(reader, input -> input != null && Character.isWhitespace(input));
 	}
 
 	public static String readUntilWhiteSpace(@Nonnull final TextReader reader) {
-		return readUntil(reader, new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable final Character input) {
-				return input != null && Character.isWhitespace(input);
-			}
-		});
+		return readUntil(reader, input -> input != null && Character.isWhitespace(input));
 	}
 }

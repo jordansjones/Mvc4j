@@ -47,11 +47,8 @@ abstract class HtmlMarkupParserDelegate {
 		span.setCodeGenerator(new MarkupCodeGenerator());
 		span.setEditHandler(new SpanEditHandler(getLanguage().createTokenizeStringDelegate(), AcceptedCharacters.Any));
 	}
-	protected final Delegates.IAction1<SpanBuilder> defaultMarkupSpanDelegate = new Delegates.IAction1<SpanBuilder>() {
-		@Override
-		public void invoke(@Nullable final SpanBuilder input) {
-			if (input != null) defaultMarkupSpan(input);
-		}
+	protected final Delegates.IAction1<SpanBuilder> defaultMarkupSpanDelegate = input -> {
+		if (input != null) defaultMarkupSpan(input);
 	};
 
 	public void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content) {

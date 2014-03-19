@@ -24,12 +24,7 @@ public class BackgroundParser implements IDisposable {
 		this.main = new MainThreadState(fileName);
 		this.bg = new BackgroundThread(main, host, fileName);
 
-		this.main.setResultsReadyHandler(new IEventHandler<DocumentParseCompleteEventArgs>() {
-			@Override
-			public void handleEvent(@Nonnull final Object sender, @Nonnull final DocumentParseCompleteEventArgs e) {
-				onResultsReady(e);
-			}
-		});
+		this.main.setResultsReadyHandler((sender, e) -> onResultsReady(e));
 	}
 
 	public boolean isIdle() {

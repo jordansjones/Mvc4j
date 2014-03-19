@@ -56,12 +56,7 @@ class HtmlMarkupParserSection extends HtmlMarkupParserDelegate {
 
 	private void nonNestingSection(@Nonnull final String[] nestingSequenceComponents) {
 		do {
-			skipToAndParseCode(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final HtmlSymbol sym) {
-					return sym != null && (sym.isType(HtmlSymbolType.OpenAngle) || atEnd(nestingSequenceComponents));
-				}
-			});
+			skipToAndParseCode(sym -> sym != null && (sym.isType(HtmlSymbolType.OpenAngle) || atEnd(nestingSequenceComponents)));
 			getDocumentParser().scanTagInDocumentContext();
 			if (!isEndOfFile() && atEnd(nestingSequenceComponents)) {
 				break;
@@ -75,12 +70,7 @@ class HtmlMarkupParserSection extends HtmlMarkupParserDelegate {
 	private void nestingSection(@Nonnull final KeyValue<String, String> nestingSequence) {
 		int nesting = 1;
 		while (nesting > 0 && !isEndOfFile()) {
-			skipToAndParseCode(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final HtmlSymbol sym) {
-					return sym != null && sym.isTypeOr(HtmlSymbolType.Text, HtmlSymbolType.OpenAngle);
-				}
-			});
+			skipToAndParseCode(sym -> sym != null && sym.isTypeOr(HtmlSymbolType.Text, HtmlSymbolType.OpenAngle));
 			if (at(HtmlSymbolType.Text)) {
 				nesting += processTextToken(nestingSequence, nesting);
 				if (getCurrentSymbol() != null) {

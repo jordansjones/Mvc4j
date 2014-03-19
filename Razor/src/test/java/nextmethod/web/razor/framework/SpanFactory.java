@@ -29,21 +29,13 @@ public class SpanFactory {
 
 	public static SpanFactory createJavaHtml() {
 		return new SpanFactory(
-			new Function<ITextDocument, ITokenizer>() {
-
-				@Override
-				public ITokenizer apply(@Nullable ITextDocument input) {
-					assert input != null;
-					return new HtmlTokenizer(input);
-				}
+			input -> {
+				assert input != null;
+				return new HtmlTokenizer(input);
 			},
-			new Function<ITextDocument, ITokenizer>() {
-
-				@Override
-				public ITokenizer apply(@Nullable ITextDocument input) {
-					assert input != null;
-					return new JavaTokenizer(input);
-				}
+			input -> {
+				assert input != null;
+				return new JavaTokenizer(input);
 			}
 		);
 	}
@@ -63,22 +55,16 @@ public class SpanFactory {
 	}
 
 	public SpanConstructor span(final SpanKind kind, final String content, final JavaSymbolType type) {
-		return createSymbolSpan(kind, content, new Function<SourceLocation, ISymbol>() {
-			@Override
-			public ISymbol apply(@Nullable SourceLocation input) {
-				assert input != null;
-				return new JavaSymbol(input, content, type);
-			}
+		return createSymbolSpan(kind, content, input -> {
+			assert input != null;
+			return new JavaSymbol(input, content, type);
 		});
 	}
 
 	public SpanConstructor span(final SpanKind kind, final String content, final HtmlSymbolType type) {
-		return createSymbolSpan(kind, content, new Function<SourceLocation, ISymbol>() {
-			@Override
-			public ISymbol apply(@Nullable SourceLocation input) {
-				assert input != null;
-				return new HtmlSymbol(input, content, type);
-			}
+		return createSymbolSpan(kind, content, input -> {
+			assert input != null;
+			return new HtmlSymbol(input, content, type);
 		});
 	}
 

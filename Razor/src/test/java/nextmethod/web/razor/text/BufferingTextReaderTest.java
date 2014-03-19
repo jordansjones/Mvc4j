@@ -35,11 +35,7 @@ public class BufferingTextReaderTest extends LookaheadTextReaderTestBase {
 
 	@Test
 	public void endingLookaheadReturnsReaderToPreviousLocation() {
-		final Func<StringBuilder, LookaheadTextReader> readerFunc = new Func<StringBuilder, LookaheadTextReader>() {
-			public void apply(StringBuilder sb, LookaheadTextReader reader) {
-				read(sb, reader);
-			}
-		};
+		final Func<StringBuilder, LookaheadTextReader> readerFunc = this::read;
 		runLookaheadTest("abcdefg", "abcb",
 				readerFunc,
 				lookAhead(readerFunc, readerFunc),
@@ -49,11 +45,7 @@ public class BufferingTextReaderTest extends LookaheadTextReaderTestBase {
 
 	@Test
 	public void multipleLookaheadsCanBePerformed() {
-		final Func<StringBuilder, LookaheadTextReader> readerFunc = new Func<StringBuilder, LookaheadTextReader>() {
-			public void apply(StringBuilder sb, LookaheadTextReader reader) {
-				read(sb, reader);
-			}
-		};
+		final Func<StringBuilder, LookaheadTextReader> readerFunc = this::read;
 		runLookaheadTest("abcdefg", "abcbcdc",
 			readerFunc,
 			lookAhead(readerFunc, readerFunc),

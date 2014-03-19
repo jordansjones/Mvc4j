@@ -73,12 +73,7 @@ public class BufferingTextReader extends LookaheadTextReader {
 		final BacktrackContext context = new BacktrackContext(currentBufferPosition, getCurrentLocation());
 		backtrackStack.push(context);
 
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				endLookahead(context);
-			}
-		});
+		return new DisposableAction(() -> endLookahead(context));
 	}
 
 	@Override

@@ -39,11 +39,6 @@ public class DisposableActionTest {
 	}
 
 	private static Delegates.IAction createAction(final AtomicBoolean called) {
-		return new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				called.set(true);
-			}
-		};
+		return () -> called.set(true);
 	}
 }

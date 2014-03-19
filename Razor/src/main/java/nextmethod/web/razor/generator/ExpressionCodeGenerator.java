@@ -26,22 +26,19 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 			}
 		}
 
-		final String writeInvocation = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(CodeWriter input) {
-				if (context.getHost().isDesignTimeMode()) {
-					context.ensureExpressionHelperVariable();
-					input.writeStartAssigment("__o");
+		final String writeInvocation = context.buildCodeString(input -> {
+			if (context.getHost().isDesignTimeMode()) {
+				context.ensureExpressionHelperVariable();
+				input.writeStartAssigment("__o");
+			}
+			else if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
+				if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+					input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteToMethodName());
+					input.writeSnippet(context.getTargetWriterName());
+					input.writeParameterSeparator();
 				}
-				else if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
-					if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-						input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteToMethodName());
-						input.writeSnippet(context.getTargetWriterName());
-						input.writeParameterSeparator();
-					}
-					else {
-						input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteMethodName());
-					}
+				else {
+					input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteMethodName());
 				}
 			}
 		});
@@ -52,18 +49,15 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 
 	@Override
 	public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		final String endBlock = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(CodeWriter input) {
-				if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
-					if (!context.getHost().isDesignTimeMode()) {
-						input.writeEndMethodInvoke();
-					}
-					input.writeEndStatement();
+		final String endBlock = context.buildCodeString(input -> {
+			if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
+				if (!context.getHost().isDesignTimeMode()) {
+					input.writeEndMethodInvoke();
 				}
-				else {
-					input.writeLineContinuation();
-				}
+				input.writeEndStatement();
+			}
+			else {
+				input.writeLineContinuation();
 			}
 		});
 
@@ -109,14 +103,11 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 		return result == null ? (Span) result : Span.class.cast(result);
 	}
 
-	private static final Predicate<SyntaxTreeNode> spanCodeOrMarkupPredicate = new Predicate<SyntaxTreeNode>() {
-		@Override
-		public boolean apply(@Nullable SyntaxTreeNode input) {
-			if (input == null || !typeIs(input, Span.class)) return false;
-			final Span span = Span.class.cast(input);
-			final SpanKind kind = span.getKind();
-			return kind == SpanKind.Code || kind == SpanKind.Markup;
-		}
+	private static final Predicate<SyntaxTreeNode> spanCodeOrMarkupPredicate = input -> {
+		if (input == null || !typeIs(input, Span.class)) return false;
+		final Span span = Span.class.cast(input);
+		final SpanKind kind = span.getKind();
+		return kind == SpanKind.Code || kind == SpanKind.Markup;
 	};
 
 }

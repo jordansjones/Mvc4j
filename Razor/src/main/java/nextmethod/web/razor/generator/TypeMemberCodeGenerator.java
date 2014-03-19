@@ -13,11 +13,8 @@ public class TypeMemberCodeGenerator extends SpanCodeGenerator {
 
 	@Override
 	public void generateCode(@Nonnull final Span target, @Nonnull final CodeGeneratorContext context) {
-		final String generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(CodeWriter input) {
-				input.writeSnippet(target.getContent());
-			}
+		final String generatedCode = context.buildCodeString(input -> {
+			input.writeSnippet(target.getContent());
 		});
 
 		final CodeSnippetTypeMember member = new CodeSnippetTypeMember(pad(generatedCode, target));

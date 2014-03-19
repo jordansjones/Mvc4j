@@ -33,28 +33,25 @@ public class LiteralAttributeCodeGenerator extends SpanCodeGenerator {
 		}
 
 		final ExpressionRenderingMode oldMode = context.getExpressionRenderingMode();
-		context.bufferStatementFragment(context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(@Nullable final CodeWriter input) {
-				assert input != null;
+		context.bufferStatementFragment(context.buildCodeString(input -> {
+			assert input != null;
 
+			input.writeParameterSeparator();
+			input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
+			input.writeLocationTaggedString(prefix);
+			input.writeParameterSeparator();
+			if (valueGenerator != null) {
+				input.writeStartMethodInvoke("nextmethod.base.KeyValue.of", "java.lang.Object", "java.lang.Integer");
+				context.setExpressionRenderingMode(ExpressionRenderingMode.InjectCode);
+			}
+			else {
+				input.writeLocationTaggedString(value);
 				input.writeParameterSeparator();
-				input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
-				input.writeLocationTaggedString(prefix);
-				input.writeParameterSeparator();
-				if (valueGenerator != null) {
-					input.writeStartMethodInvoke("nextmethod.base.KeyValue.of", "java.lang.Object", "java.lang.Integer");
-					context.setExpressionRenderingMode(ExpressionRenderingMode.InjectCode);
-				}
-				else {
-					input.writeLocationTaggedString(value);
-					input.writeParameterSeparator();
-					// This attribute value is a literal value
-					input.writeBooleanLiteral(true);
-					input.writeEndMethodInvoke();
+				// This attribute value is a literal value
+				input.writeBooleanLiteral(true);
+				input.writeEndMethodInvoke();
 
-					input.writeLineContinuation();
-				}
+				input.writeLineContinuation();
 			}
 		}));
 
@@ -62,21 +59,18 @@ public class LiteralAttributeCodeGenerator extends SpanCodeGenerator {
 			valueGenerator.getValue().generateCode(target, context);
 			context.flushBufferedStatement();
 			context.setExpressionRenderingMode(oldMode);
-			context.addStatement(context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			context.addStatement(context.buildCodeString(input -> {
+				assert input != null;
 
-					input.writeParameterSeparator();
-					input.writeSnippet(String.valueOf(valueGenerator.getLocation().getAbsoluteIndex()));
-					input.writeEndMethodInvoke();
-					input.writeParameterSeparator();
-					// This attribute value is not a literal value, it is dynamically generated
-					input.writeBooleanLiteral(false);
-					input.writeEndMethodInvoke();
+				input.writeParameterSeparator();
+				input.writeSnippet(String.valueOf(valueGenerator.getLocation().getAbsoluteIndex()));
+				input.writeEndMethodInvoke();
+				input.writeParameterSeparator();
+				// This attribute value is not a literal value, it is dynamically generated
+				input.writeBooleanLiteral(false);
+				input.writeEndMethodInvoke();
 
-					input.writeLineContinuation();
-				}
+				input.writeLineContinuation();
 			}));
 		}
 		else {

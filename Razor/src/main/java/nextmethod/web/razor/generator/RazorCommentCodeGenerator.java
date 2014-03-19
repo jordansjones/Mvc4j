@@ -14,11 +14,8 @@ public class RazorCommentCodeGenerator extends BlockCodeGenerator {
 		// Flush the buffered statement since we're interrupting it with a comment.
 		if (!Strings.isNullOrEmpty(context.getCurrentBufferedStatement())) {
 			context.markEndOfGeneratedCode();
-			context.bufferStatementFragment(context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(final CodeWriter input) {
-					input.writeLineContinuation();
-				}
+			context.bufferStatementFragment(context.buildCodeString(input -> {
+				input.writeLineContinuation();
 			}));
 		}
 		context.flushBufferedStatement();

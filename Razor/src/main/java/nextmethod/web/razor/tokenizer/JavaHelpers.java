@@ -12,12 +12,7 @@ public final class JavaHelpers {
 		return Character.isJavaIdentifierStart(c);
 	}
 
-	public static final Predicate<Character> IsIdentifierPartPredicate = new Predicate<Character>() {
-		@Override
-		public boolean apply(@Nullable Character input) {
-			return input != null && Character.isJavaIdentifierPart(input);
-		}
-	};
+	public static final Predicate<Character> IsIdentifierPartPredicate = input -> input != null && Character.isJavaIdentifierPart(input);
 
 	public static boolean isIdentifierPart(final char c) {
 		return IsIdentifierPartPredicate.apply(c);

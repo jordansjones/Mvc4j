@@ -85,13 +85,10 @@ public class RazorParserTest {
 
 	@Test
 	public void parseMethodSetsUpRunWithSpecifiedCodeParserMarkupParserAndListenerPassesToMarkupParser() {
-		runParseWithListenerTest(new Delegates.IAction2<RazorParser, TextReader>() {
-			@Override
-			public void invoke(@Nullable final RazorParser parser, @Nullable final TextReader reader) {
-				assert parser != null;
-				assert reader != null;
-				parser.parse(reader);
-			}
+		runParseWithListenerTest((parser, reader) -> {
+			assert parser != null;
+			assert reader != null;
+			parser.parse(reader);
 		});
 	}
 

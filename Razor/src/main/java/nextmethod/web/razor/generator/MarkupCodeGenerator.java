@@ -20,21 +20,18 @@ public class MarkupCodeGenerator extends SpanCodeGenerator {
 		}
 
 		if (!Strings.isNullOrEmpty(target.getContent()) && !context.getHost().isDesignTimeMode()) {
-			final String code = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(final CodeWriter input) {
-					if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-						input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralToMethodName());
-						input.writeSnippet(context.getTargetWriterName());
-						input.writeParameterSeparator();
-					}
-					else {
-						input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralMethodName());
-					}
-					input.writeStringLiteral(target.getContent());
-					input.writeEndMethodInvoke();
-					input.writeEndStatement();
+			final String code = context.buildCodeString(input -> {
+				if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+					input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralToMethodName());
+					input.writeSnippet(context.getTargetWriterName());
+					input.writeParameterSeparator();
 				}
+				else {
+					input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralMethodName());
+				}
+				input.writeStringLiteral(target.getContent());
+				input.writeEndMethodInvoke();
+				input.writeEndStatement();
 			});
 			context.addStatement(code);
 		}

@@ -121,15 +121,12 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	}
 
 	protected static Delegates.IFunc1<JavaSymbol, Boolean> isSpacingToken(final boolean includeNewLines, final boolean includeComments) {
-		return new Delegates.IFunc1<JavaSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final JavaSymbol symbol) {
-				if (symbol == null) return false;
-				final JavaSymbolType type = symbol.getType();
-				return type == JavaSymbolType.WhiteSpace
-					|| (includeNewLines && type == JavaSymbolType.NewLine)
-					|| (includeComments && type == JavaSymbolType.Comment);
-			}
+		return symbol -> {
+			if (symbol == null) return false;
+			final JavaSymbolType type = symbol.getType();
+			return type == JavaSymbolType.WhiteSpace
+				|| (includeNewLines && type == JavaSymbolType.NewLine)
+				|| (includeComments && type == JavaSymbolType.Comment);
 		};
 	}
 
@@ -179,12 +176,9 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		span.setCodeGenerator(new StatementCodeGenerator());
 	}
 
-	protected final Delegates.IAction1<SpanBuilder> defaultSpanConfigDelegate = new Delegates.IAction1<SpanBuilder>() {
-		@Override
-		public void invoke(@Nullable final SpanBuilder input) {
-			if (input != null) {
-				defaultSpanConfig(input);
-			}
+	protected final Delegates.IAction1<SpanBuilder> defaultSpanConfigDelegate = input -> {
+		if (input != null) {
+			defaultSpanConfig(input);
 		}
 	};
 
@@ -315,15 +309,11 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		currentBlock.setType(BlockType.Expression);
 		currentBlock.setCodeGenerator(new ExpressionCodeGenerator());
 
-		try(IDisposable disposable = pushSpanConfig(new Delegates.IAction1<SpanBuilder>() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public void invoke(@Nullable final SpanBuilder input) {
-				if (input != null) {
-					input.setEditHandler(new ImplicitExpressionEditorHandler(getLanguage().createTokenizeStringDelegate(), getKeywords(), isNested()));
-					input.getEditHandler().setAcceptedCharacters(EnumSet.of(AcceptedCharacters.NonWhiteSpace));
-					input.setCodeGenerator(new ExpressionCodeGenerator());
-				}
+		try(IDisposable disposable = pushSpanConfig(input -> {
+			if (input != null) {
+				input.setEditHandler(new ImplicitExpressionEditorHandler(getLanguage().createTokenizeStringDelegate(), getKeywords(), isNested()));
+				input.getEditHandler().setAcceptedCharacters(EnumSet.of(AcceptedCharacters.NonWhiteSpace));
+				input.setCodeGenerator(new ExpressionCodeGenerator());
 			}
 		})) {
 			do {
@@ -348,12 +338,9 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 				JavaSymbolType right;
 				boolean success;
 
-				try (IDisposable disposable = pushSpanConfig(new Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>>() {
-					@Override
-					public void invoke(@Nullable final SpanBuilder span, @Nullable final Delegates.IAction1<SpanBuilder> prev) {
-						if (prev != null) prev.invoke(span);
-						if (span != null) span.getEditHandler().setAcceptedCharacters(AcceptedCharacters.Any);
-					}
+				try (IDisposable disposable = pushSpanConfig((span, prev) -> {
+					if (prev != null) prev.invoke(span);
+					if (span != null) span.getEditHandler().setAcceptedCharacters(AcceptedCharacters.Any);
 				})) {
 					right = getLanguage().flipBracket(getCurrentSymbol().getType());
 					success = balance(EnumSet.of(BalancingModes.BacktrackOnFailure, BalancingModes.AllowCommentsAndTemplates));
@@ -428,12 +415,7 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	}
 
 	private void captureWhitespaceAtEndOfCodeOnlyLine() {
-		final Iterable<JavaSymbol> ws = readWhile(new Delegates.IFunc1<JavaSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final JavaSymbol symbol) {
-				return symbol != null && symbol.getType() == JavaSymbolType.WhiteSpace;
-			}
-		});
+		final Iterable<JavaSymbol> ws = readWhile(symbol -> symbol != null && symbol.getType() == JavaSymbolType.WhiteSpace);
 
 		if (at(JavaSymbolType.NewLine)) {
 			accept(ws);
@@ -451,12 +433,9 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 		sb.setCodeGenerator(new ExpressionCodeGenerator());
 	}
 
-	private final Delegates.IAction1<SpanBuilder> configureExplicitExpressionSpanDelegate = new Delegates.IAction1<SpanBuilder>() {
-		@Override
-		public void invoke(@Nullable final SpanBuilder input) {
-			if (input != null) {
-				configureExplicitExpressionSpan(input);
-			}
+	private final Delegates.IAction1<SpanBuilder> configureExplicitExpressionSpanDelegate = input -> {
+		if (input != null) {
+			configureExplicitExpressionSpan(input);
 		}
 	};
 
@@ -512,20 +491,14 @@ public class JavaCodeParser extends TokenizerBackedParser<JavaTokenizer, JavaSym
 	}
 
 	protected void otherParserBlock() {
-		parseWithOtherParser(new Delegates.IAction1<ParserBase>() {
-			@Override
-			public void invoke(@Nullable final ParserBase input) {
-				if (input != null) input.parseBlock();
-			}
+		parseWithOtherParser(input -> {
+			if (input != null) input.parseBlock();
 		});
 	}
 
 	void sectionBlock(@Nonnull final String left, @Nonnull final String right, final boolean caseSensitive) {
-		parseWithOtherParser(new Delegates.IAction1<ParserBase>() {
-			@Override
-			public void invoke(@Nullable final ParserBase input) {
-				if (input != null) input.parseSection(KeyValue.<String, String>of(left, right), caseSensitive);
-			}
+		parseWithOtherParser(input -> {
+			if (input != null) input.parseSection(KeyValue.<String, String>of(left, right), caseSensitive);
 		});
 	}
 

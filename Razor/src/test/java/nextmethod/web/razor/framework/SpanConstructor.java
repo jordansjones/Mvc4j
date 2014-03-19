@@ -24,12 +24,9 @@ import java.util.EnumSet;
 
 public class SpanConstructor extends SyntaxTreeNode implements ISpanConstructor {
 
-	static Delegates.IFunc1<String, Iterable<ISymbol>> testTokenizer = new Delegates.IFunc1<String, Iterable<ISymbol>>() {
-		@Override
-		public Iterable<ISymbol> invoke(@Nullable final String input) {
-			assert input != null;
-			return Lists.<ISymbol>newArrayList(new RawTextSymbol(SourceLocation.Zero, input));
-		}
+	static Delegates.IFunc1<String, Iterable<ISymbol>> testTokenizer = input -> {
+		assert input != null;
+		return Lists.<ISymbol>newArrayList(new RawTextSymbol(SourceLocation.Zero, input));
 	};
 
 	public SpanBuilder builder;
@@ -88,12 +85,7 @@ public class SpanConstructor extends SyntaxTreeNode implements ISpanConstructor 
 	}
 
 	public SpanConstructor accepts(final EnumSet<AcceptedCharacters> acceptedCharacters) {
-		return this.withHandler(new Delegates.IAction1<SpanEditHandler>() {
-			@Override
-			public void invoke(SpanEditHandler input) {
-				input.setAcceptedCharacters(acceptedCharacters);
-			}
-		});
+		return this.withHandler(input -> input.setAcceptedCharacters(acceptedCharacters));
 	}
 
 	public SpanConstructor autoCompleteWith(final String autoCompleteString) {
@@ -115,12 +107,7 @@ public class SpanConstructor extends SyntaxTreeNode implements ISpanConstructor 
 		else {
 			editorHints = EnumSet.of(hint, hints);
 		}
-		return this.withHandler(new Delegates.IAction1<SpanEditHandler>() {
-			@Override
-			public void invoke(SpanEditHandler input) {
-				input.setEditorHints(editorHints);
-			}
-		});
+		return this.withHandler(input -> input.setEditorHints(editorHints));
 	}
 
 	@Override

@@ -46,9 +46,13 @@ public class RazorEngineHost {
 	protected String defaultPackage;
 	protected String defaultClassName;
 	protected boolean staticHelpers;
+	protected boolean indentingWithTabs;
 
 	private RazorCodeLanguage<?> codeLanguage;
 	private Delegates.IFunc<ParserBase> markupParserFactory;
+
+
+	private int tabSize = 4;
 
 	protected RazorEngineHost() {
 		this.generatedClassContext = GeneratedClassContext.Default;
@@ -64,12 +68,7 @@ public class RazorEngineHost {
 	 * @param codeLanguage    the coe language to use
 	 */
 	public RazorEngineHost(@Nonnull final RazorCodeLanguage<?> codeLanguage) {
-		this(codeLanguage, new Delegates.IFunc<ParserBase>() {
-			@Override
-			public ParserBase invoke() {
-				return new HtmlMarkupParser();
-			}
-		});
+		this(codeLanguage, HtmlMarkupParser::new);
 	}
 
 	public RazorEngineHost(@Nonnull final RazorCodeLanguage<?> codeLanguage, @Nonnull final Delegates.IFunc<ParserBase> markupParserFactory) {
@@ -215,5 +214,21 @@ public class RazorEngineHost {
 
 	public void setStaticHelpers(final boolean staticHelpers) {
 		this.staticHelpers = staticHelpers;
+	}
+
+	public boolean isIndentingWithTabs() {
+		return indentingWithTabs;
+	}
+
+	public void setIndentingWithTabs(final boolean indentingWithTabs) {
+		this.indentingWithTabs = indentingWithTabs;
+	}
+
+	public int getTabSize() {
+		return tabSize;
+	}
+
+	public void setTabSize(final int tabSize) {
+		this.tabSize = Math.max(tabSize, 1);
 	}
 }

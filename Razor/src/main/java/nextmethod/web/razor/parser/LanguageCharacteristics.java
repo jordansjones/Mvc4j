@@ -33,12 +33,7 @@ public abstract class LanguageCharacteristics<
 
 	@SuppressWarnings("unchecked")
 	public <XSymbol extends ISymbol> Delegates.IFunc1<String, Iterable<XSymbol>> createTokenizeStringDelegate() {
-		return new Delegates.IFunc1<String, Iterable<XSymbol>>() {
-			@Override
-			public Iterable<XSymbol> invoke(@Nullable final String tokenString) {
-				return (Iterable<XSymbol>) (tokenString == null ? Lists.<XSymbol>newArrayList() : tokenizeString(tokenString));
-			}
-		};
+		return tokenString -> (Iterable<XSymbol>) (tokenString == null ? Lists.<XSymbol>newArrayList() : tokenizeString(tokenString));
 	}
 
 	public Iterable<TSymbol> tokenizeString(@Nonnull final String content) {
@@ -46,12 +41,7 @@ public abstract class LanguageCharacteristics<
 	}
 
 	public Iterable<TSymbol> tokenizeString(@Nonnull final SourceLocation start, @Nonnull final String input) {
-		return new TokenizeStringIterator<TTokenizer, TSymbol, TSymbolType>(start, input, new Delegates.IFunc1<ITextDocument, TTokenizer>() {
-			@Override
-			public TTokenizer invoke(@Nullable final ITextDocument input1) {
-				return createTokenizer(checkNotNull(input1));
-			}
-		});
+		return new TokenizeStringIterator<TTokenizer, TSymbol, TSymbolType>(start, input, input1 -> createTokenizer(checkNotNull(input1)));
 	}
 
 	public boolean isWhiteSpace(@Nonnull final TSymbol symbol) {

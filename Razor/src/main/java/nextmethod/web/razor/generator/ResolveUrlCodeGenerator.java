@@ -31,32 +31,29 @@ public class ResolveUrlCodeGenerator extends SpanCodeGenerator {
 		}
 
 		if (!Strings.isNullOrEmpty(target.getContent()) && !context.getHost().isDesignTimeMode()) {
-			final String code = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			final String code = context.buildCodeString(input -> {
+				assert input != null;
 
-					if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
-						if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-							input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralMethodName());
-							input.writeSnippet(context.getTargetWriterName());
-							input.writeParameterSeparator();
-						}
-						else {
-							input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralMethodName());
-						}
-					}
-					input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getResolveUrlMethodName());
-					input.writeStartMethodInvoke(target.getContent());
-					input.writeEndMethodInvoke();
-
-					if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
-						input.writeEndMethodInvoke();
-						input.writeEndStatement();
+				if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
+					if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+						input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralMethodName());
+						input.writeSnippet(context.getTargetWriterName());
+						input.writeParameterSeparator();
 					}
 					else {
-						input.writeLineContinuation();
+						input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralMethodName());
 					}
+				}
+				input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getResolveUrlMethodName());
+				input.writeStartMethodInvoke(target.getContent());
+				input.writeEndMethodInvoke();
+
+				if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
+					input.writeEndMethodInvoke();
+					input.writeEndStatement();
+				}
+				else {
+					input.writeLineContinuation();
 				}
 			});
 

@@ -276,12 +276,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 			HtmlSymbolType.DoubleQuote
 		);
 	}
-	protected final Delegates.IFunc1<HtmlSymbol, Boolean> isTagRecoveryStopPointDelegate = new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-		@Override
-		public Boolean invoke(@Nullable final HtmlSymbol input1) {
-			return input1 != null && isTagRecoveryStopPoint(input1);
-		}
-	};
+	protected final Delegates.IFunc1<HtmlSymbol, Boolean> isTagRecoveryStopPointDelegate = input1 -> input1 != null && isTagRecoveryStopPoint(input1);
 
 	protected void tagContent() {
 		if (!at(HtmlSymbolType.WhiteSpace)) {
@@ -309,12 +304,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 	protected void beforeAttribute() {
 		// http://dev.w3.org/html5/spec/tokenization.html#before-attribute-name-state
 		// Capture whitespace
-		final Iterable<HtmlSymbol> whitespace = readWhile(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final HtmlSymbol symbol) {
-				return symbol != null && symbol.isTypeOr(HtmlSymbolType.WhiteSpace, HtmlSymbolType.NewLine);
-			}
-		});
+		final Iterable<HtmlSymbol> whitespace = readWhile(symbol -> symbol != null && symbol.isTypeOr(HtmlSymbolType.WhiteSpace, HtmlSymbolType.NewLine));
 
 		if (at(HtmlSymbolType.Transition)) {
 			// Transition outside of attribute value => switch to recovery mode
@@ -327,19 +317,13 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		// Read the 'name' (i.e. read until the '=' or whitespace/newline)
 		Iterable<HtmlSymbol> name = Collections.emptyList();
 		if (at(HtmlSymbolType.Text)) {
-			name = readWhile(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final HtmlSymbol symbol) {
-					return symbol != null
-						&& !symbol.isType(HtmlSymbolType.WhiteSpace)
-						&& !symbol.isType(HtmlSymbolType.NewLine)
-						&& !symbol.isType(HtmlSymbolType.Equals)
-						&& !symbol.isType(HtmlSymbolType.CloseAngle)
-						&& !symbol.isType(HtmlSymbolType.OpenAngle)
-						&& (!symbol.isType(HtmlSymbolType.Solidus) || !nextIs(HtmlSymbolType.CloseAngle))
-						;
-				}
-			});
+			name = readWhile(symbol -> symbol != null
+				&& !symbol.isType(HtmlSymbolType.WhiteSpace)
+				&& !symbol.isType(HtmlSymbolType.NewLine)
+				&& !symbol.isType(HtmlSymbolType.Equals)
+				&& !symbol.isType(HtmlSymbolType.CloseAngle)
+				&& !symbol.isType(HtmlSymbolType.OpenAngle)
+				&& (!symbol.isType(HtmlSymbolType.Solidus) || !nextIs(HtmlSymbolType.CloseAngle)));
 		}
 		else {
 			// Unexpected character in tag, enter recovery
@@ -409,12 +393,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		else {
 			final HtmlSymbolType fQuote = quote; // This allows us to use "quote" in the following IFunc1 "delegate"
 			// Not a "conditional" attribute, so just read the value
-			skipToAndParseCode(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final HtmlSymbol input1) {
-					return input1 != null && isEndOfAttributeValue(fQuote, input1);
-				}
-			});
+			skipToAndParseCode(input1 -> input1 != null && isEndOfAttributeValue(fQuote, input1));
 			if (quote != HtmlSymbolType.Unknown) {
 				optional(quote);
 			}
@@ -424,12 +403,7 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 
 	protected void attributeValue(@Nonnull final HtmlSymbolType quote) {
 		final SourceLocation prefixStart = getCurrentLocation();
-		final Iterable<HtmlSymbol> prefix = readWhile(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final HtmlSymbol symbol) {
-				return symbol != null && (symbol.isTypeOr(HtmlSymbolType.WhiteSpace, HtmlSymbolType.NewLine));
-			}
-		});
+		final Iterable<HtmlSymbol> prefix = readWhile(symbol -> symbol != null && (symbol.isTypeOr(HtmlSymbolType.WhiteSpace, HtmlSymbolType.NewLine)));
 		accept(prefix);
 
 		if (at(HtmlSymbolType.Transition)) {
@@ -458,18 +432,13 @@ final class HtmlMarkupParserBlock extends HtmlMarkupParserDelegate {
 		else {
 			// Literal value
 			// 'quote' should be "Unknown" if not quoted and symbols coming from the tokenizer should never have "Unknown" type.
-			final Iterable<HtmlSymbol> value = readWhile(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final HtmlSymbol symbol) {
-					return symbol != null && (
-						symbol.getType() != HtmlSymbolType.WhiteSpace
-							&& symbol.getType() != HtmlSymbolType.NewLine
-							&& symbol.getType() != HtmlSymbolType.Transition
-							// This condition checks for the end of the attribute value (it repeats some of the checks above but for now, that's ok)
-							&& !isEndOfAttributeValue(quote, symbol)
-					);
-				}
-			});
+			final Iterable<HtmlSymbol> value = readWhile(symbol -> symbol != null && (
+				symbol.getType() != HtmlSymbolType.WhiteSpace
+					&& symbol.getType() != HtmlSymbolType.NewLine
+					&& symbol.getType() != HtmlSymbolType.Transition
+					// This condition checks for the end of the attribute value (it repeats some of the checks above but for now, that's ok)
+					&& !isEndOfAttributeValue(quote, symbol)
+			));
 
 			accept(value);
 			getSpan().setCodeGenerator(LiteralAttributeCodeGenerator.fromValue(

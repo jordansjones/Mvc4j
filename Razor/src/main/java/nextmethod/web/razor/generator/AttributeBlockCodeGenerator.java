@@ -32,24 +32,21 @@ public class AttributeBlockCodeGenerator extends BlockCodeGenerator {
 		}
 
 		context.flushBufferedStatement();
-		context.addStatement(context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(CodeWriter input) {
-				if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-					input.writeStartMethodInvoke(host.getGeneratedClassContext().getWriteAttributeToMethodName());
-					input.writeSnippet(context.getTargetWriterName());
-					input.writeParameterSeparator();
-				}
-				else {
-					input.writeStartMethodInvoke(host.getGeneratedClassContext().getWriteAttributeMethodName());
-				}
-				input.writeStringLiteral(name);
+		context.addStatement(context.buildCodeString(input -> {
+			if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+				input.writeStartMethodInvoke(host.getGeneratedClassContext().getWriteAttributeToMethodName());
+				input.writeSnippet(context.getTargetWriterName());
 				input.writeParameterSeparator();
-				input.writeLocationTaggedString(prefix);
-				input.writeParameterSeparator();
-				input.writeLocationTaggedString(suffix);
-				input.writeLineContinuation();
 			}
+			else {
+				input.writeStartMethodInvoke(host.getGeneratedClassContext().getWriteAttributeMethodName());
+			}
+			input.writeStringLiteral(name);
+			input.writeParameterSeparator();
+			input.writeLocationTaggedString(prefix);
+			input.writeParameterSeparator();
+			input.writeLocationTaggedString(suffix);
+			input.writeLineContinuation();
 		}));
 	}
 
@@ -60,12 +57,9 @@ public class AttributeBlockCodeGenerator extends BlockCodeGenerator {
 		}
 
 		context.flushBufferedStatement();
-		context.addStatement(context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(final CodeWriter input) {
-				input.writeEndMethodInvoke();
-				input.writeEndStatement();
-			}
+		context.addStatement(context.buildCodeString(input -> {
+			input.writeEndMethodInvoke();
+			input.writeEndStatement();
 		}));
 	}
 

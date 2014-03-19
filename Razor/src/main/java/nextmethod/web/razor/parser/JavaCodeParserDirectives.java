@@ -71,29 +71,20 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		addMarkerSymbolIfNecessary();
 		output(SpanKind.MetaCode, foundNewline ? AcceptedCharacters.SetOfNone : AcceptedCharacters.Any);
 	}
-	protected final Delegates.IAction layoutDirectiveDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { layoutDirective(); }
-	};
+	protected final Delegates.IAction layoutDirectiveDelegate = this::layoutDirective;
 
 	protected void sessionStateDirective() {
 		assertDirective(SyntaxConstants.Java.SessionStateKeyword);
 		acceptAndMoveNext();
 		sessionStateDirectiveCore();
 	}
-	protected final Delegates.IAction sessionStateDirectiveDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { sessionStateDirective(); }
-	};
+	protected final Delegates.IAction sessionStateDirectiveDelegate = this::sessionStateDirective;
 
 	protected void sessionStateDirectiveCore() {
-		sessionStateTypeDirective(RazorResources().parserErrorSessionDirectiveMissingValue(), new Delegates.IFunc2<String, String, SpanCodeGenerator>() {
-			@Override
-			public SpanCodeGenerator invoke(@Nullable String key, @Nullable String value) {
-				assert key != null;
-				assert value != null;
-				return new RazorDirectiveAnnotationCodeGenerator(key, value);
-			}
+		sessionStateTypeDirective(RazorResources().parserErrorSessionDirectiveMissingValue(), (key, value) -> {
+			assert key != null;
+			assert value != null;
+			return new RazorDirectiveAnnotationCodeGenerator(key, value);
 		});
 	}
 
@@ -293,10 +284,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		completeBlock();
 		output(SpanKind.Code);
 	}
-	protected final Delegates.IAction helperDirectiveDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { helperDirective(); }
-	};
+	protected final Delegates.IAction helperDirectiveDelegate = this::helperDirective;
 
 	protected void sectionDirective() {
 		final boolean nested = getContext().isWithin(BlockType.Section);
@@ -389,10 +377,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 		completeBlock(false, true);
 		output(SpanKind.MetaCode);
 	}
-	protected final Delegates.IAction sectionDirectiveDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { sectionDirective(); }
-	};
+	protected final Delegates.IAction sectionDirectiveDelegate = this::sectionDirective;
 
 	protected void functionsDirective() {
 		// Set the block type
@@ -455,10 +440,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 			output(SpanKind.MetaCode);
 		}
 	}
-	protected final Delegates.IAction functionsDirectiveDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { functionsDirective(); }
-	};
+	protected final Delegates.IAction functionsDirectiveDelegate = this::functionsDirective;
 
 	protected void inheritsDirective() {
 		// Verify we're on the right keyword and accept
@@ -467,10 +449,7 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 
 		inheritsDirectiveCore();
 	}
-	protected final Delegates.IAction inheritsDirectiveDelegate = new Delegates.IAction() {
-		@Override
-		public void invoke() { inheritsDirective(); }
-	};
+	protected final Delegates.IAction inheritsDirectiveDelegate = this::inheritsDirective;
 
 	protected void assertDirective(@Nonnull final String directive) {
 		doAssert(JavaSymbolType.Identifier);
@@ -481,12 +460,9 @@ final class JavaCodeParserDirectives extends JavaCodeParserDelegate {
 	protected void inheritsDirectiveCore() {
 		baseTypeDirective(
 			RazorResources().parseErrorInheritsKeywordMustBeFollowedByTypeName(),
-			new Delegates.IFunc1<String, SpanCodeGenerator>() {
-				@Override
-				public SpanCodeGenerator invoke(@Nullable String baseType) {
-					assert baseType != null;
-					return new SetBaseTypeCodeGenerator(baseType);
-				}
+			baseType -> {
+				assert baseType != null;
+				return new SetBaseTypeCodeGenerator(baseType);
 			}
 		);
 	}

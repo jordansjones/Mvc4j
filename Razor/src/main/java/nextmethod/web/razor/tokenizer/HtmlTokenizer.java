@@ -58,15 +58,11 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 
 	@Internal
 	public static Delegates.IFunc1<String, Iterable<ISymbol>> createTokenizeDelegate() {
-		return new Delegates.IFunc1<String, Iterable<ISymbol>>() {
-
-			@Override
-			public Iterable<ISymbol> invoke(@Nullable final String input1) {
-				if (input1 == null) {
-					return Collections.<ISymbol>emptyList();
-				}
-				return HtmlTokenizer.tokenize(input1);
+		return input1 -> {
+			if (input1 == null) {
+				return Collections.<ISymbol>emptyList();
 			}
+			return HtmlTokenizer.tokenize(input1);
 		};
 	}
 
@@ -88,19 +84,9 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 		};
 	}
 
-	private final State dataState = new State() {
-		@Override
-		public StateResult invoke() {
-			return data();
-		}
-	};
+	private final State dataState = this::data;
 
-	private final State textState = new State() {
-		@Override
-		public StateResult invoke() {
-			return text();
-		}
-	};
+	private final State textState = this::text;
 
 	private StateResult data() {
 		if (isWhitespace(getCurrentChar()))
@@ -114,12 +100,9 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 			if (getCurrentChar() == '*')
 				return transition(endSymbol(HtmlSymbolType.RazorCommentTransition), afterRazorCommenTransitionState);
 			if (getCurrentChar() == '@')
-				return transition(endSymbol(HtmlSymbolType.Transition), new State() {
-					@Override
-					public StateResult invoke() {
-						takeCurrent();
-						return transition(endSymbol(HtmlSymbolType.Transition), dataState);
-					}
+				return transition(endSymbol(HtmlSymbolType.Transition), () -> {
+					takeCurrent();
+					return transition(endSymbol(HtmlSymbolType.Transition), dataState);
 				});
 
 			return stay(endSymbol(HtmlSymbolType.Transition));

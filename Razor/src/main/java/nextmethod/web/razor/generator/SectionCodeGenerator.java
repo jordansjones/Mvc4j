@@ -20,16 +20,13 @@ public class SectionCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		final String startBlock = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(@Nullable final CodeWriter input) {
-				assert input != null;
+		final String startBlock = context.buildCodeString(input -> {
+			assert input != null;
 
-				input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getDefineSectionMethodName());
-				input.writeStringLiteral(sectionName);
-				input.writeParameterSeparator();
-				input.writeStartLambdaDelegate();
-			}
+			input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getDefineSectionMethodName());
+			input.writeStringLiteral(sectionName);
+			input.writeParameterSeparator();
+			input.writeStartLambdaDelegate();
 		});
 
 		context.addStatement(startBlock);
@@ -37,15 +34,12 @@ public class SectionCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		final String block = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(@Nullable final CodeWriter input) {
-				assert input != null;
+		final String block = context.buildCodeString(input -> {
+			assert input != null;
 
-				input.writeEndLambdaDelegate();
-				input.writeEndMethodInvoke();
-				input.writeEndStatement();
-			}
+			input.writeEndLambdaDelegate();
+			input.writeEndMethodInvoke();
+			input.writeEndStatement();
 		});
 
 		context.addStatement(block);

@@ -155,11 +155,8 @@ public class JavaCodeWriter extends BaseCodeWriter {
 		if (hasParams) {
 			innerWriter.write("(");
 		}
-		writeCommaSeparatedList(parameterNames, new Delegates.IAction1<String>() {
-			@Override
-			public void invoke(@Nullable final String input) {
-				innerWriter.write(input);
-			}
+		writeCommaSeparatedList(parameterNames, input -> {
+			innerWriter.write(input);
 		});
 		if (hasParams) {
 			innerWriter.write(")");

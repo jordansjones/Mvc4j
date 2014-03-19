@@ -163,21 +163,18 @@ public abstract class PartialParsingTestBase<TLanguage extends RazorCodeLanguage
 
 		public void waitForParse() {
 			// Wait for parse to finish
-			MiscUtils.DoWithTimeoutIfNotDebugging(new Delegates.IFunc1<Long, Boolean>() {
-				@Override
-				public Boolean invoke(@Nullable final Long timeoutInMillis) {
-					assert timeoutInMillis != null;
-					boolean wasSignaled = parserMonitor.enterWhenUninterruptibly(parseCompleteGuard, timeoutInMillis, TimeUnit.MILLISECONDS);
-					try {
-						parseComplete.set(false);
-					}
-					finally {
-						if (parserMonitor.isOccupiedByCurrentThread()) {
-							parserMonitor.leave();
-						}
-					}
-					return wasSignaled;
+			MiscUtils.DoWithTimeoutIfNotDebugging(timeoutInMillis -> {
+				assert timeoutInMillis != null;
+				boolean wasSignaled = parserMonitor.enterWhenUninterruptibly(parseCompleteGuard, timeoutInMillis, TimeUnit.MILLISECONDS);
+				try {
+					parseComplete.set(false);
 				}
+				finally {
+					if (parserMonitor.isOccupiedByCurrentThread()) {
+						parserMonitor.leave();
+					}
+				}
+				return wasSignaled;
 			});
 		}
 	}

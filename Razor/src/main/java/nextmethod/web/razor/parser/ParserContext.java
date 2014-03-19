@@ -150,12 +150,7 @@ public class ParserContext {
 		final BlockBuilder blockBuilder = new BlockBuilder();
 		blockBuilder.setType(blockType);
 		blockStack.push(blockBuilder);
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				endBlock();
-			}
-		});
+		return new DisposableAction(this::endBlock);
 	}
 
 	/**
@@ -166,12 +161,7 @@ public class ParserContext {
 		ensureNotTerminated();
 		assertOnOwnerTask();
 		blockStack.push(new BlockBuilder());
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				endBlock();
-			}
-		});
+		return new DisposableAction(this::endBlock);
 	}
 
 	/**
@@ -197,12 +187,7 @@ public class ParserContext {
 	 * Gets a boolean indicating if any of the ancestors of the current block is of the specified type
 	 */
 	public boolean isWithin(@Nonnull final BlockType type) {
-		return Iterables.any(blockStack, new Predicate<BlockBuilder>() {
-			@Override
-			public boolean apply(@Nullable final BlockBuilder input) {
-				return input != null && input.getType().isPresent() && input.getType().get() == type;
-			}
-		});
+		return Iterables.any(blockStack, input -> input != null && input.getType().isPresent() && input.getType().get() == type);
 	}
 
 	public void switchActiveParser() {

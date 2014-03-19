@@ -99,12 +99,9 @@ public class ParserContextTest {
 
 	@Test
 	public void currentCharacterReturnsCurrentCharacterInTextBuffer() {
-		final ParserContext context = setupTestContext("bar", new Delegates.IAction1<TextReader>() {
-			@Override
-			public void invoke(@Nullable final TextReader input) {
-				assert input != null;
-				input.read();
-			}
+		final ParserContext context = setupTestContext("bar", input -> {
+			assert input != null;
+			input.read();
 		});
 
 		final char actual = context.getCurrentCharacter();
@@ -113,12 +110,9 @@ public class ParserContextTest {
 
 	@Test
 	public void currentCharacterReturnsNullCharacterIfTextBufferAtEOF() {
-		final ParserContext context = setupTestContext("bar", new Delegates.IAction1<TextReader>() {
-			@Override
-			public void invoke(@Nullable final TextReader input) {
-				assert input != null;
-				input.readToEnd();
-			}
+		final ParserContext context = setupTestContext("bar", input -> {
+			assert input != null;
+			input.readToEnd();
 		});
 
 		final char actual = context.getCurrentCharacter();
@@ -135,12 +129,9 @@ public class ParserContextTest {
 
 	@Test
 	public void endOfFileReturnsTrueIfTextBufferAtEOF() {
-		final ParserContext context = setupTestContext("bar", new Delegates.IAction1<TextReader>() {
-			@Override
-			public void invoke(@Nullable final TextReader input) {
-				assert input != null;
-				input.readToEnd();
-			}
+		final ParserContext context = setupTestContext("bar", input -> {
+			assert input != null;
+			input.readToEnd();
 		});
 
 		assertTrue(context.isEndOfFile());
@@ -194,12 +185,9 @@ public class ParserContextTest {
 	public void switchActiveParserSetsMarkupParserAsActiveIfCodeParserCurrentlyActive() {
 		final JavaCodeParser codeParser = new JavaCodeParser();
 		final HtmlMarkupParser markupParser = new HtmlMarkupParser();
-		final ParserContext context = setupTestContext("barbazbiz", new Delegates.IAction1<TextReader>() {
-			@Override
-			public void invoke(@Nullable final TextReader input) {
-				assert input != null;
-				input.read();
-			}
+		final ParserContext context = setupTestContext("barbazbiz", input -> {
+			assert input != null;
+			input.read();
 		}, codeParser, markupParser, codeParser);
 
 		assertSame(codeParser, context.getActiveParser());
@@ -213,12 +201,9 @@ public class ParserContextTest {
 	public void switchActiveParserSetsCodeParserAsActiveIfMarkupParserCurrentlyActive() {
 		final JavaCodeParser codeParser = new JavaCodeParser();
 		final HtmlMarkupParser markupParser = new HtmlMarkupParser();
-		final ParserContext context = setupTestContext("barbazbiz", new Delegates.IAction1<TextReader>() {
-			@Override
-			public void invoke(@Nullable final TextReader input) {
-				assert input != null;
-				input.read();
-			}
+		final ParserContext context = setupTestContext("barbazbiz", input -> {
+			assert input != null;
+			input.read();
 		}, codeParser, markupParser, markupParser);
 
 		assertSame(markupParser, context.getActiveParser());
@@ -231,11 +216,7 @@ public class ParserContextTest {
 
 
 	private ParserContext setupTestContext(final String document) {
-		final Delegates.IAction1<TextReader> positioningAction = new Delegates.IAction1<TextReader>() {
-
-			@Override
-			public void invoke(@Nullable final TextReader input) {
-			}
+		final Delegates.IAction1<TextReader> positioningAction = input -> {
 		};
 		return setupTestContext(document, positioningAction);
 	}

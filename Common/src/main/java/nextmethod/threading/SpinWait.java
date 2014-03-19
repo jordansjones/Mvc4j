@@ -57,7 +57,7 @@ public final class SpinWait {
 	
 	public static boolean spinUntil(final Delegates.IFunc<Boolean> condition, final long amount, final TimeUnit timeUnit) {
 		final SpinWait spinWait = new SpinWait();
-		final Stopwatch stopwatch = new Stopwatch().start();
+		final Stopwatch stopwatch = Stopwatch.createUnstarted().start();
 
 		while(!condition.invoke()) {
 			if (stopwatch.elapsed(timeUnit) > amount) {

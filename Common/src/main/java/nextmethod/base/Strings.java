@@ -150,4 +150,17 @@ public final class Strings {
 	public static String emptyToNull(@Nullable final String string) {
 		return com.google.common.base.Strings.emptyToNull(string);
 	}
+
+	public static int lastIndexOfAny(final String string, final char[] anyOf)
+	{
+		if (anyOf.length == 1) return string.lastIndexOf(anyOf[0]);
+
+		int idx = -1;
+		int offset = 0;
+		do {
+			idx = string.lastIndexOf(anyOf[offset++]);
+		}
+		while(idx < 0 && offset < anyOf.length);
+		return idx;
+	}
 }

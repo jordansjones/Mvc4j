@@ -47,36 +47,30 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
 		final Block child = (Block) Iterables.find(target.getChildren(), isBlockPredicate, null);
 		if (child != null && child.getType() == BlockType.Expression) {
 			isExpression = true;
-			generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			generatedCode = context.buildCodeString(input -> {
+				assert input != null;
 
-					input.writeParameterSeparator();
-					input.writeStartMethodInvoke("Tuple.Create");
-					input.writeLocationTaggedString(prefix);
-					input.writeParameterSeparator();
-					input.writeStartMethodInvoke("Tuple.Create", "java.lang.Object", "java.lang.Integer");
-				}
+				input.writeParameterSeparator();
+				input.writeStartMethodInvoke("Tuple.Create");
+				input.writeLocationTaggedString(prefix);
+				input.writeParameterSeparator();
+				input.writeStartMethodInvoke("Tuple.Create", "java.lang.Object", "java.lang.Integer");
 			});
 
 			oldRenderingMode = context.getExpressionRenderingMode();
 			context.setExpressionRenderingMode(ExpressionRenderingMode.InjectCode);
 		}
 		else {
-			generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			generatedCode = context.buildCodeString(input -> {
+				assert input != null;
 
-					input.writeParameterSeparator();
-					input.writeStartMethodInvoke("Tuple.Create");
-					input.writeLocationTaggedString(prefix);
-					input.writeParameterSeparator();
-					input.writeStartMethodInvoke("Tuple.Create", "java.lang.Object", "java.lang.Integer");
-					input.writeStartConstructor(context.getHost().getGeneratedClassContext().getTemplateTypeName());
-					input.writeStartLambdaDelegate(ValueWriterName);
-				}
+				input.writeParameterSeparator();
+				input.writeStartMethodInvoke("Tuple.Create");
+				input.writeLocationTaggedString(prefix);
+				input.writeParameterSeparator();
+				input.writeStartMethodInvoke("Tuple.Create", "java.lang.Object", "java.lang.Integer");
+				input.writeStartConstructor(context.getHost().getGeneratedClassContext().getTemplateTypeName());
+				input.writeStartLambdaDelegate(ValueWriterName);
 			});
 		}
 
@@ -95,40 +89,34 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
 
 		final String generatedCode;
 		if (isExpression) {
-			generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			generatedCode = context.buildCodeString(input -> {
+				assert input != null;
 
-					input.writeParameterSeparator();
-					input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
-					input.writeEndMethodInvoke();
-					input.writeParameterSeparator();
-					// This attribute value is not a literal value, it is dynamically generated
-					input.writeBooleanLiteral(false);
-					input.writeEndMethodInvoke();
-					input.writeLineContinuation();
-				}
+				input.writeParameterSeparator();
+				input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
+				input.writeEndMethodInvoke();
+				input.writeParameterSeparator();
+				// This attribute value is not a literal value, it is dynamically generated
+				input.writeBooleanLiteral(false);
+				input.writeEndMethodInvoke();
+				input.writeLineContinuation();
 			});
 			context.setExpressionRenderingMode(oldRenderingMode);
 		}
 		else {
-			generatedCode = context.buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(@Nullable final CodeWriter input) {
-					assert input != null;
+			generatedCode = context.buildCodeString(input -> {
+				assert input != null;
 
-					input.writeEndLambdaDelegate();
-					input.writeEndConstructor();
-					input.writeParameterSeparator();
-					input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
-					input.writeEndMethodInvoke();
-					input.writeParameterSeparator();
-					// This attribute value is not a literal value, it is dynamically generated
-					input.writeBooleanLiteral(false);
-					input.writeEndMethodInvoke();
-					input.writeLineContinuation();
-				}
+				input.writeEndLambdaDelegate();
+				input.writeEndConstructor();
+				input.writeParameterSeparator();
+				input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
+				input.writeEndMethodInvoke();
+				input.writeParameterSeparator();
+				// This attribute value is not a literal value, it is dynamically generated
+				input.writeBooleanLiteral(false);
+				input.writeEndMethodInvoke();
+				input.writeLineContinuation();
 			});
 		}
 
@@ -161,10 +149,5 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
 		return Objects.hash(prefix);
 	}
 
-	private static final Predicate<SyntaxTreeNode> isBlockPredicate = new Predicate<SyntaxTreeNode>() {
-		@Override
-		public boolean apply(@Nullable final SyntaxTreeNode input) {
-			return input != null && input.isBlock();
-		}
-	};
+	private static final Predicate<SyntaxTreeNode> isBlockPredicate = input -> input != null && input.isBlock();
 }

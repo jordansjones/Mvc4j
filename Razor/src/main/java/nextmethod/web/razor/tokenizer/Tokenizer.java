@@ -169,12 +169,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 	}
 
 	protected Predicate<Character> charOrWhiteSpace(final char character) {
-		return new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable Character input) {
-				return input != null && (input == character || ParserHelpers.isWhitespace(input) || ParserHelpers.isNewLine(input));
-			}
-		};
+		return input -> input != null && (input == character || ParserHelpers.isWhitespace(input) || ParserHelpers.isNewLine(input));
 	}
 
 	protected void takeCurrent() {
@@ -204,12 +199,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 		}
 	}
 
-	protected final State afterRazorCommenTransitionState = new State() {
-		@Override
-		public StateResult invoke() {
-			return afterRazorCommentTransition();
-		}
-	};
+	protected final State afterRazorCommenTransitionState = this::afterRazorCommentTransition;
 
 	protected StateResult afterRazorCommentTransition() {
 		if (getCurrentChar() != '*') {
@@ -218,12 +208,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 		}
 		assertCurrent('*');
 		takeCurrent();
-		return transition(endSymbol(getRazorCommentStarType()), new State() {
-			@Override
-			public StateResult invoke() {
-				return razorCommentBody();
-			}
-		});
+		return transition(endSymbol(getRazorCommentStarType()), this::razorCommentBody);
 	}
 
 	protected StateResult razorCommentBody() {
@@ -233,22 +218,16 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 			final SourceLocation start = getCurrentLocation();
 			moveNext();
 			if (!isEndOfFile() && getCurrentChar() == '@') {
-				final State next = new State() {
-					@Override
-					public StateResult invoke() {
-						buffer.append(currentChar);
-						return transition(endSymbol(start, getRazorCommentStarType()), new State() {
-							@Override
-							public StateResult invoke() {
-								if (getCurrentChar() != '@') {
-									// We've been moved since last time we were asked for a symbol... reset the state
-									return transition(getStartState());
-								}
-								takeCurrent();
-								return transition(endSymbol(getRazorCommentTransitionType()), getStartState());
-							}
-						});
-					}
+				final State next = () -> {
+					buffer.append(currentChar);
+					return transition(endSymbol(start, getRazorCommentStarType()), () -> {
+						if (getCurrentChar() != '@') {
+							// We've been moved since last time we were asked for a symbol... reset the state
+							return transition(getStartState());
+						}
+						takeCurrent();
+						return transition(endSymbol(getRazorCommentTransitionType()), getStartState());
+					});
 				};
 				if (haveContent())
 					return transition(endSymbol(getRazorCommentType()), next);
@@ -304,13 +283,10 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 	}
 
 	private static Function<Character, Character> createCharFilter(final boolean caseSensitive) {
-		return new Function<Character, Character>() {
-			@Override
-			public Character apply(@Nullable Character input) {
-				if (input == null) return null;
+		return input -> {
+			if (input == null) return null;
 
-				return caseSensitive ? Character.toLowerCase(input) : input;
-			}
+			return caseSensitive ? Character.toLowerCase(input) : input;
 		};
 	}
 }

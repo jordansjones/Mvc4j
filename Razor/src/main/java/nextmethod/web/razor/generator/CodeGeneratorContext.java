@@ -92,18 +92,8 @@ public class CodeGeneratorContext {
 			designTimeHelperMethod.setName(DesignTimeHelperMethodName);
 			designTimeHelperMethod.setAttributes(MemberAttributes.Private);
 
-			designTimeHelperMethod.getStatements().add(new CodeSnippetStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(final CodeWriter input) {
-					input.writeDisableUnusedFieldWarningPragma();
-				}
-			})));
-			designTimeHelperMethod.getStatements().add(new CodeSnippetStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
-				@Override
-				public void invoke(final CodeWriter input) {
-					input.writeRestoreUnusedFieldWarningPragma();
-				}
-			})));
+			designTimeHelperMethod.getStatements().add(new CodeSnippetStatement(buildCodeString(CodeWriter::writeDisableUnusedFieldWarningPragma)));
+			designTimeHelperMethod.getStatements().add(new CodeSnippetStatement(buildCodeString(CodeWriter::writeRestoreUnusedFieldWarningPragma)));
 			generatedClass.getMembers().add(0, designTimeHelperMethod);
 		}
 
@@ -232,31 +222,25 @@ public class CodeGeneratorContext {
 	public IDisposable changeStatementCollection(final Delegates.IAction2<String, CodeLinePragma> collector) {
 		final Delegates.IAction2<String, CodeLinePragma> oldCollector = this.statementCollector;
 		this.statementCollector = collector;
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				statementCollector = oldCollector;
-			}
+		return new DisposableAction(() -> {
+			statementCollector = oldCollector;
 		});
 	}
 
 	public void addContextCall(final Span contentSpan, final String methodName, final boolean isLiteral) {
-		addStatement(buildCodeString(new Delegates.IAction1<CodeWriter>() {
-			@Override
-			public void invoke(final CodeWriter input) {
-				input.writeStartMethodInvoke(methodName);
-				if (!Strings.isNullOrEmpty(getTargetWriterName())) {
-					input.writeSnippet(getTargetWriterName());
-					input.writeParameterSeparator();
-				}
-				input.writeStringLiteral(getHost().getInstrumentedSourceFilePath());
+		addStatement(buildCodeString(input -> {
+			input.writeStartMethodInvoke(methodName);
+			if (!Strings.isNullOrEmpty(getTargetWriterName())) {
+				input.writeSnippet(getTargetWriterName());
 				input.writeParameterSeparator();
-				input.writeSnippet(String.valueOf(contentSpan.getContent().length()));
-				input.writeParameterSeparator();
-				input.writeSnippet(String.valueOf(isLiteral));
-				input.writeEndMethodInvoke();
-				input.writeEndStatement();
 			}
+			input.writeStringLiteral(getHost().getInstrumentedSourceFilePath());
+			input.writeParameterSeparator();
+			input.writeSnippet(String.valueOf(contentSpan.getContent().length()));
+			input.writeParameterSeparator();
+			input.writeSnippet(String.valueOf(isLiteral));
+			input.writeEndMethodInvoke();
+			input.writeEndStatement();
 		}));
 	}
 

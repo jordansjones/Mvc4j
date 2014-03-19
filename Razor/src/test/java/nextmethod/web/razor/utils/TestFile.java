@@ -1,15 +1,17 @@
 package nextmethod.web.razor.utils;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
+import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
 import com.google.common.io.Resources;
 import nextmethod.base.NotImplementedException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 
@@ -31,9 +33,9 @@ public class TestFile {
 		return new TestFile(String.format(ResourceNameFormat, localResourceName));
 	}
 
-	public InputSupplier<InputStream> openRead() {
+	public CharSource openRead() {
 		final URL resource = Resources.getResource(getClass(), this.resourceName);
-		return Resources.newInputStreamSupplier(resource);
+		return Resources.asCharSource(resource, Charsets.UTF_8);
 	}
 
 	public byte[] readAllBytes() {
@@ -41,7 +43,7 @@ public class TestFile {
 	}
 
 	public String readAllText() {
-		try(InputStreamReader stream = new InputStreamReader(openRead().getInput())) {
+		try(Reader stream = openRead().openStream()) {
 			final List<String> strings = CharStreams.readLines(stream);
 			return Joiner.on("\r\n").join(strings);
 		}

@@ -80,12 +80,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return dataState;
 	}
 
-	private final State dataState = new State() {
-		@Override
-		public StateResult invoke() {
-			return data();
-		}
-	};
+	private final State dataState = this::data;
 
 	private StateResult data() {
 		char currentChar = getCurrentChar();
@@ -151,12 +146,9 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 			return transition(endSymbol(JavaSymbolType.RazorCommentTransition), afterRazorCommenTransitionState);
 		}
 		if (getCurrentChar() == '@') {
-			return transition(endSymbol(JavaSymbolType.Transition), new State() {
-				@Override
-				public StateResult invoke() {
-					takeCurrent();
-					return transition(endSymbol(JavaSymbolType.Transition), dataState);
-				}
+			return transition(endSymbol(JavaSymbolType.Transition), () -> {
+				takeCurrent();
+				return transition(endSymbol(JavaSymbolType.Transition), dataState);
 			});
 		}
 		return stay(endSymbol(JavaSymbolType.Transition));
@@ -171,12 +163,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.Unknown;
 	}
 
-	private final Delegates.IFunc<JavaSymbolType> operatorAction = new Delegates.IFunc<JavaSymbolType>() {
-		@Override
-		public JavaSymbolType invoke() {
-			return operator();
-		}
-	};
+	private final Delegates.IFunc<JavaSymbolType> operatorAction = this::operator;
 
 	private JavaSymbolType lessThanOperator() {
 		if (getCurrentChar() == '=') {
@@ -186,12 +173,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.LessThan;
 	}
 
-	private final Delegates.IFunc<JavaSymbolType> lessThanOperatorAction = new Delegates.IFunc<JavaSymbolType>() {
-		@Override
-		public JavaSymbolType invoke() {
-			return lessThanOperator();
-		}
-	};
+	private final Delegates.IFunc<JavaSymbolType> lessThanOperatorAction = this::lessThanOperator;
 
 	private JavaSymbolType greaterThanOperator() {
 		if (getCurrentChar() == '=') {
@@ -201,12 +183,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.GreaterThan;
 	}
 
-	private final Delegates.IFunc<JavaSymbolType> greaterThanOperatorAction = new Delegates.IFunc<JavaSymbolType>() {
-		@Override
-		public JavaSymbolType invoke() {
-			return greaterThanOperator();
-		}
-	};
+	private final Delegates.IFunc<JavaSymbolType> greaterThanOperatorAction = this::greaterThanOperator;
 
 	private JavaSymbolType minusOperator() {
 		if (getCurrentChar() == '>') {
@@ -224,121 +201,90 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 		return JavaSymbolType.Minus;
 	}
 
-	private final Delegates.IFunc<JavaSymbolType> minusOperatorAction = new Delegates.IFunc<JavaSymbolType>() {
-		@Override
-		public JavaSymbolType invoke() {
-			return minusOperator();
-		}
-	};
+	private final Delegates.IFunc<JavaSymbolType> minusOperatorAction = this::minusOperator;
 
 	private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char second, @Nonnull final JavaSymbolType typeIfBoth) {
-		return new Delegates.IFunc<JavaSymbolType>() {
-			@Override
-			public JavaSymbolType invoke() {
-				if (getCurrentChar() == second) {
-					takeCurrent();
-					return typeIfBoth;
-				}
-				return typeIfOnlyFirst;
+		return () -> {
+			if (getCurrentChar() == second) {
+				takeCurrent();
+				return typeIfBoth;
 			}
+			return typeIfOnlyFirst;
 		};
 	}
 
 	private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char option1, @Nonnull final JavaSymbolType typeIfOption1, final char option2, @Nonnull final JavaSymbolType typeIfOption2) {
-		return new Delegates.IFunc<JavaSymbolType>() {
-			@Override
-			public JavaSymbolType invoke() {
-				if (getCurrentChar() == option1) {
-					takeCurrent();
-					return typeIfOption1;
-				}
-				if (getCurrentChar() == option2) {
-					takeCurrent();
-					return typeIfOption2;
-				}
-				return typeIfOnlyFirst;
+		return () -> {
+			if (getCurrentChar() == option1) {
+				takeCurrent();
+				return typeIfOption1;
 			}
+			if (getCurrentChar() == option2) {
+				takeCurrent();
+				return typeIfOption2;
+			}
+			return typeIfOnlyFirst;
 		};
 	}
 
 	private State verbatimStringLiteral() {
-		return new State() {
-			@Override
-			public StateResult invoke() {
-				takeUntil(Predicates.equalTo('"'));
+		return () -> {
+			takeUntil(Predicates.equalTo('"'));
+			if (getCurrentChar() == '"') {
+				takeCurrent();
 				if (getCurrentChar() == '"') {
 					takeCurrent();
-					if (getCurrentChar() == '"') {
-						takeCurrent();
-						// State in the literal, this is an escaped "
-						return stay();
-					}
+					// State in the literal, this is an escaped "
+					return stay();
 				}
-				else if (isEndOfFile()) {
-					getCurrentErrors().add(new RazorError(RazorResources().parseErrorUnterminatedStringLiteral(), getCurrentStart()));
-				}
-				return transition(endSymbol(JavaSymbolType.StringLiteral), dataState);
 			}
+			else if (isEndOfFile()) {
+				getCurrentErrors().add(new RazorError(RazorResources().parseErrorUnterminatedStringLiteral(), getCurrentStart()));
+			}
+			return transition(endSymbol(JavaSymbolType.StringLiteral), dataState);
 		};
 	}
 
 	private State quotedLiteral(final char quote, @Nonnull final JavaSymbolType literalType) {
-		return new State() {
-
-			@Override
-			public StateResult invoke() {
-				takeUntil(new Predicate<Character>() {
-					@Override
-					public boolean apply(@Nullable Character input) {
-						return input != null && (
-							input == '\\' || input == quote || ParserHelpers.isNewLine(input)
-							);
-					}
-				});
-				if (getCurrentChar() == '\\') {
-					takeCurrent(); // Take the '\'
-					takeCurrent(); // Take the next char as well (multi-char escapes don't matter)
-					return stay();
-				}
-				else if (isEndOfFile() || ParserHelpers.isNewLine(getCurrentChar())) {
-					getCurrentErrors().add(new RazorError(RazorResources().parseErrorUnterminatedStringLiteral(), getCurrentStart()));
-				}
-				else {
-					takeCurrent(); // No-op if at EOF
-				}
-				return transition(endSymbol(literalType), dataState);
+		return () -> {
+			takeUntil(input -> input != null && (
+				input == '\\' || input == quote || ParserHelpers.isNewLine(input)
+				));
+			if (getCurrentChar() == '\\') {
+				takeCurrent(); // Take the '\'
+				takeCurrent(); // Take the next char as well (multi-char escapes don't matter)
+				return stay();
 			}
+			else if (isEndOfFile() || ParserHelpers.isNewLine(getCurrentChar())) {
+				getCurrentErrors().add(new RazorError(RazorResources().parseErrorUnterminatedStringLiteral(), getCurrentStart()));
+			}
+			else {
+				takeCurrent(); // No-op if at EOF
+			}
+			return transition(endSymbol(literalType), dataState);
 		};
 	}
 
 	private State blockComment() {
-		return new State() {
-			@Override
-			public StateResult invoke() {
-				takeUntil(Predicates.equalTo('*'));
-				if (isEndOfFile()) {
-					getCurrentErrors().add(new RazorError(RazorResources().parseErrorBlockCommentNotTerminated(), getCurrentStart()));
+		return () -> {
+			takeUntil(Predicates.equalTo('*'));
+			if (isEndOfFile()) {
+				getCurrentErrors().add(new RazorError(RazorResources().parseErrorBlockCommentNotTerminated(), getCurrentStart()));
+				return transition(endSymbol(JavaSymbolType.Comment), dataState);
+			}
+			if (getCurrentChar() == '*') {
+				takeCurrent();
+				if (getCurrentChar() == '/') {
+					takeCurrent();
 					return transition(endSymbol(JavaSymbolType.Comment), dataState);
 				}
-				if (getCurrentChar() == '*') {
-					takeCurrent();
-					if (getCurrentChar() == '/') {
-						takeCurrent();
-						return transition(endSymbol(JavaSymbolType.Comment), dataState);
-					}
-				}
-				return stay();
 			}
+			return stay();
 		};
 	}
 
 	private StateResult singleLineComment() {
-		takeUntil(new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable Character input) {
-				return input != null && ParserHelpers.isNewLine(input);
-			}
-		});
+		takeUntil(input -> input != null && ParserHelpers.isNewLine(input));
 		return stay(endSymbol(JavaSymbolType.Comment));
 	}
 
@@ -350,12 +296,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 	}
 
 	private StateResult hexLiteral() {
-		takeUntil(new Predicate<Character>() {
-			@Override
-			public boolean apply(@Nullable Character input) {
-				return input != null && !ParserHelpers.isHexDigit(input);
-			}
-		});
+		takeUntil(input -> input != null && !ParserHelpers.isHexDigit(input));
 		takeIntegerSuffix();
 		return stay(endSymbol(JavaSymbolType.IntegerLiteral));
 	}
@@ -419,18 +360,8 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 	}
 	
 	private static Delegates.IFunc<JavaSymbolType> createIAction(@Nonnull final JavaSymbolType type) {
-		return new Delegates.IFunc<JavaSymbolType>() {
-			@Override
-			public JavaSymbolType invoke() {
-				return type;
-			}
-		};
+		return () -> type;
 	}
 
-	public static final Predicate<Character> IsCharacterDigitPredicate = new Predicate<Character>() {
-		@Override
-		public boolean apply(@Nullable Character input) {
-			return input != null && Character.isDigit(input);
-		}
-	};
+	public static final Predicate<Character> IsCharacterDigitPredicate = input -> input != null && Character.isDigit(input);
 }

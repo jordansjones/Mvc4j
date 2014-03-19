@@ -364,33 +364,18 @@ public class HtmlToCodeSwitchTest extends JavaHtmlMarkupParserTestBase {
 
 	@Test
 	public void parseBlockTreatsTwoAtSignsAsEscapeSequence() {
-		HtmlParserTestUtils.runSingleAtEscapeTest(new Delegates.IAction2<String, Block>() {
-			@Override
-			public void invoke(@Nullable final String input1, @Nullable final Block input2) {
-				parseBlockTest(input1, input2);
-			}
-		});
+		HtmlParserTestUtils.runSingleAtEscapeTest(this::parseBlockTest);
 	}
 
 	@Test
 	public void parseBlockTreatsPairsOfAtSignsAsEscapeSequence() {
-		HtmlParserTestUtils.runMultiAtEscapeTest(new Delegates.IAction2<String, Block>() {
-			@Override
-			public void invoke(@Nullable final String input1, @Nullable final Block input2) {
-				parseBlockTest(input1, input2);
-			}
-		});
+		HtmlParserTestUtils.runMultiAtEscapeTest(this::parseBlockTest);
 	}
 
 	@Test
 	public void parseDocumentTreatsTwoAtSignsAsEscapeSequence() {
 		HtmlParserTestUtils.runSingleAtEscapeTest(
-			new Delegates.IAction2<String, Block>() {
-				@Override
-				public void invoke(@Nullable final String input1, @Nullable final Block input2) {
-					parseDocumentTest(input1, input2);
-				}
-			},
+			this::parseDocumentTest,
 			AcceptedCharacters.Any
 		);
 	}
@@ -398,12 +383,7 @@ public class HtmlToCodeSwitchTest extends JavaHtmlMarkupParserTestBase {
 	@Test
 	public void parseDocumentTreatsPairsOfAtSignsAsEscapeSequence() {
 		HtmlParserTestUtils.runMultiAtEscapeTest(
-			new Delegates.IAction2<String, Block>() {
-				@Override
-				public void invoke(@Nullable final String input1, @Nullable final Block input2) {
-					parseDocumentTest(input1, input2);
-				}
-			},
+			this::parseDocumentTest,
 			AcceptedCharacters.Any
 		);
 	}

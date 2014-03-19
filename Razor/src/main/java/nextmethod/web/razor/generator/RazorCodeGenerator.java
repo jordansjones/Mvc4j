@@ -76,12 +76,7 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 	}
 
 	protected void initialize(@Nonnull final CodeGeneratorContext context) {
-		final Iterable<CodePackageImport> imports = Iterables.transform(host.getPackageImports(), new Function<String, CodePackageImport>() {
-			@Override
-			public CodePackageImport apply(@Nullable final String input) {
-				return Strings.isNullOrEmpty(input) ? null : new CodePackageImport(input);
-			}
-		});
+		final Iterable<CodePackageImport> imports = Iterables.transform(host.getPackageImports(), input -> Strings.isNullOrEmpty(input) ? null : new CodePackageImport(input));
 		Iterables.addAll(context.getCodePackage().getImports(), imports);
 
 		if (!Strings.isNullOrEmpty(host.getDefaultBaseClass())) {

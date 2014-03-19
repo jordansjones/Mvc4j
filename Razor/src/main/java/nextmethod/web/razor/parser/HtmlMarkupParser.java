@@ -77,12 +77,7 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
 	}
 
 	protected void skipToAndParseCode(@Nonnull final HtmlSymbolType type) {
-		skipToAndParseCode(new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final HtmlSymbol symbol) {
-				return symbol != null && symbol.getType() == type;
-			}
-		});
+		skipToAndParseCode(symbol -> symbol != null && symbol.getType() == type);
 	}
 
 	protected void skipToAndParseCode(@Nonnull final Delegates.IFunc1<HtmlSymbol, Boolean> condition) {
@@ -169,15 +164,10 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
 	}
 
 	protected static Delegates.IFunc1<HtmlSymbol, Boolean> isSpacingToken(final boolean includeNewLines) {
-		return new Delegates.IFunc1<HtmlSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final HtmlSymbol symbol) {
-				return symbol != null && (
-					symbol.getType() == HtmlSymbolType.WhiteSpace
-					|| (includeNewLines && symbol.getType() == HtmlSymbolType.NewLine)
-				);
-			}
-		};
+		return symbol -> symbol != null && (
+			symbol.getType() == HtmlSymbolType.WhiteSpace
+			|| (includeNewLines && symbol.getType() == HtmlSymbolType.NewLine)
+		);
 	}
 
 	protected void otherParserBlock() {

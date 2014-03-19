@@ -150,7 +150,7 @@ public class RazorEditorParser implements IDisposable {
 		// Validate the change
 		Stopwatch sw = null;
 		if (Debug.isDebugArgPresent(DebugArgs.EditorTracing)) {
-			sw = new Stopwatch().start();
+			sw = Stopwatch.createUnstarted().start();
 		}
 		RazorEditorTrace.traceLine(
 			RazorResources().traceEditorReceivedChange(

@@ -39,12 +39,7 @@ public class SpanEditHandler {
 	}
 
 	public static SpanEditHandler createDefault() {
-		return createDefault(new Delegates.IFunc1<String, Iterable<ISymbol>>() {
-			@Override
-			public Iterable<ISymbol> invoke(@Nullable final String input1) {
-				return Lists.newArrayList();
-			}
-		});
+		return createDefault(input1 -> Lists.newArrayList());
 	}
 
 	public static SpanEditHandler createDefault(@Nonnull final Delegates.IFunc1<String, Iterable<ISymbol>> tokenizer) {

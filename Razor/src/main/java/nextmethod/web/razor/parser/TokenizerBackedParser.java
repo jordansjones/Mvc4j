@@ -104,9 +104,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	public void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start, @Nonnull final String content) {
-		for (TSymbol tSymbol : getLanguage().tokenizeString(start, content)) {
-			span.accept(tSymbol);
-		}
+		getLanguage().tokenizeString(start, content).forEach(span::accept);
 	}
 
 	protected void initialize(@Nonnull final SpanBuilder span) {
@@ -141,9 +139,7 @@ public abstract class TokenizerBackedParser<
 		if (symbols != null) {
 			List<TSymbol> tSymbols = Lists.newArrayList(symbols);
 			Collections.reverse(tSymbols);
-			for (TSymbol symbol : tSymbols) {
-				putBack(symbol);
-			}
+			tSymbols.forEach(this::putBack);
 		}
 	}
 
@@ -225,29 +221,13 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected boolean nextIs(@Nonnull final TSymbolType type) {
-		return nextIs(new Delegates.IFunc1<TSymbol, Boolean>() {
-
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				return input1 != null && type == input1.getType();
-			}
-		});
+		return nextIs(input1 -> input1 != null && type == input1.getType());
 	}
 
 	@SafeVarargs
 	protected final boolean nextIs(@Nonnull final TSymbolType... types) {
 		final List<TSymbolType> tSymbolTypes = Lists.newArrayList(types);
-		return nextIs(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				return input1 != null && Iterables.any(tSymbolTypes, new Predicate<TSymbolType>() {
-					@Override
-					public boolean apply(@Nullable final TSymbolType input) {
-						return input != null && input == input1.getType();
-					}
-				});
-			}
-		});
+		return nextIs(input1 -> input1 != null && Iterables.any(tSymbolTypes, input -> input != null && input == input1.getType()));
 	}
 
 	protected boolean nextIs(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
@@ -286,9 +266,7 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected void accept(@Nonnull final Iterable<TSymbol> symbols) {
-		for (TSymbol symbol : symbols) {
-			accept(symbol);
-		}
+		symbols.forEach(this::accept);
 	}
 
 	protected void accept(@Nullable final TSymbol symbol) {
@@ -352,23 +330,13 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected IDisposable pushSpanConfig(@Nullable final Delegates.IAction1<SpanBuilder> newConfig) {
-		return pushSpanConfig(newConfig == null ? null : new Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>>() {
-			@Override
-			public void invoke(@Nullable final SpanBuilder span, @Nullable final Delegates.IAction1<SpanBuilder> ignored) {
-				newConfig.invoke(span);
-			}
-		});
+		return pushSpanConfig(newConfig == null ? null : (span1, ignored) -> newConfig.invoke(span1));
 	}
 
 	protected IDisposable pushSpanConfig(@Nullable final Delegates.IAction2<SpanBuilder, Delegates.IAction1<SpanBuilder>> newConfig) {
 		final Delegates.IAction1<SpanBuilder> old = getSpanConfig();
 		configureSpan(newConfig);
-		return new DisposableAction(new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				setSpanConfig(old);
-			}
-		});
+		return new DisposableAction(() -> setSpanConfig(old));
 	}
 
 	protected void configureSpan(@Nonnull final Delegates.IAction1<SpanBuilder> config) {
@@ -382,12 +350,7 @@ public abstract class TokenizerBackedParser<
 			setSpanConfig(null);
 		}
 		else {
-			setSpanConfig(new Delegates.IAction1<SpanBuilder>() {
-				@Override
-				public void invoke(@Nullable final SpanBuilder span) {
-					config.invoke(span, prev);
-				}
-			});
+			setSpanConfig(span1 -> config.invoke(span1, prev));
 		}
 		initialize(getSpan());
 	}
@@ -450,92 +413,46 @@ public abstract class TokenizerBackedParser<
 	}
 
 	protected void acceptWhile(@Nonnull final TSymbolType type) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				return input1 != null && type == input1.getType();
-			}
-		});
+		acceptWhile(input1 -> input1 != null && type == input1.getType());
 	}
 
 	protected void acceptWhile(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				return input1 != null && (type1 == input1.getType() || type2 == input1.getType());
-			}
-		});
+		acceptWhile(input1 -> input1 != null && (type1 == input1.getType() || type2 == input1.getType()));
 	}
 
 	protected void acceptWhile(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2, @Nonnull final TSymbolType type3) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				return input1 != null && (type1 == input1.getType() || type2 == input1.getType() || type3 == input1.getType());
-			}
-		});
+		acceptWhile(input1 -> input1 != null && (type1 == input1.getType() || type2 == input1.getType() || type3 == input1.getType()));
 	}
 
 	@SafeVarargs
 	protected final void acceptWhile(@Nonnull final TSymbolType... types) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol tSymbol) {
-				return tSymbol != null && Iterables.any(Arrays.asList(types), new Predicate<TSymbolType>() {
-					@Override
-					public boolean apply(@Nullable final TSymbolType tSymbolType) {
-						return tSymbolType != null && tSymbolType == tSymbol.getType();
-					}
-				});
-			}
-		});
+		acceptWhile(tSymbol -> tSymbol != null && Iterables.any(Arrays.asList(types), tSymbolType -> tSymbolType != null && tSymbolType == tSymbol.getType()));
 	}
 
 	protected void acceptUntil(@Nonnull final TSymbolType type) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				return input1 == null || type != input1.getType();
-			}
-		});
+		acceptWhile(input1 -> input1 == null || type != input1.getType());
 	}
 
 	protected void acceptUntil(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				if (input1 == null) return false;
-				final TSymbolType symbolType = input1.getType();
-				return (type1 != symbolType && type2 != symbolType);
-			}
+		acceptWhile(input1 -> {
+			if (input1 == null) return false;
+			final TSymbolType symbolType = input1.getType();
+			return (type1 != symbolType && type2 != symbolType);
 		});
 	}
 
 	protected void acceptUntil(@Nonnull final TSymbolType type1, @Nonnull final TSymbolType type2, @Nonnull final TSymbolType type3) {
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol input1) {
-				if (input1 == null) return false;
-				final TSymbolType symbolType = input1.getType();
-				return (type1 != symbolType && type2 != symbolType && type3 != symbolType);
-			}
+		acceptWhile(input1 -> {
+			if (input1 == null) return false;
+			final TSymbolType symbolType = input1.getType();
+			return (type1 != symbolType && type2 != symbolType && type3 != symbolType);
 		});
 	}
 
 	@SafeVarargs
 	protected final void acceptUntil(@Nonnull final TSymbolType... types) {
 		final List<TSymbolType> symbolTypeList = Arrays.asList(types);
-		acceptWhile(new Delegates.IFunc1<TSymbol, Boolean>() {
-			@Override
-			public Boolean invoke(@Nullable final TSymbol tSymbol) {
-				return tSymbol == null || Iterables.all(symbolTypeList, new Predicate<TSymbolType>() {
-					@Override
-					public boolean apply(@Nullable final TSymbolType tSymbolType) {
-						return tSymbolType == null || tSymbolType != tSymbol.getType();
-					}
-				});
-			}
-		});
+		acceptWhile(tSymbol -> tSymbol == null || Iterables.all(symbolTypeList, tSymbolType -> tSymbolType == null || tSymbolType != tSymbol.getType()));
 	}
 
 	protected void acceptWhile(@Nonnull final Delegates.IFunc1<TSymbol, Boolean> condition) {
@@ -612,12 +529,9 @@ public abstract class TokenizerBackedParser<
 		span.setEditHandler(SpanEditHandler.createDefault(getLanguage().createTokenizeStringDelegate()));
 	}
 
-	private final Delegates.IAction1<SpanBuilder> commentSpanConfigDelegate = new Delegates.IAction1<SpanBuilder>() {
-		@Override
-		public void invoke(@Nullable final SpanBuilder input) {
-			if (input != null) {
-				commentSpanConfig(input);
-			}
+	private final Delegates.IAction1<SpanBuilder> commentSpanConfigDelegate = input -> {
+		if (input != null) {
+			commentSpanConfig(input);
 		}
 	};
 
