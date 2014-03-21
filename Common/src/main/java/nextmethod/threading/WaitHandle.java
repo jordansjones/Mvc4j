@@ -55,9 +55,7 @@ abstract class WaitHandle implements IDisposable {
 			threads = ImmutableSet.copyOf(waiters);
 			waiters.clear();
 		}
-		for (Thread thread : threads) {
-			LockSupport.unpark(thread);
-		}
+		threads.forEach(LockSupport::unpark);
 		return true;
 	}
 

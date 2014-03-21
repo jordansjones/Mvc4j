@@ -17,7 +17,9 @@ import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static nextmethod.base.TypeHelpers.typeAs;
 
@@ -29,7 +31,7 @@ public class Span extends SyntaxTreeNode {
 	private SourceLocation start;
 	private String content;
 	private SpanKind kind;
-	private Iterable<ISymbol> symbols;
+	private Collection<ISymbol> symbols;
 	private Span previous;
 	private Span next;
 	private SpanEditHandler editHandler;
@@ -107,9 +109,7 @@ public class Span extends SyntaxTreeNode {
 
 	private String[] getSymbolGroupCounts() {
 		final Multiset<Class<?>> counts = HashMultiset.create();
-		for (ISymbol symbol : symbols) {
-			counts.add(symbol.getClass());
-		}
+		counts.addAll(symbols.stream().map(ISymbol::getClass).collect(Collectors.toList()));
 		final String[] ret = new String[counts.size()];
 		int i = 0;
 		for (Multiset.Entry<Class<?>> entry : counts.entrySet()) {

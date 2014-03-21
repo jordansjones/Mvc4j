@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static nextmethod.base.TypeHelpers.typeAs;
@@ -109,7 +110,7 @@ public class Block extends SyntaxTreeNode {
 		return typeAs(current, Span.class);
 	}
 
-	public Iterable<Span> flatten() {
+	public Collection<Span> flatten() {
 		final List<Span> values = Lists.newArrayList();
 
 		// Create an enumerable that flattens the tree for use by syntax highlighters, etc.
@@ -121,9 +122,7 @@ public class Block extends SyntaxTreeNode {
 			else {
 				final Block block = typeAs(element, Block.class);
 				if (block != null) {
-					for (Span childSpan : block.flatten()) {
-						values.add(childSpan);
-					}
+					values.addAll(block.flatten().stream().map(childSpan -> childSpan).collect(Collectors.toList()));
 				}
 			}
 		}

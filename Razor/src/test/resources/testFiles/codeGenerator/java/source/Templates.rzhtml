@@ -1,4 +1,4 @@
-﻿@functions {
+@functions {
     public HelperResult Repeat(int times, Func<int, object> template) {
         return new HelperResult((writer) => {
             for(int i = 0; i < times; i++) {

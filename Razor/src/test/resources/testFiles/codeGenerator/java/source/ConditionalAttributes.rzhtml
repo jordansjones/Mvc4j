@@ -1,4 +1,4 @@
-﻿@{
+@{
     var ch = true;
     var cls = "bar";
     <a href="Foo" />

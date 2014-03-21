@@ -26,12 +26,7 @@ public final class ParallelTestHelper {
 	public static <T> void parallelStressTest(final T obj, final Delegates.IAction1<T> action, int numberOfThreads) {
 		final Thread[] threads = new Thread[numberOfThreads];
 		for (int i = 0; i < numberOfThreads; i++) {
-			threads[i] = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					action.invoke(obj);
-				}
-			});
+			threads[i] = new Thread(() -> action.invoke(obj));
 			threads[i].start();
 		}
 

@@ -1,4 +1,4 @@
-﻿@*This is not going to be rendered*@
+@*This is not going to be rendered*@
 <p>This should @* not *@ be shown</p>
 
 @{

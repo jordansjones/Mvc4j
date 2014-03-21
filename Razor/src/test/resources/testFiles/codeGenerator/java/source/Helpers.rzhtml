@@ -1,4 +1,4 @@
-﻿@helper Bold(string s) {
+@helper Bold(string s) {
     s = s.ToUpper();
     <strong>@s</strong>
 }

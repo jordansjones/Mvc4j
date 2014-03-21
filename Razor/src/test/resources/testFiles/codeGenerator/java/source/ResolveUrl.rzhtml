@@ -1,4 +1,4 @@
-﻿<a href="~/Foo">Foo</a>
+<a href="~/Foo">Foo</a>
 <a href="~/Products/@product.id">@product.Name</a>
 <a href="~/Products/@product.id/Detail">Details</a>
 <a href="~/A+Really(Crazy),Url.Is:This/@product.id/Detail">Crazy Url!</a>

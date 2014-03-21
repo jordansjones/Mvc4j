@@ -40,7 +40,7 @@ public class CodePackage extends CodeObject implements Serializable {
 	public CodeCommentStatementCollection getComments() {
 		if (comments == null) {
 			comments = new CodeCommentStatementCollection();
-			// TODO: PopulateComments
+			// TODO: PopulateComments Event
 		}
 		return comments;
 	}
@@ -48,7 +48,7 @@ public class CodePackage extends CodeObject implements Serializable {
 	public CodePackageImportCollection getImports() {
 		if (imports == null) {
 			imports = new CodePackageImportCollection();
-			// TODO: PopulateImports
+			// TODO: PopulateImports Event
 		}
 		return imports;
 	}
@@ -56,7 +56,7 @@ public class CodePackage extends CodeObject implements Serializable {
 	public CodeTypeDeclarationCollection getTypes() {
 		if (classes == null) {
 			classes = new CodeTypeDeclarationCollection();
-			// TODO: PopulateTypes
+			// TODO: PopulateTypes Event
 		}
 		return classes;
 	}

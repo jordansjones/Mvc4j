@@ -62,14 +62,11 @@ public class CancellationTokenSource implements IDisposable {
 	}
 
 	Delegates.IAction createSafeLinkedCancel() {
-		return new Delegates.IAction() {
-			@Override
-			public void invoke() {
-				try {
-					cancel();
-				}
-				catch (RuntimeException ignored) {}
+		return () -> {
+			try {
+				cancel();
 			}
+			catch (RuntimeException ignored) {}
 		};
 	}
 

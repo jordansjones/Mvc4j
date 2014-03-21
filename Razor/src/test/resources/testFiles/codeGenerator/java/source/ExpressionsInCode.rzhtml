@@ -1,4 +1,4 @@
-﻿@{
+@{
     object foo = null;
     string bar = "Foo";
 }

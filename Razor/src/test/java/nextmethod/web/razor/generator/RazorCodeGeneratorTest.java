@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 
-	protected static final String TestRootNamespaceName = "TestOutput";
+	protected static final String TestRootNamespaceName = "test.output";
 
 	protected abstract String getFileExtension();
 	protected abstract String getLanguageName();

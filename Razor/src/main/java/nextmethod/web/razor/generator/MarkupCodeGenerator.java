@@ -21,6 +21,7 @@ public class MarkupCodeGenerator extends SpanCodeGenerator {
 
 		if (!Strings.isNullOrEmpty(target.getContent()) && !context.getHost().isDesignTimeMode()) {
 			final String code = context.buildCodeString(input -> {
+
 				if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
 					input.writeStartMethodInvoke(context.getHost().getGeneratedClassContext().getWriteLiteralToMethodName());
 					input.writeSnippet(context.getTargetWriterName());
@@ -32,6 +33,7 @@ public class MarkupCodeGenerator extends SpanCodeGenerator {
 				input.writeStringLiteral(target.getContent());
 				input.writeEndMethodInvoke();
 				input.writeEndStatement();
+
 			});
 			context.addStatement(code);
 		}

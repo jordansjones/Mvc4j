@@ -213,7 +213,35 @@ class JavaCodeGenerator extends CodeGenerator {
 
 	@Override
 	protected void generateConstructor(@Nonnull final CodeConstructor x, @Nonnull final CodeTypeDeclaration d) {
-		throw new NotImplementedException();
+		if (isCurrentDelegate() || isCurrentEnum() || isCurrentInterface()) return;
+
+		outputAnnotations(x.getCustomAnnotations(), null, false);
+
+		outputMemberAccessModifier(x.getAttributes());
+		getOutput().write(getSafeName(getCurrentTypeName()) + "(");
+		outputParameters(x.getParameters());
+		getOutput().write(")");
+
+		outputStartBrace();
+		incrementIndent();
+
+		if (!x.getBaseConstructorArgs().isEmpty())
+		{
+			getOutput().write("super(");
+			outputExpressionList(x.getBaseConstructorArgs());
+			getOutput().println(");");
+		}
+		if (!x.getChainedConstructorArgs().isEmpty())
+		{
+			getOutput().write("this(");
+			outputExpressionList(x.getBaseConstructorArgs());
+			getOutput().println(");");
+		}
+
+		generateStatements(x.getStatements());
+
+		decrementIndent();
+		outputEndBrace();
 	}
 
 	@Override
@@ -278,12 +306,15 @@ class JavaCodeGenerator extends CodeGenerator {
 
 	@Override
 	protected void generateLinePragmaStart(@Nonnull final CodeLinePragma p) {
-		throw new NotImplementedException();
+		getOutput().println();
+		getOutput().format("//#line %d \"%s\"", p.getLineNumber(), p.getFileName()).println();
 	}
 
 	@Override
 	protected void generateLinePragmaEnd(@Nonnull final CodeLinePragma p) {
-		throw new NotImplementedException();
+		getOutput().println();
+		getOutput().println("//#line default");
+		getOutput().println("//#line hidden");
 	}
 
 	@Override
@@ -366,7 +397,7 @@ class JavaCodeGenerator extends CodeGenerator {
 		if (!Strings.isNullOrEmpty(name)) {
 			output.print("package ");
 			output.print(getSafeName(name));
-			output.println();
+			output.println(";");
 			output.println();
 		}
 	}
@@ -443,7 +474,16 @@ class JavaCodeGenerator extends CodeGenerator {
 
 	@Override
 	protected void generateTypeConstructor(@Nonnull final CodeTypeConstructor constructor) {
-		throw new NotImplementedException();
+		if (isCurrentClass() || isCurrentEnum() || isCurrentInterface()) return;
+
+		outputAnnotations(constructor.getCustomAnnotations(), null, false);
+
+		getOutput().write("static");
+		outputStartBrace();
+		incrementIndent();
+		generateStatements(constructor.getStatements());
+		decrementIndent();
+		outputEndBrace();
 	}
 
 	@Override
@@ -452,7 +492,7 @@ class JavaCodeGenerator extends CodeGenerator {
 		outputAnnotations(declaration.getCustomAnnotations(), null, false);
 
 		if (!isCurrentDelegate()) {
-			outputTypeAnnotations(declaration);
+			outputTypeAttributes(declaration);
 
 			output.print(getSafeName(declaration.getName()));
 
@@ -669,9 +709,39 @@ class JavaCodeGenerator extends CodeGenerator {
 		// TODO
 	}
 
-
-	private void outputTypeAnnotations(@Nonnull final CodeTypeDeclaration declaration) {
+	private void outputTypeAttributes(@Nonnull final CodeTypeDeclaration declaration) {
 		final IndentingPrintWriter output = getOutput();
+		final TypeAttributes attributes = declaration.getTypeAttributes();
+
+		final TypeAttributes typeVisibility = TypeAttributes.valueOf(attributes.val & TypeAttributes.VisibilityMask.val);
+		if (TypeAttributes.Public.equals(typeVisibility)) {
+			output.write("public ");
+		}
+		else if (TypeAttributes.Private.equals(typeVisibility)) {
+			output.write("private ");
+		}
+		else if (TypeAttributes.Protected.equals(typeVisibility)) {
+			output.write("protected ");
+		}
+
+		if (declaration.isEnum()) {
+			output.write("enum ");
+		}
+		else {
+			if ((attributes.val & TypeAttributes.Interface.val) != 0) {
+				output.write("interface ");
+			}
+			else {
+				if ((attributes.val & TypeAttributes.Final.val) != 0) {
+					output.write("final ");
+				}
+				else if ((attributes.val & TypeAttributes.Abstract.val) != 0)
+				{
+					output.write("abstract ");
+				}
+				output.write("class ");
+			}
+		}
 	}
 
 	private void outputTypeArguments(final CodeTypeReferenceCollection typeArgs, final StringBuilder sb, final int count) {
@@ -698,6 +768,10 @@ class JavaCodeGenerator extends CodeGenerator {
 		else {
 			getOutput().println(" {");
 		}
+	}
+
+	private void outputEndBrace() {
+		getOutput().println("}");
 	}
 
 	private String getSafeName(final String id) {

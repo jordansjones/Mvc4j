@@ -16,6 +16,8 @@
 
 package nextmethod.codedom.compiler;
 
+import nextmethod.base.Strings;
+
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.PrintWriter;
@@ -36,7 +38,7 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 
 	public IndentingPrintWriter(final PrintWriter writer, final String tabString) {
 		this.writer = writer;
-		this.tabString = DefaultTabString;
+		this.tabString = tabString;
 		newline = true;
 	}
 

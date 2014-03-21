@@ -16,10 +16,32 @@
 
 package nextmethod.codedom;
 
-import java.io.Serializable;
+import com.google.common.collect.ForwardingCollection;
+import com.google.common.collect.ForwardingList;
+import com.google.common.collect.ForwardingSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-// TODO
-public class CodePackageImportCollection extends BaseCodeCollection<CodePackageImport> implements Serializable {
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Set;
+
+public class CodePackageImportCollection extends ForwardingCollection<CodePackageImport> implements Serializable {
 
 	private static final long serialVersionUID = -3609814966958487242L;
+
+	private final Set<CodePackageImport> data;
+	private final HashMap<String, CodePackageImport> keys;
+
+	public CodePackageImportCollection() {
+		data = Sets.newLinkedHashSet();
+		keys = Maps.newHashMap();
+	}
+
+	@Override
+	protected Set<CodePackageImport> delegate() {
+		return data;
+	}
+
+
 }

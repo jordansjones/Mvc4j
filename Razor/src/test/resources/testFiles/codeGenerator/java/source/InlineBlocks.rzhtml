@@ -1,3 +1,3 @@
-﻿@helper Link(string link) {
+@helper Link(string link) {
     <a href="@if(link != null) { @link } else { <text>#</text> }" />
 }

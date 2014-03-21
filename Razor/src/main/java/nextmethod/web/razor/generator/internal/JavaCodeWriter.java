@@ -155,9 +155,7 @@ public class JavaCodeWriter extends BaseCodeWriter {
 		if (hasParams) {
 			innerWriter.write("(");
 		}
-		writeCommaSeparatedList(parameterNames, input -> {
-			innerWriter.write(input);
-		});
+		writeCommaSeparatedList(parameterNames, innerWriter::write);
 		if (hasParams) {
 			innerWriter.write(")");
 		}

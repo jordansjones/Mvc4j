@@ -60,7 +60,7 @@ public class RazorEngineHost {
 		this.designTimeMode = false;
 		this.defaultPackage = InternalDefaultPackage;
 		this.defaultClassName = InternalDefaultClassName;
-		this.enableInstrumentation(true);
+		this.enableInstrumentation(false);
 	}
 
 	/**

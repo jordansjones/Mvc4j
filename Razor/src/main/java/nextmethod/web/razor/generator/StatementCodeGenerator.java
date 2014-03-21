@@ -17,9 +17,7 @@ public class StatementCodeGenerator extends SpanCodeGenerator {
 	@Override
 	public void generateCode(@Nonnull final Span target, @Nonnull final CodeGeneratorContext context) {
 		context.flushBufferedStatement();
-		String generatedCode = context.buildCodeString(input -> {
-			input.writeSnippet(target.getContent());
-		});
+		String generatedCode = context.buildCodeString(input -> input.writeSnippet(target.getContent()));
 		final OutParam<Integer> startGeneratedCode = OutParam.of(target.getStart().getCharacterIndex());
 		final OutParam<Integer> paddingCharCount = OutParam.of();
 		generatedCode = CodeGeneratorPaddingHelper.padStatement(context.getHost(), generatedCode, target, startGeneratedCode, paddingCharCount);

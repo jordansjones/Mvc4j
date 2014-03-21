@@ -100,12 +100,7 @@ public class RazorEditorParser implements IDisposable {
 		this.fileName = sourceFileName;
 
 		this.parser = new BackgroundParser(this.host, this.fileName);
-		this.parser.setResultsReadyHandler(new IEventHandler<DocumentParseCompleteEventArgs>() {
-			@Override
-			public void handleEvent(@Nonnull final Object sender, @Nonnull final DocumentParseCompleteEventArgs e) {
-				onDocumentParseComplete(e);
-			}
-		});
+		this.parser.setResultsReadyHandler((sender, e) -> onDocumentParseComplete(e));
 		this.parser.start();
 	}
 

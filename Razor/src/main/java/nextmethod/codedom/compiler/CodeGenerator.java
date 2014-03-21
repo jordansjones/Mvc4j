@@ -16,6 +16,9 @@
 
 package nextmethod.codedom.compiler;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import nextmethod.base.KeyValue;
 import nextmethod.base.NotImplementedException;
 import nextmethod.base.Strings;
 import nextmethod.codedom.*;
@@ -25,6 +28,10 @@ import javax.annotation.Nullable;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -169,11 +176,11 @@ public abstract class CodeGenerator implements ICodeGenerator {
 
 	protected void generateCompileUnit(@Nonnull final CodeCompileUnit compileUnit) {
 		generateCompileUnitStart(compileUnit);
-		compileUnit.getPackages().stream().filter(codePackage -> Strings.isNullOrEmpty(codePackage.getName())).forEach(this::generateNamespace);
+		compileUnit.getPackages().stream().filter(codePackage -> Strings.isNullOrEmpty(codePackage.getName())).forEach(this::generatePackage);
 
 		// TODO: AssemblyCustomAttributes?
 
-		compileUnit.getPackages().stream().filter(codePackage -> !Strings.isNullOrEmpty(codePackage.getName())).forEach(this::generateNamespace);
+		compileUnit.getPackages().stream().filter(codePackage -> !Strings.isNullOrEmpty(codePackage.getName())).forEach(this::generatePackage);
 
 		generateCompileUnitEnd(compileUnit);
 	}
@@ -259,7 +266,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 
 	protected abstract void generateMethodReturnStatement(@Nonnull final CodeMethodReturnStatement e);
 
-	protected void generateNamespace(@Nonnull final CodePackage ns) {
+	protected void generatePackage(@Nonnull final CodePackage ns) {
 		ns.getComments().forEach(this::generateCommentStatement);
 
 		generatePackageStart(ns);
@@ -305,7 +312,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	}
 
 	protected void generatePackages(@Nonnull final CodeCompileUnit e) {
-		e.getPackages().forEach(this::generateNamespace);
+		e.getPackages().forEach(this::generatePackage);
 	}
 
 	protected abstract void generateObjectCreateExpression(@Nonnull final CodeObjectCreateExpression e);
@@ -525,7 +532,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		if (options == null) {
 			options = new CodeGeneratorOptions();
 		}
-		this.output = new IndentingPrintWriter(new PrintWriter(checkNotNull(output)));
+		this.output = new IndentingPrintWriter(new PrintWriter(checkNotNull(output)), options.getIndentString());
 		this.options = options;
 	}
 
@@ -550,7 +557,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 	@Override
 	public void generateCodeFromPackage(@Nonnull final CodePackage codePackage, @Nonnull final Writer output, @Nonnull final CodeGeneratorOptions options) {
 		initOutput(output, options);
-		generateNamespace(codePackage);
+		generatePackage(codePackage);
 	}
 
 	@Override
@@ -581,17 +588,23 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		generateTypeStart(type);
 
 		final CodeTypeMemberCollection typeMembers = type.getMembers();
-		final CodeTypeMember[] members = new CodeTypeMember[typeMembers.size()];
+		CodeTypeMember[] members = new CodeTypeMember[typeMembers.size()];
 		typeMembers.copyTo(members, 0);
 
 		if (!options.isVerbatimOrder()) {
-//			TODO: Does this matter?
-//			final int[] order = new int[members.length];
-//			for (int n = 0; n < members.length; n++) {
-//				order[n] = Arrays.binarySearch(memberTypes, members[n].getClass()) * members.length + n;
-//			}
-//
-//			Arrays.sort();
+			final Stream.Builder<KeyValue<Integer, CodeTypeMember>> streamBuilder = Stream.builder();
+			for (int n = 0; n < members.length; n++) {
+				final int idx = memberTypes.indexOf(members[n].getClass());
+				streamBuilder.add(new KeyValue(idx * members.length + n, members[n]));
+			}
+
+			members = Iterables.toArray(
+				streamBuilder.build()
+				.sorted((x, y) -> x.getKey().compareTo(y.getKey()))
+				.map(KeyValue<Integer, CodeTypeMember>::getValue)
+				.collect(Collectors.toList()),
+				CodeTypeMember.class
+			);
 		}
 
 		CodeTypeDeclaration subtype = null;
@@ -687,7 +700,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 
 	// The position in the array determines the order in which those
 	// kind of CodeTypeMembers are generated. Less is more ;-)
-	static Class<?>[] memberTypes = {
+	static ImmutableList<Class<?>> memberTypes = ImmutableList.of(
 		CodeMemberField.class,
 		CodeSnippetTypeMember.class,
 		CodeTypeConstructor.class,
@@ -697,7 +710,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		CodeMemberMethod.class,
 		CodeTypeDeclaration.class,
 		CodeEntryPointMethod.class
-	};
+	);
 
 	protected void generateDirectives(@Nonnull final CodeDirectiveCollection directives) {
 		// Intentionally left empty

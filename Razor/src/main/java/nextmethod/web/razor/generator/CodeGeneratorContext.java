@@ -2,6 +2,7 @@ package nextmethod.web.razor.generator;
 
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
@@ -11,6 +12,7 @@ import nextmethod.codedom.CodeLinePragma;
 import nextmethod.codedom.CodeMemberField;
 import nextmethod.codedom.CodeMemberMethod;
 import nextmethod.codedom.CodePackage;
+import nextmethod.codedom.CodePackageImport;
 import nextmethod.codedom.CodeSnippetStatement;
 import nextmethod.codedom.CodeTypeDeclaration;
 import nextmethod.codedom.MemberAttributes;
@@ -25,7 +27,6 @@ import java.util.Map;
 
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
-// TODO
 public class CodeGeneratorContext {
 
 	private static final String DesignTimeHelperMethodName = "__RazorDesignTimeHelpers__";
@@ -62,7 +63,6 @@ public class CodeGeneratorContext {
 		return create(host, null, className, rootPackage, sourceFile, shouldGenerateLinePragmas);
 	}
 
-	// TODO
 	static CodeGeneratorContext create(final RazorEngineHost host, final Delegates.IFunc<CodeWriter> writerFactory, final String className, final String rootPackage, final String sourceFile, final boolean shouldGenerateLinePragmas) {
 		final CodeGeneratorContext context = new CodeGeneratorContext();
 		context.host = host;
@@ -81,7 +81,7 @@ public class CodeGeneratorContext {
 		context.codePackage.getTypes().add(context.generatedClass);
 		context.generatedClass.getMembers().add(context.targetMethod);
 
-//		context.codePackage.getImports().addAll(Iterables.transform(host.getPackageImports()));
+		Iterables.transform(host.getPackageImports(), CodePackageImport::new).forEach(context.codePackage.getImports()::add);
 
 		return context;
 	}
@@ -198,7 +198,6 @@ public class CodeGeneratorContext {
 		addStatement(generatedCode, null);
 	}
 
-	// TODO
 	public void addStatement(final String body, final CodeLinePragma pragma) {
 		if (statementCollector == null) {
 			final CodeSnippetStatement statement = new CodeSnippetStatement(body);

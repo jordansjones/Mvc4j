@@ -1,4 +1,4 @@
-﻿@helper Strong(string s) {
+@helper Strong(string s) {
     <strong>@s</strong>
 }
 

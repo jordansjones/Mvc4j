@@ -33,9 +33,7 @@ public class SpanConstructor extends SyntaxTreeNode implements ISpanConstructor 
 
 	public SpanConstructor(final SpanKind kind, final Iterable<ISymbol> symbols) {
 		builder = new SpanBuilder().setKind(kind).setEditHandler(SpanEditHandler.createDefault(testTokenizer));
-		for (ISymbol symbol : symbols) {
-			builder.accept(symbol);
-		}
+		symbols.forEach(builder::accept);
 	}
 
 	@Override

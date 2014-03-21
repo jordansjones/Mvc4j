@@ -7,6 +7,7 @@ import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Resources;
 import nextmethod.base.NotImplementedException;
+import nextmethod.base.SystemHelpers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,7 +46,7 @@ public class TestFile {
 	public String readAllText() {
 		try(Reader stream = openRead().openStream()) {
 			final List<String> strings = CharStreams.readLines(stream);
-			return Joiner.on("\r\n").join(strings);
+			return Joiner.on(SystemHelpers.newLine()).join(strings);
 		}
 		catch (IOException e) {
 			throw Throwables.propagate(e);

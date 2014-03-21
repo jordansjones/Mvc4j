@@ -6,6 +6,7 @@ import nextmethod.base.Delegates;
 import nextmethod.base.Strings;
 import nextmethod.codedom.CodeConstructor;
 import nextmethod.codedom.CodePackageImport;
+import nextmethod.codedom.CodePackageImportCollection;
 import nextmethod.codedom.CodeTypeReference;
 import nextmethod.codedom.MemberAttributes;
 import nextmethod.web.razor.RazorEngineHost;
@@ -41,7 +42,7 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 		this.rootPackageName = checkNotNull(rootPackageName);
 		this.sourceFileName = sourceFileName;
 		this.host = checkNotNull(host);
-		this.generateLinePragmas = Strings.isNullOrEmpty(sourceFileName);
+		this.generateLinePragmas = !Strings.isNullOrEmpty(sourceFileName);
 	}
 
 	protected Delegates.IFunc<CodeWriter> getCodeWriterFactory() {
@@ -76,8 +77,9 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 	}
 
 	protected void initialize(@Nonnull final CodeGeneratorContext context) {
+		final CodePackageImportCollection packageImports = context.getCodePackage().getImports();
 		final Iterable<CodePackageImport> imports = Iterables.transform(host.getPackageImports(), input -> Strings.isNullOrEmpty(input) ? null : new CodePackageImport(input));
-		Iterables.addAll(context.getCodePackage().getImports(), imports);
+		imports.forEach(packageImports::add);
 
 		if (!Strings.isNullOrEmpty(host.getDefaultBaseClass())) {
 			context.getGeneratedClass().getBaseTypes().add(new CodeTypeReference(host.getDefaultBaseClass()));

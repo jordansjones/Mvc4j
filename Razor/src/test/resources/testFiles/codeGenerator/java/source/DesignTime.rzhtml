@@ -1,4 +1,4 @@
-﻿<div>
+<div>
             @for(int i = 1; i <= 10; i++) {
     <p>This is item #@i</p>
             }
