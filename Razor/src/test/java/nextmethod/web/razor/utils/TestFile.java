@@ -17,6 +17,7 @@
 package nextmethod.web.razor.utils;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -24,6 +25,8 @@ import java.nio.file.Paths;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
+import com.google.common.io.CharSource;
+import com.google.common.io.CharStreams;
 import com.google.common.io.Resources;
 import nextmethod.base.NotImplementedException;
 
@@ -47,6 +50,11 @@ public class TestFile {
         return new TestFile(String.format(ResourceNameFormat, localResourceName));
     }
 
+    public CharSource openRead() {
+        final URL resource = Resources.getResource(getClass(), this.resourceName);
+        return Resources.asCharSource(resource, Charsets.UTF_8);
+    }
+
     public byte[] readAllBytes() {
         try {
             return Files.readAllBytes(Paths.get(resourceUrl.toURI()));
@@ -57,10 +65,14 @@ public class TestFile {
     }
 
     public String readAllText() {
-        String blah = new String(readAllBytes(), Charsets.UTF_8);
-        blah = blah.replaceAll("\\r\\n", "\n");
-        blah = blah.replaceAll("\\r", "\n");
-        return blah.replaceAll("\\n", "\r\n");
+        try(Reader stream = openRead().openStream()) {
+            StringBuilder strings = new StringBuilder();
+            CharStreams.copy(stream, strings);
+            return strings.toString();
+        }
+        catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     public void save(final String filePath) {

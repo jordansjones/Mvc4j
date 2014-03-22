@@ -86,16 +86,11 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         runTest(name, baselineName, generatePragmas, designTimeMode, null);
     }
 
-    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode,
-                           final List<GeneratedCodeMapping> expectedDesignTimePragmas
-                          ) {
+    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode, final List<GeneratedCodeMapping> expectedDesignTimePragmas) {
         runTest(name, baselineName, generatePragmas, designTimeMode, expectedDesignTimePragmas, null);
     }
 
-    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode,
-                           final List<GeneratedCodeMapping> expectedDesignTimePragmas,
-                           Delegates.IAction1<RazorEngineHost> hostConfig
-                          ) {
+    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode, final List<GeneratedCodeMapping> expectedDesignTimePragmas, Delegates.IAction1<RazorEngineHost> hostConfig ) {
         if (Strings.isNullOrEmpty(baselineName)) {
             baselineName = name;
         }
@@ -147,12 +142,12 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         GeneratorResults results = null;
         try (final StringTextBuffer buffer = new StringTextBuffer(source)) {
             results = engine.generateCode(
-                                             buffer, name, TestRootNamespaceName, generatePragmas
-                                                                                  ? String.format(
-                                                                                                     "%s.%s", name,
-                                                                                                     getFileExtension()
-                                                                                                 )
-                                                                                  : null
+                                             buffer,
+                                             name,
+                                             TestRootNamespaceName,
+                                             generatePragmas
+                                             ? String.format("%s.%s", name, getFileExtension())
+                                             : null
                                          );
         }
 
@@ -174,6 +169,7 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         String generatedOutput = null;
         try (StringWriter swriter = new StringWriter()) {
             try (PrintWriter writer = new PrintWriter(swriter)) {
+                assert codeDomProvider != null;
                 codeDomProvider.generateCodeFromCompileUnit(compileUnit, writer, options);
             }
             generatedOutput = swriter.toString();
@@ -208,20 +204,18 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         // Verify design-time pragmas
         if (designTimeMode) {
             assertTrue(
-                          expectedDesignTimePragmas != null || results.getDesignTimeLineMappings() == null ||
-                          results.getDesignTimeLineMappings().size() == 0
+                          expectedDesignTimePragmas != null
+                          || results.getDesignTimeLineMappings() == null
+                          || results.getDesignTimeLineMappings().size() == 0
                       );
             assertTrue(
-                          expectedDesignTimePragmas == null || (results.getDesignTimeLineMappings() != null &&
-                                                                !results.getDesignTimeLineMappings().isEmpty())
+                          expectedDesignTimePragmas == null
+                          || (results.getDesignTimeLineMappings() != null && !results.getDesignTimeLineMappings().isEmpty())
                       );
             if (expectedDesignTimePragmas != null) {
                 final Ordering<Map.Entry<Integer, GeneratedCodeMapping>> ordering = Ordering.from(createGeneratedCodeMappingComparator());
                 final Iterable<GeneratedCodeMapping> generatedCodeMappings = Iterables.transform(
-                                                                                                    ordering.sortedCopy(
-                                                                                                                           results
-                                                                                                                               .getDesignTimeLineMappingEntries()
-                                                                                                                       ),
+                                                                                                    ordering.sortedCopy(results.getDesignTimeLineMappingEntries()),
                                                                                                     createSelectGeneratedCodeMappingFunction()
                                                                                                 );
                 assertArrayEquals(
