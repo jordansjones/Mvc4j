@@ -1,13 +1,19 @@
 package nextmethod.base;
 
+import java.util.function.Supplier;
+
 public final class SystemHelpers {
+
+	static {
+		NLSupplier = System::lineSeparator;
+	}
 
 	private SystemHelpers() {}
 
-	private static final String NL = System.lineSeparator();
+	public static Supplier<String> NLSupplier;
 
 	public static String newLine() {
-		return NL;
+		return NLSupplier.get();
 	}
 
 	private static final String FS = System.getProperty("file.separator");

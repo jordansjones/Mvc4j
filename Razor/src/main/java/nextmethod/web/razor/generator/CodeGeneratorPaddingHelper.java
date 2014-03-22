@@ -14,17 +14,21 @@ final class CodeGeneratorPaddingHelper {
 	private static final char[] newLineChars = { '\r', '\n' };
 
 	// TODO
-	public static int paddingCharCount(final RazorEngineHost host, final Span target, final int generatedStart)
-	{
+	public static int paddingCharCount(final RazorEngineHost host, final Span target, final int generatedStart) {
 		return 0;
 	}
 
-	public static String padStatement(final RazorEngineHost host, final String code, final Span target, final OutParam<Integer> startGeneratedCode, final OutParam<Integer> paddingCharCount)
-	{
+	public static String padStatement(final RazorEngineHost host, final String code, final Span target, final OutParam<Integer> startGeneratedCode, final OutParam<Integer> paddingCharCount) {
 		checkNotNull(host);
 		checkNotNull(target);
 
 		int padding = calculatePadding(host, target, 0);
+		// Treat statement padding specially so for brace positioning, so that in the following example:
+		//  @if (foo > 0)
+		//  {
+		//  }
+		//
+		// the braces shows up under the @ rather than under the if.
 		if (host.isDesignTimeMode()
 			&& padding > 0
 			&& target.getPrevious().getKind() == SpanKind.Transition
@@ -36,8 +40,7 @@ final class CodeGeneratorPaddingHelper {
 		return padInteral(host, code, padding, paddingCharCount);
 	}
 
-	public static int calculatePadding(final RazorEngineHost host, final Span target, final int generatedStart)
-	{
+	public static int calculatePadding(final RazorEngineHost host, final Span target, final int generatedStart) {
 		checkNotNull(host);
 		checkNotNull(target);
 
@@ -49,8 +52,7 @@ final class CodeGeneratorPaddingHelper {
 		return padding;
 	}
 
-	private static int collectSpacesAndTabs(final Span target, final int tabSize)
-	{
+	private static int collectSpacesAndTabs(final Span target, final int tabSize) {
 		Span firstSpanInLine = target;
 
 		String currentContent = null;
@@ -107,8 +109,7 @@ final class CodeGeneratorPaddingHelper {
 		return padding;
 	}
 
-	private static String padInteral(final RazorEngineHost host, final String code, final int padding, final OutParam<Integer> paddingCharCount)
-	{
+	private static String padInteral(final RazorEngineHost host, final String code, final int padding, final OutParam<Integer> paddingCharCount) {
 		if (host.isDesignTimeMode() && host.isIndentingWithTabs()) {
 			final OutParam<Integer> spaces = OutParam.of(0);
 			int tabs = divRem(padding, host.getTabSize(), spaces);
@@ -123,8 +124,7 @@ final class CodeGeneratorPaddingHelper {
 	}
 
 
-	private static int divRem(final int a, final int b, final OutParam<Integer> result)
-	{
+	private static int divRem(final int a, final int b, final OutParam<Integer> result) {
 		result.set(a % b);
 		return a / b;
 	}

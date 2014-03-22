@@ -268,7 +268,7 @@ final class JavaCodeParserStatements extends JavaCodeParserDelegate {
 		if (at(JavaKeyword.Catch)) {
 			accept(ws);
 			doAssert(JavaKeyword.Catch);
-			conditionalBlock(true);
+			conditionalBlock(false);
 			afterTryClause();
 		}
 		else if (at(JavaKeyword.Finally)) {

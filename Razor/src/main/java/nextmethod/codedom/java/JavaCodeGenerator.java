@@ -16,6 +16,7 @@
 
 package nextmethod.codedom.java;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import nextmethod.annotations.Internal;
 import nextmethod.base.NotImplementedException;
@@ -27,6 +28,7 @@ import nextmethod.codedom.compiler.IndentingPrintWriter;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -207,6 +209,55 @@ class JavaCodeGenerator extends CodeGenerator {
 	}
 
 	@Override
+	protected void generateCompileUnitStart(@Nonnull final CodeCompileUnit compileUnit) {
+//		TODO: Commented out until we have something to put here
+//		getOutput().println();
+		super.generateCompileUnitStart(compileUnit);
+	}
+
+	@Override
+	protected void generateCompileUnit(@Nonnull final CodeCompileUnit compileUnit) {
+		generateCompileUnitStart(compileUnit);
+
+		// Package then imports
+
+		List<CodePackageImport> globalImports = null;
+		for (CodePackage codePackage : compileUnit.getPackages()) {
+			if (Strings.isNullOrEmpty(codePackage.getName())) {
+				globalImports = Lists.newArrayList(codePackage.getImports());
+				codePackage.getImports().clear();
+			}
+
+			generatePackage(codePackage);
+
+			if (globalImports != null) {
+				codePackage.getImports().addAll(globalImports);
+				globalImports = null;
+			}
+		}
+
+		List<CodePackageImport> imports = null;
+		for (CodePackage codePackage : compileUnit.getPackages()) {
+
+			if (!Strings.isNullOrEmpty(codePackage.getName())) continue;
+
+			if (codePackage.getImports().isEmpty()) continue;
+
+			if (imports == null)
+				imports = Lists.newArrayList();
+
+			codePackage.getImports().forEach(imports::add);
+		}
+
+		if (imports != null) {
+			imports.sort((a, b) -> a.getPackage().compareTo(b.getPackage()));
+			imports.forEach(this::generatePackageImport);
+		}
+
+		generateCompileUnitEnd(compileUnit);
+	}
+
+	@Override
 	protected void generateConditionStatement(@Nonnull final CodeConditionStatement s) {
 		throw new NotImplementedException();
 	}
@@ -307,7 +358,8 @@ class JavaCodeGenerator extends CodeGenerator {
 	@Override
 	protected void generateLinePragmaStart(@Nonnull final CodeLinePragma p) {
 		getOutput().println();
-		getOutput().format("//#line %d \"%s\"", p.getLineNumber(), p.getFileName()).println();
+		getOutput().format("//#line %d \"%s\"", p.getLineNumber(), p.getFileName());
+		getOutput().println();
 	}
 
 	@Override
@@ -398,7 +450,6 @@ class JavaCodeGenerator extends CodeGenerator {
 			output.print("package ");
 			output.print(getSafeName(name));
 			output.println(";");
-			output.println();
 		}
 	}
 

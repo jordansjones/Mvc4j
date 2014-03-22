@@ -532,7 +532,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 		if (options == null) {
 			options = new CodeGeneratorOptions();
 		}
-		this.output = new IndentingPrintWriter(new PrintWriter(checkNotNull(output)), options.getIndentString());
+		this.output = new IndentingPrintWriter(new PrintWriter(checkNotNull(output)), options.getIndentString(), options.getNewlineString());
 		this.options = options;
 	}
 
@@ -595,7 +595,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
 			final Stream.Builder<KeyValue<Integer, CodeTypeMember>> streamBuilder = Stream.builder();
 			for (int n = 0; n < members.length; n++) {
 				final int idx = memberTypes.indexOf(members[n].getClass());
-				streamBuilder.add(new KeyValue(idx * members.length + n, members[n]));
+				streamBuilder.add(KeyValue.of(idx * members.length + n, members[n]));
 			}
 
 			members = Iterables.toArray(

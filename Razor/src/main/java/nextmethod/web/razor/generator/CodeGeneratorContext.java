@@ -370,8 +370,8 @@ public class CodeGeneratorContext {
 	private class StatementBuffer {
 
 		private final StringBuilder builder = new StringBuilder();
-		private Optional<Integer> generatedCodeStart;
-		private Optional<Integer> codeLength;
+		private Optional<Integer> generatedCodeStart = Optional.absent();
+		private Optional<Integer> codeLength = Optional.absent();
 		private Span linePragmaSpan;
 
 		public void reset() {
@@ -386,7 +386,8 @@ public class CodeGeneratorContext {
 		}
 
 		public void markEnd() {
-			codeLength = Optional.of(builder.length() - generatedCodeStart.get());
+			if (generatedCodeStart.isPresent())
+				codeLength = Optional.of(builder.length() - generatedCodeStart.get());
 		}
 
 		public StringBuilder getBuilder() {

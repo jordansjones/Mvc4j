@@ -26,6 +26,8 @@ public final class Strings {
 	private Strings() {}
 
 	public static final String Empty = "";
+	public static final String CRLF = "\r\n";
+	public static final String LF = "\n";
 
 	/**
 	 * Returns the given string if it is non-null; the empty string otherwise.
@@ -158,9 +160,12 @@ public final class Strings {
 		int idx = -1;
 		int offset = 0;
 		do {
-			idx = string.lastIndexOf(anyOf[offset++]);
+			int x = string.lastIndexOf(anyOf[offset++]);
+			if (x > idx) {
+				idx = x;
+			}
 		}
-		while(idx < 0 && offset < anyOf.length);
+		while(offset < anyOf.length);
 		return idx;
 	}
 }

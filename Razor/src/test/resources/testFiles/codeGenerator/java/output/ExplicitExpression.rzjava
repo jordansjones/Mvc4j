@@ -1,5 +1,4 @@
 package test.output;
-
 import java.lang;
 
 public class ExplicitExpression {
@@ -18,4 +17,3 @@ WriteLiteral("1 + 1 = ");
 //#line hidden
 }
 }
-

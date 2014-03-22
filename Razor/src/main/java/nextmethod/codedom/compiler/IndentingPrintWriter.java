@@ -17,6 +17,7 @@
 package nextmethod.codedom.compiler;
 
 import nextmethod.base.Strings;
+import nextmethod.base.SystemHelpers;
 
 import java.io.Closeable;
 import java.io.Flushable;
@@ -29,17 +30,19 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 
 	private PrintWriter writer;
 	private String tabString;
+	private String newlineString;
 	private int indent;
 	private boolean newline;
 
 	public IndentingPrintWriter(final PrintWriter writer) {
-		this(writer, DefaultTabString);
+		this(writer, DefaultTabString, SystemHelpers.newLine());
 	}
 
-	public IndentingPrintWriter(final PrintWriter writer, final String tabString) {
+	public IndentingPrintWriter(final PrintWriter writer, final String tabString, final String newlineString) {
 		this.writer = writer;
 		this.tabString = tabString;
-		newline = true;
+		this.newlineString = newlineString;
+		this.newline = true;
 	}
 
 	public int getIndent() {
@@ -170,7 +173,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final char x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -211,7 +215,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final double x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -239,7 +244,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final boolean x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -281,7 +287,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final int x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -354,7 +361,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final float x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -367,7 +375,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final long x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -379,7 +388,7 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println() {
 		outputTabs();
-		writer.println();
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -394,7 +403,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final Object x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -427,7 +437,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final char[] x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 
@@ -560,7 +571,8 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 	 */
 	public void println(final String x) {
 		outputTabs();
-		writer.println(x);
+		writer.print(x);
+		writer.print(this.newlineString);
 		newline = true;
 	}
 

@@ -8,6 +8,7 @@ import com.google.common.primitives.Ints;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
 import nextmethod.base.Strings;
+import nextmethod.base.SystemHelpers;
 import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.compiler.CodeDomProvider;
 import nextmethod.codedom.compiler.CodeGeneratorOptions;
@@ -36,6 +37,10 @@ import static org.junit.Assert.assertTrue;
 public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 
 	protected static final String TestRootNamespaceName = "test.output";
+
+	static	{
+		SystemHelpers.NLSupplier = () -> Strings.CRLF;
+	}
 
 	protected abstract String getFileExtension();
 	protected abstract String getLanguageName();
@@ -121,6 +126,7 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 		final CodeGeneratorOptions options = new CodeGeneratorOptions();
 		options.setBlankLinesBetweenMembers(false);
 		options.setIndentString(Strings.Empty);
+		options.setNewlineString(Strings.CRLF);
 
 		String generatedOutput = null;
 		try (StringWriter swriter = new StringWriter()) {

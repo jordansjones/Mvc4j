@@ -1,10 +1,13 @@
 package nextmethod.web.razor.generator;
 
 import nextmethod.base.Strings;
+import nextmethod.codedom.CodePackage;
+import nextmethod.codedom.CodePackageImport;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
+import java.util.Optional;
 
 import static nextmethod.base.TypeHelpers.typeAs;
 
@@ -18,7 +21,6 @@ public class AddImportCodeGenerator extends SpanCodeGenerator {
 		this.keywordLength = keywordLength;
 	}
 
-	// TODO
 	@Override
 	public void generateCode(@Nonnull Span target, @Nonnull CodeGeneratorContext context) {
 		// Try to find the package in the existing imports
@@ -27,8 +29,26 @@ public class AddImportCodeGenerator extends SpanCodeGenerator {
 			pkg = pkg.substring(1);
 		}
 
-//		final CodePackage imprt = context.getCodePackage();
-//		imprt.getImports();
+		final String importPackage = pkg;
+
+		final CodePackage imprt = context.getCodePackage();
+		final Optional<CodePackageImport> importOptional = imprt.getImports()
+			.stream()
+			.filter(x -> Strings.nullToEmpty(x.getPackage()).equals(importPackage.trim()))
+			.findFirst();
+
+		final CodePackageImport codePackageImport;
+		if (!importOptional.isPresent())
+		{
+			codePackageImport = new CodePackageImport(importPackage);
+			context.getCodePackage().getImports().add(codePackageImport);
+		}
+		else
+		{
+			codePackageImport = importOptional.get();
+		}
+
+		codePackageImport.setLinePragma(context.generateLinePragma(target));
 	}
 
 	public String getPackage() {

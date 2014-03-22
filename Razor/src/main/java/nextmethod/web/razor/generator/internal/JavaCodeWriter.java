@@ -129,13 +129,14 @@ public class JavaCodeWriter extends BaseCodeWriter {
 				writeLine();
 				writer.write('\"');
 			}
-			writer.write("\"");
 		}
+		writer.write("\"");
 	}
 
 	@Override
 	public void writeEndStatement() {
 		getInnerWriter().write(";");
+		writeLine();
 	}
 
 	@Override
@@ -159,7 +160,7 @@ public class JavaCodeWriter extends BaseCodeWriter {
 		if (hasParams) {
 			innerWriter.write(")");
 		}
-		innerWriter.write(" => ");
+		innerWriter.write(" -> ");
 	}
 
 	@Override

@@ -45,8 +45,9 @@ public class TestFile {
 
 	public String readAllText() {
 		try(Reader stream = openRead().openStream()) {
-			final List<String> strings = CharStreams.readLines(stream);
-			return Joiner.on(SystemHelpers.newLine()).join(strings);
+			StringBuilder strings = new StringBuilder();
+			CharStreams.copy(stream, strings);
+			return strings.toString();
 		}
 		catch (IOException e) {
 			throw Throwables.propagate(e);

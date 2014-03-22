@@ -36,6 +36,25 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
 
 	@Override
 	public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
+		statementCollectorToken.close();
+		if (headerComplete) {
+			writer.writeEndLambdaDelegate();
+			writer.writeEndConstructor();
+			writer.writeEndStatement();
+		}
+
+		if (footer != null && !Strings.isNullOrEmpty(footer.getValue())) {
+			writer.writeLinePragma(context.generateLinePragma(footer.getLocation(), 0, footer.getValue().length()));
+			writer.writeSnippet(footer.getValue());
+			writer.writeLinePragma();
+		}
+		writer.writeHelperTrailer();
+		context.getGeneratedClass().getMembers().add(new CodeSnippetTypeMember(writer.getContent()));
+		context.setTargetWriterName(oldWriter);
+	}
+
+	@Override
+	public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
 		writer = context.createCodeWriter();
 		final RazorEngineHost host = context.getHost();
 		final GeneratedClassContext generatedClassContext = host.getGeneratedClassContext();
@@ -62,25 +81,6 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
 		statementCollectorToken = context.changeStatementCollection(addStatementToHelperAction);
 		oldWriter = context.getTargetWriterName();
 		context.setTargetWriterName(HelperWriterName);
-	}
-
-	@Override
-	public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		statementCollectorToken.close();
-		if (headerComplete) {
-			writer.writeEndLambdaDelegate();
-			writer.writeEndConstructor();
-			writer.writeEndStatement();
-		}
-
-		if (footer != null && !Strings.isNullOrEmpty(footer.getValue())) {
-			writer.writeLinePragma(context.generateLinePragma(footer.getLocation(), 0, footer.getValue().length()));
-			writer.writeSnippet(footer.getValue());
-			writer.writeLinePragma();
-		}
-		writer.writeHelperTrailer();
-		context.getGeneratedClass().getMembers().add(new CodeSnippetTypeMember(writer.getContent()));
-		context.setTargetWriterName(oldWriter);
 	}
 
 	private Delegates.IAction2<String, CodeLinePragma> addStatementToHelperAction = (statement, pragma) -> {
