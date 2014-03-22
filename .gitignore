@@ -13,7 +13,9 @@ target/
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea/*
+!.idea/.name
+!.idea/codeStyleSettings.xml
 out/
 
 # Eclipse #
