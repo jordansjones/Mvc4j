@@ -17,7 +17,7 @@ public class Instrumented {
 public static Template Strong(string s) {
 //#line default
 //#line hidden
-return new Template(__razor_helper_writer => {
+return new Template(__razor_helper_writer -> {
 
 //#line 1 "Instrumented.rzhtml"
                           
@@ -78,7 +78,7 @@ EndContext("~/Instrumented.rzhtml", 56, 2, true);
 
 //#line default
 //#line hidden
-item => new Template(__razor_template_writer => {
+item -> new Template(__razor_template_writer -> {
 
 BeginContext(__razor_template_writer, "~/Instrumented.rzhtml", 93, 10, true);
 

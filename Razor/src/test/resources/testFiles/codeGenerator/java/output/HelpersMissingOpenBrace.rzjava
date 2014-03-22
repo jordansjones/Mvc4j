@@ -17,7 +17,7 @@ public class HelpersMissingOpenBrace {
 public static Template Bold(string s) {
 //#line default
 //#line hidden
-return new Template(__razor_helper_writer => {
+return new Template(__razor_helper_writer -> {
 
 //#line 1 "HelpersMissingOpenBrace.rzhtml"
                         

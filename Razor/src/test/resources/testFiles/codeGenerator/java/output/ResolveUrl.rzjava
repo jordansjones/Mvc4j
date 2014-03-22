@@ -159,7 +159,7 @@ WriteLiteral("\r\n");
 //#line hidden
 WriteLiteral("\r\n\r\n");
 
-DefineSection("Foo", () => {
+DefineSection("Foo", () -> {
 
 WriteLiteral("\r\n    <a");
 

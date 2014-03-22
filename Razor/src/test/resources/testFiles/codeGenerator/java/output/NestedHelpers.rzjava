@@ -17,7 +17,7 @@ public class NestedHelpers {
 public static Template Bold(string s) {
 //#line default
 //#line hidden
-return new Template(__razor_helper_writer => {
+return new Template(__razor_helper_writer -> {
 
 //#line 3 "NestedHelpers.rzhtml"
                             
@@ -54,7 +54,7 @@ WriteLiteralTo(__razor_helper_writer, "</strong>\r\n");
 public static Template Italic(string s) {
 //#line default
 //#line hidden
-return new Template(__razor_helper_writer => {
+return new Template(__razor_helper_writer -> {
 
 //#line 1 "NestedHelpers.rzhtml"
                           

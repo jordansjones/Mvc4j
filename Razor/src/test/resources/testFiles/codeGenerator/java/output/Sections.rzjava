@@ -26,7 +26,7 @@ public void Execute() {
 //#line hidden
 WriteLiteral("\r\n\r\n<div>This is in the Body>\r\n\r\n");
 
-DefineSection("Section2", () => {
+DefineSection("Section2", () -> {
 
 WriteLiteral("\r\n    <div>This is in Section 2</div>\r\n");
 
@@ -34,7 +34,7 @@ WriteLiteral("\r\n    <div>This is in Section 2</div>\r\n");
 
 WriteLiteral("\r\n");
 
-DefineSection("Section1", () => {
+DefineSection("Section1", () -> {
 
 WriteLiteral("\r\n    <div>This is in Section 1</div>\r\n");
 

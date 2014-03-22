@@ -18,7 +18,7 @@ private static object @__o;
 public static Template Foo() {
 //#line default
 //#line hidden
-return new Template(__razor_helper_writer => {
+return new Template(__razor_helper_writer -> {
 
 //#line 10 "DesignTime.rzhtml"
                
@@ -75,7 +75,7 @@ __o = Foo(Bar.Baz);
 //#line hidden
 
 //#line 5 "DesignTime.rzhtml"
-__o = Foo(item => new Template(__razor_template_writer => {
+__o = Foo(item -> new Template(__razor_template_writer -> {
 
 
 //#line default
@@ -94,7 +94,7 @@ __o = Foo(item => new Template(__razor_template_writer => {
 
 //#line default
 //#line hidden
-DefineSection("Footer", () => {
+DefineSection("Footer", () -> {
 
 
 //#line 8 "DesignTime.rzhtml"

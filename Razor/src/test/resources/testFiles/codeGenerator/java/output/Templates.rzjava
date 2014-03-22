@@ -16,7 +16,7 @@ public class Templates {
 //#line 1 "Templates.rzhtml"
             
     public HelperResult Repeat(int times, Func<int, object> template) {
-        return new HelperResult((writer) => {
+        return new HelperResult((writer) -> {
             for(int i = 0; i < times; i++) {
                 ((HelperResult)template(i)).WriteTo(writer);
             }
@@ -105,7 +105,7 @@ WriteLiteral("\r\n</ul>\r\n\r\n<p>\r\n");
 
 //#line 21 "Templates.rzhtml"
 Write(Repeat(10,
-    item => new Template(__razor_template_writer => {
+    item -> new Template(__razor_template_writer -> {
 
 
 //#line default
