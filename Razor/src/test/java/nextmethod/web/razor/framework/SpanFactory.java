@@ -1,4 +1,23 @@
+/*
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.framework;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -21,214 +40,226 @@ import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 import nextmethod.web.razor.tokenizer.symbols.JavaSymbol;
 import nextmethod.web.razor.tokenizer.symbols.JavaSymbolType;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-
 public class SpanFactory {
 
-	public static SpanFactory createJavaHtml() {
-		return new SpanFactory(
-			input -> {
-				assert input != null;
-				return new HtmlTokenizer(input);
-			},
-			input -> {
-				assert input != null;
-				return new JavaTokenizer(input);
-			}
-		);
-	}
+    public static SpanFactory createJavaHtml() {
+        return new SpanFactory(
+                                  input -> {
+                                      assert input != null;
+                                      return new HtmlTokenizer(input);
+                                  },
+                                  input -> {
+                                      assert input != null;
+                                      return new JavaTokenizer(input);
+                                  }
+        );
+    }
 
-	public Function<ITextDocument, ITokenizer> markupTokenizerFactory;
-	public Function<ITextDocument, ITokenizer> codeTokenizerFactory;
-	public SourceLocationTracker locationTracker;
+    public Function<ITextDocument, ITokenizer> markupTokenizerFactory;
+    public Function<ITextDocument, ITokenizer> codeTokenizerFactory;
+    public SourceLocationTracker locationTracker;
 
-	public SpanFactory() {
-		this.locationTracker = new SourceLocationTracker();
-	}
+    public SpanFactory() {
+        this.locationTracker = new SourceLocationTracker();
+    }
 
-	public SpanFactory(final Function<ITextDocument, ITokenizer> markup, final Function<ITextDocument, ITokenizer> code) {
-		this();
-		this.markupTokenizerFactory = markup;
-		this.codeTokenizerFactory = code;
-	}
+    public SpanFactory(final Function<ITextDocument, ITokenizer> markup, final Function<ITextDocument, ITokenizer> code
+                      ) {
+        this();
+        this.markupTokenizerFactory = markup;
+        this.codeTokenizerFactory = code;
+    }
 
-	public SpanConstructor span(final SpanKind kind, final String content, final JavaSymbolType type) {
-		return createSymbolSpan(kind, content, input -> {
-			assert input != null;
-			return new JavaSymbol(input, content, type);
-		});
-	}
+    public SpanConstructor span(final SpanKind kind, final String content, final JavaSymbolType type) {
+        return createSymbolSpan(
+                                   kind, content, input -> {
+                assert input != null;
+                return new JavaSymbol(input, content, type);
+            }
+                               );
+    }
 
-	public SpanConstructor span(final SpanKind kind, final String content, final HtmlSymbolType type) {
-		return createSymbolSpan(kind, content, input -> {
-			assert input != null;
-			return new HtmlSymbol(input, content, type);
-		});
-	}
+    public SpanConstructor span(final SpanKind kind, final String content, final HtmlSymbolType type) {
+        return createSymbolSpan(
+                                   kind, content, input -> {
+                assert input != null;
+                return new HtmlSymbol(input, content, type);
+            }
+                               );
+    }
 
-	public SpanConstructor span(final SpanKind kind, final String content, final boolean markup) {
-		return span(kind, new String[] { content }, markup);
-	}
+    public SpanConstructor span(final SpanKind kind, final String content, final boolean markup) {
+        return span(kind, new String[]{content}, markup);
+    }
 
-	public SpanConstructor span(final SpanKind kind, final String[] content, final boolean markup) {
-		return new SpanConstructor(kind, tokenize(content, markup));
-	}
+    public SpanConstructor span(final SpanKind kind, final String[] content, final boolean markup) {
+        return new SpanConstructor(kind, tokenize(content, markup));
+    }
 
-	public SpanConstructor span(final SpanKind kind, final ISymbol... symbols) {
-		return new SpanConstructor(kind, Arrays.asList(symbols));
-	}
+    public SpanConstructor span(final SpanKind kind, final ISymbol... symbols) {
+        return new SpanConstructor(kind, Arrays.asList(symbols));
+    }
 
-	public void reset() {
-		locationTracker.setCurrentLocation(SourceLocation.Zero);
-	}
+    public void reset() {
+        locationTracker.setCurrentLocation(SourceLocation.Zero);
+    }
 
-	private SpanConstructor createSymbolSpan(final SpanKind kind, final String content, final Function<SourceLocation, ISymbol> ctor) {
-		final SourceLocation start = locationTracker.getCurrentLocation();
-		locationTracker.updateLocation(content);
-		return new SpanConstructor(kind, Lists.newArrayList(ctor.apply(start)));
-	}
+    private SpanConstructor createSymbolSpan(final SpanKind kind, final String content,
+                                             final Function<SourceLocation, ISymbol> ctor
+                                            ) {
+        final SourceLocation start = locationTracker.getCurrentLocation();
+        locationTracker.updateLocation(content);
+        return new SpanConstructor(kind, Lists.newArrayList(ctor.apply(start)));
+    }
 
-	private Iterable<ISymbol> tokenize(final String[] contentFragments, final boolean markup) {
-		final List<ISymbol> values = Lists.newArrayList();
-		for (String fragment : contentFragments) {
-			Iterables.addAll(values, tokenize(fragment, markup));
-		}
-		return values;
-	}
+    private Iterable<ISymbol> tokenize(final String[] contentFragments, final boolean markup) {
+        final List<ISymbol> values = Lists.newArrayList();
+        for (String fragment : contentFragments) {
+            Iterables.addAll(values, tokenize(fragment, markup));
+        }
+        return values;
+    }
 
-	private Iterable<ISymbol> tokenize(final String content, final boolean markup) {
-		final List<ISymbol> values = Lists.newArrayList();
+    private Iterable<ISymbol> tokenize(final String content, final boolean markup) {
+        final List<ISymbol> values = Lists.newArrayList();
 
-		final ITokenizer tok = makeTokenizer(markup, new SeekableTextReader(content));
-		ISymbol sym;
+        final ITokenizer tok = makeTokenizer(markup, new SeekableTextReader(content));
+        ISymbol sym;
 
-		while ((sym = tok.nextSymbol()) != null) {
-			offsetStart(sym, locationTracker.getCurrentLocation());
-			values.add(sym);
-		}
-		locationTracker.updateLocation(content);
-		return values;
-	}
+        while ((sym = tok.nextSymbol()) != null) {
+            offsetStart(sym, locationTracker.getCurrentLocation());
+            values.add(sym);
+        }
+        locationTracker.updateLocation(content);
+        return values;
+    }
 
-	private ITokenizer makeTokenizer(final boolean markup, final SeekableTextReader seekableTextReader) {
-		if (markup) {
-			return markupTokenizerFactory.apply(seekableTextReader);
-		}
-		return codeTokenizerFactory.apply(seekableTextReader);
-	}
+    private ITokenizer makeTokenizer(final boolean markup, final SeekableTextReader seekableTextReader) {
+        if (markup) {
+            return markupTokenizerFactory.apply(seekableTextReader);
+        }
+        return codeTokenizerFactory.apply(seekableTextReader);
+    }
 
-	private void offsetStart(final ISymbol sym, final SourceLocation location) {
-		sym.offsetStart(location);
-	}
+    private void offsetStart(final ISymbol sym, final SourceLocation location) {
+        sym.offsetStart(location);
+    }
 
-	public Function<ITextDocument, ITokenizer> getCodeTokenizerFactory() {
-		return codeTokenizerFactory;
-	}
+    public Function<ITextDocument, ITokenizer> getCodeTokenizerFactory() {
+        return codeTokenizerFactory;
+    }
 
-	public void setCodeTokenizerFactory(Function<ITextDocument, ITokenizer> codeTokenizerFactory) {
-		this.codeTokenizerFactory = codeTokenizerFactory;
-	}
+    public void setCodeTokenizerFactory(Function<ITextDocument, ITokenizer> codeTokenizerFactory) {
+        this.codeTokenizerFactory = codeTokenizerFactory;
+    }
 
-	public SourceLocationTracker getLocationTracker() {
-		return locationTracker;
-	}
+    public SourceLocationTracker getLocationTracker() {
+        return locationTracker;
+    }
 
-	public void setLocationTracker(SourceLocationTracker locationTracker) {
-		this.locationTracker = locationTracker;
-	}
+    public void setLocationTracker(SourceLocationTracker locationTracker) {
+        this.locationTracker = locationTracker;
+    }
 
-	public Function<ITextDocument, ITokenizer> getMarkupTokenizerFactory() {
-		return markupTokenizerFactory;
-	}
+    public Function<ITextDocument, ITokenizer> getMarkupTokenizerFactory() {
+        return markupTokenizerFactory;
+    }
 
-	public void setMarkupTokenizerFactory(Function<ITextDocument, ITokenizer> markupTokenizerFactory) {
-		this.markupTokenizerFactory = markupTokenizerFactory;
-	}
+    public void setMarkupTokenizerFactory(Function<ITextDocument, ITokenizer> markupTokenizerFactory) {
+        this.markupTokenizerFactory = markupTokenizerFactory;
+    }
 
 
-	// Extensions
+    // Extensions
 
-	public UnclassifiedCodeSpanConstructor emptyJava() {
-		return new UnclassifiedCodeSpanConstructor(
-			span(SpanKind.Code, new JavaSymbol(locationTracker.getCurrentLocation(), Strings.Empty, JavaSymbolType.Unknown))
-		);
-	}
+    public UnclassifiedCodeSpanConstructor emptyJava() {
+        return new UnclassifiedCodeSpanConstructor(
+                                                      span(
+                                                              SpanKind.Code, new JavaSymbol(
+                                                                                               locationTracker.getCurrentLocation(),
+                                                                                               Strings.Empty,
+                                                                                               JavaSymbolType.Unknown
+                                                      )
+                                                          )
+        );
+    }
 
-	public SpanConstructor emptyHtml() {
-		return span(SpanKind.Markup, new HtmlSymbol(locationTracker.getCurrentLocation(), Strings.Empty, HtmlSymbolType.Unknown))
-			.with(new MarkupCodeGenerator());
-	}
+    public SpanConstructor emptyHtml() {
+        return span(
+                       SpanKind.Markup,
+                       new HtmlSymbol(locationTracker.getCurrentLocation(), Strings.Empty, HtmlSymbolType.Unknown)
+                   )
+                   .with(new MarkupCodeGenerator());
+    }
 
-	public UnclassifiedCodeSpanConstructor code(final String content) {
-		return new UnclassifiedCodeSpanConstructor(
-			span(SpanKind.Code, content, false)
-		);
-	}
+    public UnclassifiedCodeSpanConstructor code(final String content) {
+        return new UnclassifiedCodeSpanConstructor(
+                                                      span(SpanKind.Code, content, false)
+        );
+    }
 
-	public SpanConstructor codeTransition() {
-		return span(SpanKind.Transition, SyntaxConstants.TransitionString, false).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor codeTransition() {
+        return span(SpanKind.Transition, SyntaxConstants.TransitionString, false).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor codeTransition(final String content) {
-		return span(SpanKind.Transition, content, false).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor codeTransition(final String content) {
+        return span(SpanKind.Transition, content, false).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor codeTransition(final JavaSymbolType type) {
-		return span(SpanKind.Transition, SyntaxConstants.TransitionString, type).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor codeTransition(final JavaSymbolType type) {
+        return span(SpanKind.Transition, SyntaxConstants.TransitionString, type).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor codeTransition(final String content, final JavaSymbolType type) {
-		return span(SpanKind.Transition, content, type).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor codeTransition(final String content, final JavaSymbolType type) {
+        return span(SpanKind.Transition, content, type).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor markupTransition() {
-		return span(SpanKind.Transition, SyntaxConstants.TransitionString, true).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor markupTransition() {
+        return span(SpanKind.Transition, SyntaxConstants.TransitionString, true).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor markupTransition(final String content) {
-		return span(SpanKind.Transition, content, true).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor markupTransition(final String content) {
+        return span(SpanKind.Transition, content, true).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor markupTransition(final HtmlSymbolType type) {
-		return span(SpanKind.Transition, SyntaxConstants.TransitionString, type).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor markupTransition(final HtmlSymbolType type) {
+        return span(SpanKind.Transition, SyntaxConstants.TransitionString, type).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor markupTransition(final String content, final HtmlSymbolType type) {
-		return span(SpanKind.Transition, content, type).accepts(AcceptedCharacters.None);
-	}
+    public SpanConstructor markupTransition(final String content, final HtmlSymbolType type) {
+        return span(SpanKind.Transition, content, type).accepts(AcceptedCharacters.None);
+    }
 
-	public SpanConstructor metaCode(final String content) {
-		return span(SpanKind.MetaCode, content, false);
-	}
+    public SpanConstructor metaCode(final String content) {
+        return span(SpanKind.MetaCode, content, false);
+    }
 
-	public SpanConstructor metaCode(final String content, final JavaSymbolType type) {
-		return span(SpanKind.MetaCode, content, type);
-	}
+    public SpanConstructor metaCode(final String content, final JavaSymbolType type) {
+        return span(SpanKind.MetaCode, content, type);
+    }
 
-	public SpanConstructor metaMarkup(final String content) {
-		return span(SpanKind.MetaCode, content, true);
-	}
+    public SpanConstructor metaMarkup(final String content) {
+        return span(SpanKind.MetaCode, content, true);
+    }
 
-	public SpanConstructor metaMarkup(final String content, final HtmlSymbolType type) {
-		return span(SpanKind.MetaCode, content, type);
-	}
+    public SpanConstructor metaMarkup(final String content, final HtmlSymbolType type) {
+        return span(SpanKind.MetaCode, content, type);
+    }
 
-	public SpanConstructor comment(final String content, final HtmlSymbolType type) {
-		return span(SpanKind.Comment, content, type);
-	}
+    public SpanConstructor comment(final String content, final HtmlSymbolType type) {
+        return span(SpanKind.Comment, content, type);
+    }
 
-	public SpanConstructor comment(final String content, final JavaSymbolType type) {
-		return span(SpanKind.Comment, content, type);
-	}
+    public SpanConstructor comment(final String content, final JavaSymbolType type) {
+        return span(SpanKind.Comment, content, type);
+    }
 
-	public SpanConstructor markup(final String content) {
-		return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator());
-	}
+    public SpanConstructor markup(final String content) {
+        return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator());
+    }
 
-	public SpanConstructor markup(final String... content) {
-		return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator());
-	}
+    public SpanConstructor markup(final String... content) {
+        return span(SpanKind.Markup, content, true).with(new MarkupCodeGenerator());
+    }
 
 }

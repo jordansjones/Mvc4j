@@ -1,10 +1,20 @@
-package nextmethod.threading;
+/*
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import com.google.common.collect.ImmutableSet;
-import nextmethod.annotations.Internal;
-import nextmethod.base.IDisposable;
-import nextmethod.base.NotImplementedException;
-import nextmethod.base.ObjectDisposedException;
+package nextmethod.threading;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,126 +22,134 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
+import com.google.common.collect.ImmutableSet;
+import nextmethod.annotations.Internal;
+import nextmethod.base.IDisposable;
+import nextmethod.base.NotImplementedException;
+import nextmethod.base.ObjectDisposedException;
+
 // TODO
 abstract class WaitHandle implements IDisposable {
 
-	static final WaitHandle DefaultHandle = new WaitHandle(false) {
-	};
+    static final WaitHandle DefaultHandle = new WaitHandle(false) {
 
-	@Internal
-	static final int WaitTimeout = 258;
+    };
 
-	@Internal
-	protected volatile AtomicBoolean disposed = new AtomicBoolean(false);
+    @Internal
+    static final int WaitTimeout = 258;
 
-	@Internal
-	protected volatile AtomicBoolean state;
+    @Internal
+    protected volatile AtomicBoolean disposed = new AtomicBoolean(false);
 
-	private volatile Queue<Thread> waiters = new ConcurrentLinkedQueue<>();
+    @Internal
+    protected volatile AtomicBoolean state;
 
-	protected WaitHandle(final boolean initialState) {
-		this.state = new AtomicBoolean(initialState);
-	}
+    private volatile Queue<Thread> waiters = new ConcurrentLinkedQueue<>();
 
-	protected boolean isSet() {
-		return state.get();
-	}
+    protected WaitHandle(final boolean initialState) {
+        this.state = new AtomicBoolean(initialState);
+    }
 
-	public boolean reset() {
-		synchronized (this) {
-			checkDisposed();
-			return state.compareAndSet(true, false);
-		}
-	}
+    protected boolean isSet() {
+        return state.get();
+    }
 
-	public boolean set() {
-		final ImmutableSet<Thread> threads;
-		synchronized (this) {
-			checkDisposed();
+    public boolean reset() {
+        synchronized (this) {
+            checkDisposed();
+            return state.compareAndSet(true, false);
+        }
+    }
 
-			if (!state.compareAndSet(false, true)) {
-				return false;
-			}
-			threads = ImmutableSet.copyOf(waiters);
-			waiters.clear();
-		}
-		threads.forEach(LockSupport::unpark);
-		return true;
-	}
+    public boolean set() {
+        final ImmutableSet<Thread> threads;
+        synchronized (this) {
+            checkDisposed();
 
-	@Override
-	public void close() {
-		close(true);
-	}
+            if (!state.compareAndSet(false, true)) {
+                return false;
+            }
+            threads = ImmutableSet.copyOf(waiters);
+            waiters.clear();
+        }
+        threads.forEach(LockSupport::unpark);
+        return true;
+    }
 
-	protected void close(boolean explicitClose) {
-		if (!disposed.get()) {
-			synchronized (this) {
-				if (disposed.get()) {
-					return;
-				}
+    @Override
+    public void close() {
+        close(true);
+    }
 
-				disposed.set(true);
-			}
-		}
-	}
+    protected void close(boolean explicitClose) {
+        if (!disposed.get()) {
+            synchronized (this) {
+                if (disposed.get()) {
+                    return;
+                }
 
-	@Internal
-	protected void checkDisposed() {
-		if (disposed.get()) {
-			throw new ObjectDisposedException(getClass().getName());
-		}
-	}
+                disposed.set(true);
+            }
+        }
+    }
 
-	private boolean await() {
-		final Thread current = Thread.currentThread();
-		waiters.add(current);
-		LockSupport.park();
-		return isSet();
-	}
+    @Internal
+    protected void checkDisposed() {
+        if (disposed.get()) {
+            throw new ObjectDisposedException(getClass().getName());
+        }
+    }
 
-	private boolean await(final long amount, final TimeUnit timeUnit) {
-		if (amount == 0) { return set(); }
+    private boolean await() {
+        final Thread current = Thread.currentThread();
+        waiters.add(current);
+        LockSupport.park();
+        return isSet();
+    }
 
-		final Thread current = Thread.currentThread();
-		waiters.add(current);
-		LockSupport.parkUntil(timeUnit.toMillis(amount));
-		return isSet();
-	}
+    private boolean await(final long amount, final TimeUnit timeUnit) {
+        if (amount == 0) { return set(); }
 
-	public static boolean awaitOne() {
-		return DefaultHandle.await();
-	}
+        final Thread current = Thread.currentThread();
+        waiters.add(current);
+        LockSupport.parkUntil(timeUnit.toMillis(amount));
+        return isSet();
+    }
 
-	public static boolean awaitOne(final long millisecondsToWait) {
-		return awaitOne(millisecondsToWait, TimeUnit.MILLISECONDS);
-	}
+    public static boolean awaitOne() {
+        return DefaultHandle.await();
+    }
 
-	public static boolean awaitOne(final long amount, final TimeUnit timeUnit) {
-		return DefaultHandle.await(amount, timeUnit);
-	}
+    public static boolean awaitOne(final long millisecondsToWait) {
+        return awaitOne(millisecondsToWait, TimeUnit.MILLISECONDS);
+    }
 
-	public static boolean awaitAll(final EventWaitHandle... waitHandles) {
-		throw new NotImplementedException();
-	}
+    public static boolean awaitOne(final long amount, final TimeUnit timeUnit) {
+        return DefaultHandle.await(amount, timeUnit);
+    }
 
-	public static boolean awaitAll(final long millisecondsToWait, final WaitHandle... waitHandles) {
-		throw new NotImplementedException();
-	}
+    public static boolean awaitAll(final EventWaitHandle... waitHandles) {
+        throw new NotImplementedException();
+    }
 
-	public static boolean awaitAll(final long amount, final TimeUnit timeUnit, final WaitHandle... waithandles) {
-		throw new NotImplementedException();
-	}
+    public static boolean awaitAll(final long millisecondsToWait, final WaitHandle... waitHandles) {
+        throw new NotImplementedException();
+    }
 
-	public static int awaitAny(final WaitHandle... waitHandles) {
-		throw new NotImplementedException();
-	}
+    public static boolean awaitAll(final long amount, final TimeUnit timeUnit, final WaitHandle... waithandles) {
+        throw new NotImplementedException();
+    }
 
-	public static int awaitAny(final long millisecondsToWait, final WaitHandle... waitHandles) {
-		return awaitAny(millisecondsToWait, TimeUnit.MILLISECONDS, waitHandles);
-	}
+    public static int awaitAny(final WaitHandle... waitHandles) {
+        throw new NotImplementedException();
+    }
 
-	public static int awaitAny(final long millisecondsToWait, final TimeUnit timeUnit, final WaitHandle... waitHandles) {
+    public static int awaitAny(final long millisecondsToWait, final WaitHandle... waitHandles) {
+        return awaitAny(millisecondsToWait, TimeUnit.MILLISECONDS, waitHandles);
+    }
+
+    public static int awaitAny(final long millisecondsToWait, final TimeUnit timeUnit, final WaitHandle... waitHandles
+                              ) {
 //		try {
 //			for (WaitHandle waitHandle : waitHandles) {
 //				waitHandle.await(millisecondsToWait, timeUnit);
@@ -140,8 +158,8 @@ abstract class WaitHandle implements IDisposable {
 //		catch (InterruptedException e) {
 //
 //		}
-		throw new NotImplementedException();
-	}
+        throw new NotImplementedException();
+    }
 
 //	private static int awaitAny(final long timeout, final TimeUnit timeUnit, final ManualResetEvent... handles) {
 //		final long waitTime = timeUnit.toMillis(timeout);

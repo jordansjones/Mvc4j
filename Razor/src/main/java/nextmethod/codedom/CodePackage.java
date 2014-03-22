@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,60 +16,62 @@
 
 package nextmethod.codedom;
 
-import nextmethod.base.Strings;
-
 import java.io.Serializable;
+
+import nextmethod.base.Strings;
 
 // TODO
 public class CodePackage extends CodeObject implements Serializable {
 
-	private static final long serialVersionUID = 7922125490921546204L;
+    private static final long serialVersionUID = 7922125490921546204L;
 
-	private CodeCommentStatementCollection comments;
-	private CodePackageImportCollection imports;
-	private CodeTypeDeclarationCollection classes;
-	private String name;
+    private CodeCommentStatementCollection comments;
+    private CodePackageImportCollection imports;
+    private CodeTypeDeclarationCollection classes;
+    private String name;
 
-	public CodePackage() {
-	}
+    public CodePackage() {
+    }
 
-	public CodePackage(final String name) {
-		this.name = name;
-	}
+    public CodePackage(final String name) {
+        this.name = name;
+    }
 
-	public CodeCommentStatementCollection getComments() {
-		if (comments == null) {
-			comments = new CodeCommentStatementCollection();
-			// TODO: PopulateComments Event
-		}
-		return comments;
-	}
+    public CodeCommentStatementCollection getComments() {
+        if (comments == null) {
+            comments = new CodeCommentStatementCollection();
+            // TODO: PopulateComments Event
+        }
+        return comments;
+    }
 
-	public CodePackageImportCollection getImports() {
-		if (imports == null) {
-			imports = new CodePackageImportCollection();
-			// TODO: PopulateImports Event
-		}
-		return imports;
-	}
+    public CodePackageImportCollection getImports() {
+        if (imports == null) {
+            imports = new CodePackageImportCollection();
+            // TODO: PopulateImports Event
+        }
+        return imports;
+    }
 
-	public void setImports(final CodePackageImportCollection imports) {
-		this.imports = imports;
-	}
+    public void setImports(final CodePackageImportCollection imports) {
+        this.imports = imports;
+    }
 
-	public CodeTypeDeclarationCollection getTypes() {
-		if (classes == null) {
-			classes = new CodeTypeDeclarationCollection();
-			// TODO: PopulateTypes Event
-		}
-		return classes;
-	}
+    public CodeTypeDeclarationCollection getTypes() {
+        if (classes == null) {
+            classes = new CodeTypeDeclarationCollection();
+            // TODO: PopulateTypes Event
+        }
+        return classes;
+    }
 
-	public String getName() {
-		return name == null ? Strings.Empty : name;
-	}
+    public String getName() {
+        return name == null
+               ? Strings.Empty
+               : name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 }

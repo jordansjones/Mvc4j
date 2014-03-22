@@ -1,33 +1,49 @@
+/*
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.framework;
+
+import java.util.Set;
 
 import nextmethod.web.razor.parser.HtmlMarkupParser;
 import nextmethod.web.razor.parser.JavaCodeParser;
 import nextmethod.web.razor.parser.ParserBase;
-
-import java.util.Set;
 
 /**
  *
  */
 public abstract class JavaHtmlCodeParserTestBase extends CodeParserTestBase {
 
-	@Override
-	protected Set<String> getKeywordSet() {
-		return JavaCodeParser.DefaultKeywords;
-	}
+    @Override
+    protected Set<String> getKeywordSet() {
+        return JavaCodeParser.DefaultKeywords;
+    }
 
-	@Override
-	protected SpanFactory createSpanFactory() {
-		return SpanFactory.createJavaHtml();
-	}
+    @Override
+    protected SpanFactory createSpanFactory() {
+        return SpanFactory.createJavaHtml();
+    }
 
-	@Override
-	public ParserBase createMarkupParser() {
-		return new HtmlMarkupParser();
-	}
+    @Override
+    public ParserBase createMarkupParser() {
+        return new HtmlMarkupParser();
+    }
 
-	@Override
-	public ParserBase createCodeParser() {
-		return new JavaCodeParser();
-	}
+    @Override
+    public ParserBase createCodeParser() {
+        return new JavaCodeParser();
+    }
 }

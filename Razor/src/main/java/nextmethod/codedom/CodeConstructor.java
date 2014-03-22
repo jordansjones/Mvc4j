@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,32 @@
 
 package nextmethod.codedom;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 
 public class CodeConstructor extends CodeMemberMethod implements Serializable {
 
-	private static final long serialVersionUID = -2249219535116018529L;
+    private static final long serialVersionUID = -2249219535116018529L;
 
-	private CodeExpressionCollection baseConstructorArgs;
-	private CodeExpressionCollection chainedConstructorArgs;
+    private CodeExpressionCollection baseConstructorArgs;
+    private CodeExpressionCollection chainedConstructorArgs;
 
-	public CodeExpressionCollection getBaseConstructorArgs() {
-		if (baseConstructorArgs == null) {
-			baseConstructorArgs = new CodeExpressionCollection();
-		}
-		return baseConstructorArgs;
-	}
+    public CodeExpressionCollection getBaseConstructorArgs() {
+        if (baseConstructorArgs == null) {
+            baseConstructorArgs = new CodeExpressionCollection();
+        }
+        return baseConstructorArgs;
+    }
 
-	public CodeExpressionCollection getChainedConstructorArgs() {
-		if (chainedConstructorArgs == null) {
-			chainedConstructorArgs = new CodeExpressionCollection();
-		}
-		return chainedConstructorArgs;
-	}
+    public CodeExpressionCollection getChainedConstructorArgs() {
+        if (chainedConstructorArgs == null) {
+            chainedConstructorArgs = new CodeExpressionCollection();
+        }
+        return chainedConstructorArgs;
+    }
 
-	@Override
-	public void accept(@Nonnull final ICodeDomVisitor visitor) {
-		visitor.visit(this);
-	}
+    @Override
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        visitor.visit(this);
+    }
 }

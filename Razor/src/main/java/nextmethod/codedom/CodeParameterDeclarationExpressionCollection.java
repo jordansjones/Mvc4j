@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,6 @@ import java.io.Serializable;
 // TODO
 public class CodeParameterDeclarationExpressionCollection extends BaseCodeCollection<CodeParameterDeclarationExpression> implements Serializable {
 
-	private static final long serialVersionUID = 8426854163696281399L;
+    private static final long serialVersionUID = 8426854163696281399L;
 
 }

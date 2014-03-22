@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.parser.java;
 
 import nextmethod.web.razor.framework.JavaHtmlCodeParserTestBase;
@@ -19,135 +35,135 @@ import org.junit.Test;
 //  * Comment tests
 public class JavaStatementTest extends JavaHtmlCodeParserTestBase {
 
-	@Test
-	public void forStatement() {
-		runBlockTestAcceptsNone("for(int i = 0; i++; i < length) { foo(); }");
-	}
+    @Test
+    public void forStatement() {
+        runBlockTestAcceptsNone("for(int i = 0; i++; i < length) { foo(); }");
+    }
 
-	@Test
-	public void forEachStatement() {
-		runBlockTestAcceptsNone("foreach(var foo in bar) { foo(); }");
-	}
+    @Test
+    public void forEachStatement() {
+        runBlockTestAcceptsNone("foreach(var foo in bar) { foo(); }");
+    }
 
-	@Test
-	public void whileStatement() {
-		runBlockTestAcceptsNone("while(true) { foo(); }");
-	}
+    @Test
+    public void whileStatement() {
+        runBlockTestAcceptsNone("while(true) { foo(); }");
+    }
 
-	@Test
-	public void switchStatement() {
-		runBlockTestAcceptsNone("switch(foo) { foo(); }");
-	}
+    @Test
+    public void switchStatement() {
+        runBlockTestAcceptsNone("switch(foo) { foo(); }");
+    }
 
-	@Test
-	public void lockStatement() {
-		runBlockTestAcceptsNone("lock(baz) { foo(); }");
-	}
+    @Test
+    public void lockStatement() {
+        runBlockTestAcceptsNone("lock(baz) { foo(); }");
+    }
 
-	@Test
-	public void ifStatement() {
-		runBlockTest("if(true) { foo(); }");
-	}
+    @Test
+    public void ifStatement() {
+        runBlockTest("if(true) { foo(); }");
+    }
 
-	@Test
-	public void elseIfClause() {
-		runBlockTest("if(true) { foo(); } else if(false) { foo(); } else if(!false) { foo(); }");
-	}
+    @Test
+    public void elseIfClause() {
+        runBlockTest("if(true) { foo(); } else if(false) { foo(); } else if(!false) { foo(); }");
+    }
 
-	@Test
-	public void elseClause() {
-		runBlockTestAcceptsNone("if(true) { foo(); } else { foo(); }");
-	}
+    @Test
+    public void elseClause() {
+        runBlockTestAcceptsNone("if(true) { foo(); } else { foo(); }");
+    }
 
-	@Test
-	public void tryStatement() {
-		runBlockTest("try { foo(); }");
-	}
+    @Test
+    public void tryStatement() {
+        runBlockTest("try { foo(); }");
+    }
 
-	@Test
-	public void catchClause() {
-		runBlockTest("try { foo(); } catch(IOException ioex) { handleIO(); } catch(Exception ex) { handleOther(); }");
-	}
+    @Test
+    public void catchClause() {
+        runBlockTest("try { foo(); } catch(IOException ioex) { handleIO(); } catch(Exception ex) { handleOther(); }");
+    }
 
-	@Test
-	public void finallyClause() {
-		runBlockTestAcceptsNone("try { foo(); } finally { Dispose(); }");
-	}
+    @Test
+    public void finallyClause() {
+        runBlockTestAcceptsNone("try { foo(); } finally { Dispose(); }");
+    }
 
-	@Test
-	public void usingStatement() {
-		runBlockTestAcceptsNone("using(var foo = new Foo()) { foo.Bar(); }");
-	}
+    @Test
+    public void usingStatement() {
+        runBlockTestAcceptsNone("using(var foo = new Foo()) { foo.Bar(); }");
+    }
 
-	@Test
-	public void usingTypeAlias() {
-		parseBlockTest(
-			"@using StringDictionary = System.Collections.Generic.Dictionary<string, string>",
-			new DirectiveBlock(
-				factory().codeTransition(),
-				factory().code("using StringDictionary = System.Collections.Generic.Dictionary<string, string>")
-					.asPackageImport(" StringDictionary = System.Collections.Generic.Dictionary<string, string>", 5)
-					.accepts(AcceptedCharacters.AnyExceptNewLine)
-					
-			)
-		);
-	}
+    @Test
+    public void usingTypeAlias() {
+        parseBlockTest(
+                          "@using StringDictionary = System.Collections.Generic.Dictionary<string, string>",
+                          new DirectiveBlock(
+                                                factory().codeTransition(),
+                                                factory().code("using StringDictionary = System.Collections.Generic.Dictionary<string, string>")
+                                                         .asPackageImport(
+                                                                             " StringDictionary = System.Collections.Generic.Dictionary<string, string>",
+                                                                             5
+                                                                         )
+                                                         .accepts(AcceptedCharacters.AnyExceptNewLine)
+                          )
+                      );
+    }
 
-	@Test
-	public void usingNamespaceImport() {
-		parseBlockTest(
-			"@using System.Text.Encoding.ASCIIEncoding",
-			new DirectiveBlock(
-				factory().codeTransition(),
-				factory().code("using System.Text.Encoding.ASCIIEncoding")
-					.asPackageImport(" System.Text.Encoding.ASCIIEncoding", 5)
-					.accepts(AcceptedCharacters.AnyExceptNewLine)
-					
-			)
-		);
-	}
+    @Test
+    public void usingNamespaceImport() {
+        parseBlockTest(
+                          "@using System.Text.Encoding.ASCIIEncoding",
+                          new DirectiveBlock(
+                                                factory().codeTransition(),
+                                                factory().code("using System.Text.Encoding.ASCIIEncoding")
+                                                         .asPackageImport(" System.Text.Encoding.ASCIIEncoding", 5)
+                                                         .accepts(AcceptedCharacters.AnyExceptNewLine)
+                          )
+                      );
+    }
 
-	@Test
-	public void doStatement() {
-		runBlockTestAcceptsNone("do { foo(); } while(true);");
-	}
+    @Test
+    public void doStatement() {
+        runBlockTestAcceptsNone("do { foo(); } while(true);");
+    }
 
-	@Test
-	public void nonBlockKeywordTreatedAsImplicitExpression() {
-		parseBlockTest(
-			"@is foo",
-			new ExpressionBlock(
-				new ExpressionCodeGenerator(),
-				factory().codeTransition(),
-				factory().code("is")
-					.asImplicitExpression(JavaCodeParser.DefaultKeywords)
-					.accepts(AcceptedCharacters.NonWhiteSpace)
-					
-			)
-		);
-	}
+    @Test
+    public void nonBlockKeywordTreatedAsImplicitExpression() {
+        parseBlockTest(
+                          "@is foo",
+                          new ExpressionBlock(
+                                                 new ExpressionCodeGenerator(),
+                                                 factory().codeTransition(),
+                                                 factory().code("is")
+                                                          .asImplicitExpression(JavaCodeParser.DefaultKeywords)
+                                                          .accepts(AcceptedCharacters.NonWhiteSpace)
+                          )
+                      );
+    }
 
-	private void runBlockTest(final String code) {
-		parseBlockTest(
-			"@" + code,
-			new StatementBlock(
-				factory().codeTransition(),
-				factory().code(code)
-					.asStatement()
-			)
-		);
-	}
+    private void runBlockTest(final String code) {
+        parseBlockTest(
+                          "@" + code,
+                          new StatementBlock(
+                                                factory().codeTransition(),
+                                                factory().code(code)
+                                                         .asStatement()
+                          )
+                      );
+    }
 
-	private void runBlockTestAcceptsNone(final String code) {
-		parseBlockTest(
-			"@" + code,
-			new StatementBlock(
-				factory().codeTransition(),
-				factory().code(code)
-					.asStatement()
-					.accepts(AcceptedCharacters.None)
-			)
-		);
-	}
+    private void runBlockTestAcceptsNone(final String code) {
+        parseBlockTest(
+                          "@" + code,
+                          new StatementBlock(
+                                                factory().codeTransition(),
+                                                factory().code(code)
+                                                         .asStatement()
+                                                         .accepts(AcceptedCharacters.None)
+                          )
+                      );
+    }
 
 }

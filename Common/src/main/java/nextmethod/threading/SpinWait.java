@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,71 +16,73 @@
 
 package nextmethod.threading;
 
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.base.Stopwatch;
 import nextmethod.base.Delegates;
 
-import java.util.concurrent.TimeUnit;
-
 public final class SpinWait {
 
-	// The number of steps until SpinOnce yields on multicore machines
-	private static final int step = 10;
-	private static final int maxTime = 200;
-	private static final boolean isSingleCpu = (Runtime.getRuntime().availableProcessors() == 1);
+    // The number of steps until SpinOnce yields on multicore machines
+    private static final int step = 10;
+    private static final int maxTime = 200;
+    private static final boolean isSingleCpu = (Runtime.getRuntime().availableProcessors() == 1);
 
-	private int nTime;
+    private int nTime;
 
-	public void spinOnce() {
-		nTime += 1;
-		if (nextSpinWillYield()) {
-			// Spinning does no good on single cpus
-			Thread.yield();
-		}
-		else {
-			// Multi-CPU system
-			spin(Math.min(nTime, maxTime) << 1);
-		}
-	}
+    public void spinOnce() {
+        nTime += 1;
+        if (nextSpinWillYield()) {
+            // Spinning does no good on single cpus
+            Thread.yield();
+        }
+        else {
+            // Multi-CPU system
+            spin(Math.min(nTime, maxTime) << 1);
+        }
+    }
 
-	public void reset() {
-		nTime = 0;
-	}
+    public void reset() {
+        nTime = 0;
+    }
 
-	public boolean nextSpinWillYield() {
-		return isSingleCpu || nTime % step == 0;
-	}
+    public boolean nextSpinWillYield() {
+        return isSingleCpu || nTime % step == 0;
+    }
 
-	public int count() {
-		return nTime;
-	}
-	
-	private void spin(int iterations) {
-		if (iterations < 0) {
-			return;
-		}
-		while (iterations-- > 0) {
-			// Nop
-			assert true;
-		}
-	}
+    public int count() {
+        return nTime;
+    }
 
-	public static void spinUntil(final Delegates.IFunc<Boolean> condition) {
-		final SpinWait sw = new SpinWait();
-		while (!condition.invoke()) {
-			sw.spinOnce();
-		}
-	}
-	
-	public static boolean spinUntil(final Delegates.IFunc<Boolean> condition, final long amount, final TimeUnit timeUnit) {
-		final SpinWait spinWait = new SpinWait();
-		final Stopwatch stopwatch = Stopwatch.createStarted();
+    private void spin(int iterations) {
+        if (iterations < 0) {
+            return;
+        }
+        while (iterations-- > 0) {
+            // Nop
+            assert true;
+        }
+    }
 
-		while(!condition.invoke()) {
-			if (stopwatch.elapsed(timeUnit) > amount) {
-				return false;
-			}
-			spinWait.spinOnce();
-		}
-		return true;
-	}
+    public static void spinUntil(final Delegates.IFunc<Boolean> condition) {
+        final SpinWait sw = new SpinWait();
+        while (!condition.invoke()) {
+            sw.spinOnce();
+        }
+    }
+
+    public static boolean spinUntil(final Delegates.IFunc<Boolean> condition, final long amount,
+                                    final TimeUnit timeUnit
+                                   ) {
+        final SpinWait spinWait = new SpinWait();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+
+        while (!condition.invoke()) {
+            if (stopwatch.elapsed(timeUnit) > amount) {
+                return false;
+            }
+            spinWait.spinOnce();
+        }
+        return true;
+    }
 }

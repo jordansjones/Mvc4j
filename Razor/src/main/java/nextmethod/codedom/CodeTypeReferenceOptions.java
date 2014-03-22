@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import java.io.Serializable;
 
 public class CodeTypeReferenceOptions implements Serializable {
 
-	private static final long serialVersionUID = -2322501788454782250L;
+    private static final long serialVersionUID = -2322501788454782250L;
 
-	public static final CodeTypeReferenceOptions GlobalReference = new CodeTypeReferenceOptions(1);
-	public static final CodeTypeReferenceOptions GenericTypeParameter = new CodeTypeReferenceOptions(1 << 1);
+    public static final CodeTypeReferenceOptions GlobalReference = new CodeTypeReferenceOptions(1);
+    public static final CodeTypeReferenceOptions GenericTypeParameter = new CodeTypeReferenceOptions(1 << 1);
 
-	public final int val;
+    public final int val;
 
-	public CodeTypeReferenceOptions(final int val) {
-		this.val = val;
-	}
+    public CodeTypeReferenceOptions(final int val) {
+        this.val = val;
+    }
 }

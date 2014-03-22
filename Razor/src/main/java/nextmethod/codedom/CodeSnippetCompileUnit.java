@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,42 @@
 
 package nextmethod.codedom;
 
-import nextmethod.base.Strings;
-
 import java.io.Serializable;
+
+import nextmethod.base.Strings;
 
 /**
  *
  */
 public class CodeSnippetCompileUnit extends CodeCompileUnit implements Serializable {
 
-	private static final long serialVersionUID = 7451302001198865681L;
+    private static final long serialVersionUID = 7451302001198865681L;
 
-	private CodeLinePragma linePragma;
-	private String value;
+    private CodeLinePragma linePragma;
+    private String value;
 
-	public CodeSnippetCompileUnit() {
-	}
+    public CodeSnippetCompileUnit() {
+    }
 
-	public CodeSnippetCompileUnit(final String value) {
-		this.value = value;
-	}
+    public CodeSnippetCompileUnit(final String value) {
+        this.value = value;
+    }
 
-	public CodeLinePragma getLinePragma() {
-		return linePragma;
-	}
+    public CodeLinePragma getLinePragma() {
+        return linePragma;
+    }
 
-	public void setLinePragma(final CodeLinePragma linePragma) {
-		this.linePragma = linePragma;
-	}
+    public void setLinePragma(final CodeLinePragma linePragma) {
+        this.linePragma = linePragma;
+    }
 
-	public String getValue() {
-		return value == null ? Strings.Empty : value;
-	}
+    public String getValue() {
+        return value == null
+               ? Strings.Empty
+               : value;
+    }
 
-	public void setValue(final String value) {
-		this.value = value;
-	}
+    public void setValue(final String value) {
+        this.value = value;
+    }
 }

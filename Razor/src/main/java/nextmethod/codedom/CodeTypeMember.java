@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,71 +20,73 @@ import nextmethod.base.Strings;
 
 public class CodeTypeMember extends CodeObject {
 
-	private String name;
-	private MemberAttributes attributes;
-	private CodeCommentStatementCollection comments;
-	private CodeAnnotationDeclarationCollection customAnnotations;
-	private CodeLinePragma linePragma;
-	CodeDirectiveCollection endDirectives;
-	CodeDirectiveCollection startDirectives;
+    private String name;
+    private MemberAttributes attributes;
+    private CodeCommentStatementCollection comments;
+    private CodeAnnotationDeclarationCollection customAnnotations;
+    private CodeLinePragma linePragma;
+    CodeDirectiveCollection endDirectives;
+    CodeDirectiveCollection startDirectives;
 
-	public CodeTypeMember() {
-		this.attributes = MemberAttributes.valueOf(MemberAttributes.Private.val | MemberAttributes.Final.val);
-	}
+    public CodeTypeMember() {
+        this.attributes = MemberAttributes.valueOf(MemberAttributes.Private.val | MemberAttributes.Final.val);
+    }
 
-	public MemberAttributes getAttributes() {
-		return attributes;
-	}
+    public MemberAttributes getAttributes() {
+        return attributes;
+    }
 
-	public void setAttributes(final MemberAttributes value) {
-		attributes = value;
-	}
+    public void setAttributes(final MemberAttributes value) {
+        attributes = value;
+    }
 
-	public CodeCommentStatementCollection getComments() {
-		if (comments == null) {
-			comments = new CodeCommentStatementCollection();
-		}
-		return comments;
-	}
+    public CodeCommentStatementCollection getComments() {
+        if (comments == null) {
+            comments = new CodeCommentStatementCollection();
+        }
+        return comments;
+    }
 
-	public String getName() {
-		return name == null ? Strings.Empty : name;
-	}
+    public String getName() {
+        return name == null
+               ? Strings.Empty
+               : name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public CodeLinePragma getLinePragma() {
-		return linePragma;
-	}
+    public CodeLinePragma getLinePragma() {
+        return linePragma;
+    }
 
-	public void setLinePragma(final CodeLinePragma linePragma) {
-		this.linePragma = linePragma;
-	}
+    public void setLinePragma(final CodeLinePragma linePragma) {
+        this.linePragma = linePragma;
+    }
 
-	public CodeAnnotationDeclarationCollection getCustomAnnotations() {
-		if (customAnnotations == null) {
-			customAnnotations = new CodeAnnotationDeclarationCollection();
-		}
-		return customAnnotations;
-	}
+    public CodeAnnotationDeclarationCollection getCustomAnnotations() {
+        if (customAnnotations == null) {
+            customAnnotations = new CodeAnnotationDeclarationCollection();
+        }
+        return customAnnotations;
+    }
 
-	public void setCustomAnnotations(final CodeAnnotationDeclarationCollection customAnnotations) {
-		this.customAnnotations = customAnnotations;
-	}
+    public void setCustomAnnotations(final CodeAnnotationDeclarationCollection customAnnotations) {
+        this.customAnnotations = customAnnotations;
+    }
 
-	public CodeDirectiveCollection getEndDirectives() {
-		if (endDirectives == null) {
-			endDirectives = new CodeDirectiveCollection();
-		}
-		return endDirectives;
-	}
+    public CodeDirectiveCollection getEndDirectives() {
+        if (endDirectives == null) {
+            endDirectives = new CodeDirectiveCollection();
+        }
+        return endDirectives;
+    }
 
-	public CodeDirectiveCollection getStartDirectives() {
-		if (startDirectives == null) {
-			startDirectives = new CodeDirectiveCollection();
-		}
-		return startDirectives;
-	}
+    public CodeDirectiveCollection getStartDirectives() {
+        if (startDirectives == null) {
+            startDirectives = new CodeDirectiveCollection();
+        }
+        return startDirectives;
+    }
 }

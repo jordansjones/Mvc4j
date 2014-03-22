@@ -1,4 +1,23 @@
+/*
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.parser;
+
+import java.util.Map;
+import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableMap;
 import nextmethod.base.Debug;
@@ -12,194 +31,194 @@ import nextmethod.web.razor.tokenizer.symbols.JavaSymbol;
 import nextmethod.web.razor.tokenizer.symbols.JavaSymbolType;
 import nextmethod.web.razor.tokenizer.symbols.KnownSymbolType;
 
-import javax.annotation.Nonnull;
-import java.util.Map;
-
 import static nextmethod.web.razor.resources.Mvc4jRazorResources.RazorResources;
 
 public class JavaLanguageCharacteristics extends LanguageCharacteristics<JavaTokenizer, JavaSymbol, JavaSymbolType> {
 
-	public static final JavaLanguageCharacteristics Instance = new JavaLanguageCharacteristics();
+    public static final JavaLanguageCharacteristics Instance = new JavaLanguageCharacteristics();
 
-	private static Map<JavaSymbolType, String> symbolSamples = ImmutableMap.<JavaSymbolType, String>builder()
-		.put(JavaSymbolType.Arrow, "->")
-		.put(JavaSymbolType.Minus, "-")
-		.put(JavaSymbolType.Decrement, "--")
-		.put(JavaSymbolType.MinusAssign, "-=")
-		.put(JavaSymbolType.NotEqual, "!=")
-		.put(JavaSymbolType.Not, "!")
-		.put(JavaSymbolType.Modulo, "%")
-		.put(JavaSymbolType.ModuloAssign, "%=")
-		.put(JavaSymbolType.AndAssign, "&=")
-		.put(JavaSymbolType.And, "&")
-		.put(JavaSymbolType.DoubleAnd, "&&")
-		.put(JavaSymbolType.LeftParenthesis, "(")
-		.put(JavaSymbolType.RightParenthesis, ")")
-		.put(JavaSymbolType.Star, "*")
-		.put(JavaSymbolType.MultiplyAssign, "*=")
-		.put(JavaSymbolType.Comma, ",")
-		.put(JavaSymbolType.Dot, ".")
-		.put(JavaSymbolType.Slash, "/")
-		.put(JavaSymbolType.DivideAssign, "/=")
-		.put(JavaSymbolType.DoubleColon, "::")
-		.put(JavaSymbolType.Colon, ":")
-		.put(JavaSymbolType.Semicolon, ";")
-		.put(JavaSymbolType.QuestionMark, "?")
-		.put(JavaSymbolType.NullCoalesce, "??")
-		.put(JavaSymbolType.RightBracket, "]")
-		.put(JavaSymbolType.LeftBracket, "[")
-		.put(JavaSymbolType.XorAssign, "^=")
-		.put(JavaSymbolType.Xor, "^")
-		.put(JavaSymbolType.LeftBrace, "{")
-		.put(JavaSymbolType.OrAssign, "|=")
-		.put(JavaSymbolType.DoubleOr, "||")
-		.put(JavaSymbolType.Or, "|")
-		.put(JavaSymbolType.RightBrace, "}")
-		.put(JavaSymbolType.Tilde, "~")
-		.put(JavaSymbolType.Plus, "+")
-		.put(JavaSymbolType.PlusAssign, "+=")
-		.put(JavaSymbolType.Increment, "++")
-		.put(JavaSymbolType.LessThan, "<")
-		.put(JavaSymbolType.LessThanEqual, "<=")
-		.put(JavaSymbolType.LeftShift, "<<")
-		.put(JavaSymbolType.LeftShiftAssign, "<<=")
-		.put(JavaSymbolType.Assign, "=")
-		.put(JavaSymbolType.Equals, "==")
-		.put(JavaSymbolType.GreaterThan, ">")
-		.put(JavaSymbolType.GreaterThanEqual, ">=")
-		.put(JavaSymbolType.RightShift, ">>")
-		.put(JavaSymbolType.RightShiftAssign, ">>>")
-		.put(JavaSymbolType.Hash, "#")
-		.put(JavaSymbolType.Transition, "@")
-		.build();
+    private static Map<JavaSymbolType, String> symbolSamples = ImmutableMap.<JavaSymbolType, String>builder()
+                                                                           .put(JavaSymbolType.Arrow, "->")
+                                                                           .put(JavaSymbolType.Minus, "-")
+                                                                           .put(JavaSymbolType.Decrement, "--")
+                                                                           .put(JavaSymbolType.MinusAssign, "-=")
+                                                                           .put(JavaSymbolType.NotEqual, "!=")
+                                                                           .put(JavaSymbolType.Not, "!")
+                                                                           .put(JavaSymbolType.Modulo, "%")
+                                                                           .put(JavaSymbolType.ModuloAssign, "%=")
+                                                                           .put(JavaSymbolType.AndAssign, "&=")
+                                                                           .put(JavaSymbolType.And, "&")
+                                                                           .put(JavaSymbolType.DoubleAnd, "&&")
+                                                                           .put(JavaSymbolType.LeftParenthesis, "(")
+                                                                           .put(JavaSymbolType.RightParenthesis, ")")
+                                                                           .put(JavaSymbolType.Star, "*")
+                                                                           .put(JavaSymbolType.MultiplyAssign, "*=")
+                                                                           .put(JavaSymbolType.Comma, ",")
+                                                                           .put(JavaSymbolType.Dot, ".")
+                                                                           .put(JavaSymbolType.Slash, "/")
+                                                                           .put(JavaSymbolType.DivideAssign, "/=")
+                                                                           .put(JavaSymbolType.DoubleColon, "::")
+                                                                           .put(JavaSymbolType.Colon, ":")
+                                                                           .put(JavaSymbolType.Semicolon, ";")
+                                                                           .put(JavaSymbolType.QuestionMark, "?")
+                                                                           .put(JavaSymbolType.NullCoalesce, "??")
+                                                                           .put(JavaSymbolType.RightBracket, "]")
+                                                                           .put(JavaSymbolType.LeftBracket, "[")
+                                                                           .put(JavaSymbolType.XorAssign, "^=")
+                                                                           .put(JavaSymbolType.Xor, "^")
+                                                                           .put(JavaSymbolType.LeftBrace, "{")
+                                                                           .put(JavaSymbolType.OrAssign, "|=")
+                                                                           .put(JavaSymbolType.DoubleOr, "||")
+                                                                           .put(JavaSymbolType.Or, "|")
+                                                                           .put(JavaSymbolType.RightBrace, "}")
+                                                                           .put(JavaSymbolType.Tilde, "~")
+                                                                           .put(JavaSymbolType.Plus, "+")
+                                                                           .put(JavaSymbolType.PlusAssign, "+=")
+                                                                           .put(JavaSymbolType.Increment, "++")
+                                                                           .put(JavaSymbolType.LessThan, "<")
+                                                                           .put(JavaSymbolType.LessThanEqual, "<=")
+                                                                           .put(JavaSymbolType.LeftShift, "<<")
+                                                                           .put(JavaSymbolType.LeftShiftAssign, "<<=")
+                                                                           .put(JavaSymbolType.Assign, "=")
+                                                                           .put(JavaSymbolType.Equals, "==")
+                                                                           .put(JavaSymbolType.GreaterThan, ">")
+                                                                           .put(JavaSymbolType.GreaterThanEqual, ">=")
+                                                                           .put(JavaSymbolType.RightShift, ">>")
+                                                                           .put(JavaSymbolType.RightShiftAssign, ">>>")
+                                                                           .put(JavaSymbolType.Hash, "#")
+                                                                           .put(JavaSymbolType.Transition, "@")
+                                                                           .build();
 
-	@Override
-	public String getSample(@Nonnull final JavaSymbolType javaSymbolType) {
-		return getSymbolSample(javaSymbolType);
-	}
+    @Override
+    public String getSample(@Nonnull final JavaSymbolType javaSymbolType) {
+        return getSymbolSample(javaSymbolType);
+    }
 
-	@Override
-	public JavaTokenizer createTokenizer(@Nonnull final ITextDocument source) {
-		return new JavaTokenizer(source);
-	}
+    @Override
+    public JavaTokenizer createTokenizer(@Nonnull final ITextDocument source) {
+        return new JavaTokenizer(source);
+    }
 
-	@Override
-	public JavaSymbolType flipBracket(@Nonnull final JavaSymbolType bracket) {
-		switch (bracket) {
-			case LeftBrace:
-				return JavaSymbolType.RightBrace;
+    @Override
+    public JavaSymbolType flipBracket(@Nonnull final JavaSymbolType bracket) {
+        switch (bracket) {
+            case LeftBrace:
+                return JavaSymbolType.RightBrace;
 
-			case LeftBracket:
-				return JavaSymbolType.RightBracket;
+            case LeftBracket:
+                return JavaSymbolType.RightBracket;
 
-			case LeftParenthesis:
-				return JavaSymbolType.RightParenthesis;
+            case LeftParenthesis:
+                return JavaSymbolType.RightParenthesis;
 
-			case LessThan:
-				return JavaSymbolType.GreaterThan;
+            case LessThan:
+                return JavaSymbolType.GreaterThan;
 
-			case RightBrace:
-				return JavaSymbolType.LeftBrace;
+            case RightBrace:
+                return JavaSymbolType.LeftBrace;
 
-			case RightBracket:
-				return JavaSymbolType.LeftBracket;
+            case RightBracket:
+                return JavaSymbolType.LeftBracket;
 
-			case RightParenthesis:
-				return JavaSymbolType.LeftParenthesis;
+            case RightParenthesis:
+                return JavaSymbolType.LeftParenthesis;
 
-			case GreaterThan:
-				return JavaSymbolType.LessThan;
+            case GreaterThan:
+                return JavaSymbolType.LessThan;
 
-			default:
-				Debug.fail("flipBracket must be called with a bracket character");
-				return JavaSymbolType.Unknown;
-		}
-	}
+            default:
+                Debug.fail("flipBracket must be called with a bracket character");
+                return JavaSymbolType.Unknown;
+        }
+    }
 
-	@Override
-	public JavaSymbol createMarkerSymbol(@Nonnull final SourceLocation location) {
-		return new JavaSymbol(location, Strings.Empty, JavaSymbolType.Unknown);
-	}
+    @Override
+    public JavaSymbol createMarkerSymbol(@Nonnull final SourceLocation location) {
+        return new JavaSymbol(location, Strings.Empty, JavaSymbolType.Unknown);
+    }
 
-	@Override
-	public JavaSymbolType getKnownSymbolType(@Nonnull final KnownSymbolType type) {
-		switch (type) {
-			case Identifier:
-				return JavaSymbolType.Identifier;
+    @Override
+    public JavaSymbolType getKnownSymbolType(@Nonnull final KnownSymbolType type) {
+        switch (type) {
+            case Identifier:
+                return JavaSymbolType.Identifier;
 
-			case Keyword:
-				return JavaSymbolType.Keyword;
+            case Keyword:
+                return JavaSymbolType.Keyword;
 
-			case NewLine:
-				return JavaSymbolType.NewLine;
+            case NewLine:
+                return JavaSymbolType.NewLine;
 
-			case WhiteSpace:
-				return JavaSymbolType.WhiteSpace;
+            case WhiteSpace:
+                return JavaSymbolType.WhiteSpace;
 
-			case Transition:
-				return JavaSymbolType.Transition;
+            case Transition:
+                return JavaSymbolType.Transition;
 
-			case CommentStart:
-				return JavaSymbolType.RazorCommentTransition;
+            case CommentStart:
+                return JavaSymbolType.RazorCommentTransition;
 
-			case CommentStar:
-				return JavaSymbolType.RazorCommentStar;
+            case CommentStar:
+                return JavaSymbolType.RazorCommentStar;
 
-			case CommentBody:
-				return JavaSymbolType.RazorComment;
+            case CommentBody:
+                return JavaSymbolType.RazorComment;
 
-			default:
-				return JavaSymbolType.Unknown;
-		}
-	}
+            default:
+                return JavaSymbolType.Unknown;
+        }
+    }
 
-	@Override
-	protected JavaSymbol createSymbol(@Nonnull final SourceLocation location, @Nonnull final String content, @Nonnull final JavaSymbolType javaSymbolType, @Nonnull final Iterable<RazorError> errors) {
-		return new JavaSymbol(location, content, javaSymbolType, errors);
-	}
+    @Override
+    protected JavaSymbol createSymbol(@Nonnull final SourceLocation location, @Nonnull final String content,
+                                      @Nonnull final JavaSymbolType javaSymbolType,
+                                      @Nonnull final Iterable<RazorError> errors
+                                     ) {
+        return new JavaSymbol(location, content, javaSymbolType, errors);
+    }
 
-	public static String getKeyword(final JavaKeyword keyword) {
-		return keyword.toString().toLowerCase();
-	}
+    public static String getKeyword(final JavaKeyword keyword) {
+        return keyword.toString().toLowerCase();
+    }
 
-	public static String getSymbolSample(@Nonnull final JavaSymbolType type) {
-		String sample;
-		if (!symbolSamples.containsKey(type)) {
-			switch (type) {
-				case Identifier:
-					return RazorResources().javaSymbolIdentifier();
+    public static String getSymbolSample(@Nonnull final JavaSymbolType type) {
+        String sample;
+        if (!symbolSamples.containsKey(type)) {
+            switch (type) {
+                case Identifier:
+                    return RazorResources().javaSymbolIdentifier();
 
-				case Keyword:
-					return RazorResources().javaSymbolKeyword();
+                case Keyword:
+                    return RazorResources().javaSymbolKeyword();
 
-				case IntegerLiteral:
-					return RazorResources().javaSymbolIntegerLiteral();
+                case IntegerLiteral:
+                    return RazorResources().javaSymbolIntegerLiteral();
 
-				case NewLine:
-					return RazorResources().javaSymbolNewline();
+                case NewLine:
+                    return RazorResources().javaSymbolNewline();
 
-				case WhiteSpace:
-					return RazorResources().javaSymbolWhitespace();
+                case WhiteSpace:
+                    return RazorResources().javaSymbolWhitespace();
 
-				case Comment:
-					return RazorResources().javaSymbolComment();
+                case Comment:
+                    return RazorResources().javaSymbolComment();
 
-				case RealLiteral:
-					return RazorResources().javaSymbolRealLiteral();
+                case RealLiteral:
+                    return RazorResources().javaSymbolRealLiteral();
 
-				case CharacterLiteral:
-					return RazorResources().javaSymbolCharacterLiteral();
+                case CharacterLiteral:
+                    return RazorResources().javaSymbolCharacterLiteral();
 
-				case StringLiteral:
-					return RazorResources().javaSymbolStringLiteral();
+                case StringLiteral:
+                    return RazorResources().javaSymbolStringLiteral();
 
-				default:
-					return RazorResources().symbolUnknown();
-			}
-		}
-		else {
-			sample = symbolSamples.get(type);
-		}
-		return sample;
-	}
+                default:
+                    return RazorResources().symbolUnknown();
+            }
+        }
+        else {
+            sample = symbolSamples.get(type);
+        }
+        return sample;
+    }
 }

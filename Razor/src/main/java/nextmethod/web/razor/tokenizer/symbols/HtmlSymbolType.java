@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,24 @@ package nextmethod.web.razor.tokenizer.symbols;
 
 public enum HtmlSymbolType {
 
-	Unknown,
-	Text, // Text which isn't one of the below
-	WhiteSpace, // Non-newline WhiteSpace
-	NewLine,
-	OpenAngle, // <
-	Bang, // !
-	Solidus, // /
-	QuestionMark, // ?
-	DoubleHyphen, // --
-	LeftBracket, // [
-	CloseAngle, // >
-	RightBracket, // ]
-	Equals, // =
-	DoubleQuote, // "
-	SingleQuote, // '
-	Transition, // @
-	Colon,
-	RazorComment,
-	RazorCommentStar,
-	RazorCommentTransition
+    Unknown,
+    Text, // Text which isn't one of the below
+    WhiteSpace, // Non-newline WhiteSpace
+    NewLine,
+    OpenAngle, // <
+    Bang, // !
+    Solidus, // /
+    QuestionMark, // ?
+    DoubleHyphen, // --
+    LeftBracket, // [
+    CloseAngle, // >
+    RightBracket, // ]
+    Equals, // =
+    DoubleQuote, // "
+    SingleQuote, // '
+    Transition, // @
+    Colon,
+    RazorComment,
+    RazorCommentStar,
+    RazorCommentTransition
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +16,47 @@
 
 package nextmethod.codedom;
 
-import nextmethod.base.Strings;
-
 import java.io.Serializable;
+
+import nextmethod.base.Strings;
 
 /**
  *
  */
 public class CodeComment extends CodeObject implements Serializable {
 
-	private static final long serialVersionUID = -9157799393489664181L;
+    private static final long serialVersionUID = -9157799393489664181L;
 
-	private boolean docComment;
-	private String text;
+    private boolean docComment;
+    private String text;
 
-	public CodeComment() {
-	}
+    public CodeComment() {
+    }
 
-	public CodeComment(final String text) {
-		this.text = text;
-	}
+    public CodeComment(final String text) {
+        this.text = text;
+    }
 
-	public CodeComment(final String text, final boolean docComment) {
-		this.text = text;
-		this.docComment = docComment;
-	}
+    public CodeComment(final String text, final boolean docComment) {
+        this.text = text;
+        this.docComment = docComment;
+    }
 
-	public boolean isDocComment() {
-		return docComment;
-	}
+    public boolean isDocComment() {
+        return docComment;
+    }
 
-	public void setDocComment(final boolean docComment) {
-		this.docComment = docComment;
-	}
+    public void setDocComment(final boolean docComment) {
+        this.docComment = docComment;
+    }
 
-	public String getText() {
-		return text == null ? Strings.Empty : text;
-	}
+    public String getText() {
+        return text == null
+               ? Strings.Empty
+               : text;
+    }
 
-	public void setText(final String text) {
-		this.text = text;
-	}
+    public void setText(final String text) {
+        this.text = text;
+    }
 }

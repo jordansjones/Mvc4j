@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,42 +21,45 @@ import java.lang.reflect.Modifier;
 
 public class TypeAttributes implements Serializable {
 
-	private static final long serialVersionUID = 3283660713469003333L;
+    private static final long serialVersionUID = 3283660713469003333L;
 
-	public static final TypeAttributes Abstract = new TypeAttributes(Modifier.ABSTRACT);
-	public static final TypeAttributes Final = new TypeAttributes(Modifier.FINAL);
-	public static final TypeAttributes Interface = new TypeAttributes(Modifier.INTERFACE);
-	public static final TypeAttributes Private = new TypeAttributes(Modifier.PRIVATE);
-	public static final TypeAttributes Protected = new TypeAttributes(Modifier.PROTECTED);
-	public static final TypeAttributes Public = new TypeAttributes(Modifier.PUBLIC);
-	public static final TypeAttributes Static = new TypeAttributes(Modifier.STATIC);
+    public static final TypeAttributes Abstract = new TypeAttributes(Modifier.ABSTRACT);
+    public static final TypeAttributes Final = new TypeAttributes(Modifier.FINAL);
+    public static final TypeAttributes Interface = new TypeAttributes(Modifier.INTERFACE);
+    public static final TypeAttributes Private = new TypeAttributes(Modifier.PRIVATE);
+    public static final TypeAttributes Protected = new TypeAttributes(Modifier.PROTECTED);
+    public static final TypeAttributes Public = new TypeAttributes(Modifier.PUBLIC);
+    public static final TypeAttributes Static = new TypeAttributes(Modifier.STATIC);
 
-	public static final TypeAttributes VisibilityMask = new TypeAttributes(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
+    public static final TypeAttributes VisibilityMask = new TypeAttributes(
+                                                                              Modifier.PUBLIC | Modifier.PROTECTED |
+                                                                              Modifier.PRIVATE
+    );
 
-	public static TypeAttributes valueOf(final int val) {
-		return new TypeAttributes(val);
-	}
+    public static TypeAttributes valueOf(final int val) {
+        return new TypeAttributes(val);
+    }
 
-	public final int val;
+    public final int val;
 
-	private TypeAttributes(final int val) {
-		this.val = val;
-	}
+    private TypeAttributes(final int val) {
+        this.val = val;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		final TypeAttributes that = (TypeAttributes) o;
+        final TypeAttributes that = (TypeAttributes) o;
 
-		if (val != that.val) return false;
+        if (val != that.val) return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		return val;
-	}
+    @Override
+    public int hashCode() {
+        return val;
+    }
 }

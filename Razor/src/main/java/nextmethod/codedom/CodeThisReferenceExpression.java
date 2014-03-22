@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,24 @@
 
 package nextmethod.codedom;
 
-import nextmethod.annotations.Internal;
-
-import javax.annotation.Nonnull;
 import java.io.Serializable;
+import javax.annotation.Nonnull;
+
+import nextmethod.annotations.Internal;
 
 /**
  *
  */
 public class CodeThisReferenceExpression extends CodeExpression implements Serializable {
 
-	private static final long serialVersionUID = 7421880660873931266L;
+    private static final long serialVersionUID = 7421880660873931266L;
 
-	public CodeThisReferenceExpression() {
-	}
+    public CodeThisReferenceExpression() {
+    }
 
-	@Internal
-	@Override
-	public void accept(@Nonnull final ICodeDomVisitor visitor) {
-		visitor.visit(this);
-	}
+    @Internal
+    @Override
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        visitor.visit(this);
+    }
 }

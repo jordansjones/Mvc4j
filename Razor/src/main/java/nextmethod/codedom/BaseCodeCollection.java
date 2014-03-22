@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package nextmethod.codedom;
 
+import java.util.List;
+
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.Lists;
 import nextmethod.annotations.Internal;
-
-import java.util.List;
 
 /**
  *
@@ -28,10 +28,10 @@ import java.util.List;
 @Internal
 abstract class BaseCodeCollection<T> extends ForwardingList<T> {
 
-	private final List<T> listDelegate = Lists.newArrayList();
+    private final List<T> listDelegate = Lists.newArrayList();
 
-	@Override
-	protected List<T> delegate() {
-		return this.listDelegate;
-	}
+    @Override
+    protected List<T> delegate() {
+        return this.listDelegate;
+    }
 }

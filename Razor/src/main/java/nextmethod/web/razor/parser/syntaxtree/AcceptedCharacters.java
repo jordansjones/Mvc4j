@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,31 @@
 
 package nextmethod.web.razor.parser.syntaxtree;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.EnumSet;
+import javax.annotation.Nullable;
 
 public enum AcceptedCharacters {
 
-	None,
-	NewLine,
-	WhiteSpace,
-	NonWhiteSpace,;
+    None,
+    NewLine,
+    WhiteSpace,
+    NonWhiteSpace,;
 
-	public static final EnumSet<AcceptedCharacters> AllWhiteSpace = EnumSet.of(NewLine, WhiteSpace);
-	public static final EnumSet<AcceptedCharacters> Any = setOf(NewLine, WhiteSpace, NonWhiteSpace);
-	public static final EnumSet<AcceptedCharacters> NotAny = EnumSet.noneOf(AcceptedCharacters.class);
-	public static final EnumSet<AcceptedCharacters> AnyExceptNewLine = EnumSet.of(NonWhiteSpace, WhiteSpace);
+    public static final EnumSet<AcceptedCharacters> AllWhiteSpace = EnumSet.of(NewLine, WhiteSpace);
+    public static final EnumSet<AcceptedCharacters> Any = setOf(NewLine, WhiteSpace, NonWhiteSpace);
+    public static final EnumSet<AcceptedCharacters> NotAny = EnumSet.noneOf(AcceptedCharacters.class);
+    public static final EnumSet<AcceptedCharacters> AnyExceptNewLine = EnumSet.of(NonWhiteSpace, WhiteSpace);
 
-	public static final EnumSet<AcceptedCharacters> SetOfNone = EnumSet.of(None);
+    public static final EnumSet<AcceptedCharacters> SetOfNone = EnumSet.of(None);
 
-	public static EnumSet<AcceptedCharacters> setOf(@Nullable final AcceptedCharacters... values) {
-		if (values == null || values.length < 1) return NotAny;
+    public static EnumSet<AcceptedCharacters> setOf(@Nullable final AcceptedCharacters... values) {
+        if (values == null || values.length < 1) return NotAny;
 
-		final AcceptedCharacters first = values[0];
-		if (values.length == 1)
-			return EnumSet.of(first);
+        final AcceptedCharacters first = values[0];
+        if (values.length == 1) { return EnumSet.of(first); }
 
-		return EnumSet.of(first, Arrays.copyOfRange(values, 1, values.length));
-	}
+        return EnumSet.of(first, Arrays.copyOfRange(values, 1, values.length));
+    }
 
 }

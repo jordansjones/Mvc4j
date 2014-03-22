@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,40 @@
 
 package nextmethod.codedom.java;
 
+import java.util.Map;
+
 import nextmethod.codedom.compiler.CodeDomProvider;
 import nextmethod.codedom.compiler.ICodeCompiler;
 import nextmethod.codedom.compiler.ICodeGenerator;
 
-import java.util.Map;
-
 public class JavaCodeProvider extends CodeDomProvider {
 
-	public static final String FileExtension = "java";
+    public static final String FileExtension = "java";
 
-	private Map<String, String> providerOptions;
+    private Map<String, String> providerOptions;
 
-	public JavaCodeProvider() {
-		this.fileExtension = FileExtension;
-	}
+    public JavaCodeProvider() {
+        this.fileExtension = FileExtension;
+    }
 
-	public JavaCodeProvider(final Map<String, String> providerOptions) {
-		this();
-		this.providerOptions = providerOptions;
-	}
+    public JavaCodeProvider(final Map<String, String> providerOptions) {
+        this();
+        this.providerOptions = providerOptions;
+    }
 
-	@Override
-	public ICodeCompiler createCompiler() {
-		if (providerOptions != null && !providerOptions.isEmpty()) {
-			return new JavaCodeCompiler(providerOptions);
-		}
-		return new JavaCodeCompiler();
-	}
+    @Override
+    public ICodeCompiler createCompiler() {
+        if (providerOptions != null && !providerOptions.isEmpty()) {
+            return new JavaCodeCompiler(providerOptions);
+        }
+        return new JavaCodeCompiler();
+    }
 
-	@Override
-	public ICodeGenerator createGenerator() {
-		if (providerOptions != null && !providerOptions.isEmpty()) {
-			return new JavaCodeGenerator(providerOptions);
-		}
-		return new JavaCodeGenerator();
-	}
+    @Override
+    public ICodeGenerator createGenerator() {
+        if (providerOptions != null && !providerOptions.isEmpty()) {
+            return new JavaCodeGenerator(providerOptions);
+        }
+        return new JavaCodeGenerator();
+    }
 }

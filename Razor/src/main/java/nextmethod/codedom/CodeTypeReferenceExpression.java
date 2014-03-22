@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,50 +16,50 @@
 
 package nextmethod.codedom;
 
+import java.io.Serializable;
+import javax.annotation.Nonnull;
+
 import nextmethod.annotations.Internal;
 import nextmethod.base.Strings;
-
-import javax.annotation.Nonnull;
-import java.io.Serializable;
 
 /**
  *
  */
 public class CodeTypeReferenceExpression extends CodeExpression implements Serializable {
 
-	private static final long serialVersionUID = -3152481448756167465L;
+    private static final long serialVersionUID = -3152481448756167465L;
 
-	private CodeTypeReference type;
+    private CodeTypeReference type;
 
-	public CodeTypeReferenceExpression() {
-	}
+    public CodeTypeReferenceExpression() {
+    }
 
-	public CodeTypeReferenceExpression(final CodeTypeReference type) {
-		this.type = type;
-	}
+    public CodeTypeReferenceExpression(final CodeTypeReference type) {
+        this.type = type;
+    }
 
-	public CodeTypeReferenceExpression(final String type) {
-		this(new CodeTypeReference(type));
-	}
+    public CodeTypeReferenceExpression(final String type) {
+        this(new CodeTypeReference(type));
+    }
 
-	public CodeTypeReferenceExpression(final Class<?> type) {
-		this(new CodeTypeReference(type));
-	}
+    public CodeTypeReferenceExpression(final Class<?> type) {
+        this(new CodeTypeReference(type));
+    }
 
-	public CodeTypeReference getType() {
-		if (type == null) {
-			return new CodeTypeReference(Strings.Empty);
-		}
-		return type;
-	}
+    public CodeTypeReference getType() {
+        if (type == null) {
+            return new CodeTypeReference(Strings.Empty);
+        }
+        return type;
+    }
 
-	public void setType(final CodeTypeReference type) {
-		this.type = type;
-	}
+    public void setType(final CodeTypeReference type) {
+        this.type = type;
+    }
 
-	@Override
-	@Internal
-	public void accept(@Nonnull final ICodeDomVisitor visitor) {
-		visitor.visit(this);
-	}
+    @Override
+    @Internal
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,129 +20,129 @@ import java.io.Serializable;
 
 public class CodeTypeDeclaration extends CodeTypeMember implements Serializable {
 
-	private static final long serialVersionUID = -3324618160456382787L;
+    private static final long serialVersionUID = -3324618160456382787L;
 
-	private CodeTypeReferenceCollection baseTypes;
-	private CodeTypeMemberCollection members;
-	private TypeAttributes attributes = TypeAttributes.Public;
+    private CodeTypeReferenceCollection baseTypes;
+    private CodeTypeMemberCollection members;
+    private TypeAttributes attributes = TypeAttributes.Public;
 
-	private boolean isEnum;
-	private boolean isStruct;
+    private boolean isEnum;
+    private boolean isStruct;
 
-	boolean isPartial;
+    boolean isPartial;
 
-	CodeTypeParameterCollection typeParameters;
+    CodeTypeParameterCollection typeParameters;
 
-	public CodeTypeDeclaration() {}
+    public CodeTypeDeclaration() {}
 
-	public CodeTypeDeclaration(final String name) {
-		this.setName(name);
-	}
+    public CodeTypeDeclaration(final String name) {
+        this.setName(name);
+    }
 
-	public CodeTypeReferenceCollection getBaseTypes() {
-		if (baseTypes == null) {
-			baseTypes = new CodeTypeReferenceCollection();
+    public CodeTypeReferenceCollection getBaseTypes() {
+        if (baseTypes == null) {
+            baseTypes = new CodeTypeReferenceCollection();
 //			if ()
 //			PopulateBaseTypes event
-		}
-		return baseTypes;
-	}
+        }
+        return baseTypes;
+    }
 
 
-	public boolean isClass() {
-		if ((attributes.val & TypeAttributes.Interface.val) != 0) {
-			return false;
-		}
-		if (isEnum) {
-			return false;
-		}
-		if (isStruct) {
-			return false;
-		}
-		return true;
-	}
+    public boolean isClass() {
+        if ((attributes.val & TypeAttributes.Interface.val) != 0) {
+            return false;
+        }
+        if (isEnum) {
+            return false;
+        }
+        if (isStruct) {
+            return false;
+        }
+        return true;
+    }
 
-	public void setIsClass(final boolean value) {
-		if (value) {
-			int att = attributes.val;
-			att &= ~TypeAttributes.Interface.val;
-			attributes = TypeAttributes.valueOf(att);
-			isEnum = false;
-			isStruct = false;
-		}
-	}
+    public void setIsClass(final boolean value) {
+        if (value) {
+            int att = attributes.val;
+            att &= ~TypeAttributes.Interface.val;
+            attributes = TypeAttributes.valueOf(att);
+            isEnum = false;
+            isStruct = false;
+        }
+    }
 
-	public boolean isEnum() {
-		return isEnum;
-	}
+    public boolean isEnum() {
+        return isEnum;
+    }
 
-	public void setIsEnum(final boolean value) {
-		if (value) {
-			int att = attributes.val;
-			att &= ~TypeAttributes.Interface.val;
-			attributes = TypeAttributes.valueOf(att);
-			isEnum = true;
-			isStruct = false;
-		}
-	}
+    public void setIsEnum(final boolean value) {
+        if (value) {
+            int att = attributes.val;
+            att &= ~TypeAttributes.Interface.val;
+            attributes = TypeAttributes.valueOf(att);
+            isEnum = true;
+            isStruct = false;
+        }
+    }
 
-	public boolean isInterface() {
-		return (attributes.val & TypeAttributes.Interface.val) != 0;
-	}
+    public boolean isInterface() {
+        return (attributes.val & TypeAttributes.Interface.val) != 0;
+    }
 
-	public void setIsInterface(final boolean value) {
-		if (value) {
-			int att = attributes.val;
-			att |= TypeAttributes.Interface.val;
-			attributes = TypeAttributes.valueOf(att);
-			isEnum = false;
-			isStruct = false;
-		}
-	}
+    public void setIsInterface(final boolean value) {
+        if (value) {
+            int att = attributes.val;
+            att |= TypeAttributes.Interface.val;
+            attributes = TypeAttributes.valueOf(att);
+            isEnum = false;
+            isStruct = false;
+        }
+    }
 
-	public boolean isStruct () {
-		return isStruct;
-	}
+    public boolean isStruct() {
+        return isStruct;
+    }
 
-	public void setIsStruct(final boolean value) {
-		if (value) {
-			int att = attributes.val;
-			att &= ~TypeAttributes.Interface.val;
-			attributes = TypeAttributes.valueOf(att);
-			isEnum = false;
-			isStruct = true;
-		}
-	}
+    public void setIsStruct(final boolean value) {
+        if (value) {
+            int att = attributes.val;
+            att &= ~TypeAttributes.Interface.val;
+            attributes = TypeAttributes.valueOf(att);
+            isEnum = false;
+            isStruct = true;
+        }
+    }
 
-	public CodeTypeMemberCollection getMembers() {
-		if (members == null) {
-			members = new CodeTypeMemberCollection();
+    public CodeTypeMemberCollection getMembers() {
+        if (members == null) {
+            members = new CodeTypeMemberCollection();
 //			if
 //			PopulateMembers event handling
-		}
-		return members;
-	}
+        }
+        return members;
+    }
 
-	public TypeAttributes getTypeAttributes() {
-		return attributes;
-	}
+    public TypeAttributes getTypeAttributes() {
+        return attributes;
+    }
 
-	public void setTypeAttributes(final TypeAttributes attributes) {
-		this.attributes = attributes;
-	}
+    public void setTypeAttributes(final TypeAttributes attributes) {
+        this.attributes = attributes;
+    }
 
-	public boolean isPartial() {
-		return isPartial;
-	}
+    public boolean isPartial() {
+        return isPartial;
+    }
 
-	public void setIsPartial(final boolean value) {
-		isPartial = value;
-	}
+    public void setIsPartial(final boolean value) {
+        isPartial = value;
+    }
 
-	public CodeTypeParameterCollection getTypeParameters() {
-		if (typeParameters == null) {
-			typeParameters = new CodeTypeParameterCollection();
-		}
-		return typeParameters;
-	}
+    public CodeTypeParameterCollection getTypeParameters() {
+        if (typeParameters == null) {
+            typeParameters = new CodeTypeParameterCollection();
+        }
+        return typeParameters;
+    }
 }

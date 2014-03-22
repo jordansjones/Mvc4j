@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,19 @@
 
 package nextmethod.codedom;
 
-import com.google.common.collect.Iterables;
-
-import javax.annotation.Nonnull;
 import java.io.Serializable;
+import javax.annotation.Nonnull;
+
+import com.google.common.collect.Iterables;
 
 // TODO
 public class CodeTypeMemberCollection extends BaseCodeCollection<CodeTypeMember> implements Serializable {
 
-	private static final long serialVersionUID = -931048809114327031L;
+    private static final long serialVersionUID = -931048809114327031L;
 
 
-	public void copyTo(@Nonnull final CodeTypeMember[] destination, final int index) {
-		final CodeTypeMember[] members = Iterables.toArray(this.delegate(), CodeTypeMember.class);
-		System.arraycopy(members, 0, destination, index, members.length);
-	}
+    public void copyTo(@Nonnull final CodeTypeMember[] destination, final int index) {
+        final CodeTypeMember[] members = Iterables.toArray(this.delegate(), CodeTypeMember.class);
+        System.arraycopy(members, 0, destination, index, members.length);
+    }
 }

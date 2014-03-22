@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,81 +16,85 @@
 
 package nextmethod.codedom.compiler;
 
+import java.io.Writer;
+import javax.annotation.Nonnull;
+
 import nextmethod.base.NotImplementedException;
 import nextmethod.base.Strings;
 import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.CodeExpression;
 
-import javax.annotation.Nonnull;
-import java.io.Writer;
-
 // TODO
 public abstract class CodeDomProvider {
 
-	protected String fileExtension = Strings.Empty;
-	protected LanguageOptions languageOptions = LanguageOptions.None;
+    protected String fileExtension = Strings.Empty;
+    protected LanguageOptions languageOptions = LanguageOptions.None;
 
-	protected CodeDomProvider() {}
+    protected CodeDomProvider() {}
 
-	public String getFileExtension() {
-		return fileExtension;
-	}
+    public String getFileExtension() {
+        return fileExtension;
+    }
 
-	public LanguageOptions getLanguageOptions() {
-		return languageOptions;
-	}
+    public LanguageOptions getLanguageOptions() {
+        return languageOptions;
+    }
 
 
-	public abstract ICodeCompiler createCompiler();
+    public abstract ICodeCompiler createCompiler();
 
-	public abstract ICodeGenerator createGenerator();
+    public abstract ICodeGenerator createGenerator();
 
-	public ICodeGenerator createGenerator(@Nonnull final String fileName) {
-		return createGenerator();
-	}
+    public ICodeGenerator createGenerator(@Nonnull final String fileName) {
+        return createGenerator();
+    }
 
-	public ICodeGenerator createGenerator(@Nonnull final Writer output) {
-		return createGenerator();
-	}
+    public ICodeGenerator createGenerator(@Nonnull final Writer output) {
+        return createGenerator();
+    }
 
-	public ICodeParser createParser() {
-		return null;
-	}
+    public ICodeParser createParser() {
+        return null;
+    }
 
-	public String createEscapedIdentifer(@Nonnull final String val) {
-		final ICodeGenerator cg = createGenerator();
-		if (cg == null) {
-			throw getNotImplementedException();
-		}
-		return cg.createEscapedIdentifier(val);
-	}
+    public String createEscapedIdentifer(@Nonnull final String val) {
+        final ICodeGenerator cg = createGenerator();
+        if (cg == null) {
+            throw getNotImplementedException();
+        }
+        return cg.createEscapedIdentifier(val);
+    }
 
-	public String createValidIdentifier(@Nonnull final String val) {
-		final ICodeGenerator cg = createGenerator();
-		if (cg == null) {
-			throw getNotImplementedException();
-		}
-		return cg.createValidIdentifier(val);
-	}
+    public String createValidIdentifier(@Nonnull final String val) {
+        final ICodeGenerator cg = createGenerator();
+        if (cg == null) {
+            throw getNotImplementedException();
+        }
+        return cg.createValidIdentifier(val);
+    }
 
-	public void generateCodeFromCompileUnit(@Nonnull final CodeCompileUnit compileUnit, @Nonnull final Writer writer, @Nonnull final CodeGeneratorOptions options) {
-		final ICodeGenerator cg = createGenerator();
-		if (cg == null) {
-			throw getNotImplementedException();
-		}
-		cg.generateCodeFromCompileUnit(compileUnit, writer, options);
-	}
+    public void generateCodeFromCompileUnit(@Nonnull final CodeCompileUnit compileUnit, @Nonnull final Writer writer,
+                                            @Nonnull final CodeGeneratorOptions options
+                                           ) {
+        final ICodeGenerator cg = createGenerator();
+        if (cg == null) {
+            throw getNotImplementedException();
+        }
+        cg.generateCodeFromCompileUnit(compileUnit, writer, options);
+    }
 
-	public void generateCodeFromExpression(@Nonnull final CodeExpression expression, @Nonnull final Writer writer, @Nonnull final CodeGeneratorOptions options) {
-		final ICodeGenerator cg = createGenerator();
-		if (cg == null) {
-			throw getNotImplementedException();
-		}
-		cg.generateCodeFromExpression(expression, writer, options);
-	}
+    public void generateCodeFromExpression(@Nonnull final CodeExpression expression, @Nonnull final Writer writer,
+                                           @Nonnull final CodeGeneratorOptions options
+                                          ) {
+        final ICodeGenerator cg = createGenerator();
+        if (cg == null) {
+            throw getNotImplementedException();
+        }
+        cg.generateCodeFromExpression(expression, writer, options);
+    }
 
-	private RuntimeException getNotImplementedException() {
-		return new NotImplementedException();
-	}
+    private RuntimeException getNotImplementedException() {
+        return new NotImplementedException();
+    }
 
 }

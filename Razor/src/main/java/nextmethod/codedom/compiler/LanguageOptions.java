@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ package nextmethod.codedom.compiler;
  */
 public enum LanguageOptions {
 
-	None,
-	CaseInsensitive,
-	;
+    None,
+    CaseInsensitive,;
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,6 @@ import java.io.Serializable;
 
 public class CodeExpression extends CodeObject implements Serializable {
 
-	private static final long serialVersionUID = -581644223249119100L;
+    private static final long serialVersionUID = -581644223249119100L;
 
 }

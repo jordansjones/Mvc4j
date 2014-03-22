@@ -1,8 +1,24 @@
+/*
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package nextmethod.web.razor.generator;
 
-import nextmethod.web.razor.parser.syntaxtree.Block;
-
 import javax.annotation.Nonnull;
+
+import nextmethod.web.razor.parser.syntaxtree.Block;
 
 import static nextmethod.base.TypeHelpers.typeAs;
 
@@ -11,40 +27,40 @@ import static nextmethod.base.TypeHelpers.typeAs;
  */
 public abstract class BlockCodeGenerator implements IBlockCodeGenerator {
 
-	public static final IBlockCodeGenerator Null = new NullBlockCodeGenerator();
+    public static final IBlockCodeGenerator Null = new NullBlockCodeGenerator();
 
-	@Override
-	public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-	}
+    @Override
+    public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
+    }
 
-	@Override
-	public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-	}
+    @Override
+    public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
+    }
 
-	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-	@Override
-	public boolean equals(final Object obj) {
-		return typeAs(obj, IBlockCodeGenerator.class) != null;
-	}
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Override
+    public boolean equals(final Object obj) {
+        return typeAs(obj, IBlockCodeGenerator.class) != null;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	private static class NullBlockCodeGenerator implements IBlockCodeGenerator {
+    private static class NullBlockCodeGenerator implements IBlockCodeGenerator {
 
-		@Override
-		public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		}
+        @Override
+        public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
+        }
 
-		@Override
-		public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-		}
+        @Override
+        public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
+        }
 
-		@Override
-		public String toString() {
-			return "None";
-		}
-	}
+        @Override
+        public String toString() {
+            return "None";
+        }
+    }
 }

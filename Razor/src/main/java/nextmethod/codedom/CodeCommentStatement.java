@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,46 +16,46 @@
 
 package nextmethod.codedom;
 
-import nextmethod.annotations.Internal;
-
-import javax.annotation.Nonnull;
 import java.io.Serializable;
+import javax.annotation.Nonnull;
+
+import nextmethod.annotations.Internal;
 
 /**
  *
  */
 public class CodeCommentStatement extends CodeStatement implements Serializable {
 
-	private static final long serialVersionUID = 7771477564329434234L;
+    private static final long serialVersionUID = 7771477564329434234L;
 
-	private CodeComment comment;
+    private CodeComment comment;
 
-	public CodeCommentStatement() {
-	}
+    public CodeCommentStatement() {
+    }
 
-	public CodeCommentStatement(final CodeComment comment) {
-		this.comment = comment;
-	}
+    public CodeCommentStatement(final CodeComment comment) {
+        this.comment = comment;
+    }
 
-	public CodeCommentStatement(final String text) {
-		this(new CodeComment(text));
-	}
+    public CodeCommentStatement(final String text) {
+        this(new CodeComment(text));
+    }
 
-	public CodeCommentStatement(final String text, final boolean docComment) {
-		this(new CodeComment(text, docComment));
-	}
+    public CodeCommentStatement(final String text, final boolean docComment) {
+        this(new CodeComment(text, docComment));
+    }
 
-	public CodeComment getComment() {
-		return comment;
-	}
+    public CodeComment getComment() {
+        return comment;
+    }
 
-	public void setComment(final CodeComment comment) {
-		this.comment = comment;
-	}
+    public void setComment(final CodeComment comment) {
+        this.comment = comment;
+    }
 
-	@Override
-	@Internal
-	public void accept(@Nonnull final ICodeDomVisitor visitor) {
-		visitor.visit(this);
-	}
+    @Override
+    @Internal
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        visitor.visit(this);
+    }
 }

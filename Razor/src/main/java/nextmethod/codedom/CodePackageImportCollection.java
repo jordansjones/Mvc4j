@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,30 @@
 
 package nextmethod.codedom;
 
-import com.google.common.collect.ForwardingCollection;
-import com.google.common.collect.ForwardingList;
-import com.google.common.collect.ForwardingSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.google.common.collect.ForwardingCollection;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 public class CodePackageImportCollection extends ForwardingCollection<CodePackageImport> implements Serializable {
 
-	private static final long serialVersionUID = -3609814966958487242L;
+    private static final long serialVersionUID = -3609814966958487242L;
 
-	private final Set<CodePackageImport> data;
-	private final HashMap<String, CodePackageImport> keys;
+    private final Set<CodePackageImport> data;
+    private final HashMap<String, CodePackageImport> keys;
 
-	public CodePackageImportCollection() {
-		data = Sets.newLinkedHashSet();
-		keys = Maps.newHashMap();
-	}
+    public CodePackageImportCollection() {
+        data = Sets.newLinkedHashSet();
+        keys = Maps.newHashMap();
+    }
 
-	@Override
-	protected Set<CodePackageImport> delegate() {
-		return data;
-	}
+    @Override
+    protected Set<CodePackageImport> delegate() {
+        return data;
+    }
 
 
 }

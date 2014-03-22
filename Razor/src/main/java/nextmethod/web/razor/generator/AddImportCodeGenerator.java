@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,103 +16,104 @@
 
 package nextmethod.web.razor.generator;
 
-import com.google.common.base.Predicate;
+import java.util.Objects;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.Iterables;
 import nextmethod.base.Strings;
 import nextmethod.codedom.CodePackage;
 import nextmethod.codedom.CodePackageImport;
+import nextmethod.codedom.CodePackageImportCollection;
 import nextmethod.web.razor.parser.syntaxtree.Span;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.Optional;
 
 import static nextmethod.base.TypeHelpers.typeAs;
 
 public class AddImportCodeGenerator extends SpanCodeGenerator {
 
-	private final String pkg;
-	private int keywordLength;
+    private final String pkg;
+    private int keywordLength;
 
-	public AddImportCodeGenerator(@Nonnull final String pkg, final int keywordLength) {
-		this.pkg = pkg;
-		this.keywordLength = keywordLength;
-	}
+    public AddImportCodeGenerator(@Nonnull final String pkg, final int keywordLength) {
+        this.pkg = pkg;
+        this.keywordLength = keywordLength;
+    }
 
-	@Override
-	public void generateCode(@Nonnull Span target, @Nonnull CodeGeneratorContext context) {
-		// Try to find the package in the existing imports
-		String pkg = this.pkg;
-		if (!Strings.isNullOrEmpty(pkg) && Character.isWhitespace(pkg.charAt(0))) {
-			pkg = pkg.substring(1);
-		}
-		final String packageName = pkg;
+    @Override
+    public void generateCode(@Nonnull Span target, @Nonnull CodeGeneratorContext context) {
+        // Try to find the package in the existing imports
+        String pkg = this.pkg;
+        if (!Strings.isNullOrEmpty(pkg) && Character.isWhitespace(pkg.charAt(0))) {
+            pkg = pkg.substring(1);
+        }
+        final String packageName = pkg;
 
-		final CodePackageImportCollection importCollection = context.getCodePackage().getImports();
-		final Iterable<CodePackageImport> imports = Iterables.filter(importCollection, new Predicate<CodePackageImport>() {
-			@Override
-			public boolean apply(@Nullable final CodePackageImport input) {
-				return input != null && packageName.trim().equalsIgnoreCase(input.getPackage());
-			}
-		});
+        final CodePackageImportCollection importCollection = context.getCodePackage().getImports();
+        final Iterable<CodePackageImport> imports = Iterables.filter(
+                                                                        importCollection, input -> input != null &&
+                                                                                                   packageName.trim()
+                                                                                                              .equalsIgnoreCase(
+                                                                                                                                   input
+                                                                                                                                       .getPackage()
+                                                                                                                               )
+                                                                    );
 
-		CodePackageImport packageImport = Iterables.getFirst(imports, null);
+        CodePackageImport packageImport = Iterables.getFirst(imports, null);
 
-		if (packageImport == null)
-		{
-			packageImport = new CodePackageImport(packageName);
-			context.getCodePackage().getImports().add(packageImport);
-		}
+        if (packageImport == null) {
+            packageImport = new CodePackageImport(packageName);
+            context.getCodePackage().getImports().add(packageImport);
+        }
 
-		final String importPackage = pkg;
+        final String importPackage = pkg;
 
-		final CodePackage imprt = context.getCodePackage();
-		final Optional<CodePackageImport> importOptional = imprt.getImports()
-			.stream()
-			.filter(x -> Strings.nullToEmpty(x.getPackage()).equals(importPackage.trim()))
-			.findFirst();
+        final CodePackage imprt = context.getCodePackage();
+        final Optional<CodePackageImport> importOptional = imprt.getImports()
+                                                                .stream()
+                                                                .filter(
+                                                                           x -> Strings.nullToEmpty(x.getPackage())
+                                                                                       .equals(importPackage.trim())
+                                                                       )
+                                                                .findFirst();
 
-		final CodePackageImport codePackageImport;
-		if (!importOptional.isPresent())
-		{
-			codePackageImport = new CodePackageImport(importPackage);
-			context.getCodePackage().getImports().add(codePackageImport);
-		}
-		else
-		{
-			codePackageImport = importOptional.get();
-		}
+        final CodePackageImport codePackageImport;
+        if (!importOptional.isPresent()) {
+            codePackageImport = new CodePackageImport(importPackage);
+            context.getCodePackage().getImports().add(codePackageImport);
+        }
+        else {
+            codePackageImport = importOptional.get();
+        }
 
-		codePackageImport.setLinePragma(context.generateLinePragma(target));
-	}
+        codePackageImport.setLinePragma(context.generateLinePragma(target));
+    }
 
-	public String getPackage() {
-		return pkg;
-	}
+    public String getPackage() {
+        return pkg;
+    }
 
-	public int getPackageKeywordLength() {
-		return keywordLength;
-	}
+    public int getPackageKeywordLength() {
+        return keywordLength;
+    }
 
-	public void setPackageKeywordLength(int keywordLength) {
-		this.keywordLength = keywordLength;
-	}
+    public void setPackageKeywordLength(int keywordLength) {
+        this.keywordLength = keywordLength;
+    }
 
-	@Override
-	public String toString() {
-		return "Import:" + pkg + ";KwdLen:" + keywordLength;
-	}
+    @Override
+    public String toString() {
+        return "Import:" + pkg + ";KwdLen:" + keywordLength;
+    }
 
-	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-	@Override
-	public boolean equals(Object obj) {
-		final AddImportCodeGenerator other = typeAs(obj, AddImportCodeGenerator.class);
-		return other != null && Objects.equals(pkg, other.pkg) && keywordLength == other.keywordLength;
-	}
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Override
+    public boolean equals(Object obj) {
+        final AddImportCodeGenerator other = typeAs(obj, AddImportCodeGenerator.class);
+        return other != null && Objects.equals(pkg, other.pkg) && keywordLength == other.keywordLength;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(pkg, keywordLength);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(pkg, keywordLength);
+    }
 }

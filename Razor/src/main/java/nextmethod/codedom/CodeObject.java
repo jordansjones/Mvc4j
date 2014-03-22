@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,28 @@
 
 package nextmethod.codedom;
 
+import java.io.Serializable;
+import javax.annotation.Nonnull;
+
 import nextmethod.annotations.Internal;
 import nextmethod.base.NotImplementedException;
 
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-
 public class CodeObject implements Serializable {
 
-	private static final long serialVersionUID = 4834403342206879294L;
+    private static final long serialVersionUID = 4834403342206879294L;
 
-	private Object userData;
+    private Object userData;
 
-	public Object getUserData() {
-		if (userData == null) {
-			userData = new Object();
-		}
-		return userData;
-	}
+    public Object getUserData() {
+        if (userData == null) {
+            userData = new Object();
+        }
+        return userData;
+    }
 
-	@Internal
-	public void accept(@Nonnull final ICodeDomVisitor visitor) {
-		throw new NotImplementedException();
-	}
+    @Internal
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        throw new NotImplementedException();
+    }
 
 }

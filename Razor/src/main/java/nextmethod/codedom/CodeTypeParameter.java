@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Jordan S. Jones <jordansjones@gmail.com>
+ * Copyright 2014 Jordan S. Jones <jordansjones@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,53 +16,55 @@
 
 package nextmethod.codedom;
 
-import nextmethod.base.Strings;
-
 import java.io.Serializable;
+
+import nextmethod.base.Strings;
 
 public class CodeTypeParameter extends CodeObject implements Serializable {
 
-	private static final long serialVersionUID = -3281627702147597031L;
+    private static final long serialVersionUID = -3281627702147597031L;
 
-	CodeTypeReferenceCollection constraints;
-	CodeAnnotationDeclarationCollection customAnnotations;
-	boolean hasConstructorConstraint;
-	String name;
+    CodeTypeReferenceCollection constraints;
+    CodeAnnotationDeclarationCollection customAnnotations;
+    boolean hasConstructorConstraint;
+    String name;
 
-	public CodeTypeParameter() {
-	}
+    public CodeTypeParameter() {
+    }
 
-	public CodeTypeParameter(final String name) {
-		this.name = name;
-	}
+    public CodeTypeParameter(final String name) {
+        this.name = name;
+    }
 
-	public CodeTypeReferenceCollection getConstraints() {
-		if (constraints == null) {
-			constraints = new CodeTypeReferenceCollection();
-		}
-		return constraints;
-	}
+    public CodeTypeReferenceCollection getConstraints() {
+        if (constraints == null) {
+            constraints = new CodeTypeReferenceCollection();
+        }
+        return constraints;
+    }
 
-	public CodeAnnotationDeclarationCollection getCustomAnnotations() {
-		if (customAnnotations == null) {
-			customAnnotations = new CodeAnnotationDeclarationCollection();
-		}
-		return customAnnotations;
-	}
+    public CodeAnnotationDeclarationCollection getCustomAnnotations() {
+        if (customAnnotations == null) {
+            customAnnotations = new CodeAnnotationDeclarationCollection();
+        }
+        return customAnnotations;
+    }
 
-	public boolean hasConstructorConstraint() {
-		return hasConstructorConstraint;
-	}
+    public boolean hasConstructorConstraint() {
+        return hasConstructorConstraint;
+    }
 
-	public void setHasConstructorConstraint(final boolean hasConstructorConstraint) {
-		this.hasConstructorConstraint = hasConstructorConstraint;
-	}
+    public void setHasConstructorConstraint(final boolean hasConstructorConstraint) {
+        this.hasConstructorConstraint = hasConstructorConstraint;
+    }
 
-	public String getName() {
-		return name == null ? Strings.Empty : name;
-	}
+    public String getName() {
+        return name == null
+               ? Strings.Empty
+               : name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 }
