@@ -37,18 +37,15 @@ public final class GeneratedCodeMapping {
         this(Optional.<Integer>empty(), startLine, startColumn, startGeneratedColumn, codeLength);
     }
 
-    public GeneratedCodeMapping(final int startOffset, final int startLine, final int startColumn,
-                                final int startGeneratedColumn, final int codeLength) {
+    public GeneratedCodeMapping(final int startOffset, final int startLine, final int startColumn, final int startGeneratedColumn, final int codeLength) {
         this(Optional.of(startOffset), startLine, startColumn, startGeneratedColumn, codeLength);
     }
 
-    public GeneratedCodeMapping(@Nonnull final Optional<Integer> startOffset, final int startLine,
-                                final int startColumn, final int startGeneratedColumn, final int codeLength
-                               ) {
-        checkArgument(startLine < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
-        checkArgument(startColumn < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
-        checkArgument(startGeneratedColumn < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
-        checkArgument(codeLength < 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+    public GeneratedCodeMapping(@Nonnull final Optional<Integer> startOffset, final int startLine, final int startColumn, final int startGeneratedColumn, final int codeLength) {
+        checkArgument(startLine >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+        checkArgument(startColumn >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+        checkArgument(startGeneratedColumn >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
+        checkArgument(codeLength >= 0, CommonResources().argumentMustBeGreaterThanOrEqualTo("0"));
 
         this.startOffset = startOffset;
         this.startLine = startLine;
@@ -100,15 +97,15 @@ public final class GeneratedCodeMapping {
     @Override
     public String toString() {
         return String.format(
-                                "(%s, %d, %d) -> (?, %d) [%d]",
-                                !startOffset.isPresent()
-                                ? "?"
-                                : startOffset.get(),
-                                startLine,
-                                startColumn,
-                                startGeneratedColumn,
-                                codeLength
-                            );
+            "(%s, %d, %d) -> (?, %d) [%d]",
+            !startOffset.isPresent()
+            ? "?"
+            : startOffset.get(),
+            startLine,
+            startColumn,
+            startGeneratedColumn,
+            codeLength
+        );
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
@@ -127,12 +124,12 @@ public final class GeneratedCodeMapping {
     @Override
     public int hashCode() {
         return Objects.hash(
-                               codeLength,
-                               startColumn,
-                               startGeneratedColumn,
-                               startLine,
-                               startOffset
-                           );
+            codeLength,
+            startColumn,
+            startGeneratedColumn,
+            startLine,
+            startOffset
+        );
     }
 
     public static boolean isEqualTo(final GeneratedCodeMapping left, final GeneratedCodeMapping right) {
