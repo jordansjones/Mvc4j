@@ -56,7 +56,7 @@ public class WhiteSpaceRewriter extends MarkupRewriter {
         newBlock.getChildren().clear();
         final Span ws = typeAs(Iterables.getFirst(block.getChildren(), null), Span.class);
         Collection<SyntaxTreeNode> newNodes = block.getChildren();
-        if (ws != null && ParserHelpers.isAllOfString(ws.getContent(), ParserHelpers.IsWhitespacePredicate)) {
+        if (ws != null && ParserHelpers.isAllOfString(ws.getContent(), ParserHelpers::isWhitespace)) {
             // Add this node to the parent
             final SpanBuilder builder = new SpanBuilder(ws);
             builder.clearSymbols();

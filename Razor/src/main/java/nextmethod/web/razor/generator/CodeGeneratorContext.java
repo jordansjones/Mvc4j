@@ -18,10 +18,9 @@ package nextmethod.web.razor.generator;
 
 
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
@@ -107,8 +106,7 @@ public class CodeGeneratorContext {
         context.codePackage.getTypes().add(context.generatedClass);
         context.generatedClass.getMembers().add(context.targetMethod);
 
-        Iterables.transform(host.getPackageImports(), CodePackageImport::new)
-                 .forEach(context.codePackage.getImports()::add);
+        host.getPackageImports().stream().map(CodePackageImport::new).forEach(context.codePackage.getImports()::add);
 
         return context;
     }
@@ -187,10 +185,7 @@ public class CodeGeneratorContext {
         if (sourceSpan != null && currentBuffer.getLinePragmaSpan() == null) {
             currentBuffer.setLinePragmaSpan(sourceSpan);
             // Pad the output as necessary
-            int start = builder.length();
-            if (currentBuffer.getGeneratedCodeStart().isPresent()) {
-                start = currentBuffer.getGeneratedCodeStart().get();
-            }
+            int start = currentBuffer.getGeneratedCodeStart().orElse(builder.length());
 
             String padded = CodeGeneratorBase.pad(builder.toString(), sourceSpan, start);
             currentBuffer.setGeneratedCodeStart(Optional.of(start + (padded.length() - builder.length())));
@@ -294,6 +289,7 @@ public class CodeGeneratorContext {
 
     String buildCodeString(final Delegates.IAction1<CodeWriter> action) {
         try (CodeWriter cw = codeWriterFactory.invoke()) {
+            assert cw != null;
             action.invoke(cw);
             return cw.getContent();
         }
@@ -410,14 +406,20 @@ public class CodeGeneratorContext {
     private class StatementBuffer {
 
         private final StringBuilder builder = new StringBuilder();
-        private Optional<Integer> generatedCodeStart = Optional.absent();
-        private Optional<Integer> codeLength = Optional.absent();
+        private Optional<Integer> generatedCodeStart;
+        private Optional<Integer> codeLength;
         private Span linePragmaSpan;
 
+        private StatementBuffer() {
+            reset();
+        }
+
         public void reset() {
-            builder.delete(0, builder.length());
-            generatedCodeStart = Optional.absent();
-            codeLength = Optional.absent();
+            if (builder.length() > 0)
+                builder.delete(0, builder.length());
+
+            generatedCodeStart = Optional.empty();
+            codeLength = Optional.empty();
             linePragmaSpan = null;
         }
 

@@ -16,7 +16,7 @@
 
 package nextmethod.web.razor.tokenizer;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 public final class JavaHelpers {
 
@@ -26,11 +26,10 @@ public final class JavaHelpers {
         return Character.isJavaIdentifierStart(c);
     }
 
-    public static final Predicate<Character> IsIdentifierPartPredicate = input -> input != null &&
-                                                                                  Character.isJavaIdentifierPart(input);
+    public static final Predicate<Character> IsIdentifierPartPredicate = input -> input != null && Character.isJavaIdentifierPart(input);
 
     public static boolean isIdentifierPart(final char c) {
-        return IsIdentifierPartPredicate.apply(c);
+        return IsIdentifierPartPredicate.test(c);
     }
 
     public static boolean isRealLiteralSuffix(final char c) {

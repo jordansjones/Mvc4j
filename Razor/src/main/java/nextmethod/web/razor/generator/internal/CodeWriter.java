@@ -18,10 +18,10 @@ package nextmethod.web.razor.generator.internal;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
 import com.google.common.io.Closeables;
 import nextmethod.annotations.Internal;
 import nextmethod.base.IDisposable;
@@ -87,7 +87,7 @@ public abstract class CodeWriter implements IDisposable {
 
     public void writeLinePragma(final CodeLinePragma pragma) {
         if (pragma == null) {
-            writeLinePragma(Optional.<Integer>absent(), null);
+            writeLinePragma(Optional.<Integer>empty(), null);
         }
         else {
             writeLinePragma(Optional.of(pragma.getLineNumber()), pragma.getFileName());

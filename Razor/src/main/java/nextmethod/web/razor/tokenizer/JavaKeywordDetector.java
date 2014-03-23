@@ -17,9 +17,9 @@
 package nextmethod.web.razor.tokenizer;
 
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import nextmethod.base.Strings;
 import nextmethod.web.razor.tokenizer.symbols.JavaKeyword;
@@ -31,8 +31,8 @@ final class JavaKeywordDetector {
     private static final Map<String, JavaKeyword> keywords = createKeywordsMap();
 
     public static Optional<JavaKeyword> symbolTypeForIdentifier(@Nullable final String id) {
-        if (Strings.isNullOrEmpty(id) || !keywords.containsKey(id)) return Optional.absent();
-        return Optional.fromNullable(keywords.get(id));
+        if (Strings.isNullOrEmpty(id) || !keywords.containsKey(id)) return Optional.empty();
+        return Optional.ofNullable(keywords.get(id));
     }
 
     private static Map<String, JavaKeyword> createKeywordsMap() {

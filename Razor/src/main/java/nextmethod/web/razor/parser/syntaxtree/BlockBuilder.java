@@ -18,10 +18,10 @@ package nextmethod.web.razor.parser.syntaxtree;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import nextmethod.web.razor.generator.BlockCodeGenerator;
 import nextmethod.web.razor.generator.IBlockCodeGenerator;
@@ -59,9 +59,7 @@ public class BlockBuilder {
     }
 
     public Optional<BlockType> getType() {
-        return type != null
-               ? Optional.of(type)
-               : Optional.<BlockType>absent();
+        return Optional.ofNullable(type);
     }
 
     public BlockBuilder setType(@Nullable final BlockType type) {

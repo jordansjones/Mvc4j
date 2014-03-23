@@ -17,9 +17,8 @@
 package nextmethod.web.razor.text;
 
 import java.io.Reader;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Optional;
 
 public class SeekableTextReader extends TextReader implements ITextDocument {
 
@@ -88,11 +87,11 @@ public class SeekableTextReader extends TextReader implements ITextDocument {
             location = chr.location();
         }
         else if (len == 0) {
-            current = Optional.absent();
+            current = Optional.empty();
             location = SourceLocation.Zero;
         }
         else {
-            current = Optional.absent();
+            current = Optional.empty();
             location = buffer.getEndLocation();
         }
     }

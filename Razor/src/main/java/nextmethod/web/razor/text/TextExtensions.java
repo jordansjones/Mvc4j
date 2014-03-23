@@ -18,9 +18,8 @@ package nextmethod.web.razor.text;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -90,8 +89,8 @@ public final class TextExtensions {
                                    final boolean inclusive
                                   ) {
         final StringBuilder sb = new StringBuilder();
-        int ch = -1;
-        while ((ch = reader.peek()) != -1 && !(condition.apply((char) ch))) {
+        int ch;
+        while ((ch = reader.peek()) != -1 && !(condition.test((char) ch))) {
             reader.read(); // Advance the reader
             sb.append((char) ch);
         }
@@ -109,7 +108,7 @@ public final class TextExtensions {
     public static String readWhile(@Nonnull final TextReader reader, @Nonnull final Predicate<Character> condition,
                                    final boolean inclusive
                                   ) {
-        return readUntil(reader, input -> !condition.apply(input), inclusive);
+        return readUntil(reader, input -> !condition.test(input), inclusive);
     }
 
     public static String readWhiteSpace(@Nonnull final TextReader reader) {

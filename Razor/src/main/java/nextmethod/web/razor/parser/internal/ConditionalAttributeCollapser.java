@@ -19,8 +19,6 @@ package nextmethod.web.razor.parser.internal;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import nextmethod.annotations.Internal;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
@@ -56,8 +54,7 @@ public class ConditionalAttributeCollapser extends MarkupRewriter {
     @Override
     protected boolean canRewrite(@Nonnull final Block block) {
         final AttributeBlockCodeGenerator gen = typeAs(block.getCodeGenerator(), AttributeBlockCodeGenerator.class);
-        return gen != null && !block.getChildren().isEmpty() &&
-               Iterables.all(block.getChildren(), isLiteralAttributeValuePredicate);
+        return gen != null && !block.getChildren().isEmpty() && block.getChildren().stream().allMatch(ConditionalAttributeCollapser::isLiteralAttributeValue);
     }
 
     @Override
@@ -65,7 +62,7 @@ public class ConditionalAttributeCollapser extends MarkupRewriter {
         // Collect the content of this node
         final String content = concatNodeContent(block.getChildren());
 
-        final SyntaxTreeNode first = Iterables.getFirst(parent.getChildren(), null);
+        final SyntaxTreeNode first = parent.getChildren().stream().findFirst().orElse(null);
         assert first != null;
 
         // Create a new span containing this content
@@ -75,7 +72,7 @@ public class ConditionalAttributeCollapser extends MarkupRewriter {
         return span.build();
     }
 
-    private final String concatNodeContent(final Collection<SyntaxTreeNode> nodes) {
+    private String concatNodeContent(final Collection<SyntaxTreeNode> nodes) {
         final StringBuilder stringBuilder = new StringBuilder();
         for (SyntaxTreeNode node : nodes) {
             final Span span = typeAs(node, Span.class);
@@ -86,7 +83,7 @@ public class ConditionalAttributeCollapser extends MarkupRewriter {
         return stringBuilder.toString();
     }
 
-    private final Predicate<SyntaxTreeNode> isLiteralAttributeValuePredicate = node -> {
+    private static boolean isLiteralAttributeValue(SyntaxTreeNode node) {
         if (node == null) return false;
         if (node.isBlock()) return false;
 
@@ -102,5 +99,5 @@ public class ConditionalAttributeCollapser extends MarkupRewriter {
         return (litGen != null && litGen.getValueGenerator() == null)
                || codeGen == SpanCodeGenerator.Null
                || typeIs(codeGen, MarkupCodeGenerator.class);
-    };
+    }
 }

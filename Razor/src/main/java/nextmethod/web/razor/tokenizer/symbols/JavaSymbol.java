@@ -16,17 +16,17 @@
 
 package nextmethod.web.razor.tokenizer.symbols;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.SourceLocation;
 
 public class JavaSymbol extends SymbolBase<JavaSymbolType> {
 
-    private Optional<Boolean> escapedIdentifier = Optional.absent();
-    private Optional<JavaKeyword> keyword = Optional.absent();
+    private Optional<Boolean> escapedIdentifier = Optional.empty();
+    private Optional<JavaKeyword> keyword = Optional.empty();
 
     public JavaSymbol(final int offset, final int line, final int column, @Nonnull final String content,
                       @Nonnull final JavaSymbolType type
@@ -53,12 +53,14 @@ public class JavaSymbol extends SymbolBase<JavaSymbolType> {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public Optional<Boolean> getEscapedIdentifier() {
         return escapedIdentifier;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setEscapedIdentifier(final Boolean escapedIdentifier) {
-        this.escapedIdentifier = Optional.fromNullable(escapedIdentifier);
+        this.escapedIdentifier = Optional.ofNullable(escapedIdentifier);
     }
 
     public Optional<JavaKeyword> getKeyword() {
@@ -66,7 +68,7 @@ public class JavaSymbol extends SymbolBase<JavaSymbolType> {
     }
 
     public void setKeyword(final JavaKeyword keyword) {
-        this.keyword = Optional.fromNullable(keyword);
+        this.keyword = Optional.ofNullable(keyword);
     }
 
     public void setKeyword(@Nonnull final Optional<JavaKeyword> keyword) {

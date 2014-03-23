@@ -16,6 +16,7 @@
 
 package nextmethod.base;
 
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 /**
@@ -174,5 +175,12 @@ public final class Strings {
         }
         while (offset < anyOf.length);
         return idx;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public static Stream<Character> toCharStream(@Nullable final String string)
+    {
+        if (isNullOrEmpty(string)) return Stream.empty();
+        return string.chars().mapToObj(c -> (char) c);
     }
 }

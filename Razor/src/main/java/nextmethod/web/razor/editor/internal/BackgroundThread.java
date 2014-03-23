@@ -18,10 +18,10 @@ package nextmethod.web.razor.editor.internal;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
@@ -125,24 +125,27 @@ final class BackgroundThread extends BaseThreadState {
                                                               );
                                 }
                                 final Iterable<TextChange> allChanges = Iterables.concat(
-                                                                                            previouslyDiscarded != null
-                                                                                            ? previouslyDiscarded
-                                                                                            : Collections.<TextChange>emptyList(),
-                                                                                            parcel.getChanges()
+                                    previouslyDiscarded != null
+                                    ? previouslyDiscarded
+                                    : Collections.<TextChange>emptyList(),
+                                    parcel.getChanges()
                                                                                         );
 
                                 final TextChange finalChange = Iterables.getLast(allChanges, null);
                                 if (finalChange != null) {
                                     if (isEditorTracing) {
+                                        assert sw != null;
                                         sw.reset().start();
                                     }
 
+                                    //noinspection ConstantConditions
                                     final GeneratorResults results = parseChange(
                                                                                     finalChange.getNewBuffer(),
                                                                                     linkedCancel.getToken()
                                                                                 );
 
                                     if (isEditorTracing) {
+                                        assert sw != null;
                                         sw.stop();
                                     }
 
@@ -281,7 +284,7 @@ final class BackgroundThread extends BaseThreadState {
                                           null,
                                           null,
                                           fileName,
-                                          Optional.fromNullable(token)
+                                          Optional.ofNullable(token)
                                       );
         }
         catch (OperationCanceledException ignored) {

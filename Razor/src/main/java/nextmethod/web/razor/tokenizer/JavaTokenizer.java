@@ -16,11 +16,10 @@
 
 package nextmethod.web.razor.tokenizer;
 
+import java.util.Optional;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
@@ -44,91 +43,37 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         this.setCurrentState(dataState);
 
         this.operatorHandlers = ImmutableMap.<Character, Delegates.IFunc<JavaSymbolType>>builder()
-                                            .put('-', minusOperatorAction)
-                                            .put('<', lessThanOperatorAction)
-                                            .put('>', greaterThanOperatorAction)
-                                            .put(
-                                                    '&', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.And, '=',
-                                                                                         JavaSymbolType.AndAssign, '&',
-                                                                                         JavaSymbolType.DoubleAnd
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '|', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Or, '=',
-                                                                                         JavaSymbolType.OrAssign, '|',
-                                                                                         JavaSymbolType.DoubleOr
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '+', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Plus, '=',
-                                                                                         JavaSymbolType.PlusAssign, '+',
-                                                                                         JavaSymbolType.Increment
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '=', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Assign, '=',
-                                                                                         JavaSymbolType.Equals, '>',
-                                                                                         JavaSymbolType.GreaterThanEqual
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '!', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Not, '=',
-                                                                                         JavaSymbolType.NotEqual
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '%', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Modulo, '=',
-                                                                                         JavaSymbolType.ModuloAssign
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '*', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Star, '=',
-                                                                                         JavaSymbolType.MultiplyAssign
-                                                                                     )
-                                                )
-                                            .put(
-                                                    ':', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Colon, ':',
-                                                                                         JavaSymbolType.DoubleColon
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '?', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.QuestionMark,
-                                                                                         '?',
-                                                                                         JavaSymbolType.NullCoalesce
-                                                                                     )
-                                                )
-                                            .put(
-                                                    '^', createTwoCharOperatorHandler(
-                                                                                         JavaSymbolType.Xor, '=',
-                                                                                         JavaSymbolType.XorAssign
-                                                                                     )
-                                                )
-                                            .put('(', createIAction(JavaSymbolType.LeftParenthesis))
-                                            .put(')', createIAction(JavaSymbolType.RightParenthesis))
-                                            .put('{', createIAction(JavaSymbolType.LeftBrace))
-                                            .put('}', createIAction(JavaSymbolType.RightBrace))
-                                            .put('[', createIAction(JavaSymbolType.LeftBracket))
-                                            .put(']', createIAction(JavaSymbolType.RightBracket))
-                                            .put(',', createIAction(JavaSymbolType.Comma))
-                                            .put(';', createIAction(JavaSymbolType.Semicolon))
-                                            .put('~', createIAction(JavaSymbolType.Tilde))
-                                            .put('#', createIAction(JavaSymbolType.Hash))
-                                            .build();
+            .put('-', this::minusOperator)
+            .put('<', this::lessThanOperator)
+            .put('>', this::greaterThanOperator)
+            .put('&', createTwoCharOperatorHandler(JavaSymbolType.And, '=', JavaSymbolType.AndAssign, '&', JavaSymbolType.DoubleAnd))
+            .put('|', createTwoCharOperatorHandler(JavaSymbolType.Or, '=', JavaSymbolType.OrAssign, '|', JavaSymbolType.DoubleOr))
+            .put('+', createTwoCharOperatorHandler(JavaSymbolType.Plus, '=', JavaSymbolType.PlusAssign, '+', JavaSymbolType.Increment))
+            .put('=', createTwoCharOperatorHandler(JavaSymbolType.Assign, '=', JavaSymbolType.Equals, '>', JavaSymbolType.GreaterThanEqual))
+            .put('!', createTwoCharOperatorHandler(JavaSymbolType.Not, '=', JavaSymbolType.NotEqual))
+            .put('%', createTwoCharOperatorHandler(JavaSymbolType.Modulo, '=', JavaSymbolType.ModuloAssign))
+            .put('*', createTwoCharOperatorHandler(JavaSymbolType.Star, '=', JavaSymbolType.MultiplyAssign))
+            .put(':', createTwoCharOperatorHandler(JavaSymbolType.Colon, ':', JavaSymbolType.DoubleColon))
+            .put('?', createTwoCharOperatorHandler(JavaSymbolType.QuestionMark, '?', JavaSymbolType.NullCoalesce))
+            .put('^', createTwoCharOperatorHandler(JavaSymbolType.Xor, '=', JavaSymbolType.XorAssign))
+            .put('(', () -> JavaSymbolType.LeftParenthesis)
+            .put(')', () -> JavaSymbolType.RightParenthesis)
+            .put('{', () -> JavaSymbolType.LeftBrace)
+            .put('}', () -> JavaSymbolType.RightBrace)
+            .put('[', () -> JavaSymbolType.LeftBracket)
+            .put(']', () -> JavaSymbolType.RightBracket)
+            .put(',', () -> JavaSymbolType.Comma)
+            .put(';', () -> JavaSymbolType.Semicolon)
+            .put('~', () -> JavaSymbolType.Tilde)
+            .put('#', () -> JavaSymbolType.Hash)
+            .build();
     }
 
     @Override
-    protected JavaSymbol createSymbol(@Nonnull final SourceLocation start, @Nonnull final String content,
-                                      @Nonnull final JavaSymbolType javaSymbolType,
-                                      @Nonnull final Iterable<RazorError> errors
+    protected JavaSymbol createSymbol(
+        @Nonnull final SourceLocation start, @Nonnull final String content,
+        @Nonnull final JavaSymbolType javaSymbolType,
+        @Nonnull final Iterable<RazorError> errors
                                      ) {
         return new JavaSymbol(start, content, javaSymbolType, errors);
     }
@@ -165,7 +110,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
             return stay(endSymbol(JavaSymbolType.NewLine));
         }
         if (ParserHelpers.isWhitespace(currentChar)) {
-            takeUntil(Predicates.not(ParserHelpers.IsWhitespacePredicate));
+            takeUntil(x -> !ParserHelpers.isWhitespace(x));
             return stay(endSymbol(JavaSymbolType.WhiteSpace));
         }
         if (JavaHelpers.isIdentifierStart(currentChar)) {
@@ -177,15 +122,19 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         switch (currentChar) {
             case '@':
                 return atSymbol();
+
             case '\'':
                 takeCurrent();
                 return transition(quotedLiteral('\'', JavaSymbolType.CharacterLiteral));
+
             case '"':
                 takeCurrent();
                 return transition(quotedLiteral('"', JavaSymbolType.StringLiteral));
+
             case '.':
                 if (Character.isDigit(peek())) { return realLiteral(); }
                 return stay(single(JavaSymbolType.Dot));
+
             case '/':
                 takeCurrent();
                 currentChar = getCurrentChar();
@@ -202,6 +151,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
                     return stay(endSymbol(JavaSymbolType.DivideAssign));
                 }
                 return stay(endSymbol(JavaSymbolType.Slash));
+
             default:
                 return stay(endSymbol(operator()));
         }
@@ -217,12 +167,10 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
             return transition(endSymbol(JavaSymbolType.RazorCommentTransition), afterRazorCommenTransitionState);
         }
         if (getCurrentChar() == '@') {
-            return transition(
-                                 endSymbol(JavaSymbolType.Transition), () -> {
+            return transition(endSymbol(JavaSymbolType.Transition), () -> {
                     takeCurrent();
                     return transition(endSymbol(JavaSymbolType.Transition), dataState);
-                }
-                             );
+                });
         }
         return stay(endSymbol(JavaSymbolType.Transition));
     }
@@ -235,8 +183,6 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         return JavaSymbolType.Unknown;
     }
 
-    private final Delegates.IFunc<JavaSymbolType> operatorAction = this::operator;
-
     private JavaSymbolType lessThanOperator() {
         if (getCurrentChar() == '=') {
             takeCurrent();
@@ -245,8 +191,6 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         return JavaSymbolType.LessThan;
     }
 
-    private final Delegates.IFunc<JavaSymbolType> lessThanOperatorAction = this::lessThanOperator;
-
     private JavaSymbolType greaterThanOperator() {
         if (getCurrentChar() == '=') {
             takeCurrent();
@@ -254,8 +198,6 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         }
         return JavaSymbolType.GreaterThan;
     }
-
-    private final Delegates.IFunc<JavaSymbolType> greaterThanOperatorAction = this::greaterThanOperator;
 
     private JavaSymbolType minusOperator() {
         if (getCurrentChar() == '>') {
@@ -273,12 +215,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         return JavaSymbolType.Minus;
     }
 
-    private final Delegates.IFunc<JavaSymbolType> minusOperatorAction = this::minusOperator;
-
-    private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst,
-                                                                         final char second,
-                                                                         @Nonnull final JavaSymbolType typeIfBoth
-                                                                        ) {
+    private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst, final char second, @Nonnull final JavaSymbolType typeIfBoth) {
         return () -> {
             if (getCurrentChar() == second) {
                 takeCurrent();
@@ -288,11 +225,12 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         };
     }
 
-    private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(@Nonnull final JavaSymbolType typeIfOnlyFirst,
-                                                                         final char option1,
-                                                                         @Nonnull final JavaSymbolType typeIfOption1,
-                                                                         final char option2,
-                                                                         @Nonnull final JavaSymbolType typeIfOption2
+    private Delegates.IFunc<JavaSymbolType> createTwoCharOperatorHandler(
+        @Nonnull final JavaSymbolType typeIfOnlyFirst,
+        final char option1,
+        @Nonnull final JavaSymbolType typeIfOption1,
+        final char option2,
+        @Nonnull final JavaSymbolType typeIfOption2
                                                                         ) {
         return () -> {
             if (getCurrentChar() == option1) {
@@ -309,7 +247,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 
     private State verbatimStringLiteral() {
         return () -> {
-            takeUntil(Predicates.equalTo('"'));
+            takeUntil(Predicate.isEqual('"'));
             if (getCurrentChar() == '"') {
                 takeCurrent();
                 if (getCurrentChar() == '"') {
@@ -320,10 +258,10 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
             }
             else if (isEndOfFile()) {
                 getCurrentErrors().add(
-                                          new RazorError(
-                                                            RazorResources().parseErrorUnterminatedStringLiteral(),
-                                                            getCurrentStart()
-                                          )
+                    new RazorError(
+                        RazorResources().parseErrorUnterminatedStringLiteral(),
+                        getCurrentStart()
+                    )
                                       );
             }
             return transition(endSymbol(JavaSymbolType.StringLiteral), dataState);
@@ -332,11 +270,8 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 
     private State quotedLiteral(final char quote, @Nonnull final JavaSymbolType literalType) {
         return () -> {
-            takeUntil(
-                         input -> input != null && (
-                                                       input == '\\' || input == quote || ParserHelpers.isNewLine(input)
-                         )
-                     );
+            takeUntil(input -> input != null && (input == '\\' || input == quote || ParserHelpers.isNewLine(input)));
+
             if (getCurrentChar() == '\\') {
                 takeCurrent(); // Take the '\'
                 takeCurrent(); // Take the next char as well (multi-char escapes don't matter)
@@ -344,10 +279,10 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
             }
             else if (isEndOfFile() || ParserHelpers.isNewLine(getCurrentChar())) {
                 getCurrentErrors().add(
-                                          new RazorError(
-                                                            RazorResources().parseErrorUnterminatedStringLiteral(),
-                                                            getCurrentStart()
-                                          )
+                    new RazorError(
+                        RazorResources().parseErrorUnterminatedStringLiteral(),
+                        getCurrentStart()
+                    )
                                       );
             }
             else {
@@ -359,13 +294,13 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
 
     private State blockComment() {
         return () -> {
-            takeUntil(Predicates.equalTo('*'));
+            takeUntil(Predicate.isEqual('*'));
             if (isEndOfFile()) {
                 getCurrentErrors().add(
-                                          new RazorError(
-                                                            RazorResources().parseErrorBlockCommentNotTerminated(),
-                                                            getCurrentStart()
-                                          )
+                    new RazorError(
+                        RazorResources().parseErrorBlockCommentNotTerminated(),
+                        getCurrentStart()
+                    )
                                       );
                 return transition(endSymbol(JavaSymbolType.Comment), dataState);
             }
@@ -399,7 +334,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
     }
 
     private StateResult decimalLiteral() {
-        takeUntil(Predicates.not(IsCharacterDigitPredicate));
+        takeUntil(IsCharacterDigitPredicate.negate());
         if (getCurrentChar() == '.' && Character.isDigit(peek())) {
             return realLiteral();
         }
@@ -416,7 +351,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
             if (getCurrentChar() == '+' || getCurrentChar() == '-') {
                 takeCurrent();
             }
-            takeUntil(Predicates.not(IsCharacterDigitPredicate));
+            takeUntil(IsCharacterDigitPredicate.negate());
         }
         if (JavaHelpers.isRealLiteralSuffix(getCurrentChar())) { takeCurrent(); }
 
@@ -427,7 +362,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         assertCurrent('.');
         takeCurrent();
         assert Character.isDigit(getCurrentChar());
-        takeUntil(Predicates.not(IsCharacterDigitPredicate));
+        takeUntil(IsCharacterDigitPredicate.negate());
         return realLiteralExponentPart();
     }
 
@@ -440,7 +375,7 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
     private StateResult identifier() {
         if (Debug.isAssertEnabled()) assert JavaHelpers.isIdentifierStart(getCurrentChar());
         takeCurrent();
-        takeUntil(Predicates.not(JavaHelpers.IsIdentifierPartPredicate));
+        takeUntil(JavaHelpers.IsIdentifierPartPredicate.negate());
         JavaSymbol sym = null;
         if (haveContent()) {
             final Optional<JavaKeyword> keyword = JavaKeywordDetector.symbolTypeForIdentifier(buffer.toString());
@@ -455,10 +390,5 @@ public class JavaTokenizer extends Tokenizer<JavaSymbol, JavaSymbolType> {
         return stay(sym);
     }
 
-    private static Delegates.IFunc<JavaSymbolType> createIAction(@Nonnull final JavaSymbolType type) {
-        return () -> type;
-    }
-
-    public static final Predicate<Character> IsCharacterDigitPredicate = input -> input != null &&
-                                                                                  Character.isDigit(input);
+    public static final Predicate<Character> IsCharacterDigitPredicate = input -> input != null && Character.isDigit(input);
 }

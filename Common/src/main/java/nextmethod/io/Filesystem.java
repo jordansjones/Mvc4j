@@ -37,7 +37,7 @@ public final class Filesystem {
     private static final Joiner pathJoiner = Joiner.on(SystemHelpers.pathSeparator());
 
     public static String createFilePath(@Nonnull final String... parts) {
-        checkArgument(parts != null && parts.length > 0);
+        checkArgument(parts.length > 0);
         return pathJoiner.join(parts);
     }
 }

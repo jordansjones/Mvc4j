@@ -18,13 +18,12 @@ package nextmethod.web.razor.parser.syntaxtree;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicates;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multiset;
@@ -64,8 +63,7 @@ public class Span extends SyntaxTreeNode {
     }
 
     public void replaceWith(@Nonnull final SpanBuilder builder) {
-        assert !Iterables.any(builder.getSymbols(), Predicates.isNull()) ||
-               Iterables.all(builder.getSymbols(), Predicates.notNull());
+        assert builder.getSymbols().stream().allMatch(x -> x != null);
 
         this.kind = builder.getKind();
         this.symbols = builder.getSymbols();

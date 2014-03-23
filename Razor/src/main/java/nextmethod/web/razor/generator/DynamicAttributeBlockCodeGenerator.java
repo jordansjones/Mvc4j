@@ -17,10 +17,9 @@
 package nextmethod.web.razor.generator;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.BlockType;
 import nextmethod.web.razor.parser.syntaxtree.SyntaxTreeNode;
@@ -61,7 +60,7 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
 
         // Whate kind of block is nested within
         final String generatedCode;
-        final Block child = (Block) Iterables.find(target.getChildren(), isBlockPredicate, null);
+        final Block child = (Block) target.getChildren().stream().filter(isBlockPredicate).findFirst().orElse(null);
         if (child != null && child.getType() == BlockType.Expression) {
             isExpression = true;
             generatedCode = context.buildCodeString(

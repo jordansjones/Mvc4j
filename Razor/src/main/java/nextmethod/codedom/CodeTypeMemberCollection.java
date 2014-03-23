@@ -19,8 +19,6 @@ package nextmethod.codedom;
 import java.io.Serializable;
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Iterables;
-
 // TODO
 public class CodeTypeMemberCollection extends BaseCodeCollection<CodeTypeMember> implements Serializable {
 
@@ -28,7 +26,7 @@ public class CodeTypeMemberCollection extends BaseCodeCollection<CodeTypeMember>
 
 
     public void copyTo(@Nonnull final CodeTypeMember[] destination, final int index) {
-        final CodeTypeMember[] members = Iterables.toArray(this.delegate(), CodeTypeMember.class);
+        final CodeTypeMember[] members = this.delegate().stream().toArray(CodeTypeMember[]::new);
         System.arraycopy(members, 0, destination, index, members.length);
     }
 }

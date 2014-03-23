@@ -18,8 +18,6 @@ package nextmethod.web.razor.generator;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import nextmethod.base.Strings;
 import nextmethod.web.razor.parser.syntaxtree.Block;
 import nextmethod.web.razor.parser.syntaxtree.Span;
@@ -136,17 +134,18 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
     }
 
     private static Span getFirstOrDefaultSpan(final Block target) {
-        final SyntaxTreeNode result = Iterables.find(target.getChildren(), spanCodeOrMarkupPredicate, null);
-        return result == null
-               ? (Span) result
-               : Span.class.cast(result);
+        return (Span) target.getChildren()
+            .stream()
+            .filter(ExpressionCodeGenerator::isSpanCodeOrMarkup)
+            .findFirst()
+            .orElse(null);
     }
 
-    private static final Predicate<SyntaxTreeNode> spanCodeOrMarkupPredicate = input -> {
+    private static boolean isSpanCodeOrMarkup(SyntaxTreeNode input) {
         if (input == null || !typeIs(input, Span.class)) return false;
         final Span span = Span.class.cast(input);
         final SpanKind kind = span.getKind();
         return kind == SpanKind.Code || kind == SpanKind.Markup;
-    };
+    }
 
 }

@@ -18,13 +18,13 @@ package nextmethod.web.razor.editor;
 
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import nextmethod.base.Delegates;
-import nextmethod.collections.Arrays;
+import nextmethod.base.Strings;
 import nextmethod.web.razor.PartialParseResult;
 import nextmethod.web.razor.parser.ParserHelpers;
 import nextmethod.web.razor.parser.syntaxtree.AcceptedCharacters;
@@ -66,7 +66,7 @@ public class ImplicitExpressionEditorHandler extends SpanEditHandler {
         final int changeRelativePosition = normalizedChange.getOldPosition() - target.getStart().getAbsoluteIndex();
 
         // Get the edit context
-        Optional<Character> lastChar = Optional.absent();
+        Optional<Character> lastChar = Optional.empty();
         if (changeRelativePosition > 0 && target.getContent().length() > 0) {
             lastChar = Optional.of(target.getContent().charAt(changeRelativePosition - 1));
         }
@@ -182,10 +182,7 @@ public class ImplicitExpressionEditorHandler extends SpanEditHandler {
     }
 
     private static boolean isAllIdentifierPart(final String content) {
-        return Arrays.all(
-                             Arrays.asCharacterArray(content.substring(0, content.length() - 1)),
-                             ParserHelpers.IsIdentifierPartPredicate
-                         );
+        return Strings.toCharStream(content).limit(content.length() - 1).allMatch(ParserHelpers::isIdentifierPart);
     }
 
     private EnumSet<PartialParseResult> tryAcceptChange(final Span target, final TextChange change) {
@@ -207,14 +204,16 @@ public class ImplicitExpressionEditorHandler extends SpanEditHandler {
 
     private boolean startsWithKeyword(final String newContent) {
         try (final StringReaderDelegate reader = new StringReaderDelegate(newContent)) {
-            return keywords.contains(TextExtensions.readWhile(reader, ParserHelpers.IsIdentifierPartPredicate));
+            return keywords.contains(TextExtensions.readWhile(reader, ParserHelpers::isIdentifierPart));
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isAcceptTrailingDot() {
         return acceptTrailingDot;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public Set<String> getKeywords() {
         return keywords;
     }

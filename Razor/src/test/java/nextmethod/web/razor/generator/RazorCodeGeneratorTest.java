@@ -22,10 +22,9 @@ import java.io.StringWriter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import com.google.common.base.Function;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import nextmethod.base.Debug;
@@ -139,7 +138,7 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         final RazorTemplateEngine engine = new RazorTemplateEngine(host);
 
         // Generate code for the file
-        GeneratorResults results = null;
+        GeneratorResults results;
         try (final StringTextBuffer buffer = new StringTextBuffer(source)) {
             results = engine.generateCode(
                                              buffer,
@@ -166,7 +165,7 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         options.setIndentString(Strings.Empty);
         options.setNewlineString(Strings.CRLF);
 
-        String generatedOutput = null;
+        String generatedOutput;
         try (StringWriter swriter = new StringWriter()) {
             try (PrintWriter writer = new PrintWriter(swriter)) {
                 assert codeDomProvider != null;
@@ -214,13 +213,10 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
                       );
             if (expectedDesignTimePragmas != null) {
                 final Ordering<Map.Entry<Integer, GeneratedCodeMapping>> ordering = Ordering.from(createGeneratedCodeMappingComparator());
-                final Iterable<GeneratedCodeMapping> generatedCodeMappings = Iterables.transform(
-                                                                                                    ordering.sortedCopy(results.getDesignTimeLineMappingEntries()),
-                                                                                                    createSelectGeneratedCodeMappingFunction()
-                                                                                                );
+                final Stream<GeneratedCodeMapping> generatedCodeMappings = ordering.sortedCopy(results.getDesignTimeLineMappingEntries()).stream().map(Map.Entry<Integer, GeneratedCodeMapping>::getValue);
                 assertArrayEquals(
-                                     Iterables.toArray(expectedDesignTimePragmas, GeneratedCodeMapping.class),
-                                     Iterables.toArray(generatedCodeMappings, GeneratedCodeMapping.class)
+                                     expectedDesignTimePragmas.stream().toArray(GeneratedCodeMapping[]::new),
+                                     generatedCodeMappings.toArray(GeneratedCodeMapping[]::new)
                                  );
             }
         }
@@ -234,9 +230,5 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
 
     private Comparator<Map.Entry<Integer, GeneratedCodeMapping>> createGeneratedCodeMappingComparator() {
         return (o1, o2) -> Ints.compare(o1.getKey(), o2.getKey());
-    }
-
-    protected Function<Map.Entry<Integer, GeneratedCodeMapping>, GeneratedCodeMapping> createSelectGeneratedCodeMappingFunction() {
-        return Map.Entry<Integer, GeneratedCodeMapping>::getValue;
     }
 }

@@ -21,11 +21,10 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Equivalence;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import nextmethod.base.Debug;
@@ -211,10 +210,7 @@ public class ParserContext {
      * Gets a boolean indicating if any of the ancestors of the current block is of the specified type
      */
     public boolean isWithin(@Nonnull final BlockType type) {
-        return Iterables.any(
-                                blockStack,
-                                input -> input != null && input.getType().isPresent() && input.getType().get() == type
-                            );
+        return blockStack.stream().anyMatch(input -> input != null && input.getType().isPresent() && input.getType().get() == type);
     }
 
     public void switchActiveParser() {
@@ -293,7 +289,7 @@ public class ParserContext {
 
         private static final int InfiniteLoopCountThreshold = 1000;
         private int infiniteLoopGuardCount = 0;
-        private Optional<SourceLocation> infiniteLoopGuardLocation = Optional.absent();
+        private Optional<SourceLocation> infiniteLoopGuardLocation = Optional.empty();
 
         private final ParserContext parserContext;
 
@@ -324,7 +320,7 @@ public class ParserContext {
                     infiniteLoopGuardCount = 0;
                 }
             }
-            infiniteLoopGuardLocation = Optional.fromNullable(source.getLocation());
+            infiniteLoopGuardLocation = Optional.ofNullable(source.getLocation());
             return false;
         }
     }

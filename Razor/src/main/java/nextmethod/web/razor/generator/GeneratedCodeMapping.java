@@ -17,9 +17,8 @@
 package nextmethod.web.razor.generator;
 
 import java.util.Objects;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static nextmethod.base.TypeHelpers.typeAs;
@@ -34,15 +33,12 @@ public final class GeneratedCodeMapping {
     private int startGeneratedColumn;
     private int startLine;
 
-    public GeneratedCodeMapping(final int startLine, final int startColumn, final int startGeneratedColumn,
-                                final int codeLength
-                               ) {
-        this(Optional.<Integer>absent(), startLine, startColumn, startGeneratedColumn, codeLength);
+    public GeneratedCodeMapping(final int startLine, final int startColumn, final int startGeneratedColumn, final int codeLength) {
+        this(Optional.<Integer>empty(), startLine, startColumn, startGeneratedColumn, codeLength);
     }
 
     public GeneratedCodeMapping(final int startOffset, final int startLine, final int startColumn,
-                                final int startGeneratedColumn, final int codeLength
-                               ) {
+                                final int startGeneratedColumn, final int codeLength) {
         this(Optional.of(startOffset), startLine, startColumn, startGeneratedColumn, codeLength);
     }
 

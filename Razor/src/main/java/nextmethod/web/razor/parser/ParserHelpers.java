@@ -16,22 +16,13 @@
 
 package nextmethod.web.razor.parser;
 
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import nextmethod.base.Strings;
 
 public final class ParserHelpers {
-
-    public static final Predicate<Character> IsIdentifierPartPredicate = val -> val != null && (
-                                                                                                   isLetter(val) ||
-                                                                                                   isDecimalDigit(val) ||
-                                                                                                   isConnecting(val) ||
-                                                                                                   isCombining(val) ||
-                                                                                                   isFormatting(val)
-    );
 
     private ParserHelpers() {}
 
@@ -47,23 +38,14 @@ public final class ParserHelpers {
         return val != null && (val.length() == 1 && isNewLine(val.charAt(0)) || "\r\n".equalsIgnoreCase(val));
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean isAnyOfString(final String val, final Predicate<Character> predicate) {
-        return Iterables.any(Lists.charactersOf(val), predicate);
+        return Strings.toCharStream(val).anyMatch(predicate);
     }
 
     public static boolean isAllOfString(final String val, final Predicate<Character> predicate) {
-        return Iterables.all(Lists.charactersOf(val), predicate);
+        return Strings.toCharStream(val).allMatch(predicate);
     }
-
-    public static Predicate<Character> IsWhitespacePredicate = val -> val != null && (
-                                                                                         val == ' ' ||
-                                                                                         val == '\f' ||
-                                                                                         val == '\t' ||
-                                                                                         val == '\u000B' ||
-                                                                                         // Vertical Tab
-                                                                                         Character.getType(val) ==
-                                                                                         Character.SPACE_SEPARATOR
-    );
 
     public static boolean isNullOrWhitespace(final String val) {
         if (Strings.isNullOrEmpty(val)) return true;
@@ -75,7 +57,14 @@ public final class ParserHelpers {
     }
 
     public static boolean isWhitespace(final char val) {
-        return IsWhitespacePredicate.apply(val);
+        return (
+            val == ' '
+            || val == '\f'
+            || val == '\t'
+            || val == '\u000B'
+            // Vertical Tab
+            || Character.getType(val) == Character.SPACE_SEPARATOR
+        );
     }
 
     public static boolean isWhitespaceOrNewLine(final char val) {
@@ -87,12 +76,12 @@ public final class ParserHelpers {
     }
 
     public static boolean isIdentifier(@Nonnull final String val, final boolean requireIdentifierStart) {
-        Character[] identifierPart = nextmethod.collections.Arrays.asCharacterArray(val);
+        Stream<Character> stream = Strings.toCharStream(val);
         if (requireIdentifierStart) {
-            identifierPart = java.util.Arrays.copyOfRange(identifierPart, 1, identifierPart.length);
+            stream = stream.skip(1);
         }
         return (!requireIdentifierStart || isIdentifierStart(val.charAt(0)))
-               && nextmethod.collections.Arrays.all(identifierPart, IsIdentifierPartPredicate);
+               && stream.allMatch(ParserHelpers::isIdentifierPart);
     }
 
     public static boolean isHexDigit(final char val) {
@@ -104,13 +93,21 @@ public final class ParserHelpers {
     }
 
     public static boolean isIdentifierPart(final char val) {
-        return IsIdentifierPartPredicate.apply(val);
+        return (
+            isLetter(val) ||
+            isDecimalDigit(val) ||
+            isConnecting(val) ||
+            isCombining(val) ||
+            isFormatting(val)
+        );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean isTerminatingCharToken(final char value) {
         return isNewLine(value) || value == '\'';
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean isTerminatingQuotedStringToken(final char value) {
         return isNewLine(value) || value == '"';
     }
@@ -147,6 +144,7 @@ public final class ParserHelpers {
         return Character.getType(value) == Character.CONNECTOR_PUNCTUATION;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static String sanitizeClassName(@Nonnull String inputName) {
         final char c = inputName.charAt(0);
         if (!isIdentifierStart(c) && isIdentifierPart(c)) {
@@ -163,6 +161,7 @@ public final class ParserHelpers {
         return String.valueOf(chars);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean isEmailPart(final char character) {
         // Source: http://tools.ietf.org/html/rfc5322#section-3.4.1
         // We restrict the allowed characters to alpha-numerics and '_' in order to ensure we cover most of the cases where an

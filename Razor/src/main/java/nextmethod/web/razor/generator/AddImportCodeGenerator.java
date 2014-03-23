@@ -20,11 +20,9 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Iterables;
 import nextmethod.base.Strings;
 import nextmethod.codedom.CodePackage;
 import nextmethod.codedom.CodePackageImport;
-import nextmethod.codedom.CodePackageImportCollection;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
 import static nextmethod.base.TypeHelpers.typeAs;
@@ -48,22 +46,16 @@ public class AddImportCodeGenerator extends SpanCodeGenerator {
         }
         final String packageName = pkg;
 
-        final CodePackageImportCollection importCollection = context.getCodePackage().getImports();
-        final Iterable<CodePackageImport> imports = Iterables.filter(
-                                                                        importCollection, input -> input != null &&
-                                                                                                   packageName.trim()
-                                                                                                              .equalsIgnoreCase(
-                                                                                                                                   input
-                                                                                                                                       .getPackage()
-                                                                                                                               )
-                                                                    );
-
-        CodePackageImport packageImport = Iterables.getFirst(imports, null);
-
-        if (packageImport == null) {
-            packageImport = new CodePackageImport(packageName);
-            context.getCodePackage().getImports().add(packageImport);
-        }
+        context.getCodePackage().getImports()
+            .stream()
+            .filter(input -> input != null)
+            .filter(input -> packageName.trim().equalsIgnoreCase(input.getPackage()))
+            .findFirst()
+            .orElseGet(() -> {
+                           CodePackageImport newPkg = new CodePackageImport(packageName);
+                           context.getCodePackage().getImports().add(newPkg);
+                           return newPkg;
+                       });
 
         final String importPackage = pkg;
 

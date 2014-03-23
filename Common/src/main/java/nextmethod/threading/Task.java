@@ -16,7 +16,8 @@
 
 package nextmethod.threading;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
+
 import nextmethod.base.Delegates;
 
 /**
@@ -29,7 +30,7 @@ public class Task {
 
     // TODO
     public static Optional<Integer> getCurrentId() {
-        return Optional.absent();
+        return Optional.empty();
     }
 
 }

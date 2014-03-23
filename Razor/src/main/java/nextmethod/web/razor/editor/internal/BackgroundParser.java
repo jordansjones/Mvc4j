@@ -79,6 +79,7 @@ public class BackgroundParser implements IDisposable {
     static boolean treesAreDifferent(final Block leftTree, final Block rightTree, final Iterable<TextChange> changes,
                                      final CancellationToken cancelToken
                                     ) {
+
         // Apply all pending changes to the original tree
         for (TextChange change : changes) {
             cancelToken.throwIfCancellationRequested();
@@ -93,8 +94,7 @@ public class BackgroundParser implements IDisposable {
         }
 
         // Now compare the trees
-        final boolean treesAreDifferent = !leftTree.equivalentTo(rightTree);
-        return treesAreDifferent;
+        return !leftTree.equivalentTo(rightTree);
     }
 
     public void setResultsReadyHandler(final IEventHandler<DocumentParseCompleteEventArgs> resultsReadyHandler) {

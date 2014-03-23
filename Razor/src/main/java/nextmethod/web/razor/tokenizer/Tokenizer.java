@@ -17,11 +17,10 @@
 package nextmethod.web.razor.tokenizer;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import nextmethod.base.Debug;
 import nextmethod.web.razor.State;
@@ -133,6 +132,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
         return endSymbol(type);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected boolean takeString(@Nonnull final String input, final boolean caseSensitive) {
         int position = 0;
         final Function<Character, Character> charFilter = createCharFilter(caseSensitive);
@@ -163,6 +163,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
         return sym;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected void resumeSymbol(@Nonnull final TSymbol previous) {
         // Verify the symbol can be resumed
         if (previous.getStart().getAbsoluteIndex() + previous.getContent().length() !=
@@ -184,16 +185,16 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
 
     protected boolean takeUntil(@Nonnull final Predicate<Character> predicate) {
         // Take all the characters up to the end of character
-        while (!isEndOfFile() && !predicate.apply(getCurrentChar())) {
+        while (!isEndOfFile() && !predicate.test(getCurrentChar())) {
             takeCurrent();
         }
         // Why did loop end?
         return !isEndOfFile();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected Predicate<Character> charOrWhiteSpace(final char character) {
-        return input -> input != null &&
-                        (input == character || ParserHelpers.isWhitespace(input) || ParserHelpers.isNewLine(input));
+        return input -> input != null && (input == character || ParserHelpers.isWhitespace(input) || ParserHelpers.isNewLine(input));
     }
 
     protected void takeCurrent() {
@@ -219,7 +220,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
     }
 
     protected char peek() {
-        try (final LookaheadToken token = beginLookahead(source)) {
+        try (final LookaheadToken ignored = beginLookahead(source)) {
             moveNext();
             return getCurrentChar();
         }
@@ -238,7 +239,7 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
     }
 
     protected StateResult razorCommentBody() {
-        takeUntil(Predicates.<Character>equalTo('*'));
+        takeUntil(Predicate.<Character>isEqual('*'));
         final char currentChar = getCurrentChar();
         if (currentChar == '*') {
             final SourceLocation start = getCurrentLocation();

@@ -19,13 +19,11 @@ package nextmethod.codedom.compiler;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import nextmethod.base.KeyValue;
 import nextmethod.base.NotImplementedException;
 import nextmethod.base.Strings;
@@ -627,13 +625,10 @@ public abstract class CodeGenerator implements ICodeGenerator {
                 streamBuilder.add(KeyValue.of(idx * members.length + n, members[n]));
             }
 
-            members = Iterables.toArray(
-                                           streamBuilder.build()
-                                                        .sorted((x, y) -> x.getKey().compareTo(y.getKey()))
-                                                        .map(KeyValue<Integer, CodeTypeMember>::getValue)
-                                                        .collect(Collectors.toList()),
-                                           CodeTypeMember.class
-                                       );
+            //noinspection ConstantConditions
+            members = streamBuilder.build()
+                .sorted((x, y) -> x.getKey().compareTo(y.getKey()))
+                .map(KeyValue<Integer, CodeTypeMember>::getValue).toArray(CodeTypeMember[]::new);
 
         }
 

@@ -18,7 +18,6 @@ package nextmethod.web.razor.generator;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Iterables;
 import nextmethod.base.Delegates;
 import nextmethod.base.Strings;
 import nextmethod.codedom.CodeConstructor;
@@ -97,13 +96,11 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 
     protected void initialize(@Nonnull final CodeGeneratorContext context) {
         final CodePackageImportCollection packageImports = context.getCodePackage().getImports();
-        final Iterable<CodePackageImport> imports = Iterables.transform(
-                                                                           host.getPackageImports(),
-                                                                           input -> Strings.isNullOrEmpty(input)
-                                                                                    ? null
-                                                                                    : new CodePackageImport(input)
-                                                                       );
-        imports.forEach(packageImports::add);
+        host.getPackageImports()
+            .stream()
+            .filter(x -> !Strings.isNullOrEmpty(x))
+            .map(CodePackageImport::new)
+            .forEach(packageImports::add);
 
         if (!Strings.isNullOrEmpty(host.getDefaultBaseClass())) {
             context.getGeneratedClass().getBaseTypes().add(new CodeTypeReference(host.getDefaultBaseClass()));

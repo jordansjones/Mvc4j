@@ -16,10 +16,10 @@
 
 package nextmethod.web.razor.parser;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
 import nextmethod.threading.CancellationToken;
 import nextmethod.threading.OperationCanceledException;
 import nextmethod.web.razor.ParserResults;
@@ -33,7 +33,7 @@ import nextmethod.web.razor.parser.syntaxtree.SyntaxTreeNode;
  */
 public abstract class ParserVisitor {
 
-    private Optional<CancellationToken> cancelToken = Optional.absent();
+    private Optional<CancellationToken> cancelToken = Optional.empty();
 
     public void visitBlock(@Nonnull final Block block) {
         visitStartBlock(block);
@@ -86,6 +86,6 @@ public abstract class ParserVisitor {
     }
 
     public ParserVisitor setCancelToken(@Nullable final CancellationToken cancelToken) {
-        return setCancelToken(Optional.fromNullable(cancelToken));
+        return setCancelToken(Optional.ofNullable(cancelToken));
     }
 }

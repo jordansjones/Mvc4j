@@ -17,10 +17,10 @@
 package nextmethod.web.razor.generator.internal;
 
 import java.io.StringWriter;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
 import nextmethod.annotations.Internal;
 import nextmethod.base.Strings;
 
@@ -39,10 +39,9 @@ public class JavaCodeWriter extends BaseCodeWriter {
         getInnerWriter().write(">");
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
-    public int writeVariableDeclaration(@Nonnull final String type, @Nonnull final String name,
-                                        @Nullable final String value
-                                       ) {
+    public int writeVariableDeclaration(@Nonnull final String type, @Nonnull final String name, @Nullable final String value) {
         getInnerWriter().write(type);
         getInnerWriter().write(" ");
         getInnerWriter().write(name);
