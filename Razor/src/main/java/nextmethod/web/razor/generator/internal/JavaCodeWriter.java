@@ -183,6 +183,7 @@ public class JavaCodeWriter extends BaseCodeWriter {
     protected void emitStartLambdaDelegate(@Nonnull final String[] parameterNames) {
         emitStartLambdaExpression(parameterNames);
         getInnerWriter().write("{");
+        writeLine();
     }
 
     @Override
@@ -208,7 +209,7 @@ public class JavaCodeWriter extends BaseCodeWriter {
         writeLine();
         if (lineNumber.isPresent()) {
             innerWriter.write("//#line ");
-            innerWriter.write(lineNumber.get());
+            innerWriter.write(lineNumber.get().toString());
             innerWriter.write(" \"");
             innerWriter.write(fileName);
             innerWriter.write("\"");
@@ -216,13 +217,16 @@ public class JavaCodeWriter extends BaseCodeWriter {
         }
         else {
             innerWriter.write("//#line default");
+            writeLine();
             innerWriter.write("//#line hidden");
+            writeLine();
         }
     }
 
     @Override
     public void writeHiddenLinePragma() {
         getInnerWriter().write("//#line hidden");
+        writeLine();
     }
 
     @Override

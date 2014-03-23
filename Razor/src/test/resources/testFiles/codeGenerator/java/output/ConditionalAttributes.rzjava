@@ -33,10 +33,10 @@ WriteLiteral(" />\r\n");
 
 WriteLiteral("    <p");
 
-WriteAttribute("class", Tuple.Create(" class=\"", 74), Tuple.Create("\"", 86)
+WriteAttribute("class", nextmethod.base.KeyValue.of(" class=\"", 74), nextmethod.base.KeyValue.of("\"", 86)
 
 //#line 5 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create("", 82), Tuple.Create<java.lang.Object, java.lang.Integer>(cls
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 82), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(cls
 
 //#line default
 //#line hidden
@@ -47,11 +47,11 @@ WriteLiteral(" />\r\n");
 
 WriteLiteral("    <p");
 
-WriteAttribute("class", Tuple.Create(" class=\"", 98), Tuple.Create("\"", 114)
-, Tuple.Create(Tuple.Create("", 106), Tuple.Create("foo", 106), true)
+WriteAttribute("class", nextmethod.base.KeyValue.of(" class=\"", 98), nextmethod.base.KeyValue.of("\"", 114)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 106), nextmethod.base.KeyValue.of("foo", 106), true)
 
 //#line 6 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create(" ", 109), Tuple.Create<java.lang.Object, java.lang.Integer>(cls
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of(" ", 109), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(cls
 
 //#line default
 //#line hidden
@@ -62,15 +62,15 @@ WriteLiteral(" />\r\n");
 
 WriteLiteral("    <p");
 
-WriteAttribute("class", Tuple.Create(" class=\"", 126), Tuple.Create("\"", 142)
+WriteAttribute("class", nextmethod.base.KeyValue.of(" class=\"", 126), nextmethod.base.KeyValue.of("\"", 142)
 
 //#line 7 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create("", 134), Tuple.Create<java.lang.Object, java.lang.Integer>(cls
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 134), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(cls
 
 //#line default
 //#line hidden
 , 134), false)
-, Tuple.Create(Tuple.Create(" ", 138), Tuple.Create("foo", 139), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of(" ", 138), nextmethod.base.KeyValue.of("foo", 139), true)
 );
 
 WriteLiteral(" />\r\n");
@@ -79,10 +79,10 @@ WriteLiteral("    <input");
 
 WriteLiteral(" type=\"checkbox\"");
 
-WriteAttribute("checked", Tuple.Create(" checked=\"", 174), Tuple.Create("\"", 187)
+WriteAttribute("checked", nextmethod.base.KeyValue.of(" checked=\"", 174), nextmethod.base.KeyValue.of("\"", 187)
 
 //#line 8 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create("", 184), Tuple.Create<java.lang.Object, java.lang.Integer>(ch
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 184), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(ch
 
 //#line default
 //#line hidden
@@ -95,11 +95,11 @@ WriteLiteral("    <input");
 
 WriteLiteral(" type=\"checkbox\"");
 
-WriteAttribute("checked", Tuple.Create(" checked=\"", 219), Tuple.Create("\"", 236)
-, Tuple.Create(Tuple.Create("", 229), Tuple.Create("foo", 229), true)
+WriteAttribute("checked", nextmethod.base.KeyValue.of(" checked=\"", 219), nextmethod.base.KeyValue.of("\"", 236)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 229), nextmethod.base.KeyValue.of("foo", 229), true)
 
 //#line 9 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create(" ", 232), Tuple.Create<java.lang.Object, java.lang.Integer>(ch
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of(" ", 232), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(ch
 
 //#line default
 //#line hidden
@@ -110,8 +110,8 @@ WriteLiteral(" />\r\n");
 
 WriteLiteral("    <p");
 
-WriteAttribute("class", Tuple.Create(" class=\"", 248), Tuple.Create("\"", 281)
-, Tuple.Create(Tuple.Create("", 256), Tuple.Create<java.lang.Object, java.lang.Integer>(new Template(__razor_attribute_value_writer -> {
+WriteAttribute("class", nextmethod.base.KeyValue.of(" class=\"", 248), nextmethod.base.KeyValue.of("\"", 281)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 256), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(new Template(__razor_attribute_value_writer -> {
 
 
 //#line 10 "ConditionalAttributes.rzhtml"
@@ -139,8 +139,8 @@ WriteLiteral(" />\r\n");
 
 WriteLiteral("    <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 293), Tuple.Create("\"", 305)
-, Tuple.Create(Tuple.Create("", 300), Tuple.Create<java.lang.Object, java.lang.Integer>(Href("~/Foo")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 293), nextmethod.base.KeyValue.of("\"", 305)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 300), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Foo")
 , 300), false)
 );
 
@@ -148,10 +148,10 @@ WriteLiteral(" />\r\n");
 
 WriteLiteral("    <script");
 
-WriteAttribute("src", Tuple.Create(" src=\"", 322), Tuple.Create("\"", 373)
+WriteAttribute("src", nextmethod.base.KeyValue.of(" src=\"", 322), nextmethod.base.KeyValue.of("\"", 373)
 
 //#line 12 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create("", 328), Tuple.Create<java.lang.Object, java.lang.Integer>(Url.Content("~/Scripts/jquery-1.6.2.min.js")
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 328), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Url.Content("~/Scripts/jquery-1.6.2.min.js")
 
 //#line default
 //#line hidden
@@ -164,10 +164,10 @@ WriteLiteral("></script>\r\n");
 
 WriteLiteral("    <script");
 
-WriteAttribute("src", Tuple.Create(" src=\"", 420), Tuple.Create("\"", 487)
+WriteAttribute("src", nextmethod.base.KeyValue.of(" src=\"", 420), nextmethod.base.KeyValue.of("\"", 487)
 
 //#line 13 "ConditionalAttributes.rzhtml"
-, Tuple.Create(Tuple.Create("", 426), Tuple.Create<java.lang.Object, java.lang.Integer>(Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 426), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")
 
 //#line default
 //#line hidden

@@ -332,7 +332,42 @@ public abstract class CodeGenerator implements ICodeGenerator {
     }
 
     protected void generatePrimitiveExpression(@Nonnull final CodePrimitiveExpression e) {
-        throw new NotImplementedException();
+        final Object value = e.getValue();
+        if (value == null) {
+            getOutput().write(getNullToken());
+            return;
+        }
+
+        if (typeIs(value, Boolean.class)) {
+            getOutput().write(value.toString().toLowerCase());
+        }
+        else if (typeIs(value, Character.class))
+        {
+            getOutput().write("'" + value.toString() + "'");
+        }
+        else if (typeIs(value, String.class))
+        {
+            getOutput().write(quoteSnippetString(typeAs(value, String.class)));
+        }
+        else if (typeIs(value, Float.class))
+        {
+            generateSingleFloatValue(typeAs(value, Float.class));
+        }
+        else if (typeIs(value, Double.class))
+        {
+            generateDoubleValue(typeAs(value, Double.class));
+        }
+        else if (typeIs(value, Byte.class) || typeIs(value, Short.class) || typeIs(value, Integer.class) || typeIs(value, Long.class))
+        {
+            getOutput().write(typeAs(value, Number.class).toString());
+        }
+        else
+        {
+            throw new IllegalArgumentException(String.format(
+                "Invalid Primitive Type: %s",
+                value.getClass().getTypeName()
+                ));
+        }
     }
 
     protected abstract void generateProperty(@Nonnull final CodeMemberProperty p, @Nonnull final CodeTypeDeclaration d);

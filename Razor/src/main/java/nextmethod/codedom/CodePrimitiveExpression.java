@@ -17,8 +17,8 @@
 package nextmethod.codedom;
 
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 
-// TODO
 public class CodePrimitiveExpression extends CodeExpression implements Serializable {
 
     private static final long serialVersionUID = 6501060541239915815L;
@@ -38,5 +38,10 @@ public class CodePrimitiveExpression extends CodeExpression implements Serializa
 
     public void setValue(final Object value) {
         this.value = value;
+    }
+
+    @Override
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        visitor.visit(this);
     }
 }

@@ -42,53 +42,51 @@ public class ResolveUrlCodeGenerator extends SpanCodeGenerator {
             context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
             // Add a non-literal context call (non-literal because the expanded URL will not match the source character-by-character)
             context.addContextCall(
-                                      target, context.getHost().getGeneratedClassContext().getBeginContextMethodName(),
-                                      false
-                                  );
+                target, context.getHost().getGeneratedClassContext().getBeginContextMethodName(),
+                false
+            );
         }
 
         if (!Strings.isNullOrEmpty(target.getContent()) && !context.getHost().isDesignTimeMode()) {
             final String code = context.buildCodeString(
-                                                           input -> {
-                                                               assert input != null;
+                input -> {
+                    assert input != null;
 
-                                                               if (context.getExpressionRenderingMode() ==
-                                                                   ExpressionRenderingMode.WriteToOutput) {
-                                                                   if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-                                                                       input.writeStartMethodInvoke(
-                                                                                                       context.getHost()
-                                                                                                              .getGeneratedClassContext()
-                                                                                                              .getWriteLiteralMethodName()
-                                                                                                   );
-                                                                       input.writeSnippet(context.getTargetWriterName());
-                                                                       input.writeParameterSeparator();
-                                                                   }
-                                                                   else {
-                                                                       input.writeStartMethodInvoke(
-                                                                                                       context.getHost()
-                                                                                                              .getGeneratedClassContext()
-                                                                                                              .getWriteLiteralMethodName()
-                                                                                                   );
-                                                                   }
-                                                               }
-                                                               input.writeStartMethodInvoke(
-                                                                                               context.getHost()
-                                                                                                      .getGeneratedClassContext()
-                                                                                                      .getResolveUrlMethodName()
-                                                                                           );
-                                                               input.writeStartMethodInvoke(target.getContent());
-                                                               input.writeEndMethodInvoke();
+                    if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
+                        if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+                            input.writeStartMethodInvoke(
+                                context.getHost()
+                                    .getGeneratedClassContext()
+                                    .getWriteLiteralMethodName()
+                            );
+                            input.writeSnippet(context.getTargetWriterName());
+                            input.writeParameterSeparator();
+                        }
+                        else {
+                            input.writeStartMethodInvoke(
+                                context.getHost()
+                                    .getGeneratedClassContext()
+                                    .getWriteLiteralMethodName()
+                            );
+                        }
+                    }
+                    input.writeStartMethodInvoke(
+                        context.getHost()
+                            .getGeneratedClassContext()
+                            .getResolveUrlMethodName()
+                    );
+                    input.writeStringLiteral(target.getContent());
+                    input.writeEndMethodInvoke();
 
-                                                               if (context.getExpressionRenderingMode() ==
-                                                                   ExpressionRenderingMode.WriteToOutput) {
-                                                                   input.writeEndMethodInvoke();
-                                                                   input.writeEndStatement();
-                                                               }
-                                                               else {
-                                                                   input.writeLineContinuation();
-                                                               }
-                                                           }
-                                                       );
+                    if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
+                        input.writeEndMethodInvoke();
+                        input.writeEndStatement();
+                    }
+                    else {
+                        input.writeLineContinuation();
+                    }
+                }
+            );
 
             if (context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
                 context.addStatement(code);
@@ -101,9 +99,9 @@ public class ResolveUrlCodeGenerator extends SpanCodeGenerator {
         if (context.getHost().enableInstrumentation() &&
             context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
             context.addContextCall(
-                                      target, context.getHost().getGeneratedClassContext().getEndContextMethodName(),
-                                      false
-                                  );
+                target, context.getHost().getGeneratedClassContext().getEndContextMethodName(),
+                false
+            );
         }
     }
 

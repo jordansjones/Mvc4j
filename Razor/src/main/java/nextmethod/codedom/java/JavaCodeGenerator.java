@@ -32,6 +32,7 @@ import nextmethod.codedom.compiler.GeneratorSupport;
 import nextmethod.codedom.compiler.IndentingPrintWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static nextmethod.base.TypeHelpers.typeIs;
 
 /**
  *
@@ -177,7 +178,12 @@ class JavaCodeGenerator extends CodeGenerator {
 
     @Override
     protected void generateAssignStatement(@Nonnull final CodeAssignStatement s) {
-        throw new NotImplementedException();
+        generateExpression(s.getLeft());
+        getOutput().write(" = ");
+        generateExpression(s.getRight());
+
+        if (dontWriteSemicolon) return;
+        getOutput().println(';');
     }
 
     @Override
@@ -503,6 +509,62 @@ class JavaCodeGenerator extends CodeGenerator {
         throw new NotImplementedException();
     }
 
+    protected void generatePrimitiveExpression(@Nonnull final CodePrimitiveExpression e) {
+        final Object value = e.getValue();
+        if (typeIs(value, Character.class))
+        {
+            generateCharValue((char) value);
+        }
+        else
+        {
+            super.generatePrimitiveExpression(e);
+        }
+    }
+
+    private void generateCharValue(char c)
+    {
+        getOutput().write('\'');
+
+        switch(c)
+        {
+            case '\0':
+                getOutput().write("\\0");
+                break;
+            case '\t':
+                getOutput().write("\\t");
+                break;
+            case '\n':
+                getOutput().write("\\n");
+                break;
+            case '\r':
+                getOutput().write("\\r");
+                break;
+            case '"':
+                getOutput().write("\\\"");
+                break;
+            case '\'':
+                getOutput().write("\\'");
+                break;
+            case '\\':
+                getOutput().write("\\\\");
+                break;
+            case '\u2028':
+                getOutput().write("\\u");
+                getOutput().write(Integer.toHexString((int) c));
+                break;
+            case '\u2029':
+                getOutput().write("\\u");
+                getOutput().write(Integer.toHexString((int) c));
+                break;
+            default:
+                getOutput().write(c);
+                break;
+
+        }
+
+        getOutput().write('\'');
+    }
+
     @Override
     protected void generateProperty(@Nonnull final CodeMemberProperty p, @Nonnull final CodeTypeDeclaration d) {
         throw new NotImplementedException();
@@ -510,7 +572,13 @@ class JavaCodeGenerator extends CodeGenerator {
 
     @Override
     protected void generatePropertyReferenceExpression(@Nonnull final CodePropertyReferenceExpression e) {
-        throw new NotImplementedException();
+        final CodeExpression targetObject = e.getTargetObject();
+        if (targetObject != null)
+        {
+            generateExpression(targetObject);
+            getOutput().write('.');
+        }
+        getOutput().write(getSafeName(e.getPropertyName()));
     }
 
     @Override
@@ -639,7 +707,12 @@ class JavaCodeGenerator extends CodeGenerator {
 
     @Override
     protected String quoteSnippetString(@Nonnull final String value) {
-        throw new NotImplementedException();
+        String output = value.replace("\\", "\\\\");
+        output = output.replace("\"", "\\\"");
+        output = output.replace("\t", "\\t");
+        output = output.replace("\r", "\\r");
+        output = output.replace("\n", "\\n");
+        return "\"" + output + "\"";
     }
 
     @Override

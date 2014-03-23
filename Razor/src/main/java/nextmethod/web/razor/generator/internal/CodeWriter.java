@@ -172,7 +172,7 @@ public abstract class CodeWriter implements IDisposable {
     }
 
     public void writeLocationTaggedString(@Nonnull final LocationTagged<String> value) {
-        writeStartMethodInvoke("Tuple.Create");
+        writeStartMethodInvoke("nextmethod.base.KeyValue.of");
         writeStringLiteral(value.getValue());
         writeParameterSeparator();
         writeSnippet(String.valueOf(value.getLocation().getAbsoluteIndex()));

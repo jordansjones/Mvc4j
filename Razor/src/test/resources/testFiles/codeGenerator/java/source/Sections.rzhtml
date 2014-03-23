@@ -1,5 +1,5 @@
 @{
-    Layout = "_SectionTestLayout.cshtml"
+    Layout = "_SectionTestLayout.rzhtml"
 }
 
 <div>This is in the Body>

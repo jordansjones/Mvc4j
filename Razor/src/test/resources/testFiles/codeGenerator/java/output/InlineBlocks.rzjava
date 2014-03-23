@@ -27,8 +27,8 @@ return new Template(__razor_helper_writer -> {
 //#line hidden
 WriteLiteralTo(__razor_helper_writer, "    <a");
 
-WriteAttributeTo(__razor_helper_writer, "href", Tuple.Create(" href=\"", 35), Tuple.Create("\"", 93)
-, Tuple.Create(Tuple.Create("", 42), Tuple.Create<System.Object, System.Int32>(new Template(__razor_attribute_value_writer -> {
+WriteAttributeTo(__razor_helper_writer, "href", nextmethod.base.KeyValue.of(" href=\"", 35), nextmethod.base.KeyValue.of("\"", 93)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 42), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(new Template(__razor_attribute_value_writer -> {
 
 
 //#line 2 "InlineBlocks.rzhtml"

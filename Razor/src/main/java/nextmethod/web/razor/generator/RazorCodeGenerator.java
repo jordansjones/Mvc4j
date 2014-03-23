@@ -66,7 +66,9 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 
     @Override
     public void visitStartBlock(@Nonnull final Block block) {
-        checkNotNull(block).getCodeGenerator().generateStartBlockCode(block, getContext());
+        IBlockCodeGenerator codeGenerator = checkNotNull(block).getCodeGenerator();
+        CodeGeneratorContext generatorContext = getContext();
+        codeGenerator.generateStartBlockCode(block, generatorContext);
     }
 
     @Override
@@ -76,7 +78,9 @@ public abstract class RazorCodeGenerator extends ParserVisitor {
 
     @Override
     public void visitSpan(@Nonnull final Span span) {
-        checkNotNull(span).getCodeGenerator().generateCode(span, getContext());
+        ISpanCodeGenerator codeGenerator = checkNotNull(span).getCodeGenerator();
+        CodeGeneratorContext generatorContext = getContext();
+        codeGenerator.generateCode(span, generatorContext);
     }
 
     @Override

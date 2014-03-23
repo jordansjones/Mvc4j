@@ -18,19 +18,19 @@ public ResolveUrl() {
 public void Execute() {
 WriteLiteral("<a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 2), Tuple.Create("\"", 14)
-, Tuple.Create(Tuple.Create("", 9), Tuple.Create<System.Object, System.Int32>(Href("~/Foo")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 2), nextmethod.base.KeyValue.of("\"", 14)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 9), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Foo")
 , 9), false)
 );
 
 WriteLiteral(">Foo</a>\r\n<a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 27), Tuple.Create("\"", 56)
-, Tuple.Create(Tuple.Create("", 34), Tuple.Create<System.Object, System.Int32>(Href("~/Products/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 27), nextmethod.base.KeyValue.of("\"", 56)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 34), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Products/")
 , 34), false)
 
 //#line 2 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 45), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 45), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
@@ -48,32 +48,32 @@ WriteLiteral(">");
 //#line hidden
 WriteLiteral("</a>\r\n<a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 79), Tuple.Create("\"", 115)
-, Tuple.Create(Tuple.Create("", 86), Tuple.Create<System.Object, System.Int32>(Href("~/Products/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 79), nextmethod.base.KeyValue.of("\"", 115)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 86), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Products/")
 , 86), false)
 
 //#line 3 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 97), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 97), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
 , 97), false)
-, Tuple.Create(Tuple.Create("", 108), Tuple.Create("/Detail", 108), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 108), nextmethod.base.KeyValue.of("/Detail", 108), true)
 );
 
 WriteLiteral(">Details</a>\r\n<a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 132), Tuple.Create("\"", 187)
-, Tuple.Create(Tuple.Create("", 139), Tuple.Create<System.Object, System.Int32>(Href("~/A+Really(Crazy),Url.Is:This/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 132), nextmethod.base.KeyValue.of("\"", 187)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 139), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/A+Really(Crazy),Url.Is:This/")
 , 139), false)
 
 //#line 4 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 169), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 169), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
 , 169), false)
-, Tuple.Create(Tuple.Create("", 180), Tuple.Create("/Detail", 180), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 180), nextmethod.base.KeyValue.of("/Detail", 180), true)
 );
 
 WriteLiteral(">Crazy Url!</a>\r\n\r\n");
@@ -89,19 +89,19 @@ WriteLiteral("    ");
 
 WriteLiteral("\r\n        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 233), Tuple.Create("\"", 245)
-, Tuple.Create(Tuple.Create("", 240), Tuple.Create<System.Object, System.Int32>(Href("~/Foo")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 233), nextmethod.base.KeyValue.of("\"", 245)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 240), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Foo")
 , 240), false)
 );
 
 WriteLiteral(">Foo</a>\r\n        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 266), Tuple.Create("\"", 295)
-, Tuple.Create(Tuple.Create("", 273), Tuple.Create<System.Object, System.Int32>(Href("~/Products/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 266), nextmethod.base.KeyValue.of("\"", 295)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 273), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Products/")
 , 273), false)
 
 //#line 9 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 284), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 284), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
@@ -119,32 +119,32 @@ WriteLiteral(">");
 //#line hidden
 WriteLiteral("</a>\r\n        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 326), Tuple.Create("\"", 362)
-, Tuple.Create(Tuple.Create("", 333), Tuple.Create<System.Object, System.Int32>(Href("~/Products/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 326), nextmethod.base.KeyValue.of("\"", 362)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 333), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Products/")
 , 333), false)
 
 //#line 10 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 344), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 344), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
 , 344), false)
-, Tuple.Create(Tuple.Create("", 355), Tuple.Create("/Detail", 355), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 355), nextmethod.base.KeyValue.of("/Detail", 355), true)
 );
 
 WriteLiteral(">Details</a>\r\n        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 387), Tuple.Create("\"", 442)
-, Tuple.Create(Tuple.Create("", 394), Tuple.Create<System.Object, System.Int32>(Href("~/A+Really(Crazy),Url.Is:This/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 387), nextmethod.base.KeyValue.of("\"", 442)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 394), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/A+Really(Crazy),Url.Is:This/")
 , 394), false)
 
 //#line 11 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 424), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 424), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
 , 424), false)
-, Tuple.Create(Tuple.Create("", 435), Tuple.Create("/Detail", 435), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 435), nextmethod.base.KeyValue.of("/Detail", 435), true)
 );
 
 WriteLiteral(">Crazy Url!</a>\r\n    ");
@@ -163,19 +163,19 @@ DefineSection("Foo", () -> {
 
 WriteLiteral("\r\n    <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 500), Tuple.Create("\"", 512)
-, Tuple.Create(Tuple.Create("", 507), Tuple.Create<System.Object, System.Int32>(Href("~/Foo")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 500), nextmethod.base.KeyValue.of("\"", 512)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 507), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Foo")
 , 507), false)
 );
 
 WriteLiteral(">Foo</a>\r\n    <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 529), Tuple.Create("\"", 558)
-, Tuple.Create(Tuple.Create("", 536), Tuple.Create<System.Object, System.Int32>(Href("~/Products/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 529), nextmethod.base.KeyValue.of("\"", 558)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 536), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Products/")
 , 536), false)
 
 //#line 17 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 547), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 547), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
@@ -193,32 +193,32 @@ WriteLiteral(">");
 //#line hidden
 WriteLiteral("</a>\r\n    <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 585), Tuple.Create("\"", 621)
-, Tuple.Create(Tuple.Create("", 592), Tuple.Create<System.Object, System.Int32>(Href("~/Products/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 585), nextmethod.base.KeyValue.of("\"", 621)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 592), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/Products/")
 , 592), false)
 
 //#line 18 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 603), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 603), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
 , 603), false)
-, Tuple.Create(Tuple.Create("", 614), Tuple.Create("/Detail", 614), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 614), nextmethod.base.KeyValue.of("/Detail", 614), true)
 );
 
 WriteLiteral(">Details</a>\r\n    <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 642), Tuple.Create("\"", 697)
-, Tuple.Create(Tuple.Create("", 649), Tuple.Create<System.Object, System.Int32>(Href("~/A+Really(Crazy),Url.Is:This/")
+WriteAttribute("href", nextmethod.base.KeyValue.of(" href=\"", 642), nextmethod.base.KeyValue.of("\"", 697)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 649), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(Href("~/A+Really(Crazy),Url.Is:This/")
 , 649), false)
 
 //#line 19 "ResolveUrl.rzhtml"
-, Tuple.Create(Tuple.Create("", 679), Tuple.Create<System.Object, System.Int32>(product.id
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 679), nextmethod.base.KeyValue.of<java.lang.Object, java.lang.Integer>(product.id
 
 //#line default
 //#line hidden
 , 679), false)
-, Tuple.Create(Tuple.Create("", 690), Tuple.Create("/Detail", 690), true)
+, nextmethod.base.KeyValue.of(nextmethod.base.KeyValue.of("", 690), nextmethod.base.KeyValue.of("/Detail", 690), true)
 );
 
 WriteLiteral(">Crazy Url!</a>\r\n");

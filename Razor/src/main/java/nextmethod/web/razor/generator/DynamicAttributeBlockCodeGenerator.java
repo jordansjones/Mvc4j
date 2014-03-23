@@ -68,11 +68,11 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
                                                            assert input != null;
 
                                                            input.writeParameterSeparator();
-                                                           input.writeStartMethodInvoke("Tuple.Create");
+                                                           input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
                                                            input.writeLocationTaggedString(prefix);
                                                            input.writeParameterSeparator();
                                                            input.writeStartMethodInvoke(
-                                                                                           "Tuple.Create",
+                                                                                           "nextmethod.base.KeyValue.of",
                                                                                            "java.lang.Object",
                                                                                            "java.lang.Integer"
                                                                                        );
@@ -88,11 +88,11 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
                                                            assert input != null;
 
                                                            input.writeParameterSeparator();
-                                                           input.writeStartMethodInvoke("Tuple.Create");
+                                                           input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
                                                            input.writeLocationTaggedString(prefix);
                                                            input.writeParameterSeparator();
                                                            input.writeStartMethodInvoke(
-                                                                                           "Tuple.Create",
+                                                                                           "nextmethod.base.KeyValue.of",
                                                                                            "java.lang.Object",
                                                                                            "java.lang.Integer"
                                                                                        );

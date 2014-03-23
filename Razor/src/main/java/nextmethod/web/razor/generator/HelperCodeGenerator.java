@@ -50,6 +50,47 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
     }
 
     @Override
+    public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
+        writer = context.createCodeWriter();
+        final RazorEngineHost host = context.getHost();
+        final GeneratedClassContext generatedClassContext = host.getGeneratedClassContext();
+
+        final String prefix = context.buildCodeString(
+            input -> {
+                assert input != null;
+
+                input.writeHelperHeaderPrefix(
+                    generatedClassContext.getTemplateTypeName(),
+                    host.isStaticHelpers()
+                );
+            }
+        );
+
+        writer.writeLinePragma(
+            context.generateLinePragma(
+                signature.getLocation(),
+                prefix.length(),
+                signature.getValue().length()
+            )
+        );
+        writer.writeSnippet(prefix);
+        writer.writeSnippet(signature.getValue());
+        if (headerComplete) {
+            writer.writeHelperHeaderSuffix(generatedClassContext.getTemplateTypeName());
+        }
+        writer.writeLinePragma(null);
+        if (headerComplete) {
+            writer.writeReturn();
+            writer.writeStartConstructor(generatedClassContext.getTemplateTypeName());
+            writer.writeStartLambdaDelegate(HelperWriterName);
+        }
+
+        statementCollectorToken = context.changeStatementCollection(addStatementToHelperAction);
+        oldWriter = context.getTargetWriterName();
+        context.setTargetWriterName(HelperWriterName);
+    }
+
+    @Override
     public void generateEndBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
         statementCollectorToken.close();
         if (headerComplete) {
@@ -68,46 +109,6 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
         context.setTargetWriterName(oldWriter);
     }
 
-    @Override
-    public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-        writer = context.createCodeWriter();
-        final RazorEngineHost host = context.getHost();
-        final GeneratedClassContext generatedClassContext = host.getGeneratedClassContext();
-
-        final String prefix = context.buildCodeString(
-                                                         input -> {
-                                                             assert input != null;
-
-                                                             input.writeHelperHeaderPrefix(
-                                                                                              generatedClassContext.getTemplateTypeName(),
-                                                                                              host.isStaticHelpers()
-                                                                                          );
-                                                         }
-                                                     );
-
-        writer.writeLinePragma(
-                                  context.generateLinePragma(
-                                                                signature.getLocation(), prefix.length(),
-                                                                signature.getValue().length()
-                                                            )
-                              );
-        writer.writeSnippet(prefix);
-        writer.writeSnippet(signature.getValue());
-        if (headerComplete) {
-            writer.writeHelperHeaderSuffix(generatedClassContext.getTemplateTypeName());
-        }
-        writer.writeLinePragma(null);
-        if (headerComplete) {
-            writer.writeReturn();
-            writer.writeStartConstructor(generatedClassContext.getTemplateTypeName());
-            writer.writeStartLambdaDelegate(HelperWriterName);
-        }
-
-        statementCollectorToken = context.changeStatementCollection(addStatementToHelperAction);
-        oldWriter = context.getTargetWriterName();
-        context.setTargetWriterName(HelperWriterName);
-    }
-
     private Delegates.IAction2<String, CodeLinePragma> addStatementToHelperAction = (statement, pragma) -> {
         assert statement != null;
 
@@ -117,7 +118,7 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
         writer.writeSnippet(statement);
         writer.writeLine(); // CodeDOM normally inserts an extra line so we need to do so here.
         if (pragma != null) {
-            writer.writeLinePragma(pragma);
+            writer.writeLinePragma();
         }
     };
 
@@ -140,10 +141,10 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
     @Override
     public String toString() {
         return String.format(
-                                "Helper:%s;%s", signature, (headerComplete
-                                                            ? "C"
-                                                            : "I")
-                            );
+            "Helper:%s;%s", signature, (headerComplete
+                                        ? "C"
+                                        : "I")
+        );
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
@@ -159,8 +160,8 @@ public class HelperCodeGenerator extends BlockCodeGenerator {
     @Override
     public int hashCode() {
         return Objects.hash(
-                               super.hashCode(),
-                               signature
-                           );
+            super.hashCode(),
+            signature
+        );
     }
 }

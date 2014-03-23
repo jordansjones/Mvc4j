@@ -17,8 +17,8 @@
 package nextmethod.codedom;
 
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 
-// TODO
 public class CodeAssignStatement extends CodeStatement implements Serializable {
 
     private static final long serialVersionUID = -1217184902214014662L;
@@ -30,6 +30,27 @@ public class CodeAssignStatement extends CodeStatement implements Serializable {
 
     public CodeAssignStatement(final CodeExpression left, final CodeExpression right) {
         this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public void accept(@Nonnull final ICodeDomVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public CodeExpression getLeft() {
+        return left;
+    }
+
+    public void setLeft(final CodeExpression left) {
+        this.left = left;
+    }
+
+    public CodeExpression getRight() {
+        return right;
+    }
+
+    public void setRight(final CodeExpression right) {
         this.right = right;
     }
 }
