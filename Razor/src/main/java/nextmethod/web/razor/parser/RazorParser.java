@@ -154,8 +154,7 @@ public class RazorParser {
 
     private ParserResults parseCore(final ITextDocument input) {
         final ParserContext context = new ParserContext(checkNotNull(input), codeParser, markupParser, markupParser);
-        context
-            .setDesignTimeMode(designTimeMode);
+        context.setDesignTimeMode(designTimeMode);
 
         markupParser.setContext(context);
         codeParser.setContext(context);

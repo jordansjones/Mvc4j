@@ -37,23 +37,23 @@ import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
 public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlSymbol, HtmlSymbolType> {
 
     protected final ImmutableSet<String> voidElements = ImmutableSet.<String>builder()
-                                                                    .add("area")
-                                                                    .add("base")
-                                                                    .add("br")
-                                                                    .add("col")
-                                                                    .add("command")
-                                                                    .add("embed")
-                                                                    .add("hr")
-                                                                    .add("img")
-                                                                    .add("input")
-                                                                    .add("keygen")
-                                                                    .add("link")
-                                                                    .add("meta")
-                                                                    .add("param")
-                                                                    .add("source")
-                                                                    .add("track")
-                                                                    .add("wbr")
-                                                                    .build();
+        .add("area")
+        .add("base")
+        .add("br")
+        .add("col")
+        .add("command")
+        .add("embed")
+        .add("hr")
+        .add("img")
+        .add("input")
+        .add("keygen")
+        .add("link")
+        .add("meta")
+        .add("param")
+        .add("source")
+        .add("track")
+        .add("wbr")
+        .build();
 
     protected final HtmlMarkupParserBlock blockParser;
     protected final HtmlMarkupParserSection sectionParser;
@@ -80,9 +80,10 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
     }
 
     @Override
-    public void buildSpan(@Nonnull final SpanBuilder span, @Nonnull final SourceLocation start,
-                          @Nonnull final String content
-                         ) {
+    public void buildSpan(
+        @Nonnull final SpanBuilder span, @Nonnull final SourceLocation start,
+        @Nonnull final String content
+    ) {
         span.setKind(SpanKind.Markup);
         span.setCodeGenerator(new MarkupCodeGenerator());
         super.buildSpan(span, start, content);
@@ -97,10 +98,11 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
         skipToAndParseCode(symbol -> symbol != null && symbol.getType() == type);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected void skipToAndParseCode(@Nonnull final Delegates.IFunc1<HtmlSymbol, Boolean> condition) {
         HtmlSymbol last = null;
         boolean startOfLine = false;
-        while (!isEndOfFile() && Boolean.FALSE.equals(condition.invoke(getCurrentSymbol()))) {
+        while (!isEndOfFile() && !condition.invoke(getCurrentSymbol())) {
             if (at(HtmlSymbolType.NewLine)) {
                 if (last != null) {
                     accept(last);
@@ -135,8 +137,7 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
 
                 // Handle whitespace rewriting
                 if (last != null) {
-                    if (!getContext().isDesignTimeMode() && last.getType() == HtmlSymbolType.WhiteSpace &&
-                        startOfLine) {
+                    if (!getContext().isDesignTimeMode() && last.getType() == HtmlSymbolType.WhiteSpace && startOfLine) {
                         // Put the whitespace back too
                         startOfLine = false;
                         putBack(last);
@@ -183,8 +184,8 @@ public class HtmlMarkupParser extends TokenizerBackedParser<HtmlTokenizer, HtmlS
 
     protected static Delegates.IFunc1<HtmlSymbol, Boolean> isSpacingToken(final boolean includeNewLines) {
         return symbol -> symbol != null && (
-                                               symbol.getType() == HtmlSymbolType.WhiteSpace
-                                               || (includeNewLines && symbol.getType() == HtmlSymbolType.NewLine)
+            symbol.getType() == HtmlSymbolType.WhiteSpace
+            || (includeNewLines && symbol.getType() == HtmlSymbolType.NewLine)
         );
     }
 

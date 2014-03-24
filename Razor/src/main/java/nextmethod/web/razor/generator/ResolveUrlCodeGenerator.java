@@ -38,7 +38,7 @@ public class ResolveUrlCodeGenerator extends SpanCodeGenerator {
             return;
         }
 
-        if (context.getHost().enableInstrumentation() &&
+        if (context.getHost().isInstrumentationActive() &&
             context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
             // Add a non-literal context call (non-literal because the expanded URL will not match the source character-by-character)
             context.addContextCall(
@@ -96,7 +96,7 @@ public class ResolveUrlCodeGenerator extends SpanCodeGenerator {
             }
         }
 
-        if (context.getHost().enableInstrumentation() &&
+        if (context.getHost().isInstrumentationActive() &&
             context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
             context.addContextCall(
                 target, context.getHost().getGeneratedClassContext().getEndContextMethodName(),

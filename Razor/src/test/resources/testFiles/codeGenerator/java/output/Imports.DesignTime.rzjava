@@ -11,25 +11,25 @@
 package test.output;
 
 //#line 3 "Imports.rzhtml"
-using System;
+import java.lang;
 
 //#line default
 //#line hidden
 
 //#line 1 "Imports.rzhtml"
-using System.IO;
+import System.IO;
 
 //#line default
 //#line hidden
 
 //#line 2 "Imports.rzhtml"
-using Foo = System.Text.Encoding;
+import Foo = System.Text.Encoding;
 
 //#line default
 //#line hidden
 
 public class Imports {
-private static object @__o;
+private static Object __o;
 //#line hidden
 public Imports() {
 }

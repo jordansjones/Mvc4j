@@ -53,9 +53,10 @@ public abstract class Tokenizer<TSymbol extends SymbolBase<TSymbolType> & ISymbo
         startSymbol();
     }
 
-    protected abstract TSymbol createSymbol(@Nonnull final SourceLocation start, @Nonnull final String content,
-                                            @Nonnull final TSymbolType type, @Nonnull final Iterable<RazorError> errors
-                                           );
+    protected abstract TSymbol createSymbol(
+        @Nonnull final SourceLocation start, @Nonnull final String content,
+        @Nonnull final TSymbolType type, @Nonnull final Iterable<RazorError> errors
+    );
 
     public abstract TSymbolType getRazorCommentStarType();
 

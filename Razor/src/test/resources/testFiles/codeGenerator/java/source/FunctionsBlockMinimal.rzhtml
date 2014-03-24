@@ -1,0 +1,7 @@
+
+
+	@functions{
+string foo(string input) {
+	return input + "!";
+}
+}

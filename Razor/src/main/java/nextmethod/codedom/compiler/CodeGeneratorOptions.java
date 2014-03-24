@@ -21,10 +21,12 @@ import nextmethod.base.SystemHelpers;
 
 public class CodeGeneratorOptions {
 
+    public static final String DefaultIndentString = "    ";
+
     private boolean blankLinesBetweenMembers;
     private String bracingStyle;
     private boolean elseOnClosingProperty;
-    private String indentString;
+    private String indentString = DefaultIndentString;
     private boolean verbatimOrder;
     private String newlineString = SystemHelpers.newLine();
 

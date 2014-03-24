@@ -23,7 +23,6 @@ import nextmethod.annotations.Internal;
 import nextmethod.base.Delegates;
 import nextmethod.collections.IterableIterator;
 import nextmethod.web.razor.State;
-import nextmethod.web.razor.parser.ParserHelpers;
 import nextmethod.web.razor.parser.syntaxtree.RazorError;
 import nextmethod.web.razor.text.ITextDocument;
 import nextmethod.web.razor.text.SeekableTextReader;
@@ -32,12 +31,12 @@ import nextmethod.web.razor.tokenizer.symbols.HtmlSymbol;
 import nextmethod.web.razor.tokenizer.symbols.HtmlSymbolType;
 import nextmethod.web.razor.tokenizer.symbols.ISymbol;
 
+import static nextmethod.web.razor.parser.ParserHelpers.isLetterOrDecimalDigit;
 import static nextmethod.web.razor.parser.ParserHelpers.isNewLine;
 import static nextmethod.web.razor.parser.ParserHelpers.isWhitespace;
+import static nextmethod.web.razor.parser.ParserHelpers.isWhitespaceOrNewLine;
 
 public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
-
-    private final char transitionChar = '@';
 
     public HtmlTokenizer(@Nonnull final ITextDocument source) {
         super(source);
@@ -45,9 +44,12 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
     }
 
     @Override
-    protected HtmlSymbol createSymbol(@Nonnull SourceLocation start, @Nonnull String content,
-                                      @Nonnull HtmlSymbolType htmlSymbolType, @Nonnull Iterable<RazorError> errors
-                                     ) {
+    protected HtmlSymbol createSymbol(
+        @Nonnull SourceLocation start,
+        @Nonnull String content,
+        @Nonnull HtmlSymbolType htmlSymbolType,
+        @Nonnull Iterable<RazorError> errors
+    ) {
         return new HtmlSymbol(start, content, htmlSymbolType, errors);
     }
 
@@ -115,11 +117,11 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
             }
             if (getCurrentChar() == '@') {
                 return transition(
-                                     endSymbol(HtmlSymbolType.Transition), () -> {
+                    endSymbol(HtmlSymbolType.Transition), () -> {
                         takeCurrent();
                         return transition(endSymbol(HtmlSymbolType.Transition), dataState);
                     }
-                                 );
+                );
             }
 
             return stay(endSymbol(HtmlSymbolType.Transition));
@@ -132,13 +134,13 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 
     private StateResult text() {
         char prev = '\0';
-        while (!isEndOfFile() && !ParserHelpers.isWhitespaceOrNewLine(getCurrentChar()) && !atSymbol()) {
+        while (!isEndOfFile() && !isWhitespaceOrNewLine(getCurrentChar()) && !atSymbol()) {
             prev = getCurrentChar();
             takeCurrent();
         }
         if (getCurrentChar() == '@') {
             char next = peek();
-            if (ParserHelpers.isLetterOrDecimalDigit(prev) && ParserHelpers.isLetterOrDecimalDigit(next)) {
+            if (isLetterOrDecimalDigit(prev) && isLetterOrDecimalDigit(next)) {
                 takeCurrent(); // Take the "@"
                 return stay(); // Stay in the text state
             }
@@ -201,7 +203,6 @@ public class HtmlTokenizer extends Tokenizer<HtmlSymbol, HtmlSymbolType> {
 
     private boolean atSymbol() {
         return getCurrentChar() == '<' ||
-               getCurrentChar() == '<' ||
                getCurrentChar() == '!' ||
                getCurrentChar() == '/' ||
                getCurrentChar() == '?' ||

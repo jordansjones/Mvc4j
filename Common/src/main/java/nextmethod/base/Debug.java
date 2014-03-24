@@ -35,7 +35,11 @@ public final class Debug {
     }
 
     public static boolean isDebugArgPresent(final String argName) {
-        return Boolean.getBoolean(argName);
+        String argVal = System.getProperty(argName);
+        if (argVal == null) {
+            argVal = System.getenv(argName);
+        }
+        return argVal != null;
     }
 
     /**

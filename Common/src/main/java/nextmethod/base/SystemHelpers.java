@@ -18,6 +18,8 @@ package nextmethod.base;
 
 import java.util.function.Supplier;
 
+import nextmethod.annotations.Internal;
+
 public final class SystemHelpers {
 
     static {
@@ -26,6 +28,7 @@ public final class SystemHelpers {
 
     private SystemHelpers() {}
 
+    @Internal
     public static Supplier<String> NLSupplier;
 
     public static String newLine() {

@@ -121,7 +121,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
     }
 
     protected void continueOnNewLine(@Nonnull final String st) {
-        getOutput().println(st);
+        getOutput().writeLine(st);
     }
 
     //
@@ -202,7 +202,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
     protected void generateCompileUnitStart(@Nonnull final CodeCompileUnit compileUnit) {
         if (!compileUnit.getStartDirectives().isEmpty()) {
             generateDirectives(compileUnit.getStartDirectives());
-            getOutput().println();
+            getOutput().writeLine();
         }
     }
 
@@ -293,7 +293,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
             }
         }
 
-        getOutput().println();
+        getOutput().writeLine();
 
         generateTypes(ns);
 
@@ -391,7 +391,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
             generateLinePragmaStart(linePragma);
         }
 
-        getOutput().println(e.getValue());
+        getOutput().writeLine(e.getValue());
 
         if (linePragma != null) {
             generateLinePragmaEnd(linePragma);
@@ -403,7 +403,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
     protected abstract void generateSnippetMember(@Nonnull final CodeSnippetTypeMember m);
 
     protected void generateSnippetStatement(@Nonnull final CodeSnippetStatement s) {
-        getOutput().println(s.getValue());
+        getOutput().writeLine(s.getValue());
     }
 
     protected void generateStatement(@Nonnull final CodeStatement s) {
@@ -471,7 +471,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
     protected void generateTypes(@Nonnull final CodePackage e) {
         for (CodeTypeDeclaration typeDeclaration : e.getTypes()) {
             if (options.isBlankLinesBetweenMembers()) {
-                getOutput().println();
+                getOutput().writeLine();
             }
             generateType(typeDeclaration);
         }
@@ -514,11 +514,15 @@ public abstract class CodeGenerator implements ICodeGenerator {
     }
 
     protected void outputFieldScopeModifier(@Nonnull final MemberAttributes attributes) {
-        throw new NotImplementedException();
+        final MemberAttributes memberAttributes = MemberAttributes.valueOf(attributes.val & MemberAttributes.ScopeMask.val);
+
+        if (MemberAttributes.Static.equals(memberAttributes)) {
+            getOutput().write("static ");
+        }
     }
 
     protected void outputIdentifier(@Nonnull final String ident) {
-        throw new NotImplementedException();
+        getOutput().write(createEscapedIdentifier(ident));
     }
 
     protected void outputMemberAccessModifier(@Nonnull final MemberAttributes attributes) {
@@ -571,7 +575,9 @@ public abstract class CodeGenerator implements ICodeGenerator {
     }
 
     protected void outputTypeNamePair(@Nonnull final CodeTypeReference type, @Nonnull final String name) {
-        throw new NotImplementedException();
+        outputType(type);
+        getOutput().write(' ');
+        outputIdentifier(name);
     }
 
     protected abstract String quoteSnippetString(@Nonnull final String value);
@@ -681,12 +687,12 @@ public abstract class CodeGenerator implements ICodeGenerator {
                 }
                 if (!getOptions().isVerbatimOrder() && typeIs(prevMember, CodeSnippetTypeMember.class) &&
                     !typeIs(member, CodeSnippetTypeMember.class)) {
-                    getOutput().println();
+                    getOutput().writeLine();
                 }
             }
 
             if (options.isBlankLinesBetweenMembers()) {
-                getOutput().println();
+                getOutput().writeLine();
             }
 
             subtype = typeAs(member, CodeTypeDeclaration.class);
@@ -722,7 +728,7 @@ public abstract class CodeGenerator implements ICodeGenerator {
                 generateDirectives(currentMember.getEndDirectives());
             }
             if (!getOptions().isVerbatimOrder() && typeIs(currentMember, CodeSnippetTypeMember.class)) {
-                getOutput().println();
+                getOutput().writeLine();
             }
         }
 

@@ -79,11 +79,10 @@ public abstract class TokenizerBackedParser<
     }
 
     private TokenizerView<TTokenizer, TSymbol, TSymbolType> initTokenizer() {
-        return this.tokenizer = new TokenizerView<TTokenizer, TSymbol, TSymbolType>(
-                                                                                       getLanguage().createTokenizer(
-                                                                                                                        getContext()
-                                                                                                                            .getSource()
-                                                                                                                    )
+        return this.tokenizer = new TokenizerView<>(
+            getLanguage().createTokenizer(
+                getContext().getSource()
+            )
         );
     }
 

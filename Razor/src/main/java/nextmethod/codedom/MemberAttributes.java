@@ -32,15 +32,9 @@ public class MemberAttributes implements Serializable {
     public static final MemberAttributes Transient = new MemberAttributes(Modifier.TRANSIENT);
     public static final MemberAttributes Volatile = new MemberAttributes(Modifier.VOLATILE);
 
-    public static final MemberAttributes ScopeMask = new MemberAttributes(
-                                                                             Modifier.constructorModifiers() |
-                                                                             Modifier.fieldModifiers() |
-                                                                             Modifier.methodModifiers()
-    );
-    public static final MemberAttributes AccessMask = new MemberAttributes(
-                                                                              Modifier.PRIVATE | Modifier.PROTECTED |
-                                                                              Modifier.PUBLIC
-    );
+    public static final MemberAttributes ScopeMask = new MemberAttributes(Modifier.ABSTRACT | Modifier.FINAL | Modifier.STATIC);
+
+    public static final MemberAttributes AccessMask = new MemberAttributes(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
 
     public static MemberAttributes valueOf(final int val) {
         return new MemberAttributes(val);
@@ -52,4 +46,20 @@ public class MemberAttributes implements Serializable {
         this.val = modifier;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final MemberAttributes that = (MemberAttributes) o;
+
+        if (val != that.val) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return val;
+    }
 }

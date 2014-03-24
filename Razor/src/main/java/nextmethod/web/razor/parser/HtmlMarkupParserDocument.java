@@ -58,17 +58,26 @@ class HtmlMarkupParserDocument extends HtmlMarkupParserDelegate {
      * @return A boolean indicating if we scanned at least one tag.
      */
     boolean scanTagInDocumentContext() {
-        if (optional(HtmlSymbolType.OpenAngle) && !at(HtmlSymbolType.Solidus)) {
-            final boolean scriptTag =
-                at(HtmlSymbolType.Text) && "script".equalsIgnoreCase(getCurrentSymbol().getContent());
-            optional(HtmlSymbolType.Text);
-            getBlockParser().tagContent(); // Parse the tag, don't care about the content
-            optional(HtmlSymbolType.Solidus);
-            optional(HtmlSymbolType.CloseAngle);
-            if (scriptTag) {
-                getBlockParser().skipToEndScriptAndParseCode();
+        if (optional(HtmlSymbolType.OpenAngle)) {
+            if (at(HtmlSymbolType.Bang)) {
+                getBlockParser().bangTag();
+                return true;
             }
-            return true;
+            if (at(HtmlSymbolType.QuestionMark)) {
+                getBlockParser().xmlPI();
+                return true;
+            }
+            if (!at(HtmlSymbolType.Solidus)) {
+                final boolean scriptTag = at(HtmlSymbolType.Text) && "script".equalsIgnoreCase(getCurrentSymbol().getContent());
+                optional(HtmlSymbolType.Text);
+                getBlockParser().tagContent(); // Parse the tag, don't care about the content
+                optional(HtmlSymbolType.Solidus);
+                optional(HtmlSymbolType.CloseAngle);
+                if (scriptTag) {
+                    getBlockParser().skipToEndScriptAndParseCode();
+                }
+                return true;
+            }
         }
         return false;
     }

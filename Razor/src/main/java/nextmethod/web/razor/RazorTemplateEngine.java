@@ -57,9 +57,10 @@ public class RazorTemplateEngine {
         return parseTemplate(input, Optional.<CancellationToken>empty());
     }
 
-    public ParserResults parseTemplate(@Nonnull final ITextBuffer input,
-                                       @Nonnull Optional<CancellationToken> cancelToken
-                                      ) {
+    public ParserResults parseTemplate(
+        @Nonnull final ITextBuffer input,
+        @Nonnull Optional<CancellationToken> cancelToken
+    ) {
         return parseTemplateCore(TextExtensions.toDocument(input), cancelToken);
     }
 
@@ -67,16 +68,18 @@ public class RazorTemplateEngine {
         return parseTemplate(input, Optional.<CancellationToken>empty());
     }
 
-    public ParserResults parseTemplate(@Nonnull final TextReader input,
-                                       @Nonnull Optional<CancellationToken> cancelToken
-                                      ) {
+    public ParserResults parseTemplate(
+        @Nonnull final TextReader input,
+        @Nonnull Optional<CancellationToken> cancelToken
+    ) {
         return parseTemplateCore(new SeekableTextReader(input), cancelToken);
     }
 
     @Internal
-    protected ParserResults parseTemplateCore(@Nonnull final ITextDocument input,
-                                              @Nonnull final Optional<CancellationToken> cancelToken
-                                             ) {
+    protected ParserResults parseTemplateCore(
+        @Nonnull final ITextDocument input,
+        @Nonnull final Optional<CancellationToken> cancelToken
+    ) {
         final RazorParser parser = createParser();
         if (Debug.isAssertEnabled()) {
             assert parser != null;
@@ -88,50 +91,56 @@ public class RazorTemplateEngine {
         return generateCode(input, null, null, null, Optional.<CancellationToken>empty());
     }
 
-    public GeneratorResults generateCode(@Nonnull final ITextBuffer input,
-                                         @Nonnull final Optional<CancellationToken> cancelToken
-                                        ) {
+    public GeneratorResults generateCode(
+        @Nonnull final ITextBuffer input,
+        @Nonnull final Optional<CancellationToken> cancelToken
+    ) {
         return generateCode(input, null, null, null, cancelToken);
     }
 
-    public GeneratorResults generateCode(@Nonnull final ITextBuffer input, @Nullable final String className,
-                                         @Nullable final String rootNamespace, @Nullable final String sourceFileName
-                                        ) {
+    public GeneratorResults generateCode(
+        @Nonnull final ITextBuffer input, @Nullable final String className,
+        @Nullable final String rootNamespace, @Nullable final String sourceFileName
+    ) {
         return generateCode(input, className, rootNamespace, sourceFileName, Optional.<CancellationToken>empty());
     }
 
-    public GeneratorResults generateCode(@Nonnull final ITextBuffer input, @Nullable final String className,
-                                         @Nullable final String rootNamespace, @Nullable final String sourceFileName,
-                                         @Nonnull final Optional<CancellationToken> cancelToken
-                                        ) {
+    public GeneratorResults generateCode(
+        @Nonnull final ITextBuffer input, @Nullable final String className,
+        @Nullable final String rootNamespace, @Nullable final String sourceFileName,
+        @Nonnull final Optional<CancellationToken> cancelToken
+    ) {
         return generateCodeCore(
-                                   TextExtensions.toDocument(input), className, rootNamespace, sourceFileName,
-                                   cancelToken
-                               );
+            TextExtensions.toDocument(input), className, rootNamespace, sourceFileName,
+            cancelToken
+        );
     }
 
     public GeneratorResults generateCode(@Nonnull final TextReader input) {
         return generateCode(input, null, null, null, Optional.<CancellationToken>empty());
     }
 
-    public GeneratorResults generateCode(@Nonnull final TextReader input, @Nullable final String className,
-                                         @Nullable final String rootNamespace, @Nullable final String sourceFileName
-                                        ) {
+    public GeneratorResults generateCode(
+        @Nonnull final TextReader input, @Nullable final String className,
+        @Nullable final String rootNamespace, @Nullable final String sourceFileName
+    ) {
         return generateCode(input, className, rootNamespace, sourceFileName, Optional.<CancellationToken>empty());
     }
 
-    public GeneratorResults generateCode(@Nonnull final TextReader input, @Nullable final String className,
-                                         @Nullable final String rootNamespace, @Nullable final String sourceFileName,
-                                         @Nonnull final Optional<CancellationToken> cancelToken
-                                        ) {
+    public GeneratorResults generateCode(
+        @Nonnull final TextReader input, @Nullable final String className,
+        @Nullable final String rootNamespace, @Nullable final String sourceFileName,
+        @Nonnull final Optional<CancellationToken> cancelToken
+    ) {
         return generateCodeCore(new SeekableTextReader(input), className, rootNamespace, sourceFileName, cancelToken);
     }
 
     @Internal
-    protected GeneratorResults generateCodeCore(@Nonnull ITextDocument input, @Nullable String className,
-                                                @Nullable String rootNamespace, @Nullable final String sourceFileName,
-                                                @Nonnull final Optional<CancellationToken> cancelToken
-                                               ) {
+    protected GeneratorResults generateCodeCore(
+        @Nonnull ITextDocument input, @Nullable String className,
+        @Nullable String rootNamespace, @Nullable final String sourceFileName,
+        @Nonnull final Optional<CancellationToken> cancelToken
+    ) {
         className = tryStringOrFinally(className, host.getDefaultClassName(), DefaultClassName);
         rootNamespace = tryStringOrFinally(rootNamespace, host.getDefaultPackage(), DefaultPackage);
 
@@ -161,14 +170,15 @@ public class RazorTemplateEngine {
     }
 
     @Internal
-    protected RazorCodeGenerator createCodeGenerator(@Nonnull final String className,
-                                                     @Nonnull final String rootNamespace,
-                                                     @Nullable final String sourceFileName
-                                                    ) {
+    protected RazorCodeGenerator createCodeGenerator(
+        @Nonnull final String className,
+        @Nonnull final String rootNamespace,
+        @Nullable final String sourceFileName
+    ) {
         return host.decorateCodeGenerator(
-                                             host.getCodeLanguage()
-                                                 .createCodeGenerator(className, rootNamespace, sourceFileName, host)
-                                         );
+            host.getCodeLanguage()
+                .createCodeGenerator(className, rootNamespace, sourceFileName, host)
+        );
     }
 
     @Internal
@@ -177,16 +187,15 @@ public class RazorTemplateEngine {
         final ParserBase markupParser = host.createMarkupParser();
 
         final RazorParser razorParser = new RazorParser(
-                                                           host.decorateCodeParser(codeParser),
-                                                           host.decorateMarkupParser(markupParser)
+            host.decorateCodeParser(codeParser),
+            host.decorateMarkupParser(markupParser)
         );
         razorParser.setDesignTimeMode(host.isDesignTimeMode());
 
         return razorParser;
     }
 
-    private static String tryStringOrFinally(final String tryString, final String orString, final String finallyString
-                                            ) {
+    private static String tryStringOrFinally(final String tryString, final String orString, final String finallyString) {
         final String ret;
         if (!Strings.isNullOrEmpty(tryString)) {
             ret = tryString;

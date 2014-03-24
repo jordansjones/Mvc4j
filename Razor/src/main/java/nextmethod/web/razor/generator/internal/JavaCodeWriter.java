@@ -57,12 +57,12 @@ public class JavaCodeWriter extends BaseCodeWriter {
 
     @Override
     public void writeDisableUnusedFieldWarningPragma() {
-        super.writeDisableUnusedFieldWarningPragma();
+        getInnerWriter().write("//#pragma warning disable 219");
     }
 
     @Override
     public void writeRestoreUnusedFieldWarningPragma() {
-        super.writeRestoreUnusedFieldWarningPragma();
+        getInnerWriter().write("//#pragma warning restore 219");
     }
 
     @Override

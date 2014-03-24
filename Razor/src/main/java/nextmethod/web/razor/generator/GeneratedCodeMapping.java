@@ -98,9 +98,7 @@ public final class GeneratedCodeMapping {
     public String toString() {
         return String.format(
             "(%s, %d, %d) -> (?, %d) [%d]",
-            !startOffset.isPresent()
-            ? "?"
-            : startOffset.get(),
+            !startOffset.isPresent() ? "?" : startOffset.get(),
             startLine,
             startColumn,
             startGeneratedColumn,
@@ -117,7 +115,6 @@ public final class GeneratedCodeMapping {
                && startColumn == other.startColumn
                && startGeneratedColumn == other.startGeneratedColumn
                && startLine == other.startLine
-               // Null means it matches the other no matter what
                && (!startOffset.isPresent() || !other.startOffset.isPresent() || startOffset.equals(other.startOffset));
     }
 

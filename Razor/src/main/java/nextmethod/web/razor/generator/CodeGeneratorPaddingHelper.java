@@ -34,10 +34,14 @@ final class CodeGeneratorPaddingHelper {
         return 0;
     }
 
-    public static String padStatement(final RazorEngineHost host, final String code, final Span target,
-                                      final OutParam<Integer> startGeneratedCode,
-                                      final OutParam<Integer> paddingCharCount
-                                     ) {
+    @SuppressWarnings("ConstantConditions")
+    public static String padStatement(
+        final RazorEngineHost host,
+        final String code,
+        final Span target,
+        final OutParam<Integer> startGeneratedCode,
+        final OutParam<Integer> paddingCharCount
+    ) {
         checkNotNull(host);
         checkNotNull(target);
 
@@ -58,6 +62,18 @@ final class CodeGeneratorPaddingHelper {
         return padInteral(host, code, padding, paddingCharCount);
     }
 
+    public static String pad(final RazorEngineHost host, final String code, final Span target, final OutParam<Integer> paddingCharCount) {
+        final int padding = calculatePadding(host, target, 0);
+
+        return padInteral(host, code, padding, paddingCharCount);
+    }
+
+    public static String pad(final RazorEngineHost host, final String code, final Span target, final int generatedStart, final OutParam<Integer> paddingCharCount) {
+        final int padding = calculatePadding(host, target, generatedStart);
+
+        return padInteral(host, code, padding, paddingCharCount);
+    }
+
     public static int calculatePadding(final RazorEngineHost host, final Span target, final int generatedStart) {
         checkNotNull(host);
         checkNotNull(target);
@@ -70,6 +86,7 @@ final class CodeGeneratorPaddingHelper {
         return padding;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static int collectSpacesAndTabs(final Span target, final int tabSize) {
         Span firstSpanInLine = target;
 
@@ -123,32 +140,26 @@ final class CodeGeneratorPaddingHelper {
                 }
             }
 
+            assert currentSpanInLine != null;
             currentSpanInLine = currentSpanInLine.getNext();
+            assert currentSpanInLine != null;
             currentContent = currentSpanInLine.getContent();
         }
         return padding;
     }
 
-    private static String padInteral(final RazorEngineHost host, final String code, final int padding,
-                                     final OutParam<Integer> paddingCharCount
-                                    ) {
+    private static String padInteral(final RazorEngineHost host, final String code, final int padding, final OutParam<Integer> paddingCharCount) {
         if (host.isDesignTimeMode() && host.isIndentingWithTabs()) {
-            final OutParam<Integer> spaces = OutParam.of(0);
-            int tabs = divRem(padding, host.getTabSize(), spaces);
+            final int spaces = Math.floorMod(padding, host.getTabSize());
+            final int tabs = Math.floorDiv(padding, host.getTabSize());
 
-            paddingCharCount.set(tabs + spaces.value());
-            return Strings.repeat("\t", tabs) + Strings.repeat(" ", spaces.value()) + code;
+            paddingCharCount.set(tabs + spaces);
+            return Strings.repeat("\t", tabs) + Strings.repeat(" ", spaces) + code;
         }
         else {
             paddingCharCount.set(padding);
             return Strings.padStart(code, padding + code.length(), ' ');
         }
-    }
-
-
-    private static int divRem(final int a, final int b, final OutParam<Integer> result) {
-        result.set(a % b);
-        return a / b;
     }
 
 }

@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.Maps;
 import nextmethod.base.Delegates;
 import nextmethod.base.IDisposable;
+import nextmethod.base.OutParam;
 import nextmethod.base.Strings;
 import nextmethod.codedom.CodeCompileUnit;
 import nextmethod.codedom.CodeLinePragma;
@@ -76,17 +77,19 @@ public class CodeGeneratorContext {
                : currentBuffer.getBuilder().toString();
     }
 
-    public static CodeGeneratorContext create(final RazorEngineHost host, final String className,
-                                              final String rootPackage, final String sourceFile,
-                                              final boolean shouldGenerateLinePragmas
-                                             ) {
+    public static CodeGeneratorContext create(
+        final RazorEngineHost host, final String className,
+        final String rootPackage, final String sourceFile,
+        final boolean shouldGenerateLinePragmas
+    ) {
         return create(host, null, className, rootPackage, sourceFile, shouldGenerateLinePragmas);
     }
 
-    static CodeGeneratorContext create(final RazorEngineHost host, final Delegates.IFunc<CodeWriter> writerFactory,
-                                       final String className, final String rootPackage, final String sourceFile,
-                                       final boolean shouldGenerateLinePragmas
-                                      ) {
+    static CodeGeneratorContext create(
+        final RazorEngineHost host, final Delegates.IFunc<CodeWriter> writerFactory,
+        final String className, final String rootPackage, final String sourceFile,
+        final boolean shouldGenerateLinePragmas
+    ) {
         final CodeGeneratorContext context = new CodeGeneratorContext();
         context.host = host;
         context.codeWriterFactory = writerFactory;
@@ -118,28 +121,29 @@ public class CodeGeneratorContext {
             designTimeHelperMethod.setAttributes(MemberAttributes.Private);
 
             designTimeHelperMethod.getStatements()
-                                  .add(new CodeSnippetStatement(buildCodeString(CodeWriter::writeDisableUnusedFieldWarningPragma)));
+                .add(new CodeSnippetStatement(buildCodeString(CodeWriter::writeDisableUnusedFieldWarningPragma)));
             designTimeHelperMethod.getStatements()
-                                  .add(new CodeSnippetStatement(buildCodeString(CodeWriter::writeRestoreUnusedFieldWarningPragma)));
+                .add(new CodeSnippetStatement(buildCodeString(CodeWriter::writeRestoreUnusedFieldWarningPragma)));
             generatedClass.getMembers().add(0, designTimeHelperMethod);
         }
 
         designTimeHelperMethod.getStatements().add(designTimeHelperMethod.getStatements().size() - 1, statement);
     }
 
-    public int addCodeMapping(final SourceLocation sourceLocation, final int generatedCodeStart,
-                              final int generatedCodeLength
-                             ) {
+    public int addCodeMapping(
+        final SourceLocation sourceLocation, final int generatedCodeStart,
+        final int generatedCodeLength
+    ) {
         if (generatedCodeLength == Integer.MAX_VALUE) {
             throw new IllegalArgumentException("generatedCodeStart out of range");
         }
 
         final GeneratedCodeMapping mapping = new GeneratedCodeMapping(
-                                                                         sourceLocation.getAbsoluteIndex(),
-                                                                         sourceLocation.getLineIndex() + 1,
-                                                                         sourceLocation.getCharacterIndex() + 1,
-                                                                         generatedCodeStart + 1,
-                                                                         generatedCodeLength
+            sourceLocation.getAbsoluteIndex(),
+            sourceLocation.getLineIndex() + 1,
+            sourceLocation.getCharacterIndex() + 1,
+            generatedCodeStart + 1,
+            generatedCodeLength
         );
 
         int id = nextDesignTimePragmaId++;
@@ -159,9 +163,7 @@ public class CodeGeneratorContext {
         return generateLinePragma(target.getStart(), generatedCodeStart, codeLength);
     }
 
-    public CodeLinePragma generateLinePragma(final SourceLocation start, final int generatedCodeStart,
-                                             final int codeLength
-                                            ) {
+    public CodeLinePragma generateLinePragma(final SourceLocation start, final int generatedCodeStart, final int codeLength) {
         if (!Strings.isNullOrEmpty(sourceFile)) {
             if (host.isDesignTimeMode()) {
                 int mappingId = addCodeMapping(start, generatedCodeStart, codeLength);
@@ -187,7 +189,8 @@ public class CodeGeneratorContext {
             // Pad the output as necessary
             int start = currentBuffer.getGeneratedCodeStart().orElse(builder.length());
 
-            String padded = CodeGeneratorBase.pad(builder.toString(), sourceSpan, start);
+            OutParam<Integer> paddingLength = OutParam.of(0);
+            String padded = CodeGeneratorPaddingHelper.pad(getHost(), builder.toString(), sourceSpan, start, paddingLength);
             currentBuffer.setGeneratedCodeStart(Optional.of(start + (padded.length() - builder.length())));
             builder.delete(0, builder.length());
             builder.append(padded);
@@ -251,31 +254,33 @@ public class CodeGeneratorContext {
         final Delegates.IAction2<String, CodeLinePragma> oldCollector = this.statementCollector;
         this.statementCollector = collector;
         return new DisposableAction(
-                                       () -> {
-                                           statementCollector = oldCollector;
-                                       }
+            () -> {
+                statementCollector = oldCollector;
+            }
         );
     }
 
     public void addContextCall(final Span contentSpan, final String methodName, final boolean isLiteral) {
         addStatement(
-                        buildCodeString(
-                                           input -> {
-                                               input.writeStartMethodInvoke(methodName);
-                                               if (!Strings.isNullOrEmpty(getTargetWriterName())) {
-                                                   input.writeSnippet(getTargetWriterName());
-                                                   input.writeParameterSeparator();
-                                               }
-                                               input.writeStringLiteral(getHost().getInstrumentedSourceFilePath());
-                                               input.writeParameterSeparator();
-                                               input.writeSnippet(String.valueOf(contentSpan.getContent().length()));
-                                               input.writeParameterSeparator();
-                                               input.writeSnippet(String.valueOf(isLiteral));
-                                               input.writeEndMethodInvoke();
-                                               input.writeEndStatement();
-                                           }
-                                       )
-                    );
+            buildCodeString(
+                input -> {
+                    input.writeStartMethodInvoke(methodName);
+                    if (!Strings.isNullOrEmpty(getTargetWriterName())) {
+                        input.writeSnippet(getTargetWriterName());
+                        input.writeParameterSeparator();
+                    }
+                    input.writeStringLiteral(getHost().getInstrumentedSourceFilePath());
+                    input.writeParameterSeparator();
+                    input.writeSnippet(String.valueOf(contentSpan.getStart().getAbsoluteIndex()));
+                    input.writeParameterSeparator();
+                    input.writeSnippet(String.valueOf(contentSpan.getContent().length()));
+                    input.writeParameterSeparator();
+                    input.writeSnippet(String.valueOf(isLiteral));
+                    input.writeEndMethodInvoke();
+                    input.writeEndStatement();
+                }
+            )
+        );
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -415,8 +420,7 @@ public class CodeGeneratorContext {
         }
 
         public void reset() {
-            if (builder.length() > 0)
-                builder.delete(0, builder.length());
+            if (builder.length() > 0) { builder.delete(0, builder.length()); }
 
             generatedCodeStart = Optional.empty();
             codeLength = Optional.empty();

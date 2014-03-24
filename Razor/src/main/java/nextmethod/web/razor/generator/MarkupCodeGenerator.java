@@ -29,47 +29,47 @@ public class MarkupCodeGenerator extends SpanCodeGenerator {
             return;
         }
 
-        if (context.getHost().enableInstrumentation()) {
+        if (context.getHost().isInstrumentationActive()) {
             context.addContextCall(
-                                      target, context.getHost().getGeneratedClassContext().getBeginContextMethodName(),
-                                      true
-                                  );
+                target, context.getHost().getGeneratedClassContext().getBeginContextMethodName(),
+                true
+            );
         }
 
         if (!Strings.isNullOrEmpty(target.getContent()) && !context.getHost().isDesignTimeMode()) {
             final String code = context.buildCodeString(
-                                                           input -> {
+                input -> {
 
-                                                               if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-                                                                   input.writeStartMethodInvoke(
-                                                                                                   context.getHost()
-                                                                                                          .getGeneratedClassContext()
-                                                                                                          .getWriteLiteralToMethodName()
-                                                                                               );
-                                                                   input.writeSnippet(context.getTargetWriterName());
-                                                                   input.writeParameterSeparator();
-                                                               }
-                                                               else {
-                                                                   input.writeStartMethodInvoke(
-                                                                                                   context.getHost()
-                                                                                                          .getGeneratedClassContext()
-                                                                                                          .getWriteLiteralMethodName()
-                                                                                               );
-                                                               }
-                                                               input.writeStringLiteral(target.getContent());
-                                                               input.writeEndMethodInvoke();
-                                                               input.writeEndStatement();
+                    if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+                        input.writeStartMethodInvoke(
+                            context.getHost()
+                                .getGeneratedClassContext()
+                                .getWriteLiteralToMethodName()
+                        );
+                        input.writeSnippet(context.getTargetWriterName());
+                        input.writeParameterSeparator();
+                    }
+                    else {
+                        input.writeStartMethodInvoke(
+                            context.getHost()
+                                .getGeneratedClassContext()
+                                .getWriteLiteralMethodName()
+                        );
+                    }
+                    input.writeStringLiteral(target.getContent());
+                    input.writeEndMethodInvoke();
+                    input.writeEndStatement();
 
-                                                           }
-                                                       );
+                }
+            );
             context.addStatement(code);
         }
 
-        if (context.getHost().enableInstrumentation()) {
+        if (context.getHost().isInstrumentationActive()) {
             context.addContextCall(
-                                      target, context.getHost().getGeneratedClassContext().getEndContextMethodName(),
-                                      true
-                                  );
+                target, context.getHost().getGeneratedClassContext().getEndContextMethodName(),
+                true
+            );
         }
     }
 

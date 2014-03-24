@@ -12,7 +12,7 @@ package test.output;
 import java.lang;
 
 public class EmptyImplicitExpression {
-private static object @__o;
+private static Object __o;
 //#line hidden
 public EmptyImplicitExpression() {
 }

@@ -30,7 +30,7 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
 
     @Override
     public void generateStartBlockCode(@Nonnull final Block target, @Nonnull final CodeGeneratorContext context) {
-        if (context.getHost().enableInstrumentation() &&
+        if (context.getHost().isInstrumentationActive() &&
             context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
             final Span contentSpan = getFirstOrDefaultSpan(target);
             if (contentSpan != null) {
@@ -95,7 +95,7 @@ public class ExpressionCodeGenerator extends HybridCodeGenerator {
         context.bufferStatementFragment(endBlock);
         context.flushBufferedStatement();
 
-        if (context.getHost().enableInstrumentation() &&
+        if (context.getHost().isInstrumentationActive() &&
             context.getExpressionRenderingMode() == ExpressionRenderingMode.WriteToOutput) {
             final Span contentSpan = getFirstOrDefaultSpan(target);
             if (contentSpan != null) {

@@ -187,7 +187,7 @@ public class RazorEngineHost {
         this.designTimeMode = designTimeMode;
     }
 
-    public boolean enableInstrumentation() {
+    public boolean isInstrumentationActive() {
         return !isDesignTimeMode() && instrumentationActive;
     }
 

@@ -32,9 +32,12 @@ public class StatementCodeGenerator extends SpanCodeGenerator {
         final OutParam<Integer> startGeneratedCode = OutParam.of(target.getStart().getCharacterIndex());
         final OutParam<Integer> paddingCharCount = OutParam.of();
         generatedCode = CodeGeneratorPaddingHelper.padStatement(
-                                                                   context.getHost(), generatedCode, target,
-                                                                   startGeneratedCode, paddingCharCount
-                                                               );
+            context.getHost(),
+            generatedCode,
+            target,
+            startGeneratedCode,
+            paddingCharCount
+        );
 
         context.addStatement(generatedCode, context.generateLinePragma(target, paddingCharCount.value()));
     }

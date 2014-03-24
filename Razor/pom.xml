@@ -57,26 +57,33 @@
             <artifactId>jsr305</artifactId>
         </dependency>
 
-        <!-- Code Generation -->
-        <dependency>
-            <groupId>com.sun.codemodel</groupId>
-            <artifactId>codemodel</artifactId>
-            <version>2.6</version>
-        </dependency>
-
         <!-- TESTING -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables combine.children="append">
+                        <RAZOR_EDITOR_TRACE>true</RAZOR_EDITOR_TRACE>
+                        <EDITOR_TRACING>true</EDITOR_TRACING>
+                        <CHECK_TREE>true</CHECK_TREE>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

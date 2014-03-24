@@ -11,13 +11,13 @@
 package test.output;
 import java.lang;
 
-public class Inherits : foo.bar<baz<biz>>.boz bar {
-private static object @__o;
+public class Inherits extends foo.bar<baz<biz>>.boz bar {
+private static Object __o;
 //#line hidden
 public Inherits() {
 }
-private void @__RazorDesignTimeHelpers__() {
-#pragma warning disable 219
+private void __RazorDesignTimeHelpers__() {
+//#pragma warning disable 219
 
 //#line 2 "Inherits.rzhtml"
           foo.bar<baz<biz>>.boz bar __inheritsHelper = null;
@@ -25,7 +25,7 @@ private void @__RazorDesignTimeHelpers__() {
 
 //#line default
 //#line hidden
-#pragma warning restore 219
+//#pragma warning restore 219
 }
 public void Execute() {
 

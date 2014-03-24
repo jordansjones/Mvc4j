@@ -23,9 +23,8 @@ import java.util.Locale;
 
 import nextmethod.base.SystemHelpers;
 
+@SuppressWarnings("UnusedDeclaration")
 public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable {
-
-    public static final String DefaultTabString = "    ";
 
     private PrintWriter writer;
     private String tabString;
@@ -34,7 +33,7 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
     private boolean newline;
 
     public IndentingPrintWriter(final PrintWriter writer) {
-        this(writer, DefaultTabString, SystemHelpers.newLine());
+        this(writer, CodeGeneratorOptions.DefaultIndentString, SystemHelpers.newLine());
     }
 
     public IndentingPrintWriter(final PrintWriter writer, final String tabString, final String newlineString) {
@@ -48,8 +47,9 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
         return indent;
     }
 
-    public void setIndent(final int indent) {
+    public IndentingPrintWriter setIndent(final int indent) {
         this.indent = Math.max(indent, 0);
+        return this;
     }
 
     /**
@@ -63,9 +63,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @see Object#toString()
      */
-    public void print(final Object obj) {
+    public IndentingPrintWriter write(final Object obj) {
         outputTabs();
         writer.print(obj);
+        return this;
     }
 
     /**
@@ -75,20 +76,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * @param off Offset from which to start writing characters
      * @param len Number of characters to write
      */
-    public void write(final String s, final int off, final int len) {
+    public IndentingPrintWriter write(final String s, final int off, final int len) {
         outputTabs();
         writer.write(s, off, len);
-    }
-
-    /**
-     * Writes a string.  This method cannot be inherited from the Writer class
-     * because it must suppress I/O exceptions.
-     *
-     * @param s String to be written
-     */
-    public void write(final String s) {
-        outputTabs();
-        writer.write(s);
+        return this;
     }
 
     /**
@@ -124,9 +115,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * @throws NullPointerException             If the <tt>format</tt> is <tt>null</tt>
      * @since 1.5
      */
-    public PrintWriter format(final String format, final Object... args) {
+    public IndentingPrintWriter format(final String format, final Object... args) {
         outputTabs();
-        return writer.format(format, args);
+        writer.format(format, args);
+        return this;
     }
 
     /**
@@ -140,39 +132,38 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @see Double#toString(double)
      */
-    public void print(final double d) {
+    public IndentingPrintWriter write(final double d) {
         outputTabs();
         writer.print(d);
+        return this;
     }
 
     /**
      * Prints an integer.  The string produced by <code>{@link
      * String#valueOf(int)}</code> is translated into bytes according
-     * to the platform's default character encoding, and these bytes are
-     * written in exactly the manner of the <code>{@link #write(int)}</code>
-     * method.
+     * to the platform's default character encoding.
      *
      * @param i The <code>int</code> to be printed
      *
      * @see Integer#toString(int)
      */
-    public void print(final int i) {
+    public IndentingPrintWriter write(final int i) {
         outputTabs();
         writer.print(i);
+        return this;
     }
 
     /**
      * Prints a character and then terminates the line.  This method behaves as
-     * though it invokes <code>{@link #print(char)}</code> and then <code>{@link
-     * #println()}</code>.
+     * though it invokes <code>{@link #write(char)}</code> and then <code>{@link
+     * #writeLine()}</code>.
      *
      * @param x the <code>char</code> value to be printed
      */
-    public void println(final char x) {
+    public IndentingPrintWriter writeLine(final char x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
@@ -185,9 +176,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @throws NullPointerException If <code>s</code> is <code>null</code>
      */
-    public void print(final char[] s) {
+    public IndentingPrintWriter write(final char[] s) {
         outputTabs();
         writer.print(s);
+        return this;
     }
 
     /**
@@ -198,23 +190,23 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @param c The <code>char</code> to be printed
      */
-    public void print(final char c) {
+    public IndentingPrintWriter write(final char c) {
         outputTabs();
         writer.print(c);
+        return this;
     }
 
     /**
      * Prints a double-precision floating-point number and then terminates the
      * line.  This method behaves as though it invokes <code>{@link
-     * #print(double)}</code> and then <code>{@link #println()}</code>.
+     * #write(double)}</code> and then <code>{@link #writeLine()}</code>.
      *
      * @param x the <code>double</code> value to be printed
      */
-    public void println(final double x) {
+    public IndentingPrintWriter writeLine(final double x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
@@ -228,23 +220,23 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @see Float#toString(float)
      */
-    public void print(final float f) {
+    public IndentingPrintWriter write(final float f) {
         outputTabs();
         writer.print(f);
+        return this;
     }
 
     /**
      * Prints a boolean value and then terminates the line.  This method behaves
-     * as though it invokes <code>{@link #print(boolean)}</code> and then
-     * <code>{@link #println()}</code>.
+     * as though it invokes <code>{@link #write(boolean)}</code> and then
+     * <code>{@link #writeLine()}</code>.
      *
      * @param x the <code>boolean</code> value to be printed
      */
-    public void println(final boolean x) {
+    public IndentingPrintWriter writeLine(final boolean x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
@@ -256,9 +248,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @param s The <code>String</code> to be printed
      */
-    public void print(final String s) {
+    public IndentingPrintWriter write(final String s) {
         outputTabs();
         writer.print(s);
+        return this;
     }
 
     /**
@@ -272,23 +265,23 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @see Long#toString(long)
      */
-    public void print(final long l) {
+    public IndentingPrintWriter write(final long l) {
         outputTabs();
         writer.print(l);
+        return this;
     }
 
     /**
      * Prints an integer and then terminates the line.  This method behaves as
-     * though it invokes <code>{@link #print(int)}</code> and then <code>{@link
-     * #println()}</code>.
+     * though it invokes <code>{@link #write(int)}</code> and then <code>{@link
+     * #writeLine()}</code>.
      *
      * @param x the <code>int</code> value to be printed
      */
-    public void println(final int x) {
+    public IndentingPrintWriter writeLine(final int x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
@@ -300,9 +293,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      *
      * @param b The <code>boolean</code> to be printed
      */
-    public void print(final boolean b) {
+    public IndentingPrintWriter write(final boolean b) {
         outputTabs();
         writer.print(b);
+        return this;
     }
 
     /**
@@ -337,37 +331,36 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * @throws NullPointerException             If the <tt>format</tt> is <tt>null</tt>
      * @since 1.5
      */
-    public PrintWriter format(final Locale l, final String format, final Object... args) {
+    public IndentingPrintWriter format(final Locale l, final String format, final Object... args) {
         outputTabs();
-        return writer.format(l, format, args);
+        writer.format(l, format, args);
+        return this;
     }
 
     /**
      * Prints a floating-point number and then terminates the line.  This method
-     * behaves as though it invokes <code>{@link #print(float)}</code> and then
-     * <code>{@link #println()}</code>.
+     * behaves as though it invokes <code>{@link #write(float)}</code> and then
+     * <code>{@link #writeLine()}</code>.
      *
      * @param x the <code>float</code> value to be printed
      */
-    public void println(final float x) {
+    public IndentingPrintWriter writeLine(final float x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
      * Prints a long integer and then terminates the line.  This method behaves
-     * as though it invokes <code>{@link #print(long)}</code> and then
-     * <code>{@link #println()}</code>.
+     * as though it invokes <code>{@link #write(long)}</code> and then
+     * <code>{@link #writeLine()}</code>.
      *
      * @param x the <code>long</code> value to be printed
      */
-    public void println(final long x) {
+    public IndentingPrintWriter writeLine(final long x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
@@ -376,36 +369,26 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * <code>line.separator</code>, and is not necessarily a single newline
      * character (<code>'\n'</code>).
      */
-    public void println() {
+    public IndentingPrintWriter writeLine() {
         outputTabs();
         writer.print(this.newlineString);
         newline = true;
+        return this;
     }
 
     /**
      * Prints an Object and then terminates the line.  This method calls
      * at first String.valueOf(x) to get the printed object's string value,
      * then behaves as
-     * though it invokes <code>{@link #print(String)}</code> and then
-     * <code>{@link #println()}</code>.
+     * though it invokes <code>{@link #write(String)}</code> and then
+     * <code>{@link #writeLine()}</code>.
      *
      * @param x The <code>Object</code> to be printed.
      */
-    public void println(final Object x) {
+    public IndentingPrintWriter writeLine(final Object x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
-    }
-
-    /**
-     * Writes a single character.
-     *
-     * @param c int specifying a character to be written.
-     */
-    public void write(final int c) {
-        outputTabs();
-        writer.write(c);
+        return writeLine();
     }
 
     /**
@@ -421,16 +404,15 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
 
     /**
      * Prints an array of characters and then terminates the line.  This method
-     * behaves as though it invokes <code>{@link #print(char[])}</code> and then
-     * <code>{@link #println()}</code>.
+     * behaves as though it invokes <code>{@link #write(char[])}</code> and then
+     * <code>{@link #writeLine()}</code>.
      *
      * @param x the array of <code>char</code> values to be printed
      */
-    public void println(final char[] x) {
+    public IndentingPrintWriter writeLine(final char[] x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
     }
 
     /**
@@ -438,7 +420,7 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * the specified format string and arguments.  If automatic flushing is
      * enabled, calls to this method will flush the output buffer.
      * <p>
-     * <p> An invocation of this method of the form <tt>out.printf(l, format,
+     * <p> An invocation of this method of the form <tt>out.write(l, format,
      * args)</tt> behaves in exactly the same way as the invocation
      * <p>
      * <pre>
@@ -471,20 +453,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * @throws NullPointerException             If the <tt>format</tt> is <tt>null</tt>
      * @since 1.5
      */
-    public PrintWriter printf(final Locale l, final String format, final Object... args) {
+    public IndentingPrintWriter write(final Locale l, final String format, final Object... args) {
         outputTabs();
-        return writer.printf(l, format, args);
-    }
-
-    /**
-     * Writes an array of characters.  This method cannot be inherited from the
-     * Writer class because it must suppress I/O exceptions.
-     *
-     * @param buf Array of characters to be written
-     */
-    public void write(final char[] buf) {
-        outputTabs();
-        writer.write(buf);
+        writer.printf(l, format, args);
+        return this;
     }
 
     /**
@@ -492,7 +464,7 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * the specified format string and arguments.  If automatic flushing is
      * enabled, calls to this method will flush the output buffer.
      * <p>
-     * <p> An invocation of this method of the form <tt>out.printf(format,
+     * <p> An invocation of this method of the form <tt>out.write(format,
      * args)</tt> behaves in exactly the same way as the invocation
      * <p>
      * <pre>
@@ -522,9 +494,10 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * @throws NullPointerException             If the <tt>format</tt> is <tt>null</tt>
      * @since 1.5
      */
-    public PrintWriter printf(final String format, final Object... args) {
+    public IndentingPrintWriter write(final String format, final Object... args) {
         outputTabs();
-        return writer.printf(format, args);
+        writer.printf(format, args);
+        return this;
     }
 
     /**
@@ -534,23 +507,108 @@ public class IndentingPrintWriter implements Closeable, Flushable, AutoCloseable
      * @param off Offset from which to start writing characters
      * @param len Number of characters to write
      */
-    public void write(final char[] buf, final int off, final int len) {
+    public IndentingPrintWriter write(final char[] buf, final int off, final int len) {
         outputTabs();
         writer.write(buf, off, len);
+        return this;
     }
 
     /**
      * Prints a String and then terminates the line.  This method behaves as
-     * though it invokes <code>{@link #print(String)}</code> and then
-     * <code>{@link #println()}</code>.
+     * though it invokes <code>{@link #write(String)}</code> and then
+     * <code>{@link #writeLine()}</code>.
      *
      * @param x the <code>String</code> value to be printed
      */
-    public void println(final String x) {
+    public IndentingPrintWriter writeLine(final String x) {
         outputTabs();
         writer.print(x);
-        writer.print(this.newlineString);
-        newline = true;
+        return writeLine();
+    }
+
+    /**
+     * A convenience method to write a formatted string to this writer using
+     * the specified format string and arguments and then terminates the line.  If automatic flushing is
+     * enabled, calls to this method will flush the output buffer.
+     * <p>
+     * <p> An invocation of this method of the form <tt>out.writeLine(l, format,
+     * args)</tt> behaves in exactly the same way as the invocation
+     * <p>
+     * <pre>
+     *     out.format(l, format, args) </pre>
+     *
+     * @param l      The {@linkplain java.util.Locale locale} to apply during
+     *               formatting.  If <tt>l</tt> is <tt>null</tt> then no localization
+     *               is applied.
+     * @param format A format string as described in <a
+     *               href="../util/Formatter.html#syntax">Format string syntax</a>.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.  If there are more arguments than format specifiers, the
+     *               extra arguments are ignored.  The number of arguments is
+     *               variable and may be zero.  The maximum number of arguments is
+     *               limited by the maximum dimension of a Java array as defined by
+     *               <cite>The Java&trade; Virtual Machine Specification</cite>.
+     *               The behaviour on a
+     *               <tt>null</tt> argument depends on the <a
+     *               href="../util/Formatter.html#syntax">conversion</a>.
+     *
+     * @return This writer
+     *
+     * @throws java.util.IllegalFormatException If a format string contains an illegal syntax, a format
+     *                                          specifier that is incompatible with the given arguments,
+     *                                          insufficient arguments given the format string, or other
+     *                                          illegal conditions.  For specification of all possible
+     *                                          formatting errors, see the <a
+     *                                          href="../util/Formatter.html#detail">Details</a> section of the
+     *                                          formatter class specification.
+     * @throws NullPointerException             If the <tt>format</tt> is <tt>null</tt>
+     * @since 1.5
+     */
+    public IndentingPrintWriter writeLine(final Locale l, final String format, final Object... args) {
+        outputTabs();
+        writer.printf(l, format, args);
+        return writeLine();
+    }
+
+    /**
+     * A convenience method to write a formatted string to this writer using
+     * the specified format string and arguments and then terminates the line.  If automatic flushing is
+     * enabled, calls to this method will flush the output buffer.
+     * <p>
+     * <p> An invocation of this method of the form <tt>out.write(format,
+     * args)</tt> behaves in exactly the same way as the invocation
+     * <p>
+     * <pre>
+     *     out.format(format, args) </pre>
+     *
+     * @param format A format string as described in <a
+     *               href="../util/Formatter.html#syntax">Format string syntax</a>.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.  If there are more arguments than format specifiers, the
+     *               extra arguments are ignored.  The number of arguments is
+     *               variable and may be zero.  The maximum number of arguments is
+     *               limited by the maximum dimension of a Java array as defined by
+     *               <cite>The Java&trade; Virtual Machine Specification</cite>.
+     *               The behaviour on a
+     *               <tt>null</tt> argument depends on the <a
+     *               href="../util/Formatter.html#syntax">conversion</a>.
+     *
+     * @return This writer
+     *
+     * @throws java.util.IllegalFormatException If a format string contains an illegal syntax, a format
+     *                                          specifier that is incompatible with the given arguments,
+     *                                          insufficient arguments given the format string, or other
+     *                                          illegal conditions.  For specification of all possible
+     *                                          formatting errors, see the <a
+     *                                          href="../util/Formatter.html#detail">Details</a> section of the
+     *                                          formatter class specification.
+     * @throws NullPointerException             If the <tt>format</tt> is <tt>null</tt>
+     * @since 1.5
+     */
+    public IndentingPrintWriter writeLine(final String format, final Object... args) {
+        outputTabs();
+        writer.printf(format, args);
+        return writeLine();
     }
 
     /**

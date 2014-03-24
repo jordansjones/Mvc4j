@@ -12,7 +12,7 @@ package test.output;
 import java.lang;
 
 public class DesignTime {
-private static object @__o;
+private static Object __o;
 //#line hidden
 //#line 9 "DesignTime.rzhtml"
 public static Template Foo() {

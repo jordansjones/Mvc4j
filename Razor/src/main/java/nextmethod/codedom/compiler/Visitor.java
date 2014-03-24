@@ -302,7 +302,7 @@ class Visitor implements ICodeDomVisitor {
         cg.generateSnippetMember(o);
 
         if (cg.getOptions().isVerbatimOrder()) {
-            cg.getOutput().println();
+            cg.getOutput().writeLine();
         }
         cg.setIndent(indent);
     }

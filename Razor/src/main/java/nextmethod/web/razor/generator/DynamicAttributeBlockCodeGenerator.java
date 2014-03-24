@@ -39,15 +39,17 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
     private final LocationTagged<String> prefix;
     private final SourceLocation valueStart;
 
-    public DynamicAttributeBlockCodeGenerator(@Nonnull final LocationTagged<String> prefix, final int offset,
-                                              final int line, final int col
-                                             ) {
+    public DynamicAttributeBlockCodeGenerator(
+        @Nonnull final LocationTagged<String> prefix, final int offset,
+        final int line, final int col
+    ) {
         this(prefix, new SourceLocation(offset, line, col));
     }
 
-    public DynamicAttributeBlockCodeGenerator(@Nonnull final LocationTagged<String> prefix,
-                                              @Nonnull final SourceLocation valueStart
-                                             ) {
+    public DynamicAttributeBlockCodeGenerator(
+        @Nonnull final LocationTagged<String> prefix,
+        @Nonnull final SourceLocation valueStart
+    ) {
         this.prefix = prefix;
         this.valueStart = valueStart;
     }
@@ -58,52 +60,52 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
             return;
         }
 
-        // Whate kind of block is nested within
+        // What kind of block is nested within
         final String generatedCode;
         final Block child = (Block) target.getChildren().stream().filter(isBlockPredicate).findFirst().orElse(null);
         if (child != null && child.getType() == BlockType.Expression) {
             isExpression = true;
             generatedCode = context.buildCodeString(
-                                                       input -> {
-                                                           assert input != null;
+                input -> {
+                    assert input != null;
 
-                                                           input.writeParameterSeparator();
-                                                           input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
-                                                           input.writeLocationTaggedString(prefix);
-                                                           input.writeParameterSeparator();
-                                                           input.writeStartMethodInvoke(
-                                                                                           "nextmethod.base.KeyValue.of",
-                                                                                           "java.lang.Object",
-                                                                                           "java.lang.Integer"
-                                                                                       );
-                                                       }
-                                                   );
+                    input.writeParameterSeparator();
+                    input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
+                    input.writeLocationTaggedString(prefix);
+                    input.writeParameterSeparator();
+                    input.writeStartMethodInvoke(
+                        "nextmethod.base.KeyValue.of",
+                        "java.lang.Object",
+                        "java.lang.Integer"
+                    );
+                }
+            );
 
             oldRenderingMode = context.getExpressionRenderingMode();
             context.setExpressionRenderingMode(ExpressionRenderingMode.InjectCode);
         }
         else {
             generatedCode = context.buildCodeString(
-                                                       input -> {
-                                                           assert input != null;
+                input -> {
+                    assert input != null;
 
-                                                           input.writeParameterSeparator();
-                                                           input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
-                                                           input.writeLocationTaggedString(prefix);
-                                                           input.writeParameterSeparator();
-                                                           input.writeStartMethodInvoke(
-                                                                                           "nextmethod.base.KeyValue.of",
-                                                                                           "java.lang.Object",
-                                                                                           "java.lang.Integer"
-                                                                                       );
-                                                           input.writeStartConstructor(
-                                                                                          context.getHost()
-                                                                                                 .getGeneratedClassContext()
-                                                                                                 .getTemplateTypeName()
-                                                                                      );
-                                                           input.writeStartLambdaDelegate(ValueWriterName);
-                                                       }
-                                                   );
+                    input.writeParameterSeparator();
+                    input.writeStartMethodInvoke("nextmethod.base.KeyValue.of");
+                    input.writeLocationTaggedString(prefix);
+                    input.writeParameterSeparator();
+                    input.writeStartMethodInvoke(
+                        "nextmethod.base.KeyValue.of",
+                        "java.lang.Object",
+                        "java.lang.Integer"
+                    );
+                    input.writeStartConstructor(
+                        context.getHost()
+                            .getGeneratedClassContext()
+                            .getTemplateTypeName()
+                    );
+                    input.writeStartLambdaDelegate(ValueWriterName);
+                }
+            );
         }
 
         context.markEndOfGeneratedCode();
@@ -122,38 +124,38 @@ public class DynamicAttributeBlockCodeGenerator extends BlockCodeGenerator {
         final String generatedCode;
         if (isExpression) {
             generatedCode = context.buildCodeString(
-                                                       input -> {
-                                                           assert input != null;
+                input -> {
+                    assert input != null;
 
-                                                           input.writeParameterSeparator();
-                                                           input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
-                                                           input.writeEndMethodInvoke();
-                                                           input.writeParameterSeparator();
-                                                           // This attribute value is not a literal value, it is dynamically generated
-                                                           input.writeBooleanLiteral(false);
-                                                           input.writeEndMethodInvoke();
-                                                           input.writeLineContinuation();
-                                                       }
-                                                   );
+                    input.writeParameterSeparator();
+                    input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
+                    input.writeEndMethodInvoke();
+                    input.writeParameterSeparator();
+                    // This attribute value is not a literal value, it is dynamically generated
+                    input.writeBooleanLiteral(false);
+                    input.writeEndMethodInvoke();
+                    input.writeLineContinuation();
+                }
+            );
             context.setExpressionRenderingMode(oldRenderingMode);
         }
         else {
             generatedCode = context.buildCodeString(
-                                                       input -> {
-                                                           assert input != null;
+                input -> {
+                    assert input != null;
 
-                                                           input.writeEndLambdaDelegate();
-                                                           input.writeEndConstructor();
-                                                           input.writeParameterSeparator();
-                                                           input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
-                                                           input.writeEndMethodInvoke();
-                                                           input.writeParameterSeparator();
-                                                           // This attribute value is not a literal value, it is dynamically generated
-                                                           input.writeBooleanLiteral(false);
-                                                           input.writeEndMethodInvoke();
-                                                           input.writeLineContinuation();
-                                                       }
-                                                   );
+                    input.writeEndLambdaDelegate();
+                    input.writeEndConstructor();
+                    input.writeParameterSeparator();
+                    input.writeSnippet(String.valueOf(valueStart.getAbsoluteIndex()));
+                    input.writeEndMethodInvoke();
+                    input.writeParameterSeparator();
+                    // This attribute value is not a literal value, it is dynamically generated
+                    input.writeBooleanLiteral(false);
+                    input.writeEndMethodInvoke();
+                    input.writeLineContinuation();
+                }
+            );
         }
 
         context.addStatement(generatedCode);

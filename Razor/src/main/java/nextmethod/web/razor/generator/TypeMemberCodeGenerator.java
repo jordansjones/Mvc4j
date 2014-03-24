@@ -18,6 +18,7 @@ package nextmethod.web.razor.generator;
 
 import javax.annotation.Nonnull;
 
+import nextmethod.base.OutParam;
 import nextmethod.codedom.CodeSnippetTypeMember;
 import nextmethod.web.razor.parser.syntaxtree.Span;
 
@@ -29,8 +30,11 @@ public class TypeMemberCodeGenerator extends SpanCodeGenerator {
     public void generateCode(@Nonnull final Span target, @Nonnull final CodeGeneratorContext context) {
         final String generatedCode = context.buildCodeString(input -> input.writeSnippet(target.getContent()));
 
-        final CodeSnippetTypeMember member = new CodeSnippetTypeMember(pad(generatedCode, target));
-        member.setLinePragma(context.generateLinePragma(target, target.getStart().getCharacterIndex()));
+        OutParam<Integer> paddingCharCount = OutParam.of(0);
+        final String paddedCode = CodeGeneratorPaddingHelper.pad(context.getHost(), generatedCode, target, paddingCharCount);
+
+        final CodeSnippetTypeMember member = new CodeSnippetTypeMember(paddedCode);
+        member.setLinePragma(context.generateLinePragma(target, paddingCharCount.value()));
         context.getGeneratedClass().getMembers().add(member);
     }
 

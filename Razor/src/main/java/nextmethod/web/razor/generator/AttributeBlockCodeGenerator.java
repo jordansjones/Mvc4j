@@ -32,9 +32,10 @@ public class AttributeBlockCodeGenerator extends BlockCodeGenerator {
     private final LocationTagged<String> prefix;
     private final LocationTagged<String> suffix;
 
-    public AttributeBlockCodeGenerator(@Nonnull final String name, @Nonnull final LocationTagged<String> prefix,
-                                       @Nonnull final LocationTagged<String> suffix
-                                      ) {
+    public AttributeBlockCodeGenerator(
+        @Nonnull final String name, @Nonnull final LocationTagged<String> prefix,
+        @Nonnull final LocationTagged<String> suffix
+    ) {
         this.name = name;
         this.prefix = prefix;
         this.suffix = suffix;
@@ -49,31 +50,31 @@ public class AttributeBlockCodeGenerator extends BlockCodeGenerator {
 
         context.flushBufferedStatement();
         context.addStatement(
-                                context.buildCodeString(
-                                                           input -> {
-                                                               if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
-                                                                   input.writeStartMethodInvoke(
-                                                                                                   host.getGeneratedClassContext()
-                                                                                                       .getWriteAttributeToMethodName()
-                                                                                               );
-                                                                   input.writeSnippet(context.getTargetWriterName());
-                                                                   input.writeParameterSeparator();
-                                                               }
-                                                               else {
-                                                                   input.writeStartMethodInvoke(
-                                                                                                   host.getGeneratedClassContext()
-                                                                                                       .getWriteAttributeMethodName()
-                                                                                               );
-                                                               }
-                                                               input.writeStringLiteral(name);
-                                                               input.writeParameterSeparator();
-                                                               input.writeLocationTaggedString(prefix);
-                                                               input.writeParameterSeparator();
-                                                               input.writeLocationTaggedString(suffix);
-                                                               input.writeLineContinuation();
-                                                           }
-                                                       )
-                            );
+            context.buildCodeString(
+                input -> {
+                    if (!Strings.isNullOrEmpty(context.getTargetWriterName())) {
+                        input.writeStartMethodInvoke(
+                            host.getGeneratedClassContext()
+                                .getWriteAttributeToMethodName()
+                        );
+                        input.writeSnippet(context.getTargetWriterName());
+                        input.writeParameterSeparator();
+                    }
+                    else {
+                        input.writeStartMethodInvoke(
+                            host.getGeneratedClassContext()
+                                .getWriteAttributeMethodName()
+                        );
+                    }
+                    input.writeStringLiteral(name);
+                    input.writeParameterSeparator();
+                    input.writeLocationTaggedString(prefix);
+                    input.writeParameterSeparator();
+                    input.writeLocationTaggedString(suffix);
+                    input.writeLineContinuation();
+                }
+            )
+        );
     }
 
     @Override
@@ -84,13 +85,13 @@ public class AttributeBlockCodeGenerator extends BlockCodeGenerator {
 
         context.flushBufferedStatement();
         context.addStatement(
-                                context.buildCodeString(
-                                                           input -> {
-                                                               input.writeEndMethodInvoke();
-                                                               input.writeEndStatement();
-                                                           }
-                                                       )
-                            );
+            context.buildCodeString(
+                input -> {
+                    input.writeEndMethodInvoke();
+                    input.writeEndStatement();
+                }
+            )
+        );
     }
 
     @Override
@@ -111,9 +112,9 @@ public class AttributeBlockCodeGenerator extends BlockCodeGenerator {
     @Override
     public int hashCode() {
         return Objects.hash(
-                               this.name,
-                               this.prefix,
-                               this.suffix
-                           );
+            this.name,
+            this.prefix,
+            this.suffix
+        );
     }
 }

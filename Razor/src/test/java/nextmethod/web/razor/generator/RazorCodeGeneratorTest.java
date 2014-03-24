@@ -17,15 +17,12 @@
 package nextmethod.web.razor.generator;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import nextmethod.base.Debug;
 import nextmethod.base.Delegates;
@@ -41,12 +38,14 @@ import nextmethod.web.razor.RazorCodeLanguage;
 import nextmethod.web.razor.RazorEngineHost;
 import nextmethod.web.razor.RazorTemplateEngine;
 import nextmethod.web.razor.StringTextBuffer;
+import nextmethod.web.razor.parser.syntaxtree.Span;
 import nextmethod.web.razor.utils.MiscUtils;
 import nextmethod.web.razor.utils.TestFile;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 
 public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
@@ -69,88 +68,112 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         return new RazorEngineHost(newLanguageInstance());
     }
 
-    protected void runTest(final String name) {
-        runTest(name, null);
-    }
+    protected void runTest(final String name,
+                           String baselineName,
+                           boolean generatePragmas,
+                           boolean designTimeMode,
+                           final List<GeneratedCodeMapping> expectedDesignTimePragmas,
+                           final TestSpan[] spans,
+                           TabTest tabTest,
+                           Delegates.IAction1<RazorEngineHost> hostConfig) {
+        boolean testRun = false;
 
-    protected void runTest(final String name, String baselineName) {
-        runTest(name, baselineName, true);
-    }
-
-    protected void runTest(final String name, String baselineName, boolean generatePragmas) {
-        runTest(name, baselineName, generatePragmas, false);
-    }
-
-    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode) {
-        runTest(name, baselineName, generatePragmas, designTimeMode, null);
-    }
-
-    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode, final List<GeneratedCodeMapping> expectedDesignTimePragmas) {
-        runTest(name, baselineName, generatePragmas, designTimeMode, expectedDesignTimePragmas, null);
-    }
-
-    protected void runTest(final String name, String baselineName, boolean generatePragmas, boolean designTimeMode, final List<GeneratedCodeMapping> expectedDesignTimePragmas, Delegates.IAction1<RazorEngineHost> hostConfig ) {
-        if (Strings.isNullOrEmpty(baselineName)) {
-            baselineName = name;
+        if ((tabTest.value() & TabTest.Tabs.value()) == TabTest.Tabs.value()) {
+            runtTestInternal(
+                name,
+                baselineName,
+                generatePragmas,
+                designTimeMode,
+                expectedDesignTimePragmas,
+                spans,
+                true,
+                hostConfig
+            );
+            testRun = true;
         }
 
-        final String source = TestFile.create(
-                                                 String.format(
-                                                                  "codeGenerator/%s/source/%s.%s", getLanguageName(),
-                                                                  name, getFileExtension()
-                                                              )
-                                             ).readAllText();
-        final String expectedOutput = TestFile.create(
-                                                         String.format(
-                                                                          "codeGenerator/%s/output/%s.%s",
-                                                                          getLanguageName(), baselineName,
-                                                                          getBaselineExtension()
-                                                                      )
-                                                     ).readAllText();
+        if ((tabTest.value() & TabTest.NoTabs.value()) == TabTest.NoTabs.value()) {
+            runtTestInternal(
+                name,
+                baselineName,
+                generatePragmas,
+                designTimeMode,
+                expectedDesignTimePragmas,
+                spans,
+                false,
+                hostConfig
+            );
+            testRun = true;
+        }
 
-        // Setup the host and engine
+        assertThat("No test was run because TabTest is not set correctly", testRun, is(true));
+    }
+
+    private void runtTestInternal(
+        final String name,
+        String baselineName,
+        final boolean generatePragmas,
+        final boolean designTimeMode,
+        final List<GeneratedCodeMapping> expectedDesignTimePragmas,
+        final TestSpan[] testSpans,
+        final boolean withTabs,
+        final Delegates.IAction1<RazorEngineHost> hostConfig
+    ) {
+
+        if (Strings.isNullOrEmpty(baselineName)) baselineName = name;
+
+        final String source = TestFile.create(String.format(
+                                                  "codeGenerator/%s/source/%s.%s",
+                                                  getLanguageName(),
+                                                  name,
+                                                  getFileExtension()
+                                              )).readAllText();
+        final String expectedOutput = TestFile.create(String.format(
+                                                          "codeGenerator/%s/output/%s.%s",
+                                                          getLanguageName(),
+                                                          baselineName,
+                                                          getBaselineExtension()
+                                                      )).readAllText();
+
         final RazorEngineHost host = createHost();
         host.getPackageImports().add("java.lang");
         host.setDesignTimeMode(designTimeMode);
         host.setStaticHelpers(true);
         host.setDefaultClassName(name);
 
-        // Add support for templates, etc.
-        final GeneratedClassContext generatedClassContext = new GeneratedClassContext(
-                                                                                         GeneratedClassContext.DefaultExecuteMethodName,
-                                                                                         GeneratedClassContext.DefaultWriteMethodName,
-                                                                                         GeneratedClassContext.DefaultWriteLiteralMethodName,
-                                                                                         "WriteTo",
-                                                                                         "WriteLiteralTo",
-                                                                                         "Template",
-                                                                                         "DefineSection",
-                                                                                         "BeginContext",
-                                                                                         "EndContext"
+        final GeneratedClassContext genCtx = new GeneratedClassContext(
+            GeneratedClassContext.DefaultExecuteMethodName,
+            GeneratedClassContext.DefaultWriteMethodName,
+            GeneratedClassContext.DefaultWriteLiteralMethodName,
+            "WriteTo",
+            "WriteLiteralTo",
+            "Template",
+            "DefineSection",
+            "BeginContext",
+            "EndContext"
         );
-        generatedClassContext.setLayoutPropertyName("Layout");
-        generatedClassContext.setResolveUrlMethodName("Href");
-        host.setGeneratedClassContext(generatedClassContext);
+        genCtx.setLayoutPropertyName("Layout");
+        genCtx.setResolveUrlMethodName("Href");
+        host.setGeneratedClassContext(genCtx);
 
         if (hostConfig != null) {
             hostConfig.invoke(host);
         }
 
+        host.setIndentingWithTabs(withTabs);
+
         final RazorTemplateEngine engine = new RazorTemplateEngine(host);
 
-        // Generate code for the file
         GeneratorResults results;
         try (final StringTextBuffer buffer = new StringTextBuffer(source)) {
             results = engine.generateCode(
-                                             buffer,
-                                             name,
-                                             TestRootNamespaceName,
-                                             generatePragmas
-                                             ? String.format("%s.%s", name, getFileExtension())
-                                             : null
-                                         );
+                buffer,
+                name,
+                TestRootNamespaceName,
+                generatePragmas ? String.format("%s.%s", name, getFileExtension()) : null
+            );
         }
 
-        // Generate Code
         final CodeCompileUnit compileUnit = results.getGeneratedCode();
         CodeDomProvider codeDomProvider = null;
         try {
@@ -165,59 +188,71 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         options.setIndentString(Strings.Empty);
         options.setNewlineString(Strings.CRLF);
 
-        String generatedOutput;
-        try (StringWriter swriter = new StringWriter()) {
-            try (PrintWriter writer = new PrintWriter(swriter)) {
-                assert codeDomProvider != null;
-                codeDomProvider.generateCodeFromCompileUnit(compileUnit, writer, options);
-            }
-            generatedOutput = swriter.toString();
+        final String generatedOutput;
+        try (final StringWriter stringWriter = new StringWriter()) {
+            assert codeDomProvider != null;
+            codeDomProvider.generateCodeFromCompileUnit(compileUnit, stringWriter, options);
+            generatedOutput = MiscUtils.stripRuntimeVersion(stringWriter.getBuffer().toString());
         }
         catch (IOException e) {
             throw Throwables.propagate(e);
         }
 
         writeBaseLine(
-                         String.format(
-                                          Filesystem.createFilePath(
-                                                                       "test",
-                                                                       getClass().getPackage().getName(),
-                                                                       "testFiles",
-                                                                       "codeGenerator",
-                                                                       "%s",
-                                                                       "output",
-                                                                       "%s.%s"
-                                                                   ),
-                                          getLanguageName(),
-                                          baselineName,
-                                          getBaselineExtension()
-                                      ),
-                         generatedOutput
-                     );
+            String.format(
+                Filesystem.createFilePath(
+                    "test",
+                    "resources",
+                    "testFiles",
+                    "codeGenerator",
+                    "%s",
+                    "output",
+                    "%s.%s"
+                ),
+                getLanguageName(),
+                baselineName,
+                getBaselineExtension()
+            ),
+            generatedOutput
+        );
 
         // Verify code against baseline
         if (!Debug.isDebugArgPresent(DebugArgs.GenerateBaselines)) {
-            assertEquals(expectedOutput, MiscUtils.stripRuntimeVersion(generatedOutput));
+            assertEquals(name, expectedOutput, generatedOutput);
         }
 
-        // Verify design-time pragmas
+        final Collection<Span> generatedSpans = results.getDocument().flatten();
+        for (Span span : generatedSpans) {
+            verifyNoBrokenEndOfLines(span.getContent());
+        }
+
         if (designTimeMode) {
-            assertTrue(
-                          expectedDesignTimePragmas != null
-                          || results.getDesignTimeLineMappings() == null
-                          || results.getDesignTimeLineMappings().size() == 0
-                      );
-            assertTrue(
-                          expectedDesignTimePragmas == null
-                          || (results.getDesignTimeLineMappings() != null && !results.getDesignTimeLineMappings().isEmpty())
-                      );
+            if (testSpans != null) {
+                assertArrayEquals(testSpans, generatedSpans.stream().map(TestSpan::new).toArray(TestSpan[]::new));
+            }
+
             if (expectedDesignTimePragmas != null) {
-                final Ordering<Map.Entry<Integer, GeneratedCodeMapping>> ordering = Ordering.from(createGeneratedCodeMappingComparator());
-                final Stream<GeneratedCodeMapping> generatedCodeMappings = ordering.sortedCopy(results.getDesignTimeLineMappingEntries()).stream().map(Map.Entry<Integer, GeneratedCodeMapping>::getValue);
-                assertArrayEquals(
-                                     expectedDesignTimePragmas.stream().toArray(GeneratedCodeMapping[]::new),
-                                     generatedCodeMappings.toArray(GeneratedCodeMapping[]::new)
-                                 );
+                final Map<Integer, GeneratedCodeMapping> designTimeLineMappings = results.getDesignTimeLineMappings();
+                assertThat(
+                    designTimeLineMappings != null && !designTimeLineMappings.isEmpty(),
+                    is(true)
+                );
+
+                assert designTimeLineMappings != null;
+                assertThat(designTimeLineMappings.size(), is(expectedDesignTimePragmas.size()));
+
+
+                final GeneratedCodeMapping[] actualResults = designTimeLineMappings.entrySet().stream()
+                    .sorted((x, y) -> Ints.compare(x.getKey(), y.getKey()))
+                    .map(Map.Entry<Integer, GeneratedCodeMapping>::getValue)
+                    .toArray(GeneratedCodeMapping[]::new);
+
+                final GeneratedCodeMapping[] expectedResults = expectedDesignTimePragmas.stream().toArray(GeneratedCodeMapping[]::new);
+
+                assertThat(
+                    actualResults,
+                    is(expectedResults)
+                );
             }
         }
     }
@@ -228,7 +263,19 @@ public abstract class RazorCodeGeneratorTest<TLang extends RazorCodeLanguage> {
         }
     }
 
-    private Comparator<Map.Entry<Integer, GeneratedCodeMapping>> createGeneratedCodeMappingComparator() {
-        return (o1, o2) -> Ints.compare(o1.getKey(), o2.getKey());
+    private void verifyNoBrokenEndOfLines(final String text) {
+        final int textLength = text.length();
+        for (int i = 0; i < textLength; i++) {
+            final char c = text.charAt(i);
+            if (c == '\r') {
+                assertThat(textLength > i + 1, is(true));
+                assertThat(text.charAt(i + 1), is('\n'));
+            }
+            else if (c == '\n') {
+                assertThat(i > 0, is(true));
+                assertThat(text.charAt(i - 1), is('\r'));
+            }
+        }
     }
+
 }
