@@ -23,7 +23,7 @@
           <value>
             <package name="java.awt" withSubpackages="false" static="false" />
             <package name="javax.swing" withSubpackages="false" static="false" />
-            <package name="import org.junit.*" withSubpackages="true" static="true" />
+            <package name="org.junit.Assert" withSubpackages="false" static="true" />
           </value>
         </option>
         <option name="IMPORT_LAYOUT_TABLE">
